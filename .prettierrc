@@ -1,0 +1,10 @@
+{
+  "plugins": ["prettier-plugin-organize-imports"],
+  "singleQuote": true,
+  "trailingComma": "none",
+  "objectWrap": "collapse",
+  "semi": true,
+  "useTabs": false,
+  "bracketSpacing": true,
+  "endOfLine": "crlf"
+}
