@@ -1,16 +1,15 @@
 import '@ministryofjustice/frontend/moj/all.scss';
 import ReactDOM from 'react-dom/client';
-import './App.scss';
+import { BrowserRouter } from 'react-router-dom';
 
-const Index = () => {
-  return (
-    <div className="govuk-width-container">
-      <cps-global-header></cps-global-header>
-      <p className="govuk-body">Hello world</p>
-    </div>
-  );
-};
+import { App } from './app';
+
+import './App.scss';
 
 const documentRoot = document.getElementById('root') as HTMLElement;
 const root = ReactDOM.createRoot(documentRoot);
-root.render(<Index />);
+root.render(
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+);

@@ -1,0 +1,1 @@
+export { useAppRoute } from './useAppRoute';
