@@ -1,19 +1,13 @@
 const APP_ROUTES = {
   ROOT: '/',
-  COMMUNICATIONS: '/communications',
-  MATERIALS: '/materials'
+  COMMUNICATIONS: 'communications',
+  MATERIALS: 'materials',
+  PCD_REQUEST: 'pcd-request',
+  PCD_REVIEW: 'pcd-review',
+  REVIEW_REDACT: 'review-and-redact'
 } as const;
 
 type AppRouteKey = keyof typeof APP_ROUTES;
 
-export const useAppRoute = () => {
-  const getRoute = (routeName: AppRouteKey) => {
-    return APP_ROUTES[routeName];
-  };
-
-  const getRoutes = (routeNames: AppRouteKey[]) => {
-    return routeNames.map((routeName) => APP_ROUTES[routeName]);
-  };
-
-  return { getRoute, getRoutes };
-};
+export const useAppRoute = (routeNames: AppRouteKey[]) =>
+  routeNames.map((routeName) => APP_ROUTES[routeName]);
