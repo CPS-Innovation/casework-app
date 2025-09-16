@@ -1,14 +1,12 @@
 import { z } from 'zod';
 
-export const CaseInfoSchema = z
-  .object({
-    id: z.number(),
-    urn: z.string(),
-    leadDefendantFirstNames: z.string(),
-    leadDefendantSurname: z.string(),
-    numberOfDefendants: z.number()
-  })
-  .strict();
+export const CaseInfoSchema = z.strictObject({
+  id: z.number(),
+  urn: z.string(),
+  leadDefendantFirstNames: z.string(),
+  leadDefendantSurname: z.string(),
+  numberOfDefendants: z.number()
+});
 
 export const CaseInfoRequestSchema = z.null();
 
