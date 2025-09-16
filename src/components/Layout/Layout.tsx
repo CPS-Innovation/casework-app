@@ -20,9 +20,10 @@ export const Layout = ({ children }: PropsWithChildren) => {
   ]);
 
   return (
-    <div>
+    <main>
       <CaseInfo />
 
+      {/* TEMP NAV FOR DEV PURPOSES */}
       <ul>
         <li>
           <CPSLink to={pcdRequestRoute}>PCD Request</CPSLink>
@@ -40,9 +41,12 @@ export const Layout = ({ children }: PropsWithChildren) => {
           <CPSLink to={pcdReviewRoute}>PCD Review</CPSLink>
         </li>
       </ul>
+      {/* /END TEMP NAV FOR DEV PURPOSES */}
 
-      <Outlet />
-      {children}
-    </div>
+      <div id="main-content">
+        <Outlet />
+        {children}
+      </div>
+    </main>
   );
 };
