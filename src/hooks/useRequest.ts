@@ -1,8 +1,7 @@
 import axios from 'axios';
-import { POLARIS_GATEWAY_URL } from '../constants/url';
 
 const instance = axios.create({
-  baseURL: POLARIS_GATEWAY_URL,
+  baseURL: 'http://localhost:3000',
   withCredentials: true
 });
 

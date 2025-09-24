@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Merging Housekeeping and Casework app",
   "main": "eslint.config.js",
-  "proxy": "https://polaris-dev-cmsproxy.azurewebsites.net",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -42,6 +41,7 @@
     "husky": "^9.1.7",
     "jsdom": "^26.1.0",
     "lint-staged": "^16.1.6",
+    "msw": "^2.11.3",
     "prettier": "^3.6.2",
     "prettier-plugin-organize-imports": "^4.2.0",
     "rollup-plugin-visualizer": "^6.0.3",
@@ -57,6 +57,11 @@
   "lint-staged": {
     "*/.{js,jsx,ts,tsx}": [
       "prettier --write"
+    ]
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
     ]
   }
 }

@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { PropsWithChildren } from 'react';
 import { CaseInfo, CPSLink } from '../';
 import { useAppRoute } from '../../hooks';
+import './Layout.scss';
 
 export const Layout = ({ children }: PropsWithChildren) => {
   const [
@@ -20,7 +21,7 @@ export const Layout = ({ children }: PropsWithChildren) => {
   ]);
 
   return (
-    <main>
+    <main className="main-container">
       <CaseInfo />
 
       {/* TEMP NAV FOR DEV PURPOSES */}
