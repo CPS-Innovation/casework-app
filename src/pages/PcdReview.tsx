@@ -21,7 +21,7 @@ export const PcdReviewPage = () => {
     (item) => item.type === PcdReviewCaseHistoryType.PreChargeDecision
   );
 
-  const { data, isLoading } = usePCDReview(4239409);
+  const { data, isLoading } = usePCDReview(pcdEntry?.id);
 
   console.log('historyData:', historyData);
   console.log('initialReviewData:', initialReviewData);
