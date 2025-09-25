@@ -17,6 +17,7 @@
   "dependencies": {
     "@ministryofjustice/frontend": "^5.1.5",
     "axios": "^1.7.9",
+    "dayjs": "^1.11.13",
     "govuk-frontend": "^5.11.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
@@ -65,3 +66,4 @@
     ]
   }
 }
+

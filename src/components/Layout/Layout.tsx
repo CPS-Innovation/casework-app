@@ -59,15 +59,17 @@ export const Layout = ({ children }: PropsWithChildren) => {
   ];
 
   return (
-    <main className="main-container">
-      <CaseInfo />
+    <>
+      <main className="main-container">
+        <CaseInfo />
 
-      <Tabs tabs={tabs} />
+        <Tabs tabs={tabs} />
 
-      <div id="main-content">
-        <Outlet />
-        {children}
-      </div>
-    </main>
+        <div id="main-content">
+          <Outlet />
+          {children}
+        </div>
+      </main>
+    </>
   );
 };

@@ -58,7 +58,7 @@ export const CaseInfo = () => {
         )}
       </div>
 
-      <div className="case-info-links">
+      {/* <div className="case-info-links">
         <div className="action-buttons-container">
           <button
             type="submit"
@@ -71,7 +71,7 @@ export const CaseInfo = () => {
             Update automatically
           </button>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
