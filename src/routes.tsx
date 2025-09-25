@@ -3,6 +3,7 @@ import { Route, Routes as Router } from 'react-router';
 import { Layout } from './components';
 import { useAppRoute } from './hooks';
 import { NotFoundPage } from './pages/NotFoundPage';
+import { PcdReviewPage } from './pages/PcdReview';
 
 export const Routes = () => {
   const [
@@ -34,10 +35,7 @@ export const Routes = () => {
           path={communicationsRoute}
           element={<p className="govuk-heading-xl">Communications</p>}
         />
-        <Route
-          path={pcdReviewRoute}
-          element={<p className="govuk-heading-xl">PCD Review</p>}
-        />
+        <Route path={pcdReviewRoute} element={<PcdReviewPage />} />
         <Route
           path={reviewRoute}
           element={<p className="govuk-heading-xl">Review &amp; Redact</p>}
