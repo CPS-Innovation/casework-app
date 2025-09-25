@@ -16,16 +16,11 @@ export const PcdReviewPage = () => {
   const { data: initialReviewData, isLoading: initialReviewDataLoading } =
     usePCDInitialReview();
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const pcdEntry = historyData?.find(
     (item) => item.type === PcdReviewCaseHistoryType.PreChargeDecision
   );
 
   const { data, isLoading } = usePCDReview(pcdEntry?.id);
-
-  console.log('historyData:', historyData);
-  console.log('initialReviewData:', initialReviewData);
-  console.log('data:', data);
 
   const caseHeadlineCodeTests = [
     {
@@ -72,16 +67,16 @@ export const PcdReviewPage = () => {
 
   const decisions = data?.defendantDecisions.map((decision) => {
     const [chargingCode, advice] =
-      decision.decisionDescription?.split('-') ?? [];
-    const reason = decision.reason.split('-')[1].trim() ?? [];
+      decision?.decisionDescription?.split('-') ?? [];
+    const reason = decision?.reason.split('-')[1]?.trim() ?? [];
 
     return {
-      defendantName: decision.defendantName,
-      chargingCode: chargingCode.trim(),
-      advice: advice.trim(),
+      defendantName: decision?.defendantName,
+      chargingCode: chargingCode?.trim(),
+      advice: advice?.trim(),
       reason: reason,
-      reasonCode: decision.reasonCode,
-      publicInterestCode: decision.publicInterestCode
+      reasonCode: decision?.reasonCode,
+      publicInterestCode: decision?.publicInterestCode
     };
   });
 

@@ -1,7 +1,6 @@
 import useSWR from 'swr';
 import { PcdReviewCaseHistoryType } from '../constants/enum.ts';
 import { QUERY_KEYS } from '../constants/query.ts';
-import { API_ENDPOINTS } from '../constants/url.ts';
 import { useRequest } from '../hooks/useRequest.ts';
 import { CaseHistoryResponseType } from '../schemas/pcdReview.ts';
 import { replaceTokens } from '../utils/string.ts';
@@ -12,7 +11,7 @@ export const usePCDReviewCaseHistory = () => {
   const getPCDReview = async (): Promise<CaseHistoryResponseType[]> => {
     return await request
       .get(
-        replaceTokens(API_ENDPOINTS.PCD_REVIEW_CASE_HISTORY, {
+        replaceTokens('http://localhost:3000/cases/:caseId/history', {
           caseId: '2147043'
         })
       )

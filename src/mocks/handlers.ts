@@ -18,15 +18,18 @@ export const handlers = [
     return HttpResponse.json(mockCaseInfoSummary, { status: 200 });
   }),
 
-  http.get('cases/2147043/history/pre-charge-decision', () => {
-    return HttpResponse.json(mockPcdReview, { status: 200 });
-  }),
+  http.get(
+    'http://localhost:3000/cases/:caseId/history/pre-charge-decision',
+    () => {
+      return HttpResponse.json(mockPcdReview, { status: 200 });
+    }
+  ),
 
-  http.get('cases/2147043/history/initial-review', () => {
+  http.get('http://localhost:3000/cases/:caseId/history/initial-review', () => {
     return HttpResponse.json(mockPcdInitialReviewResponse, { status: 200 });
   }),
 
-  http.get('cases/2147043/history', () => {
+  http.get('http://localhost:3000/cases/:caseId/history', () => {
     return HttpResponse.json(mockPcdCaseHistory, { status: 200 });
   })
 ];

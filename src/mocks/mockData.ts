@@ -124,10 +124,12 @@ export const mockPcdInitialReviewResponse: PCDInitialReviewResponseType = {
     'Witness or victim information and actions text'
 };
 
-export const mockPcdCaseHistory: CaseHistoryResponseType = {
-  id: 4239409,
-  name: 'Case History Item 1',
-  date: '2023-01-01',
-  type: 3,
-  authorOrVenue: 'Author 1'
-};
+export const mockPcdCaseHistory: CaseHistoryResponseType[] = [
+  {
+    id: 4239409,
+    name: 'Pre-charge Decision',
+    date: '2023-01-01',
+    type: 3,
+    authorOrVenue: 'Author 1'
+  }
+];
