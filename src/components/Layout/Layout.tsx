@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { PropsWithChildren } from 'react';
 import { CaseInfo, CPSLink } from '../';
 import { useAppRoute } from '../../hooks';
+import { useCaseInfoStore } from '../../stores';
 
 export const Layout = ({ children }: PropsWithChildren) => {
   const [
@@ -18,6 +19,8 @@ export const Layout = ({ children }: PropsWithChildren) => {
     'PCD_REVIEW',
     'REVIEW_REDACT'
   ]);
+
+  const { caseInfo } = useCaseInfoStore();
 
   return (
     <main>
@@ -43,10 +46,14 @@ export const Layout = ({ children }: PropsWithChildren) => {
       </ul>
       {/* /END TEMP NAV FOR DEV PURPOSES */}
 
-      <div id="main-content">
-        <Outlet />
-        {children}
-      </div>
+      {caseInfo ? (
+        <div id="main-content">
+          <Outlet />
+          {children}
+        </div>
+      ) : (
+        <p className="govuk-body">Loading...</p>
+      )}
     </main>
   );
 };
