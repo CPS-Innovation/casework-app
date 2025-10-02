@@ -2,9 +2,9 @@ import { Outlet, useLocation } from 'react-router-dom';
 
 import { PropsWithChildren } from 'react';
 import { CaseInfo } from '../';
-import { Tabs } from '../../components';
-import type { Tab } from '../../components/Tabs/Tabs';
+import { LoadingSpinner, Tabs } from '../../components';
 import { useAppRoute } from '../../hooks';
+import type { Tab } from '../Tabs/Tabs.tsx';
 
 import { useCaseInfoStore } from '../../stores';
 
@@ -18,7 +18,6 @@ export const Layout = ({ children }: PropsWithChildren) => {
       'COMMUNICATIONS',
       'MATERIALS',
       'PCD_REQUEST',
-      'PCD_REVIEW',
       'REVIEW_REDACT'
     ]);
 
@@ -57,15 +56,16 @@ export const Layout = ({ children }: PropsWithChildren) => {
       <main className="main-container">
         <CaseInfo />
 
-        <Tabs tabs={tabs} />
-
         {caseInfo ? (
-          <div id="main-content">
-            <Outlet />
-            {children}
-          </div>
+          <>
+            <Tabs tabs={tabs} />
+            <div id="main-content">
+              <Outlet />
+              {children}
+            </div>
+          </>
         ) : (
-          <p className="govuk-body">Loading...</p>
+          <LoadingSpinner textContent="Loading..." />
         )}
       </main>
     </>

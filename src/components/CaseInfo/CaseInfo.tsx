@@ -1,15 +1,13 @@
 import { useEffect } from 'react';
-// import { useParams } from 'react-router-dom';
-
-import { useRequest } from '../../hooks/useRequest';
-
 import { useParams } from 'react-router-dom';
+
+import { useRequest } from '../../hooks';
 import { BaseUrlParamsType } from '../../schemas/params';
 import { CaseInfoType as PolarisCaseInfoType } from '../../schemas/polaris/caseinfo';
 import { useCaseInfoStore } from '../../stores';
 
 export const CaseInfo = () => {
-  const { caseId } = useParams<BaseUrlParamsType>();
+  const { caseId, urn } = useParams<BaseUrlParamsType>();
 
   const { caseInfo, setCaseInfo } = useCaseInfoStore();
   const request = useRequest();
@@ -18,7 +16,7 @@ export const CaseInfo = () => {
     try {
       // TODO: Replace hardcoded URN
       const response = await request.get<PolarisCaseInfoType>(
-        `/api/urns/06SC1234571/cases/${caseId}`
+        `/api/urns/${urn}/cases/${caseId}`
       );
       setCaseInfo({
         id: response.data.id,
@@ -36,7 +34,7 @@ export const CaseInfo = () => {
     fetchCaseInfoSummary();
   }, []);
 
-  if (!caseInfo) {
+  if (!caseId || !urn || !caseInfo) {
     return null;
   }
 
@@ -63,21 +61,6 @@ export const CaseInfo = () => {
           <p className="govuk-body">Please wait...</p>
         )}
       </div>
-
-      {/* <div className="case-info-links">
-        <div className="action-buttons-container">
-          <button
-            type="submit"
-            className="govuk-button reclassify-to-unused-button govuk-button--secondary"
-            data-module="govuk-button"
-            data-testid="reclassifyButton"
-            onClick={() => null}
-            disabled={true}
-          >
-            Update automatically
-          </button>
-        </div>
-      </div> */}
     </div>
   );
 };
