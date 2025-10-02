@@ -2,6 +2,7 @@ const APP_ROUTES = {
   ROOT: '/',
   COMMUNICATIONS: 'communications',
   MATERIALS: 'materials',
+  NOT_FOUND: 'not-found',
   PCD_REQUEST: 'pcd-request',
   PCD_REVIEW: 'pcd-review',
   REVIEW_REDACT: 'review-and-redact'
