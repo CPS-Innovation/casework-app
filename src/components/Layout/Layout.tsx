@@ -1,59 +1,73 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 
 import { PropsWithChildren } from 'react';
-import { CaseInfo, CPSLink } from '../';
+import { CaseInfo } from '../';
+import { Tabs } from '../../components';
+import type { Tab } from '../../components/Tabs/Tabs';
 import { useAppRoute } from '../../hooks';
+
 import { useCaseInfoStore } from '../../stores';
 
+import './Layout.scss';
+
 export const Layout = ({ children }: PropsWithChildren) => {
-  const [
-    communicationsRoute,
-    materialsRoute,
-    pcdRequestRoute,
-    pcdReviewRoute,
-    reviewRoute
-  ] = useAppRoute([
-    'COMMUNICATIONS',
-    'MATERIALS',
-    'PCD_REQUEST',
-    'PCD_REVIEW',
-    'REVIEW_REDACT'
-  ]);
+  const location = useLocation();
+
+  const [communicationsRoute, materialsRoute, pcdRequestRoute, reviewRoute] =
+    useAppRoute([
+      'COMMUNICATIONS',
+      'MATERIALS',
+      'PCD_REQUEST',
+      'PCD_REVIEW',
+      'REVIEW_REDACT'
+    ]);
+
+  const tabs: Tab[] = [
+    {
+      id: 'pcd-request',
+      name: 'PCD Request',
+      href: pcdRequestRoute,
+      active:
+        location.pathname === '/' || location.pathname.includes(pcdRequestRoute)
+    },
+    {
+      id: 'materials',
+      name: 'Materials',
+      href: materialsRoute,
+      active: location.pathname === materialsRoute
+    },
+    {
+      id: 'review-redact',
+      name: 'Review and Redact',
+      href: reviewRoute,
+      active: location.pathname === reviewRoute
+    },
+    {
+      id: 'communications',
+      name: 'Communications',
+      href: communicationsRoute,
+      active: location.pathname === communicationsRoute
+    }
+  ];
 
   const { caseInfo } = useCaseInfoStore();
 
   return (
-    <main>
-      <CaseInfo />
+    <>
+      <main className="main-container">
+        <CaseInfo />
 
-      {/* TEMP NAV FOR DEV PURPOSES */}
-      <ul>
-        <li>
-          <CPSLink to={pcdRequestRoute}>PCD Request</CPSLink>
-        </li>
-        <li>
-          <CPSLink to={materialsRoute}>Materials</CPSLink>
-        </li>
-        <li>
-          <CPSLink to={reviewRoute}>Review &amp; Redact</CPSLink>
-        </li>
-        <li>
-          <CPSLink to={communicationsRoute}>Communications</CPSLink>
-        </li>
-        <li>
-          <CPSLink to={pcdReviewRoute}>PCD Review</CPSLink>
-        </li>
-      </ul>
-      {/* /END TEMP NAV FOR DEV PURPOSES */}
+        <Tabs tabs={tabs} />
 
-      {caseInfo ? (
-        <div id="main-content">
-          <Outlet />
-          {children}
-        </div>
-      ) : (
-        <p className="govuk-body">Loading...</p>
-      )}
-    </main>
+        {caseInfo ? (
+          <div id="main-content">
+            <Outlet />
+            {children}
+          </div>
+        ) : (
+          <p className="govuk-body">Loading...</p>
+        )}
+      </main>
+    </>
   );
 };
