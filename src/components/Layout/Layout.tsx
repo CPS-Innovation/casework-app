@@ -49,12 +49,6 @@ export const Layout = ({ children }: PropsWithChildren) => {
       name: 'Communications',
       href: communicationsRoute,
       active: location.pathname === communicationsRoute
-    },
-    {
-      id: 'pcd-review',
-      name: 'PCD Review',
-      href: pcdReviewRoute,
-      active: location.pathname === pcdReviewRoute
     }
   ];
 

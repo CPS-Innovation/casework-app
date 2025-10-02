@@ -1,3 +1,7 @@
+export const MSAL_CLIENT_ID = import.meta.env.VITE_MSAL_CLIENT_ID;
+export const MSAL_TENANT_ID = import.meta.env.VITE_MSAL_TENANT_ID;
+export const MSAL_REDIRECT_URI = import.meta.env.VITE_MSAL_REDIRECT_URI;
+
 export const URL = {
   CHECK_YOUR_SELECTION: '/reclassify-to-unused',
   DISCARD_MATERIAL: '/materials/discard-material',
@@ -19,6 +23,7 @@ export const APP_DEFAULT_PAGE = URL.ROOT;
 export const BE_URL = import.meta.env.VITE_HOUSEKEEPING_BACKEND_URL;
 
 export const POLARIS_GATEWAY_URL = import.meta.env.VITE_POLARIS_GATEWAY_URL;
+export const POLARIS_GATEWAY_SCOPE = import.meta.env.VITE_POLARIS_GATEWAY_SCOPE;
 
 export const API_URL = `${BE_URL}/api`;
 export const AUTH_URL = `${API_URL}/init`;

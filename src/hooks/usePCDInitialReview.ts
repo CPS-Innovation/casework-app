@@ -1,6 +1,5 @@
 import useSWR from 'swr';
 import { QUERY_KEYS } from '../constants/query.ts';
-import { API_ENDPOINTS } from '../constants/url';
 import { useRequest } from '../hooks';
 import { PCDInitialReviewResponseType } from '../schemas/pcdReview.ts';
 import { replaceTokens } from '../utils/string';
@@ -12,9 +11,10 @@ export const usePCDInitialReview = () => {
     async (): Promise<PCDInitialReviewResponseType> => {
       return await request
         .get(
-          replaceTokens(API_ENDPOINTS.PCD_REVIEW_INITIAL_REVIEW, {
-            caseId: '2147043'
-          })
+          replaceTokens(
+            'http://localhost:3000/cases/:caseId/history/initial-review',
+            { caseId: '2147043' }
+          )
         )
         .then((response) => response.data);
     };

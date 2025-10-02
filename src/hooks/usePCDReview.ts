@@ -8,12 +8,12 @@ export const usePCDReview = (historyId?: number) => {
 
   const getPCDReview = async (): Promise<PCDReviewResponseType> => {
     return await request
-      .get(`cases/2147043/history/pre-charge-decision`)
+      .get(`cases/:caseId/history/pre-charge-decision`)
       .then((response) => response.data);
   };
 
   const { data, error, isLoading } = useSWR<PCDReviewResponseType>(
-    historyId ? [QUERY_KEYS.PCD_REVIEW_DECISION, 4239409] : null,
+    historyId ? [QUERY_KEYS.PCD_REVIEW_DECISION, historyId] : null,
     getPCDReview
   );
 
