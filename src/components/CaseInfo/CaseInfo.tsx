@@ -1,24 +1,32 @@
 import { useEffect } from 'react';
 // import { useParams } from 'react-router-dom';
 
-import { API_ENDPOINTS } from '../../constants/url';
 import { useRequest } from '../../hooks/useRequest';
-import { CaseInfoResponseType } from '../../schemas/caseinfo';
+
+import { useParams } from 'react-router-dom';
+import { BaseUrlParamsType } from '../../schemas/params';
+import { CaseInfoType as PolarisCaseInfoType } from '../../schemas/polaris/caseinfo';
 import { useCaseInfoStore } from '../../stores';
 
 export const CaseInfo = () => {
-  // we'll need this later
-  // const { caseId } = useParams<BaseUrlParamsType>();
+  const { caseId } = useParams<BaseUrlParamsType>();
 
   const { caseInfo, setCaseInfo } = useCaseInfoStore();
   const request = useRequest();
 
   const fetchCaseInfoSummary = async () => {
     try {
-      const response = await request.get<CaseInfoResponseType>(
-        API_ENDPOINTS.CASE_INFO
+      // TODO: Replace hardcoded URN
+      const response = await request.get<PolarisCaseInfoType>(
+        `/api/urns/06SC1234571/cases/${caseId}`
       );
-      setCaseInfo(response.data);
+      setCaseInfo({
+        id: response.data.id,
+        urn: response.data.uniqueReferenceNumber,
+        leadDefendantFirstNames: response.data.leadDefendantDetails.firstNames,
+        leadDefendantSurname: response.data.leadDefendantDetails.surname,
+        numberOfDefendants: response.data.numberOfDefendants
+      });
     } catch (error) {
       console.error(error);
     }
@@ -31,8 +39,6 @@ export const CaseInfo = () => {
   if (!caseInfo) {
     return null;
   }
-
-  console.log(caseInfo);
 
   const surname = caseInfo?.leadDefendantSurname?.toString()?.toUpperCase();
   const firstNames = caseInfo?.leadDefendantFirstNames

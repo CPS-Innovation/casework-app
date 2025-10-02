@@ -1,24 +1,28 @@
+import { useMsal } from '@azure/msal-react';
 import axios from 'axios';
-
-const instance = axios.create({
-  baseURL: 'http://localhost:3000',
-  withCredentials: true
-});
-
-instance.defaults.headers.common['Content-Type'] = 'application/json';
+import { POLARIS_GATEWAY_URL } from '../constants/url';
+import { loginRequest } from '../msalInstance';
 
 export const useRequest = () => {
-  instance.interceptors.response.use(
-    (response) => response,
-    (error) => {
-      if (
-        error.status === 422 &&
-        error.request.responseURL.includes('/reclassify-complete')
-      ) {
-        return Promise.reject(error);
-      }
-    }
-  );
+  const { instance: msalInstance } = useMsal();
 
-  return instance;
+  const axiosInstance = axios.create({
+    baseURL: POLARIS_GATEWAY_URL,
+    withCredentials: true
+  });
+
+  axiosInstance.interceptors.request.use(async (config) => {
+    const tokenResponse = await msalInstance.acquireTokenSilent({
+      ...loginRequest,
+      account: msalInstance.getActiveAccount()!
+    });
+
+    config.headers['Authorization'] = `Bearer ${tokenResponse.accessToken}`;
+    config.headers['Content-Type'] = 'application/json';
+    config.headers['Correlation-Id'] = crypto.randomUUID();
+
+    return config;
+  });
+
+  return axiosInstance;
 };
