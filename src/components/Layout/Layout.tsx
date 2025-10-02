@@ -10,19 +10,14 @@ import './Layout.scss';
 export const Layout = ({ children }: PropsWithChildren) => {
   const location = useLocation();
 
-  const [
-    communicationsRoute,
-    materialsRoute,
-    pcdRequestRoute,
-    pcdReviewRoute,
-    reviewRoute
-  ] = useAppRoute([
-    'COMMUNICATIONS',
-    'MATERIALS',
-    'PCD_REQUEST',
-    'PCD_REVIEW',
-    'REVIEW_REDACT'
-  ]);
+  const [communicationsRoute, materialsRoute, pcdRequestRoute, reviewRoute] =
+    useAppRoute([
+      'COMMUNICATIONS',
+      'MATERIALS',
+      'PCD_REQUEST',
+      'PCD_REVIEW',
+      'REVIEW_REDACT'
+    ]);
 
   const tabs: Tab[] = [
     {
@@ -49,12 +44,6 @@ export const Layout = ({ children }: PropsWithChildren) => {
       name: 'Communications',
       href: communicationsRoute,
       active: location.pathname === communicationsRoute
-    },
-    {
-      id: 'pcd-review',
-      name: 'PCD Review',
-      href: pcdReviewRoute,
-      active: location.pathname === pcdReviewRoute
     }
   ];
 

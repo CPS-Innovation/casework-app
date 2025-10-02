@@ -1,6 +1,11 @@
 import { http, HttpResponse } from 'msw';
 import { API_ENDPOINTS } from '../constants/url.ts';
-import { CaseInfoResponseType } from '../schemas/caseinfo.ts';
+import {
+  mockCaseInfoSummary,
+  mockPcdCaseHistory,
+  mockPcdInitialReviewResponse,
+  mockPcdReview
+} from './mockData.ts';
 
 export const handlers = [
   http.get(API_ENDPOINTS.CASE_MATERIALS, () => {
@@ -10,13 +15,21 @@ export const handlers = [
     );
   }),
   http.get(API_ENDPOINTS.CASE_INFO, () => {
-    const caseInfoSummary: CaseInfoResponseType = {
-      id: 1,
-      urn: '06SC1234572',
-      leadDefendantFirstNames: 'James',
-      leadDefendantSurname: 'Chapman',
-      numberOfDefendants: 2
-    };
-    return HttpResponse.json(caseInfoSummary, { status: 200 });
+    return HttpResponse.json(mockCaseInfoSummary, { status: 200 });
+  }),
+
+  http.get(
+    'http://localhost:3000/cases/:caseId/history/pre-charge-decision',
+    () => {
+      return HttpResponse.json(mockPcdReview, { status: 200 });
+    }
+  ),
+
+  http.get('http://localhost:3000/cases/:caseId/history/initial-review', () => {
+    return HttpResponse.json(mockPcdInitialReviewResponse, { status: 200 });
+  }),
+
+  http.get('http://localhost:3000/cases/:caseId/history', () => {
+    return HttpResponse.json(mockPcdCaseHistory, { status: 200 });
   })
 ];
