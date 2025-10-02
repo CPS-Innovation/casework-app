@@ -1,5 +1,4 @@
 /// <reference types="vitest" />
-import basicSsl from '@vitejs/plugin-basic-ssl';
 import react from '@vitejs/plugin-react';
 import { defineConfig, loadEnv } from 'vite';
 import viteCompression from 'vite-plugin-compression';
@@ -14,7 +13,6 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [
       react(),
-      basicSsl({ name: 'hk-ui', domains: ['localhost'] }),
       viteCompression({ algorithm: 'brotliCompress' }),
       {
         name: 'inject-external-script',
@@ -34,7 +32,7 @@ export default defineConfig(({ mode }) => {
       alias: [{ find: 'node_modules', replacement: '/node_modules' }],
       dedupe: ['react', 'react-dom']
     },
-    server: { port: 3001 },
+    server: { port: 3000 },
     build: {
       outDir: 'build',
       target: 'esnext',
