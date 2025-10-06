@@ -18,7 +18,6 @@ export const useRequest = () => {
     });
 
     config.headers['Authorization'] = `Bearer ${tokenResponse.accessToken}`;
-    config.headers['Content-Type'] = 'application/json';
     config.headers['Correlation-Id'] = crypto.randomUUID();
 
     return config;
