@@ -14,7 +14,6 @@ export const CaseInfo = () => {
 
   const fetchCaseInfoSummary = async () => {
     try {
-      // TODO: Replace hardcoded URN
       const response = await request.get<PolarisCaseInfoType>(
         `/api/urns/${urn}/cases/${caseId}`
       );

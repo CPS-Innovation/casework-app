@@ -1,10 +1,8 @@
-@import 'node_modules/govuk-frontend/dist/govuk/index.scss';
-//@import 'node_modules/home-office-kit/sass/_loadingSpinner.scss';
-
 $govuk-include-font-face: false;
 $govuk-font-family: 'NewTransport', 'Arial', sans-serif;
 
 @import 'node_modules/govuk-frontend/dist/govuk/index.scss';
+@import 'node_modules/home-office-kit/sass/_loadingSpinner.scss';
 
 @font-face {
   font-family: 'NewTransport';
