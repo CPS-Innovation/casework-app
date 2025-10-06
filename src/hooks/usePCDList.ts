@@ -7,7 +7,7 @@ import { replaceTokens } from '../utils/string';
 
 export const usePCDList = (caseId?: number) => {
   const request = useRequest();
-  console.log({ caseId });
+ 
   const getPCDList = async () =>
     await request
       .get<PCDListingResponseType>(
