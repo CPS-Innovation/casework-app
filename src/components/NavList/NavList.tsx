@@ -1,4 +1,5 @@
-import { NavLink, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { CPSLink } from '../';
 import { isPathCurrentUrl } from '../../utils/url';
 import './NavList.scss';
 
@@ -23,7 +24,7 @@ export const NavList = ({ items = [] }: Props) => {
               key={index}
               className={`moj-side-navigation__item${isCurrentPage ? ' moj-side-navigation__item--active' : ''}`}
             >
-              <NavLink to={item.href}>{item.name}</NavLink>
+              <CPSLink to={item.href}>{item.name}</CPSLink>
             </li>
           );
         })}
