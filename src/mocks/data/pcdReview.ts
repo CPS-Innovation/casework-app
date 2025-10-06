@@ -1,17 +1,8 @@
-import { CaseInfoResponseType } from '../schemas/caseinfo';
 import {
   CaseHistoryResponseType,
   PCDInitialReviewResponseType,
   PCDReviewResponseType
-} from '../schemas/pcdReview';
-
-export const mockCaseInfoSummary: CaseInfoResponseType = {
-  id: 2147043,
-  urn: '06SC1234572',
-  leadDefendantFirstNames: 'James',
-  leadDefendantSurname: 'Chapman',
-  numberOfDefendants: 2
-};
+} from '../../schemas/pcdReview';
 
 export const mockPcdReview: PCDReviewResponseType = {
   actionPlan: true,

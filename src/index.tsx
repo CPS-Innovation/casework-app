@@ -9,10 +9,10 @@ import { MsalProvider } from '@azure/msal-react';
 import './App.scss';
 import { msalConfig } from './msalInstance';
 
-// if (import.meta.env.DEV) {
-//   const { worker } = await import('./mocks/browser');
-//   await worker.start();
-// }
+if (import.meta.env.DEV) {
+  const { worker } = await import('./mocks/browser');
+  await worker.start();
+}
 
 const pca = new PublicClientApplication(msalConfig);
 
