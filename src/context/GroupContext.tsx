@@ -1,6 +1,6 @@
 import { PropsWithChildren, createContext, useEffect, useState } from 'react';
-import { UserGroupType } from '../schemas/user';
 import { PRIVATE_BETA_FEATURE_USER_GROUPS } from '../constants/featureFlagGroups';
+import { UserGroupType } from '../schemas/user';
 
 // TODO: return to this type
 export type GroupContextType = {
