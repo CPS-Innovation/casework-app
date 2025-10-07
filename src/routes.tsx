@@ -2,8 +2,7 @@ import { Route, Routes as Router } from 'react-router';
 
 import { Layout } from './components';
 import { useAppRoute } from './hooks';
-import { NotFoundPage } from './pages/NotFoundPage';
-import { MaterialsPage } from './pages/materials/Materials';
+import { NotFoundPage, PcdRequestPage } from './pages';
 
 export const Routes = () => {
   const [communicationsRoute, materialsRoute, pcdRequestRoute, reviewRoute] =
@@ -21,7 +20,13 @@ export const Routes = () => {
           path={pcdRequestRoute}
           element={<p className="govuk-heading-xl">PCD Request</p>}
         />
-        <Route path={materialsRoute} element={<MaterialsPage />} />
+        <Route path={pcdRequestRoute} element={<PcdRequestPage />}>
+          <Route path=":pcdId" element={<PcdRequestPage />} />
+        </Route>
+        <Route
+          path={materialsRoute}
+          element={<p className="govuk-heading-xl">Materials</p>}
+        />
         <Route
           path={communicationsRoute}
           element={<p className="govuk-heading-xl">Communications</p>}
