@@ -1,5 +1,14 @@
+export { ButtonMenuComponent } from './ButtonMenu/ButtonMenu';
 export { CaseInfo } from './CaseInfo/CaseInfo';
+export { RenameDrawer } from './Drawer/RenameDrawer';
+export { CommsFilters } from './Filters/CommsFilters';
+export { MaterialsFilters } from './Filters/MaterialsFilters';
 export { Layout } from './Layout/Layout';
 export { CPSLink } from './Link/Link';
 export { LoadingSpinner } from './LoadingSpinner/LoadingSpinner';
+export { CaseMaterialsTable } from './SortableTable/CaseMaterialsTable';
+export { CommunicationsTable } from './SortableTable/CommunicationsTable';
+export { TableActions } from './SortableTable/TableActions';
+export { StatusTag } from './StatusTag/StatusTag';
 export { Tabs } from './Tabs/Tabs';
+export { TwoCol } from './TwoCol/TwoCol';

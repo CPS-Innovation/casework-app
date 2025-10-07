@@ -7,12 +7,16 @@ import { App } from './app';
 import { PublicClientApplication } from '@azure/msal-browser';
 import { MsalProvider } from '@azure/msal-react';
 import './App.scss';
+import { SelectedItemsProvider } from './context';
+import { AppContextProvider } from './context/AppContext';
+import { FilterProvider } from './context/FiltersContext';
+import { ReclassificationProvider } from './context/ReclassificationContext';
 import { msalConfig } from './msalInstance';
 
-// if (import.meta.env.DEV) {
-//   const { worker } = await import('./mocks/browser');
-//   await worker.start();
-// }
+if (import.meta.env.DEV) {
+  const { worker } = await import('./mocks/browser');
+  await worker.start();
+}
 
 const pca = new PublicClientApplication(msalConfig);
 
@@ -20,7 +24,15 @@ pca.initialize().then(() => {
   ReactDOM.createRoot(document.getElementById('root')!).render(
     <MsalProvider instance={pca}>
       <BrowserRouter>
-        <App />
+        <AppContextProvider>
+          <FilterProvider>
+            <SelectedItemsProvider>
+              <ReclassificationProvider>
+                <App />
+              </ReclassificationProvider>
+            </SelectedItemsProvider>
+          </FilterProvider>
+        </AppContextProvider>
       </BrowserRouter>
     </MsalProvider>
   );

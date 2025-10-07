@@ -1,5 +1,6 @@
 import { http, HttpResponse } from 'msw';
-import { API_ENDPOINTS } from '../constants/url.ts';
+import { API_ENDPOINTS, POLARIS_GATEWAY_URL } from '../constants/url.ts';
+import { mockCaseMaterials } from './mockCaseMaterials.ts';
 import {
   mockCaseInfoSummary,
   mockPcdCaseHistory,
@@ -31,5 +32,12 @@ export const handlers = [
 
   http.get('http://localhost:3000/cases/:caseId/history', () => {
     return HttpResponse.json(mockPcdCaseHistory, { status: 200 });
-  })
+  }),
+
+  http.get(
+    `${POLARIS_GATEWAY_URL}/api/urns/16123630825/cases/2167259/materials`,
+    () => {
+      return HttpResponse.json(mockCaseMaterials(), { status: 200 });
+    }
+  )
 ];
