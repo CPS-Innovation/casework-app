@@ -2,18 +2,19 @@ import { useMemo } from 'react';
 import useSWR from 'swr';
 import { QUERY_KEYS } from '../constants/query';
 import { POLARIS_GATEWAY_URL } from '../constants/url';
-import { useLogger, useRequest } from '../hooks';
+import { useRequest } from '../hooks';
 import {
   CaseMaterialDataType,
   CaseMaterialsResponseType,
   CaseMaterialsType
 } from '../schemas';
-import { useCaseInfoStore } from '../stores';
 
 export const useCaseMaterials = (dataType: CaseMaterialDataType) => {
   const request = useRequest();
-  const { caseInfo } = useCaseInfoStore();
-  const { log } = useLogger();
+
+  // TODO: revisit this and add logging
+  // const { caseInfo } = useCaseInfoStore();
+  // const { log } = useLogger();
 
   const getCaseMaterials = async () => {
     const response = await request.get<CaseMaterialsResponseType>(
