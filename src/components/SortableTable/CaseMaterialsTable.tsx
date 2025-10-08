@@ -8,7 +8,7 @@ import {
   useFilters,
   usePager
 } from '../../hooks';
-import { CaseMaterialsType } from '../../schemas/caseMaterials';
+import { CaseMaterialsType } from '../../schemas';
 import {
   defaultFilterFn,
   defaultSearchFn,
@@ -19,9 +19,9 @@ import SortableTable, { Column } from './SortableTable';
 import { DEFAULT_RESULTS_PER_PAGE } from '../../constants/query';
 import { Pagination } from '../Pagination/Pagination';
 
-import { READ_STATUS } from '../../constants/readStatus';
+import { READ_STATUS } from '../../constants';
 import { ReclassificationContext } from '../../context/ReclassificationContext';
-import { formatDate } from '../../utils/date.ts';
+import { formatDate } from '../../utils/date';
 import DocumentPreview from '../DocumentPreview/DocumentPreview';
 
 import { LoadingSpinner } from '../LoadingSpinner/LoadingSpinner';

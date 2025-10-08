@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import { CaseMaterialsType } from '../schemas/caseMaterials';
+import { CaseMaterialsType } from '../schemas';
 
 type SelectedItemsDefaultState = {
   communications: CaseMaterialsType[];
@@ -24,10 +24,19 @@ const defaultState: SelectedItemsDefaultState = {
 export const useSelectedItemsStore = create<SelectedItemsStore>((set) => ({
   items: { ...defaultState },
 
-  addItems: (items, type) =>
-    set((state) => ({
-      items: { ...state.items, [type]: [...state.items[type], ...items] }
-    })),
+  addItems: (items, type) => {
+    return set((state) => {
+      const stateIds = state.items[type].map((item) => item.id);
+      const dedupedState = items.filter((item) => !stateIds.includes(item.id));
+
+      return {
+        items: {
+          ...state.items,
+          [type]: [...(state.items[type] ?? []), ...dedupedState]
+        }
+      };
+    });
+  },
 
   removeItems: (itemsToRemove, type) =>
     set((state) => {

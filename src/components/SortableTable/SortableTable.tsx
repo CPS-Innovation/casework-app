@@ -1,13 +1,13 @@
 // @ts-nocheck
-import { Fragment, memo, ReactNode, useContext } from 'react';
+import { Fragment, memo, ReactNode } from 'react';
 import { FilterItem } from '../../context/FiltersContext/helpers/types';
-import { SelectedItemsContext } from '../../context/SelectedItemsContext';
 import { useAutoReclassify, useCaseMaterial, useFilters } from '../../hooks';
 import {
   CaseMaterialDataType,
   CaseMaterialsResponseType,
   CaseMaterialsType
-} from '../../schemas/caseMaterials';
+} from '../../schemas';
+import { useSelectedItemsStore } from '../../stores';
 import Checkbox from '../Checkbox/Checkbox';
 import DocumentActions from '../DocumentPreview/DocumentActions';
 import { LoadingSpinner } from '../LoadingSpinner/LoadingSpinner';
@@ -20,15 +20,16 @@ export type Column<T> = {
   isSortable?: boolean;
 };
 
-type SortableTableProps = {
+type SortableTableProps<T> = {
   data: CaseMaterialsType[];
   caption: string;
   filters?: FilterItem;
-  columns: Column[];
+  columns: Column<T>[];
   expandableRow?: (row: T) => ReactNode;
   dataName: CaseMaterialDataType;
   checkboxes?: boolean;
   error: T;
+  isCommunications?: boolean;
 };
 
 const SortableTable = memo(
@@ -40,34 +41,39 @@ const SortableTable = memo(
     caption,
     dataName,
     checkboxes = true,
-    error
-  }: SortableTableProps) => {
+    error,
+    isCommunications = false
+  }: SortableTableProps<T>) => {
+    const {
+      items: selectedItems,
+      addItems: addSelectedItems,
+      removeItems: removeSelectedItems,
+      clear: clearSelectedItems
+    } = useSelectedItemsStore();
     const { isPending: isAutoReclassifyPending } = useAutoReclassify();
     const { setSort } = useFilters(dataName);
-    const { selectedItems, setSelectedItems } =
-      useContext(SelectedItemsContext);
     const { selectedMaterialId, selectMaterial, deselectMaterial } =
       useCaseMaterial();
 
+    const materialType = isCommunications ? 'communications' : 'materials';
+
     const handleSelectItem = (material: CaseMaterialsType) => {
-      const isSelected = selectedItems.some(
+      const isSelected = selectedItems[materialType]?.some(
         (m) => m.materialId === material.materialId
       );
 
       if (isSelected) {
-        setSelectedItems(
-          selectedItems.filter((m) => m.materialId !== material.materialId)
-        );
+        removeSelectedItems([material], materialType);
       } else {
-        setSelectedItems([...selectedItems, material]);
+        addSelectedItems([material], materialType);
       }
     };
 
     const handleSelectAll = (event) => {
       if (event.target.checked) {
-        setSelectedItems([...data]);
+        addSelectedItems(data, materialType);
       } else {
-        setSelectedItems([]);
+        clearSelectedItems(materialType);
       }
     };
 
@@ -98,7 +104,8 @@ const SortableTable = memo(
                     labelVisuallyHidden={true}
                     onChange={handleSelectAll}
                     checked={
-                      selectedItems?.length === data.length && data?.length > 0
+                      selectedItems[materialType]?.length === data.length &&
+                      data?.length > 0
                     }
                   />
                 </th>
@@ -149,7 +156,9 @@ const SortableTable = memo(
                           <Checkbox
                             id={`select-${row.subject}`}
                             label={`Select ${row.subject}`}
-                            checked={selectedItems.some((m) => m.id === row.id)}
+                            checked={selectedItems[materialType]?.some(
+                              (m) => m.id === row.id
+                            )}
                             onChange={() => handleSelectItem(row)}
                             labelVisuallyHidden={true}
                           />

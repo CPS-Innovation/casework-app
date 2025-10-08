@@ -17,4 +17,5 @@ export { usePCDReviewCaseHistory } from './usePCDReviewCaseHistory';
 export { useReadStatus } from './useReadStatus';
 export { useRename } from './useRename';
 export { useRequest } from './useRequest';
+export { useStoreLogger } from './useStoreLogger';
 export { useTableActions } from './useTableActions';

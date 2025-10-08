@@ -1,11 +1,11 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { READ_STATUS } from '../constants';
 import { URL } from '../constants/url';
-import { SelectedItemsContext } from '../context/SelectedItemsContext';
 import { useReadStatus } from '../hooks';
 import { CaseInfoType, CaseMaterialsType } from '../schemas/';
+import { useSelectedItemsStore } from '../stores';
 import { linkToRedact } from '../utils/materials';
 
 type TableActionsProps = {
@@ -35,7 +35,7 @@ export const useTableActions = ({
 }: TableActionsProps) => {
   const navigate = useNavigate();
   const { trigger } = useReadStatus();
-  const { setSelectedItems } = useContext(SelectedItemsContext);
+  const { clear: clearSelectedItems } = useSelectedItemsStore();
   const [isReadStatusUpdating, setIsReadStatusUpdating] = useState(false);
 
   const handleRenameClick = () => {
@@ -88,7 +88,7 @@ export const useTableActions = ({
 
       await refreshData();
       deselectItem();
-      setSelectedItems([]);
+      clearSelectedItems();
       setBanner({
         type: 'success',
         header: 'Read status updated',
