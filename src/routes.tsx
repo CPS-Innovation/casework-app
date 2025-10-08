@@ -3,6 +3,7 @@ import { Route, Routes as Router } from 'react-router';
 import { Layout } from './components';
 import { useAppRoute } from './hooks';
 import { NotFoundPage, PcdRequestPage } from './pages';
+import { CommunicationsPage } from './pages/Communications';
 import { MaterialsPage } from './pages/materials/Materials';
 
 export const Routes = () => {
@@ -25,10 +26,7 @@ export const Routes = () => {
           <Route path=":pcdId" element={<PcdRequestPage />} />
         </Route>
         <Route path={materialsRoute} element={<MaterialsPage />} />
-        <Route
-          path={communicationsRoute}
-          element={<p className="govuk-heading-xl">Communications</p>}
-        />
+        <Route path={communicationsRoute} element={<CommunicationsPage />} />
         <Route
           path={reviewRoute}
           element={<p className="govuk-heading-xl">Review &amp; Redact</p>}

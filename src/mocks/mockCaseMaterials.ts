@@ -50,6 +50,31 @@ const material: CaseMaterialsType[] = [
     item: '',
     existingproducerOrWitnessId: 0,
     isReclassifiable: true
+  },
+  {
+    id: 4242664,
+    originalFileName: 'Case Action Plan 3 (test)',
+    subject: 'Test action plan',
+    documentTypeId: 1200,
+    materialId: 4242664,
+    link: 'null',
+    category: 'Communication',
+    type: 'Other Material',
+    hasAttachments: false,
+    status: 'None',
+    readStatus: 'Read',
+    method: 'Item',
+    direction: 'Outgoing',
+    party: 'Police',
+    date: new Date('2022-02-08T00:00:00Z'),
+    title: '',
+    recordedDate: null,
+    witnessId: 2794967,
+    producer: '',
+    reference: '',
+    item: '',
+    existingproducerOrWitnessId: 0,
+    isReclassifiable: true
   }
 ];
 
