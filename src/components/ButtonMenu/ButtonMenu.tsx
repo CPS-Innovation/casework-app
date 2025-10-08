@@ -1,8 +1,7 @@
-import { useContext, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import './ButtonMenu.scss';
 
 import { ButtonMenu } from '@ministryofjustice/frontend/moj/components/button-menu/button-menu.mjs';
-import { SelectedItemsContext } from '../../context/SelectedItemsContext';
 
 type MenuItem = {
   label: string;
@@ -11,13 +10,14 @@ type MenuItem = {
   hide?: boolean;
 };
 
-type Props = { menuTitle: string; menuItems: MenuItem[] };
+type Props = { isDisabled?: boolean; menuTitle: string; menuItems: MenuItem[] };
 
-export function ButtonMenuComponent({ menuTitle, menuItems }: Props) {
-  const { selectedItems } = useContext(SelectedItemsContext);
+export function ButtonMenuComponent({
+  isDisabled = false,
+  menuTitle,
+  menuItems
+}: Props) {
   const menuRef = useRef<HTMLDivElement>(null);
-
-  const isDisabled = !selectedItems || selectedItems.length === 0;
 
   useEffect(() => {
     if (
