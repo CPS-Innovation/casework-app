@@ -7,7 +7,7 @@ import {
   usePager
 } from '../../hooks';
 
-import { CaseMaterialsType } from '../../schemas/caseMaterials';
+import { CaseMaterialsType } from '../../schemas';
 import {
   defaultFilterFn,
   defaultSearchFn,
@@ -19,7 +19,7 @@ import SortableTable, { Column } from './SortableTable';
 import { DEFAULT_RESULTS_PER_PAGE } from '../../constants/query';
 import { Pagination } from '../Pagination/Pagination';
 
-import { READ_STATUS } from '../../constants/readStatus';
+import { READ_STATUS } from '../../constants';
 import { ReclassificationContext } from '../../context/ReclassificationContext';
 import { formatDate } from '../../utils/date.ts';
 import DocumentPreview from '../DocumentPreview/DocumentPreview';
@@ -40,6 +40,7 @@ export const CommunicationsTable = ({ renamedMaterialId }: Props) => {
     loading: caseMaterialsLoading,
     error
   } = useCaseMaterials('communications');
+
   const { filters } = useFilters('communications');
 
   // @ts-ignore
@@ -166,6 +167,7 @@ export const CommunicationsTable = ({ renamedMaterialId }: Props) => {
         columns={columns}
         expandableRow={expandableRow}
         error={error}
+        isCommunications
       />
       <div
         className={
