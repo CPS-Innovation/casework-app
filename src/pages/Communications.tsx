@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import '../App.scss';
 import {
   CommsFilters,
@@ -30,7 +30,8 @@ export const CommunicationsPage = () => {
   const { caseInfo } = useCaseInfoStore();
 
   const [showFilter, setShowFilter] = useState(true);
-  const { items: selectedItems } = useSelectedItemsStore();
+  const { items: selectedItems, clear: clearSelectedItems } =
+    useSelectedItemsStore();
 
   const [isRenameDrawerOpen, setIsRenameDrawerOpen] = useState(false);
   const [renamedMaterialId, setRenamedMaterialId] = useState<number | null>(
@@ -95,6 +96,16 @@ export const CommunicationsPage = () => {
       onClick: () => handleUnusedClick(URL.COMMUNICATIONS)
     }
   ];
+
+  useEffect(() => {
+    if (isReadStatusUpdating || caseMaterialsLoading) {
+      window.scrollTo(0, 0);
+    }
+  }, [caseMaterialsLoading, isReadStatusUpdating]);
+
+  useEffect(() => {
+    clearSelectedItems('communications');
+  }, []);
 
   return (
     <div className="govuk-main-wrapper">
