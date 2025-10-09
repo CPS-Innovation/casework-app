@@ -27,8 +27,6 @@ export const useCaseMaterials = (dataType: CaseMaterialDataType) => {
       );
     }
 
-    console.log('response.data: ', response.data);
-
     return response.data;
   };
 
@@ -46,8 +44,6 @@ export const useCaseMaterials = (dataType: CaseMaterialDataType) => {
 
     return data?.filter(filterFn);
   }, [data, dataType]);
-
-  console.log('filteredData: ', filteredData);
 
   // useEffect(() => {
   //   log({

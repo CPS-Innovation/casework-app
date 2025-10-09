@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import '../../App.scss';
 import {
   CaseMaterialsTable,
@@ -9,7 +9,6 @@ import {
   TwoCol
 } from '../../components';
 
-import { SelectedItemsContext } from '../../context';
 import {
   useBanner,
   useCaseMaterial,
@@ -17,15 +16,16 @@ import {
   useFeatureFlag,
   useTableActions
 } from '../../hooks';
+import { useCaseInfoStore, useSelectedItemsStore } from '../../stores';
 
-import { URL } from '../../constants/url.ts';
-import { useCaseInfoStore } from '../../stores/useCaseInfo.ts';
+import { URL } from '../../constants/url';
 
 export const MaterialsPage = () => {
   const [showFilter, setShowFilter] = useState(true);
   const { mutate: refreshCaseMaterials, loading: caseMaterialsLoading } =
     useCaseMaterials('materials');
-  const { selectedItems, setSelectedItems } = useContext(SelectedItemsContext);
+  const { items: selectedItems, clear: clearSelectedItems } =
+    useSelectedItemsStore();
   const [isRenameDrawerOpen, setIsRenameDrawerOpen] = useState(false);
   const { setBanner, resetBanner } = useBanner();
   const { deselectMaterial } = useCaseMaterial();
@@ -45,7 +45,7 @@ export const MaterialsPage = () => {
     determineReadStatusLabel,
     isReadStatusUpdating
   } = useTableActions({
-    selectedItems,
+    selectedItems: selectedItems.materials,
     refreshData: refreshCaseMaterials,
     setBanner,
     deselectItem: deselectMaterial,
@@ -55,41 +55,44 @@ export const MaterialsPage = () => {
     setRenamedMaterialId
   });
 
-  const row = selectedItems?.[0];
+  const row = selectedItems.materials?.[0];
 
   const menuItems = [
     {
       label: 'Rename',
       onClick: handleRenameClick,
       hide:
-        [1031, 1059].includes(row?.documentTypeId) || selectedItems?.length > 1
+        [1031, 1059].includes(row?.documentTypeId) ||
+        selectedItems.materials?.length > 1
     },
     {
       label: 'Reclassify',
       onClick: () => handleReclassifyClick(),
       hide:
-        !hasAccess([5]) || selectedItems?.length > 1 || !row?.isReclassifiable
+        !hasAccess([5]) ||
+        selectedItems.materials?.length > 1 ||
+        !row?.isReclassifiable
     },
     {
       label: 'Redact',
       onClick: () => handleRedactClick(row?.materialId),
-      hide: !hasAccess([2, 3, 4, 5]) || selectedItems?.length > 1
+      hide: !hasAccess([2, 3, 4, 5]) || selectedItems.materials?.length > 1
     },
     {
       label: 'Discard',
       onClick: () => handleDiscardClick(URL.MATERIALS),
-      disabled: selectedItems?.length > 1,
-      hide: !hasAccess([2, 3, 4, 5]) || selectedItems?.length > 1
+      disabled: selectedItems.materials?.length > 1,
+      hide: !hasAccess([2, 3, 4, 5]) || selectedItems.materials?.length > 1
     },
     {
-      label: determineReadStatusLabel(selectedItems),
-      onClick: () => handleReadStatusClick(selectedItems),
+      label: determineReadStatusLabel(selectedItems.materials),
+      onClick: () => handleReadStatusClick(selectedItems.materials),
       hide: !hasAccess([2, 3, 4, 5])
     },
     {
       label: 'Mark as unused',
       onClick: () => handleUnusedClick(URL.MATERIALS),
-      hide: selectedItems?.some((item) => item.status === 'Unused')
+      hide: selectedItems.materials?.some((item) => item.status === 'Unused')
     }
   ];
 
@@ -99,15 +102,19 @@ export const MaterialsPage = () => {
     }
   }, [caseMaterialsLoading, isReadStatusUpdating]);
 
+  useEffect(() => {
+    clearSelectedItems('materials');
+  }, []);
+
   return (
     <div
       className={`govuk-main-wrapper ${
-        selectedItems?.length > 1 ? 'multiple-selected' : ''
+        selectedItems.materials?.length > 1 ? 'multiple-selected' : ''
       }`}
     >
       {isRenameDrawerOpen && (
         <RenameDrawer
-          material={selectedItems[0]}
+          material={selectedItems.materials[0]}
           onCancel={() => {
             setIsRenameDrawerOpen(false);
           }}
@@ -115,8 +122,8 @@ export const MaterialsPage = () => {
             await refreshCaseMaterials();
 
             deselectMaterial();
-            setRenamedMaterialId(selectedItems[0].id || null);
-            setSelectedItems([]);
+            setRenamedMaterialId(selectedItems.materials[0].id || null);
+            clearSelectedItems('materials');
 
             setIsRenameDrawerOpen(false);
             setBanner({
@@ -141,7 +148,7 @@ export const MaterialsPage = () => {
               menuItems={menuItems}
             />
             <CaseMaterialsTable
-              selectedMaterial={selectedItems?.[0]}
+              selectedMaterial={selectedItems.materials?.[0]}
               renamedMaterialId={renamedMaterialId}
               setRenamedMaterialId={setRenamedMaterialId}
             />

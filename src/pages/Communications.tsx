@@ -1,6 +1,7 @@
-import { useContext, useState } from 'react';
+import { useEffect, useState } from 'react';
 import '../App.scss';
 import {
+  ButtonMenuComponent,
   CommsFilters,
   CommunicationsTable,
   LoadingSpinner,
@@ -9,16 +10,16 @@ import {
   TwoCol
 } from '../components';
 
-import { URL } from '../constants/url.ts';
-import { SelectedItemsContext } from '../context/SelectedItemsContext';
+import { URL } from '../constants/url';
 import {
   useBanner,
   useCaseInfoStore,
   useCaseMaterial,
   useCaseMaterials,
-  useFeatureFlag
+  useFeatureFlag,
+  useTableActions
 } from '../hooks';
-import { useTableActions } from '../hooks/useTableActions.ts';
+import { useSelectedItemsStore } from '../stores';
 
 export const CommunicationsPage = () => {
   const hasAccess = useFeatureFlag();
@@ -30,7 +31,8 @@ export const CommunicationsPage = () => {
   const { caseInfo } = useCaseInfoStore();
 
   const [showFilter, setShowFilter] = useState(true);
-  const { selectedItems } = useContext(SelectedItemsContext);
+  const { items: selectedItems, clear: clearSelectedItems } =
+    useSelectedItemsStore();
 
   const [isRenameDrawerOpen, setIsRenameDrawerOpen] = useState(false);
   const [renamedMaterialId, setRenamedMaterialId] = useState<number | null>(
@@ -47,7 +49,7 @@ export const CommunicationsPage = () => {
     determineReadStatusLabel,
     isReadStatusUpdating
   } = useTableActions({
-    selectedItems,
+    selectedItems: selectedItems.communications,
     refreshData: refreshCommunications,
     setBanner,
     deselectItem: deselectMaterial,
@@ -57,34 +59,37 @@ export const CommunicationsPage = () => {
     setRenamedMaterialId
   });
 
-  const row = selectedItems[0];
+  const row = selectedItems.communications?.[0];
 
   const menuItems = [
     {
       label: 'Rename',
       onClick: () => handleRenameClick(),
       hide:
-        [1031, 1059].includes(row?.documentTypeId) || selectedItems.length > 1
+        [1031, 1059].includes(row?.documentTypeId) ||
+        selectedItems.communications.length > 1
     },
     {
       label: 'Reclassify',
       onClick: () => handleReclassifyClick(),
       hide:
-        !hasAccess([5]) || !row?.isReclassifiable || selectedItems.length > 1
+        !hasAccess([5]) ||
+        !row?.isReclassifiable ||
+        selectedItems.communications.length > 1
     },
     {
       label: 'Redact',
       onClick: () => handleRedactClick(row.materialId),
-      hide: !hasAccess([2, 3, 4, 5]) || selectedItems.length > 1
+      hide: !hasAccess([2, 3, 4, 5]) || selectedItems.communications.length > 1
     },
     {
       label: 'Discard',
       onClick: () => handleDiscardClick(URL.COMMUNICATIONS),
-      hide: !hasAccess([2, 3, 4, 5]) || selectedItems.length > 1
+      hide: !hasAccess([2, 3, 4, 5]) || selectedItems.communications.length > 1
     },
     {
-      label: determineReadStatusLabel(selectedItems),
-      onClick: () => handleReadStatusClick(selectedItems),
+      label: determineReadStatusLabel(selectedItems.communications),
+      onClick: () => handleReadStatusClick(selectedItems.communications),
       hide: !hasAccess([2, 3, 4, 5])
     },
     {
@@ -92,6 +97,16 @@ export const CommunicationsPage = () => {
       onClick: () => handleUnusedClick(URL.COMMUNICATIONS)
     }
   ];
+
+  useEffect(() => {
+    if (isReadStatusUpdating || caseMaterialsLoading) {
+      window.scrollTo(0, 0);
+    }
+  }, [caseMaterialsLoading, isReadStatusUpdating]);
+
+  useEffect(() => {
+    clearSelectedItems('communications');
+  }, []);
 
   return (
     <div className="govuk-main-wrapper">
@@ -133,12 +148,12 @@ export const CommunicationsPage = () => {
               setRenamedMaterialId={setRenamedMaterialId}
             />
 
-            {/* <div className="action-on-selection-container">
+            <div className="action-on-selection-container">
               <ButtonMenuComponent
                 menuTitle="Action on selection"
                 menuItems={menuItems}
               />
-            </div> */}
+            </div>
           </>
         )}
       </TwoCol>

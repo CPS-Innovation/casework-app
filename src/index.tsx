@@ -7,7 +7,6 @@ import { App } from './app';
 import { PublicClientApplication } from '@azure/msal-browser';
 import { MsalProvider } from '@azure/msal-react';
 import './App.scss';
-import { SelectedItemsProvider } from './context';
 import { AppContextProvider } from './context/AppContext';
 import { FilterProvider } from './context/FiltersContext';
 import { ReclassificationProvider } from './context/ReclassificationContext';
@@ -26,11 +25,9 @@ pca.initialize().then(() => {
       <BrowserRouter>
         <AppContextProvider>
           <FilterProvider>
-            <SelectedItemsProvider>
-              <ReclassificationProvider>
-                <App />
-              </ReclassificationProvider>
-            </SelectedItemsProvider>
+            <ReclassificationProvider>
+              <App />
+            </ReclassificationProvider>
           </FilterProvider>
         </AppContextProvider>
       </BrowserRouter>

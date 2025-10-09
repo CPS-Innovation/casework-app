@@ -18,10 +18,6 @@ export const Routes = () => {
   return (
     <Router>
       <Route path="/:urn/:caseId" element={<Layout />}>
-        <Route
-          path={pcdRequestRoute}
-          element={<p className="govuk-heading-xl">PCD Request</p>}
-        />
         <Route path={pcdRequestRoute} element={<PcdRequestPage />}>
           <Route path=":pcdId" element={<PcdRequestPage />} />
         </Route>

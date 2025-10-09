@@ -1,6 +1,6 @@
 import { beforeEach, describe } from 'vitest';
 
-import { CaseMaterialsType } from '../../schemas/caseMaterials';
+import { CaseMaterialsType } from '../../schemas';
 import { useSelectedItemsStore } from '../../stores';
 
 function getMaterial(override?: Partial<CaseMaterialsType>): CaseMaterialsType {
@@ -57,6 +57,16 @@ describe('stores > useSelectedItems', () => {
   });
 
   it('should add multiple material items to state (addItems())', () => {
+    useSelectedItemsStore
+      .getState()
+      .addItems([getMaterial(), getMaterial({ id: 2 })], 'materials');
+    expect(useSelectedItemsStore.getState().items.materials).toHaveLength(2);
+  });
+
+  it('should add multiple materials and discard duplicates', () => {
+    useSelectedItemsStore.getState().addItems([getMaterial()], 'materials');
+    expect(useSelectedItemsStore.getState().items.materials).toHaveLength(1);
+
     useSelectedItemsStore
       .getState()
       .addItems([getMaterial(), getMaterial({ id: 2 })], 'materials');
