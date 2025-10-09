@@ -102,6 +102,10 @@ export const MaterialsPage = () => {
     }
   }, [caseMaterialsLoading, isReadStatusUpdating]);
 
+  useEffect(() => {
+    clearSelectedItems('materials');
+  }, []);
+
   return (
     <div
       className={`govuk-main-wrapper ${
