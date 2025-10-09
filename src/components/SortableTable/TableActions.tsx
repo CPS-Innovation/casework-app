@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useCaseInfoStore, useFeatureFlag, useLogger } from '../../hooks';
+import { CaseMaterialsType } from '../../schemas';
+import { ButtonMenuComponent } from '../ButtonMenu/ButtonMenu';
 
 type MenuItem = { label: string; onClick: () => void; hide?: boolean };
 
@@ -7,9 +9,15 @@ type Props = {
   showFilter: boolean;
   onSetShowFilter: (prev: boolean) => void;
   menuItems?: MenuItem[];
+  selectedItems: CaseMaterialsType[];
 };
 
-export function TableActions({ showFilter, onSetShowFilter }: Props) {
+export function TableActions({
+  showFilter,
+  onSetShowFilter,
+  menuItems = [],
+  selectedItems
+}: Props) {
   const hasAccess = useFeatureFlag();
   const { caseInfo } = useCaseInfoStore();
   const [isSticky, setIsSticky] = useState(false);
@@ -57,12 +65,13 @@ export function TableActions({ showFilter, onSetShowFilter }: Props) {
             </div>
           )}
 
-          {/* <div className="action-buttons-container">
+          <div className="action-buttons-container">
             <ButtonMenuComponent
               menuTitle="Action on selection"
               menuItems={menuItems}
+              isDisabled={selectedItems?.length === 0}
             />
-          </div> */}
+          </div>
         </div>
       </div>
     </>

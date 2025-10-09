@@ -10,12 +10,12 @@ type MenuItem = {
   hide?: boolean;
 };
 
-type Props = { isDisabled?: boolean; menuTitle: string; menuItems: MenuItem[] };
+type Props = { menuTitle: string; menuItems: MenuItem[]; isDisabled?: boolean };
 
 export function ButtonMenuComponent({
-  isDisabled = false,
   menuTitle,
-  menuItems
+  menuItems,
+  isDisabled = false
 }: Props) {
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -26,7 +26,7 @@ export function ButtonMenuComponent({
     ) {
       new ButtonMenu(menuRef.current);
     }
-  }, [menuItems]);
+  }, []);
 
   return (
     <div
@@ -44,10 +44,6 @@ export function ButtonMenuComponent({
     >
       {menuItems?.length > 0 &&
         menuItems?.map((item, i) => {
-          if (item.hide) {
-            return null;
-          }
-
           return (
             <button
               key={i}
