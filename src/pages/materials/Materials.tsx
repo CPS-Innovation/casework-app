@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import '../../App.scss';
 import {
+  ButtonMenuComponent,
   CaseMaterialsTable,
   LoadingSpinner,
   MaterialsFilters,
@@ -146,12 +147,21 @@ export const MaterialsPage = () => {
               showFilter={showFilter}
               onSetShowFilter={setShowFilter}
               menuItems={menuItems}
+              selectedItems={selectedItems.materials}
             />
             <CaseMaterialsTable
               selectedMaterial={selectedItems.materials?.[0]}
               renamedMaterialId={renamedMaterialId}
               setRenamedMaterialId={setRenamedMaterialId}
             />
+
+            <div className="action-on-selection-container">
+              <ButtonMenuComponent
+                menuTitle="Action on selection"
+                menuItems={menuItems}
+                isDisabled={selectedItems.materials?.length === 0}
+              />
+            </div>
           </>
         )}
       </TwoCol>

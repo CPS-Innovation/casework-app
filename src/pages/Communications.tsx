@@ -141,6 +141,7 @@ export const CommunicationsPage = () => {
               showFilter={showFilter}
               onSetShowFilter={setShowFilter}
               menuItems={menuItems}
+              selectedItems={selectedItems.communications}
             />
             <CommunicationsTable
               renamedMaterialId={renamedMaterialId}
@@ -151,6 +152,7 @@ export const CommunicationsPage = () => {
               <ButtonMenuComponent
                 menuTitle="Action on selection"
                 menuItems={menuItems}
+                isDisabled={selectedItems.communications?.length === 0}
               />
             </div> */}
           </>
