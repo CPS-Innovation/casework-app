@@ -28,12 +28,13 @@
 
 .activeTab {
   background-color: white;
-  border: 0.0625rem solid $govuk-border-colour;
+  // border: 0.0625rem solid $govuk-border-colour;
   border-bottom: none;
   .tabButton {
     padding-right: 2.5rem;
   }
 }
+
 .inactiveTab {
   border: none;
   background-color: #f3f2f1;
@@ -42,7 +43,7 @@
 
 .tabListItem {
   display: flex;
-  position: relative;
+  // position: relative;
   max-width: 15.625rem;
   margin-right: 0.3125rem;
 }
@@ -58,13 +59,16 @@
   border: none;
   background-color: transparent;
   cursor: pointer;
-  margin-bottom: 0.1875rem;
 
   &:focus {
     outline: 0.1875rem solid rgba(0, 0, 0, 0);
     color: #0b0c0c;
-    background-color: #fd0;
-    box-shadow: 0 -0.125rem #fd0, 0 0.25rem #0b0c0c;
+    background-color: transparent;
+    border-bottom: 10px solid #1d70b8;
+
+    span {
+      font-weight: bold;
+    }
   }
 }
 .tabLabel {
@@ -101,7 +105,7 @@
 .arrowBtnsWrapper {
   display: flex;
   justify-content: space-between;
-  position: absolute;
+  // position: absolute;
   top: 1.22rem;
   left: 0.3125rem;
 }

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useMemo } from "react";
 import classes from "./Tabs.module.scss";
+import { Tab } from "../../../components/Tabs/Tabs";
 // import  CloseIcon  from "./caseWorkAppAssets/closeIconBold.svg";
 // import  CloseIcon  from '../../../assets/images/govuk-icon-180.png';
 // import DownArrow  from "../../../assets/images/govuk-icon-180.png";
@@ -112,7 +113,6 @@ const TabButtons: React.FC<TabButtonProps> = ({
             moveToNextOrPreviousTab(1);
           }}
         >
-          {/* <img src={DownArrow} alt='down' /> */}
           DownArrow
         </div>
       </div>
@@ -166,7 +166,6 @@ const TabButtons: React.FC<TabButtonProps> = ({
                   aria-label="close tab"
                 >
                   CloseIcon
-                  {/* <img src={CloseIcon} alt="=[fdf" width={20} height={20}/> */}
                 </button>
               )}
             </li>
