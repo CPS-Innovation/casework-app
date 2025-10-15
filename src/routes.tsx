@@ -5,6 +5,7 @@ import { useAppRoute } from './hooks';
 import { NotFoundPage, PcdRequestPage } from './pages';
 import { CommunicationsPage } from './pages/Communications';
 import { MaterialsPage } from './pages/materials/Materials';
+import { DocumentArea } from './caseWorkApp/components/documentArea';
 
 export const Routes = () => {
   const [communicationsRoute, materialsRoute, pcdRequestRoute, reviewRoute] =
@@ -25,7 +26,7 @@ export const Routes = () => {
         <Route path={communicationsRoute} element={<CommunicationsPage />} />
         <Route
           path={reviewRoute}
-          element={<p className="govuk-heading-xl">Review &amp; Redact</p>}
+          element={<DocumentArea />}
         />
       </Route>
 
