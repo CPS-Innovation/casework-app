@@ -1,0 +1,61 @@
+@font-face {
+  font-family: "NewTransport";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./fonts/NewTransport-RegularWEB.woff") format("woff"),
+    url("./fonts/NewTransport-RegularWEB.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "NewTransport";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("./fonts/NewTransport-BoldWEB.woff") format("woff"),
+    url("./fonts/NewTransport-BoldWEB.woff2") format("woff2");
+}
+
+$govuk-assets-path: "~govuk-frontend/govuk/assets/";
+
+$govuk-font-family: "NewTransport", "Arial", sans-serif;
+
+@import "govuk-frontend/dist/govuk/all";
+
+body {
+  margin: 0;
+}
+
+// todo: not sure why hyperlink color is not working out of the box?
+a {
+  color: $govuk-link-colour;
+}
+
+.perma-scrollbar::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 0.4375rem;
+  height: 0.4375rem;
+}
+.perma-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 0.25rem;
+  background-color: rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 0 0 0.0625rem rgba(255, 255, 255, 0.5);
+}
+
+/* FCT2-8541 - images are too big on screens*/
+$heightWidthPercentage: 93% !important;
+
+.canvasWrapper canvas {
+  height: $heightWidthPercentage;
+  width: $heightWidthPercentage;
+}
+
+.pdfViewer .page {
+  height: $heightWidthPercentage;
+  width: $heightWidthPercentage;
+
+  .textLayer {
+    height: $heightWidthPercentage;
+    width: $heightWidthPercentage;
+  }
+}

@@ -1,11 +1,38 @@
 import { Button } from '../Button';
-import { SUBMIT } from '../utils/constants';
+import { HIDE_CATEROGIES } from '../utils/constants';
+import { Tabs } from '../tabs';
+// You may want to extract this to a separate file/component if it's reused elsewhere
+const ExamplePanel = () => (
+  <div>
+    <h3>MG11 CARMINE Victim, 22/09/2024 #4</h3>
+    <p>Document ID: CMS-8831863</p>
+    <p>Status: New</p>
+    {/* Add more fields as needed */}
+  </div>
+);
 
-
+const items = [
+  {
+    isDirty: false,
+    id: "CMS-8831863",
+    versionId: 8072371,
+    label: "MG11 CARMINE Victim, 22/09/2024 #4",
+    panel: <ExamplePanel />
+  }
+];
 const DocumentArea = () => {
   return (
     <>
-      <Button>{SUBMIT}</Button>
+      <Button>{HIDE_CATEROGIES}</Button>
+
+<Tabs idPrefix='idpref' title='tiele tabs' items={items} activeTabId={undefined} handleTabSelection={ (documentId: string): void => {
+        throw new Error('Function not implemented.');
+      } } handleClosePdf={function (documentId: string, versionId: number): void {
+        throw new Error('Function not implemented.');
+      } } handleUnLockDocuments={function (documentIds: string[]): void {
+        throw new Error('Function not implemented.');
+      } } dcfMode={undefined}/>
+
     </>
   );
 };
