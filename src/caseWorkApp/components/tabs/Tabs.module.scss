@@ -10,10 +10,8 @@
 .tabsWrapper {
   display: flex;
   position: relative;
-  padding-top: 0.3125rem;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 0.0625rem solid $govuk-border-colour;
 }
 .tabsList {
   display: flex;
@@ -28,7 +26,6 @@
 
 .activeTab {
   background-color: white;
-  // border: 0.0625rem solid $govuk-border-colour;
   border-bottom: none;
   .tabButton {
     padding-right: 2.5rem;
@@ -43,7 +40,7 @@
 
 .tabListItem {
   display: flex;
-  // position: relative;
+  position: relative;
   max-width: 15.625rem;
   margin-right: 0.3125rem;
 }
@@ -54,7 +51,7 @@
   display: flex;
   width: 100%;
   white-space: nowrap;
-  padding: 1.25rem 1rem;
+  padding: 0;
   font-size: 1.1875rem;
   border: none;
   background-color: transparent;
@@ -115,29 +112,30 @@
   padding: 0.3125rem 0;
   margin: 0;
   width: 100%;
-  svg {
+  img {
     fill: #1d70b8;
   }
   &:disabled {
     cursor: not-allowed;
-    svg {
+    img {
       fill: #b1b4b6;
+      opacity: .1
     }
   }
   &:hover:not(:disabled) {
-    svg {
+    img {
       fill: #fff;
     }
   }
 }
 
 .tabPreviousButton {
-  svg {
+  img {
     transform: rotate(90deg);
   }
 }
 .tabNextButton {
-  svg {
+  img {
     transform: rotate(-90deg);
   }
 }

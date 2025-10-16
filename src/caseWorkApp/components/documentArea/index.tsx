@@ -1,7 +1,7 @@
 import { Button } from '../Button';
-import { HIDE_CATEROGIES } from '../utils/constants';
 import { Tabs } from '../tabs';
-
+import { HIDE_CATEROGIES } from '../utils/constants';
+import './styles.scss';
 
 const ExamplePanel = () => (
   <div>
@@ -15,33 +15,49 @@ const ExamplePanel = () => (
 const items = [
   {
     isDirty: false,
-    id: "CMS-8831863",
+    id: 'CMS-8831863',
     versionId: 8072371,
-    label: "MG11 CARMINE Victim, 22/09/2024 #4",
+    label: 'MG11 CARMINE Victim, 22/09/2024 #4',
+    panel: <ExamplePanel />
+  },
+  {
+    isDirty: false,
+    id: 'CMS-88',
+    versionId: 8072371,
+    label: 'MG11 CARMINE Victim, 22/09/2024 #4',
     panel: <ExamplePanel />
   }
 ];
 
+const tabSelectionHandler = (documentId: string): void => {
+  console.log('TabSelectionHandler');
+};
+
+const closePdfHandler = (documentId: string): void => {
+  console.log('TabSelectionHandler');
+};
+
+const unlockDocumentsHandler = (documentId: string[]): void => {
+  console.log('TabSelectionHandler');
+};
+
+
+
 const DocumentArea = () => {
   return (
-    <div style={{ display: 'flex' }}>
-      
+    <div className="govuk-main-wrapper mainWrapper">
       <Button>{HIDE_CATEROGIES}</Button>
-      
 
-      <Tabs idPrefix='idpref' title='tiele tabs' items={items} activeTabId={undefined} 
-      handleTabSelection={ (documentId: string): void => {
-        throw new Error('Function not implemented.');
-      } } 
-      handleClosePdf={ (documentId: string, versionId: number): void => {
-        throw new Error('Function not implemented.');
-      } } 
-      handleUnLockDocuments={ (documentIds: string[]): void => {
-        throw new Error('Function not implemented.');
-      } } 
-      dcfMode={undefined}
+      <Tabs
+        idPrefix="idpref"
+        title="Tabs title"
+        items={items}
+        activeTabId={undefined}
+        handleTabSelection={tabSelectionHandler}
+        handleClosePdf={closePdfHandler}
+        handleUnLockDocuments={unlockDocumentsHandler}
+        dcfMode={undefined}
       />
-
     </div>
   );
 };

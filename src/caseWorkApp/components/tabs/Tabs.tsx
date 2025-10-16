@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { CommonTabsProps } from "./types";
-// import { useLastFocus } from "../../../hooks/useLastFocus";
+import { useLastFocus } from "../../hooks/useLastFocus";
 // import { Modal } from "../../../../common/presentation/components/Modal";
 // import { NavigationAwayAlertContent } from "../../../../features/cases/presentation/case-details/navigation-alerts/NavigationAwayAlertContent";
 import TabButtons from "./TabButtons";
@@ -29,7 +29,7 @@ export const Tabs: React.FC<TabsProps> = ({
 }) => {
   const [showDocumentNavAlert, setShowDocumentNavAlert] = useState(false);
 
-  // useLastFocus("#case-details-search");
+  useLastFocus("#case-details-search");
 
   const activeTabArrayPos = items.findIndex((item) => item.id === activeTabId);
   const activeTabIndex = activeTabArrayPos === -1 ? 0 : activeTabArrayPos;

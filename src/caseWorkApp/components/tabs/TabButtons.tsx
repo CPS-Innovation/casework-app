@@ -1,10 +1,11 @@
 import { useEffect, useRef, useMemo } from "react";
 import classes from "./Tabs.module.scss";
 import { Tab } from "../../../components/Tabs/Tabs";
-// import  CloseIcon  from "./caseWorkAppAssets/closeIconBold.svg";
-// import  CloseIcon  from '../../../assets/images/govuk-icon-180.png';
-// import DownArrow  from "../../../assets/images/govuk-icon-180.png";
-// import { LinkButton } from "../../../../common/presentation/components/LinkButton";
+import  CloseIcon  from "/caseWorkAppAssets/svgs/closeIconBold.svg";
+import DownArrow  from "/caseWorkAppAssets/svgs/down.svg";
+
+
+import { LinkButton } from "../../components/LinkButton/LinkButton";
 // import { DropdownButton } from "../../../../common/presentation/components";
 
 export type TabButtonProps = {
@@ -93,8 +94,8 @@ const TabButtons: React.FC<TabButtonProps> = ({
         Document control area
       </span>
       <div className={`${classes.arrowBtnsWrapper}`}>
-        <div
-          // disabled={activeTabIndex === 0}
+        <LinkButton
+          disabled={activeTabIndex === 0}
           className={classes.tabPreviousButton}
           data-test-id="btn-tab-previous"
           aria-label="tab previous"
@@ -102,10 +103,10 @@ const TabButtons: React.FC<TabButtonProps> = ({
             moveToNextOrPreviousTab(-1);
           }}
         >
-          DownArrow
-        </div>
-        <div
-          // disabled={activeTabIndex === items.length - 1}
+          <img src={DownArrow} alt="Arrow left" />
+        </LinkButton>
+        <LinkButton
+          disabled={activeTabIndex === items.length - 1}
           className={classes.tabNextButton}
           data-test-id="btn-tab-next"
           aria-label="tab next"
@@ -113,8 +114,8 @@ const TabButtons: React.FC<TabButtonProps> = ({
             moveToNextOrPreviousTab(1);
           }}
         >
-          DownArrow
-        </div>
+          <img src={DownArrow} alt="Arrow right" />
+        </LinkButton>
       </div>
 
       <ul className={`${classes.tabsList}`} role="tablist">
@@ -165,7 +166,7 @@ const TabButtons: React.FC<TabButtonProps> = ({
                   data-testid="tab-remove"
                   aria-label="close tab"
                 >
-                  CloseIcon
+                  <img src={CloseIcon} alt="Close icon" />
                 </button>
               )}
             </li>

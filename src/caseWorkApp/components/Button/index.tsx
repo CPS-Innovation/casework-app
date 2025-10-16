@@ -12,6 +12,7 @@ const Button:React.FC<ButtonProps> = ({children}: ButtonProps) => {
         className="govuk-button govuk-button--secondary"
         data-module="govuk-button"
         data-govuk-button-init=""
+        style={{ fontSize: '1rem', height: "35px", width: "133px", padding: 0}}
       >
         {children}
         <span data-ismodified="1" className="br_wrap"></span>
