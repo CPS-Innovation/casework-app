@@ -11,7 +11,7 @@
   display: flex;
   position: relative;
   justify-content: space-between;
-  align-items: center;
+  align-items: start;
 }
 .tabsList {
   display: flex;
@@ -34,7 +34,6 @@
 
 .inactiveTab {
   border: none;
-  background-color: #f3f2f1;
   text-decoration: underline;
 }
 
@@ -51,7 +50,7 @@
   display: flex;
   width: 100%;
   white-space: nowrap;
-  padding: 0;
+  padding: 0.165rem 2.5rem 1rem 1rem;
   font-size: 1.1875rem;
   border: none;
   background-color: transparent;
@@ -86,7 +85,7 @@
   position: absolute;
   border: none;
   right: 0.5rem;
-  top: 1rem;
+  /* top: 1rem; */
   padding: 0;
   color: white;
   cursor: pointer;
@@ -94,7 +93,7 @@
   background-color: #b1b4b6;
   &:focus {
     outline: 0;
-    background-color: #ffdd00;
+    background-color: #ffdd00; 
     color: #0b0c0c;
   }
 }

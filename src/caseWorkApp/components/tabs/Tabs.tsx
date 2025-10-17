@@ -1,13 +1,14 @@
-import { useState } from "react";
-import { CommonTabsProps } from "./types";
-import { useLastFocus } from "../../hooks/useLastFocus";
+import { useState } from 'react';
+import { CommonTabsProps } from './types';
+import { useLastFocus } from '../../hooks/useLastFocus';
 // import { Modal } from "../../../../common/presentation/components/Modal";
 // import { NavigationAwayAlertContent } from "../../../../features/cases/presentation/case-details/navigation-alerts/NavigationAwayAlertContent";
-import TabButtons from "./TabButtons";
-import classes from "./Tabs.module.scss";
+import TabButtons from './TabButtons';
+import { useStoreCWA } from '../../store';
+import classes from './Tabs.module.scss';
 
 export type TabsProps = CommonTabsProps & {
-  activeTabId: string | undefined;
+  // activeTabId: string | undefined;
   handleTabSelection: (documentId: string) => void;
   handleClosePdf: (documentId: string, versionId: number) => void;
   handleUnLockDocuments: (documentIds: string[]) => void;
@@ -20,7 +21,7 @@ export const Tabs: React.FC<TabsProps> = ({
   idPrefix,
   items,
   title,
-  activeTabId,
+  // activeTabId,
   handleTabSelection,
   handleClosePdf,
   handleUnLockDocuments,
@@ -29,9 +30,11 @@ export const Tabs: React.FC<TabsProps> = ({
 }) => {
   const [showDocumentNavAlert, setShowDocumentNavAlert] = useState(false);
 
-  useLastFocus("#case-details-search");
+  useLastFocus('#case-details-search');
 
-  const activeTabArrayPos = items.findIndex((item) => item.id === activeTabId);
+  const { activetabId } = useStoreCWA();
+
+  const activeTabArrayPos = items.findIndex((item) => item.id === activetabId );
   const activeTabIndex = activeTabArrayPos === -1 ? 0 : activeTabArrayPos;
 
   const handleCloseTab = () => {
@@ -49,10 +52,10 @@ export const Tabs: React.FC<TabsProps> = ({
       items.length === 1
         ? undefined // there is only item so next item is empty
         : thisItemIndex === 0
-        ? 1 // we are removing the first item, so we need the item to the right
-        : thisItemIndex - 1; // otherwise, we need the item to the left
+          ? 1 // we are removing the first item, so we need the item to the right
+          : thisItemIndex - 1; // otherwise, we need the item to the left
 
-    const nextTabId = nextTabIndex === undefined ? "" : items[nextTabIndex].id;
+    const nextTabId = nextTabIndex === undefined ? '' : items[nextTabIndex].id;
     handleTabSelection(nextTabId);
     handleClosePdf(items[activeTabIndex].id, items[activeTabIndex].versionId);
   };
@@ -72,24 +75,23 @@ export const Tabs: React.FC<TabsProps> = ({
     const panelId = itemId;
 
     const coreProps = {
-      role: "tabpanel",
+      role: 'tabpanel',
       tabIndex: 0,
-      "data-testid": `tab-content-${itemId}`,
+      'data-testid': `tab-content-${itemId}`
     };
 
     return (
       <div
-        id={index === activeTabIndex ? "active-tab-panel" : `panel-${index}`}
+        id={index === activeTabIndex ? 'active-tab-panel' : `panel-${index}`}
         aria-labelledby={
           index === activeTabIndex
-            ? "document-panel-region-label"
+            ? 'document-panel-region-label'
             : `tab_${index}`
         }
-      key={panelId}
-
+        key={panelId}
         {...coreProps}
         className={`govuk-tabs__panel ${
-          index !== activeTabIndex ? classes.hideTabDocument : ""
+          index !== activeTabIndex ? classes.hideTabDocument : ''
         }  ${classes.contentArea}`}
       >
         {index === activeTabIndex && (
@@ -108,14 +110,14 @@ export const Tabs: React.FC<TabsProps> = ({
   const tabItems = items.map((item) => ({
     id: item.id,
     label: item.label,
-    ariaLabel: `Document ${item.label}`,
+    ariaLabel: `Document ${item.label}`
   }));
 
   return (
     <>
       <div
         data-testid="tabs"
-        className={`govuk-tabs ${classes.tabs} ${className || ""} `}
+        className={`govuk-tabs ${classes.tabs} ${className || ''} `}
         {...attributes}
       >
         <TabButtons
@@ -148,3 +150,4 @@ export const Tabs: React.FC<TabsProps> = ({
     </>
   );
 };
+
