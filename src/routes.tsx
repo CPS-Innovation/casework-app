@@ -5,6 +5,7 @@ import { useAppRoute } from './hooks';
 import { NotFoundPage, PcdRequestPage } from './pages';
 import { CommunicationsPage } from './pages/Communications';
 import { MaterialsPage } from './pages/materials/Materials';
+import { ReviewAndRedactPage } from './pages/ReviewAndRedactPage';
 
 export const Routes = () => {
   const [communicationsRoute, materialsRoute, pcdRequestRoute, reviewRoute] =
@@ -23,10 +24,7 @@ export const Routes = () => {
         </Route>
         <Route path={materialsRoute} element={<MaterialsPage />} />
         <Route path={communicationsRoute} element={<CommunicationsPage />} />
-        <Route
-          path={reviewRoute}
-          element={<p className="govuk-heading-xl">Review &amp; Redact</p>}
-        />
+        <Route path={reviewRoute} element={<ReviewAndRedactPage />} />
       </Route>
 
       <Route path="*" element={<NotFoundPage />} />
