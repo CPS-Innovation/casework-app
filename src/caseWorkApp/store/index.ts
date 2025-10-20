@@ -1,10 +1,10 @@
 import { create } from "zustand";
 
 type StoreCWA = {
-  activetabId?: string | number;
+  activeTabId?: string;
   handleTabSelection: (documentId: string) => void;
 };
 
 export const useStoreCWA = create<StoreCWA>((set)=> ({
-  handleTabSelection: (documentId: string) => set(() => ({ activetabId: documentId}))
+  handleTabSelection: (documentId: string) => set(() => ({ activeTabId: documentId}))
 })) 

@@ -1,4 +1,9 @@
 .document-area {
   display: flex;
-  gap: 10px;
+  gap: 10px; 
+
+    .govuk-tabs {
+      width: 100%;
+    }
+
 }

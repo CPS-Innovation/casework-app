@@ -6,7 +6,7 @@ import DownArrow  from "/caseWorkAppAssets/svgs/down.svg";
 
 
 import { LinkButton } from "../../components/LinkButton/LinkButton";
-// import { DropdownButton } from "../../../../common/presentation/components";
+import { DropdownButton } from "../DropDownButton/DropdownButton";
 
 export type TabButtonProps = {
   items: { id: string; label: string; ariaLabel: string }[];
@@ -174,13 +174,13 @@ const TabButtons: React.FC<TabButtonProps> = ({
         })}
       </ul>
       <div className={classes.tabsDropDownWrapper}>
-        {/* <DropdownButton
+        <DropdownButton
           dropDownItems={tabDropdownItems}
           callBackFn={handleTabSelection}
           ariaLabel="tabs dropdown"
           dataTestId="tabs-dropdown"
           disabled={items.length < 2}
-        /> */}
+        />
       </div>
     </div>
   );

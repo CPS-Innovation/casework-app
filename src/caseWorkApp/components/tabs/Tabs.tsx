@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { CommonTabsProps } from './types';
 import { useLastFocus } from '../../hooks/useLastFocus';
-// import { Modal } from "../../../../common/presentation/components/Modal";
-// import { NavigationAwayAlertContent } from "../../../../features/cases/presentation/case-details/navigation-alerts/NavigationAwayAlertContent";
+import { Modal } from "../modal/Modal";
+import { NavigationAwayAlertContent } from "../caseDetails/NavigationAwayAlertContent";
 import TabButtons from './TabButtons';
 import { useStoreCWA } from '../../store';
 import classes from './Tabs.module.scss';
@@ -32,9 +32,9 @@ export const Tabs: React.FC<TabsProps> = ({
 
   useLastFocus('#case-details-search');
 
-  const { activetabId } = useStoreCWA();
+  const { activeTabId } = useStoreCWA();
 
-  const activeTabArrayPos = items.findIndex((item) => item.id === activetabId );
+  const activeTabArrayPos = items.findIndex((item) => item.id === activeTabId );
   const activeTabIndex = activeTabArrayPos === -1 ? 0 : activeTabArrayPos;
 
   const handleCloseTab = () => {
@@ -131,7 +131,7 @@ export const Tabs: React.FC<TabsProps> = ({
         {panels}
       </div>
 
-      {/* {showDocumentNavAlert && (
+      {showDocumentNavAlert && (
         <Modal
           isVisible
           handleClose={handleNavigateAwayCancelAction}
@@ -146,7 +146,7 @@ export const Tabs: React.FC<TabsProps> = ({
             handleContinueAction={handleNavigateAwayContinueAction}
           />
         </Modal>
-      )} */}
+      )}
     </>
   );
 };
