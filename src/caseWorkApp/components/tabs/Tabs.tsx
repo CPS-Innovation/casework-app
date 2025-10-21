@@ -32,9 +32,9 @@ export const Tabs: React.FC<TabsProps> = ({
 
   useLastFocus('#case-details-search');
 
-  const { activeTabId } = useStoreCWA();
-
-  const activeTabArrayPos = items.findIndex((item) => item.id === activeTabId );
+  const { tabsState } = useStoreCWA();
+  
+  const activeTabArrayPos = items.findIndex((item) => item.id === tabsState?.activeTabId);
   const activeTabIndex = activeTabArrayPos === -1 ? 0 : activeTabArrayPos;
 
   const handleCloseTab = () => {
@@ -141,7 +141,7 @@ export const Tabs: React.FC<TabsProps> = ({
         >
           <NavigationAwayAlertContent
             type="document"
-            documentId={activeTabId!}
+            documentId={tabsState?.activeTabId!}
             handleCancelAction={handleNavigateAwayCancelAction}
             handleContinueAction={handleNavigateAwayContinueAction}
           />
