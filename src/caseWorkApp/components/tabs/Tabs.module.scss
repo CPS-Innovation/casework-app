@@ -20,7 +20,7 @@
   padding: 0;
   width: 100%;
   min-width: 100%;
-  margin: 0 2.8rem 0 3.4rem;
+  margin: 0 2.8rem 0 .5rem;
   overflow-y: hidden;
   overflow-x: auto;
 }
@@ -41,7 +41,7 @@
 .tabListItem {
   display: flex;
   position: relative;
-  max-width: 15.625rem;
+  max-width: 13rem;
   margin-right: 0.3125rem;
 }
 .tabButton {
@@ -102,9 +102,9 @@
 .arrowBtnsWrapper {
   display: flex;
   justify-content: space-between;
-  // position: absolute;
+  gap: .5rem;
+  left: .5rem;
   top: 1.22rem;
-  left: 0.3125rem;
 }
 
 .tabNextButton,
