@@ -58,10 +58,10 @@
   cursor: pointer;
 
   &:focus {
-    outline: 0.1875rem solid rgba(0, 0, 0, 0);
+    outline: 0;
     color: #0b0c0c;
     background-color: transparent;
-    border-bottom: 10px solid #1d70b8;
+    border-bottom: .625rem solid #1d70b8;
 
     span {
       font-weight: bold;

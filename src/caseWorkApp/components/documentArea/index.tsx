@@ -25,22 +25,22 @@ const items = [
 //   console.log('TabSelectionHandler');
 // };
 
-const closePdfHandler = (documentId: string): void => {
-  console.log('TabSelectionHandler');
-};
+// const closePdfHandler = (documentId: string): void => {
+//   console.log('close pgf handler');
+// };
 
 const unlockDocumentsHandler = (documentId: string[]): void => {
-  console.log('TabSelectionHandler');
+  console.log('unlockDocumentsHandler');
 };
 
 
 
 const DocumentArea = () => {
 
-  const { handleTabSelection } = useStoreCWA();
+  const { handleTabSelection, handleClosePdf } = useStoreCWA();
 
   return (
-    <div className="govuk-main-wrapper document-area" role="main">
+    <div className="document-area">
       <Button>{HIDE_CATEROGIES}</Button>
 
       <Tabs
@@ -49,7 +49,7 @@ const DocumentArea = () => {
         items={items}
         // activeTabId={undefined}
         handleTabSelection={handleTabSelection}
-        handleClosePdf={closePdfHandler}
+        handleClosePdf={handleClosePdf}
         handleUnLockDocuments={unlockDocumentsHandler}
         dcfMode={undefined}
       />

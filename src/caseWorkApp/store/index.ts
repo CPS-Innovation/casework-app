@@ -59,7 +59,7 @@ export const useStoreCWA = create<StoreCWA>(
         tabsState: {
           ...state.tabsState,  
           items: state.tabsState.items.filter(
-            (item) => item.documentId !== pdfId
+            (item: any) => item.documentId !== item.activeTabId
           ),
         },
     }))

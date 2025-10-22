@@ -5,7 +5,7 @@ import { useAppRoute } from './hooks';
 import { NotFoundPage, PcdRequestPage } from './pages';
 import { CommunicationsPage } from './pages/Communications';
 import { MaterialsPage } from './pages/materials/Materials';
-import { DocumentArea } from './caseWorkApp/components/documentArea';
+import { CaseDetailsWrapper as CaseDetailsPage} from './caseWorkApp/components/presentation/caseDetails';
 
 export const Routes = () => {
   const [communicationsRoute, materialsRoute, pcdRequestRoute, reviewRoute] =
@@ -26,7 +26,7 @@ export const Routes = () => {
         <Route path={communicationsRoute} element={<CommunicationsPage />} />
         <Route
           path={reviewRoute}
-          element={<DocumentArea />}
+          element={<CaseDetailsPage />}
         />
       </Route>
 
