@@ -25,14 +25,11 @@ export const MaterialsPage = () => {
   const [showFilter, setShowFilter] = useState(true);
   const { mutate: refreshCaseMaterials, loading: caseMaterialsLoading } =
     useCaseMaterials('materials');
-  const { items: selectedItems, clear: clearSelectedItems } =
-    useSelectedItemsStore();
+  const { items: selectedItems, clear: clearSelectedItems } = useSelectedItemsStore();
   const [isRenameDrawerOpen, setIsRenameDrawerOpen] = useState(false);
   const { setBanner, resetBanner } = useBanner();
   const { deselectMaterial } = useCaseMaterial();
-  const [renamedMaterialId, setRenamedMaterialId] = useState<number | null>(
-    null
-  );
+  const [renamedMaterialId, setRenamedMaterialId] = useState<number | null>(null);
   const { caseInfo } = useCaseInfoStore();
   const hasAccess = useFeatureFlag();
 
@@ -63,20 +60,18 @@ export const MaterialsPage = () => {
       label: 'Rename',
       onClick: handleRenameClick,
       hide:
-        [1031, 1059].includes(row?.documentTypeId) ||
-        selectedItems.materials?.length > 1
+        (row && [1031, 1059].includes(row?.documentTypeId)) || selectedItems.materials?.length > 1
     },
     {
       label: 'Reclassify',
       onClick: () => handleReclassifyClick(),
-      hide:
-        !hasAccess([5]) ||
-        selectedItems.materials?.length > 1 ||
-        !row?.isReclassifiable
+      hide: !hasAccess([5]) || selectedItems.materials?.length > 1 || !row?.isReclassifiable
     },
     {
       label: 'Redact',
-      onClick: () => handleRedactClick(row?.materialId),
+      onClick: () => {
+        if (row) handleRedactClick(row?.materialId);
+      },
       hide: !hasAccess([2, 3, 4, 5]) || selectedItems.materials?.length > 1
     },
     {
@@ -113,7 +108,7 @@ export const MaterialsPage = () => {
         selectedItems.materials?.length > 1 ? 'multiple-selected' : ''
       }`}
     >
-      {isRenameDrawerOpen && (
+      {isRenameDrawerOpen && selectedItems.materials[0] && (
         <RenameDrawer
           material={selectedItems.materials[0]}
           onCancel={() => {
@@ -123,7 +118,7 @@ export const MaterialsPage = () => {
             await refreshCaseMaterials();
 
             deselectMaterial();
-            setRenamedMaterialId(selectedItems.materials[0].id || null);
+            setRenamedMaterialId(selectedItems.materials[0]?.id || null);
             clearSelectedItems('materials');
 
             setIsRenameDrawerOpen(false);
@@ -149,8 +144,9 @@ export const MaterialsPage = () => {
               menuItems={menuItems}
               selectedItems={selectedItems.materials}
             />
+
             <CaseMaterialsTable
-              selectedMaterial={selectedItems.materials?.[0]}
+              selectedMaterial={selectedItems.materials?.[0] || null}
               renamedMaterialId={renamedMaterialId}
               setRenamedMaterialId={setRenamedMaterialId}
             />

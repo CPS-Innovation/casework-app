@@ -27,7 +27,7 @@ export function TableActions({
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setIsSticky(!entry.isIntersecting);
+        setIsSticky(!entry?.isIntersecting);
       },
       { threshold: 0 }
     );
@@ -44,9 +44,7 @@ export function TableActions({
   return (
     <>
       <div ref={ref} style={{ height: 1 }}></div>
-      <div
-        className={`govuk-grid-row search-input-container ${isSticky ? 'is-sticky' : ''}`}
-      >
+      <div className={`govuk-grid-row search-input-container ${isSticky ? 'is-sticky' : ''}`}>
         <div className="search-input-row">
           {!isSticky && hasAccess([2, 3, 4, 5]) && (
             <div className="filter-button">

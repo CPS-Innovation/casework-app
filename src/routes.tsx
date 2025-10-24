@@ -1,20 +1,24 @@
 import { Route, Routes as Router } from 'react-router';
 
 import { Layout } from './components';
-import { useAppRoute } from './hooks';
 import { NotFoundPage, PcdRequestPage } from './pages';
 import { CommunicationsPage } from './pages/Communications';
 import { MaterialsPage } from './pages/materials/Materials';
 import { ReviewAndRedactPage } from './pages/ReviewAndRedactPage';
 
+export const APP_ROUTES_MAP = {
+  rootRoute: '/',
+  communicationsRoute: 'communications',
+  materialsRoute: 'materials',
+  notFoundRoute: 'not-found',
+  pcdRequestRoute: 'pcd-request',
+  pcdReviewRoute: 'pcd-review',
+  reviewRoute: 'review-and-redact'
+} as const;
+
 export const Routes = () => {
-  const [communicationsRoute, materialsRoute, pcdRequestRoute, reviewRoute] =
-    useAppRoute([
-      'COMMUNICATIONS',
-      'MATERIALS',
-      'PCD_REQUEST',
-      'REVIEW_REDACT'
-    ]);
+  const { communicationsRoute, materialsRoute, pcdRequestRoute, reviewRoute } =
+    APP_ROUTES_MAP;
 
   return (
     <Router>

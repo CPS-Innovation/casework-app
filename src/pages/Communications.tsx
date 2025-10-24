@@ -30,13 +30,10 @@ export const CommunicationsPage = () => {
   const { caseInfo } = useCaseInfoStore();
 
   const [showFilter, setShowFilter] = useState(true);
-  const { items: selectedItems, clear: clearSelectedItems } =
-    useSelectedItemsStore();
+  const { items: selectedItems, clear: clearSelectedItems } = useSelectedItemsStore();
 
   const [isRenameDrawerOpen, setIsRenameDrawerOpen] = useState(false);
-  const [renamedMaterialId, setRenamedMaterialId] = useState<number | null>(
-    null
-  );
+  const [renamedMaterialId, setRenamedMaterialId] = useState<number | null>(null);
 
   const {
     handleRenameClick,
@@ -65,20 +62,19 @@ export const CommunicationsPage = () => {
       label: 'Rename',
       onClick: () => handleRenameClick(),
       hide:
-        [1031, 1059].includes(row?.documentTypeId) ||
+        (row?.documentTypeId && [1031, 1059].includes(row?.documentTypeId)) ||
         selectedItems.communications.length > 1
     },
     {
       label: 'Reclassify',
       onClick: () => handleReclassifyClick(),
-      hide:
-        !hasAccess([5]) ||
-        !row?.isReclassifiable ||
-        selectedItems.communications.length > 1
+      hide: !hasAccess([5]) || !row?.isReclassifiable || selectedItems.communications.length > 1
     },
     {
       label: 'Redact',
-      onClick: () => handleRedactClick(row.materialId),
+      onClick: () => {
+        if (row) handleRedactClick(row.materialId);
+      },
       hide: !hasAccess([2, 3, 4, 5]) || selectedItems.communications.length > 1
     },
     {
@@ -91,10 +87,7 @@ export const CommunicationsPage = () => {
       onClick: () => handleReadStatusClick(selectedItems.communications),
       hide: !hasAccess([2, 3, 4, 5])
     },
-    {
-      label: 'Mark as unused',
-      onClick: () => handleUnusedClick(URL.COMMUNICATIONS)
-    }
+    { label: 'Mark as unused', onClick: () => handleUnusedClick(URL.COMMUNICATIONS) }
   ];
 
   useEffect(() => {
@@ -109,7 +102,7 @@ export const CommunicationsPage = () => {
 
   return (
     <div className="govuk-main-wrapper">
-      {isRenameDrawerOpen && (
+      {isRenameDrawerOpen && row && (
         <RenameDrawer
           material={row}
           onCancel={() => {
