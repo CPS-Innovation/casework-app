@@ -29,6 +29,7 @@ export const App = () => {
     <>
       <div className="govuk-width-container">
         <cps-global-header></cps-global-header>
+        <case-info-summary />
         {/*<button onClick={() => instance.logoutRedirect()}>Logout</button>*/}
         <Routes />
       </div>
