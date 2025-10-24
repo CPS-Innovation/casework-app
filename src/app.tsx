@@ -19,6 +19,18 @@ export const App = () => {
     });
   }, [instance, accounts]);
 
+  useEffect(() => {
+    const handleUnauthorisedEvent = (event: Event) => {
+      console.dir(event);
+    };
+
+    window.addEventListener('cwm-unauthorised', handleUnauthorisedEvent);
+
+    return () => {
+      window.removeEventListener('cwm-unauthorised', handleUnauthorisedEvent);
+    };
+  }, []);
+
   const account = instance.getActiveAccount() || accounts[0];
 
   if (!account) {
@@ -29,7 +41,10 @@ export const App = () => {
     <>
       <div className="govuk-width-container">
         <cps-global-header></cps-global-header>
-        <case-info-summary />
+        <case-info-summary
+          caseId="2155068"
+          urn="06SC1234571"
+        ></case-info-summary>
         {/*<button onClick={() => instance.logoutRedirect()}>Logout</button>*/}
         <Routes />
       </div>
