@@ -3,31 +3,24 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { PropsWithChildren } from 'react';
 import { CaseInfo } from '../';
 import { LoadingSpinner, Tabs } from '../../components';
-import { useAppRoute } from '../../hooks';
 import type { Tab } from '../Tabs/Tabs.tsx';
 
 import { useCaseInfoStore } from '../../stores';
 
+import { APP_ROUTES_MAP } from '../../routes.tsx';
 import './Layout.scss';
 
 export const Layout = ({ children }: PropsWithChildren) => {
   const location = useLocation();
 
-  const [communicationsRoute, materialsRoute, pcdRequestRoute, reviewRoute] =
-    useAppRoute([
-      'COMMUNICATIONS',
-      'MATERIALS',
-      'PCD_REQUEST',
-      'REVIEW_REDACT'
-    ]);
+  const { communicationsRoute, materialsRoute, pcdRequestRoute, reviewRoute } = APP_ROUTES_MAP;
 
   const tabs: Tab[] = [
     {
       id: 'pcd-request',
       name: 'PCD Request',
       href: pcdRequestRoute,
-      active:
-        location.pathname === '/' || location.pathname.includes(pcdRequestRoute)
+      active: location.pathname === '/' || location.pathname.includes(pcdRequestRoute)
     },
     {
       id: 'materials',

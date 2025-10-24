@@ -1,5 +1,4 @@
 export { useCaseInfoStore } from '../stores/useCaseInfo';
-export { useAppRoute } from './useAppRoute';
 export { useAutoReclassify } from './useAutoReclassify';
 export { useBanner } from './useBanner';
 export { useCaseMaterial } from './useCaseMaterial';
