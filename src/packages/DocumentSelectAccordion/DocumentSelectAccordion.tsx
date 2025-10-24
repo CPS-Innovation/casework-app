@@ -1,37 +1,54 @@
-import {
-  CwaDefaultAccordionDocument,
-  DefaultAccordion,
-  DefaultAccordionSection
-} from './DefaultAccordion';
+import { ReactNode, useState } from 'react';
+import './DocumentSelectAccordion.scss';
 
-const data = [
-  { key: 'reviews', label: 'Reviews', documents: [1] },
-  { key: 'case-overview', label: 'Case overview', documents: [1, 2] },
-  { key: 'statements', label: 'Statements', documents: [1, 2, 3, 4, 5, 6] },
-  { key: 'exhibits', label: 'Exhibits', documents: [1, 2, 3, 4, 5] },
-  { key: 'forensics', label: 'Forensics', documents: [] },
-  { key: 'unused material', label: 'Unused material', documents: [1, 2, 3, 4] },
-  { key: 'defendant', label: 'Defendant', documents: [1] },
-  { key: 'court-preparation', label: 'Court preparation', documents: [] },
-  { key: 'communications', label: 'Communication', documents: [1, 2, 3, 4, 5] },
-  { key: 'uncategorised', label: 'Uncategorised', documents: [1] }
-];
+export const DocumentSelectAccordionSection = (p: {
+  title: string;
+  children: ReactNode;
+}) => {
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
-export const DocumentSelectAccordion = () => {
   return (
     <div>
-      <DefaultAccordion>
-        {data.map((item) => (
-          <DefaultAccordionSection
-            key={item.key}
-            title={`${item.label} (${item.documents.length})`}
-          >
-            {item.documents.map((j) => (
-              <CwaDefaultAccordionDocument key={`${item.key}-${j}`} />
-            ))}
-          </DefaultAccordionSection>
-        ))}
-      </DefaultAccordion>
+      <div className="govuk-accordion__section">
+        <div className="govuk-accordion__section-header">
+          <h2 className="govuk-accordion__section-heading">
+            <div>
+              <button
+                type="button"
+                aria-controls="accordion-default-content"
+                className="govuk-accordion__section-button"
+                aria-expanded={isExpanded}
+                aria-label={p.title}
+                onClick={() => setIsExpanded(!isExpanded)}
+              >
+                <span className="govuk-accordion__section-toggle">
+                  <span className="govuk-accordion__section-toggle-focus">
+                    <span className="govuk-accordion__section-toggle-text">
+                      {p.title}
+                    </span>
+                    <span className="govuk-accordion-nav__chevron-wrapper">
+                      <span
+                        className={`govuk-accordion-nav__chevron${!isExpanded ? ' govuk-accordion-nav__chevron--down' : ''}`}
+                      />
+                    </span>
+                  </span>
+                </span>
+              </button>
+            </div>
+          </h2>
+        </div>
+      </div>
+      <div hidden={!isExpanded}>
+        <div className="govuk-accordion-content-wrapper">{p.children}</div>
+      </div>
+    </div>
+  );
+};
+
+export const DocumentSelectAccordion = (p: { children: ReactNode }) => {
+  return (
+    <div className="govuk-accordion" data-testid="accordion">
+      {p.children}
     </div>
   );
 };
