@@ -1,9 +1,33 @@
+import z from 'zod';
 import {
   DocumentSelectAccordion,
   DocumentSelectAccordionSection
 } from './DocumentSelectAccordion';
 import { DocumentSelectAccordionDocument } from './DocumentSelectAccordionDocument';
-import { TDocumentSelectTagName } from './Tag';
+
+const mockDocumentSelectAccordionDataSchema = z.array(
+  z.object({
+    key: z.string(),
+    label: z.string(),
+    documents: z.array(
+      z.object({
+        documentName: z.string(),
+        documentDate: z.string(),
+        tagNames: z.array(
+          z.enum([
+            'ActiveDocument',
+            'NewVersion',
+            'New',
+            'Reclassified',
+            'Updated'
+          ])
+        ),
+        showLeftBorder: z.boolean().optional(),
+        showUnreadNotesIndicator: z.boolean().optional()
+      })
+    )
+  })
+);
 
 const data = [
   {
@@ -164,17 +188,7 @@ const data = [
       { documentName: 'hi1', documentDate: 'hi1', tagNames: ['ActiveDocument'] }
     ]
   }
-] as {
-  key: string;
-  label: string;
-  documents: {
-    documentName: string;
-    documentDate: string;
-    tagNames: TDocumentSelectTagName[];
-    showLeftBorder?: boolean;
-    showUnreadNotesIndicator?: boolean;
-  }[];
-}[];
+] as z.infer<typeof mockDocumentSelectAccordionDataSchema>;
 
 export const ExampleDocumentSelectAccordion = () => {
   return (
