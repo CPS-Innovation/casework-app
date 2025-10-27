@@ -1,8 +1,11 @@
 import { Accordion } from '../components';
+import { ExampleDocumentSelectAccordion } from '../packages/DocumentSelectAccordion/ExampleDocumentSelectAccordion';
 
 export const ReviewAndRedactPage = () => {
   return (
     <div>
+      <ExampleDocumentSelectAccordion />
+      <br />
       <Accordion
         items={[
           {
