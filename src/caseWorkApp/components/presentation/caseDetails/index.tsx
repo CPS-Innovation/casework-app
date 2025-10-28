@@ -6,7 +6,7 @@ export const CaseDetailsWrapper: React.FC<{
   children?: React.ReactNode;
 }> = ({}) => (
   <>
-    <DocumentArea></DocumentArea>
+    <DocumentArea></DocumentArea>    
   </>
 );
 

@@ -3,9 +3,11 @@ import { Tabs } from '../tabs';
 import { HIDE_CATEROGIES } from '../utils/constants';
 import { useStoreCWA } from '../../store';
 import './styles.scss';
+import { TwoCol } from '../../../components/TwoCol/TwoCol';
+import { LoadingSpinner } from '../../../components';
 
-const items = [
-  {
+const items = [ 
+    {
     isDirty: false,
     id: 'CMS-MG1',
     versionId: 1,
@@ -18,7 +20,7 @@ const items = [
     versionId: 2,
     label: 'MG2 CARMINE Victim',
     panel: <></>
-  },
+  },    
 ];
 
 // const tabSelectionHandler = (documentId: string): void => {      
@@ -33,16 +35,15 @@ const unlockDocumentsHandler = (documentId: string[]): void => {
   console.log('unlockDocumentsHandler');
 };
 
-
-
 const DocumentArea = () => {
 
   const { handleTabSelection, handleClosePdf } = useStoreCWA();
 
   return (
     <div className="document-area">
-      <Button>{HIDE_CATEROGIES}</Button>
+      <TwoCol sidebar={<></>}>
 
+      <Button>{HIDE_CATEROGIES}</Button>
       <Tabs
         idPrefix="idpref"
         title="Tabs title"
@@ -53,6 +54,7 @@ const DocumentArea = () => {
         handleUnLockDocuments={unlockDocumentsHandler}
         dcfMode={undefined}
       />
+      </TwoCol>
     </div>
   );
 };

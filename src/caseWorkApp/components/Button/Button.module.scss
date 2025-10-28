@@ -1,6 +1,7 @@
 button[type="submit"] {
   font-size: .875rem;
-  height: 35px;
-   width: 133px; 
-   padding: 0
+   height: 35px;
+   min-width: 133px; 
+   padding: 0;
+   float: left;
 }
