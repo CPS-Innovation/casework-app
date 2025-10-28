@@ -20,7 +20,7 @@
   "dependencies": {
     "@azure/msal-browser": "^4.2.0",
     "@azure/msal-react": "^3.0.4",
-    "@ministryofjustice/frontend": "^5.1.5",
+    "@ministryofjustice/frontend": "^7.0.0",
     "axios": "^1.7.9",
     "dayjs": "^1.11.13",
     "govuk-frontend": "^5.11.2",
