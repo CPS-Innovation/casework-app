@@ -32,10 +32,7 @@
     "noUncheckedSideEffectImports": true,
     "types": [
       "node",
-      "vitest/globals"
+      "vitest/globals",
     ]
-  },
-  "include": [
-    "src"
-  ]
+  }
 }

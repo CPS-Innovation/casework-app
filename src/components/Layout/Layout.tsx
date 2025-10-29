@@ -1,9 +1,10 @@
 import { Outlet, useLocation } from 'react-router-dom';
 
 import { PropsWithChildren } from 'react';
-import { CaseInfo } from '../';
-import { LoadingSpinner, Tabs } from '../../components';
-import { useAppRoute } from '../../hooks';
+import { useParams } from 'react-router-dom';
+import { Banner, LoadingSpinner, Tabs } from '../../components';
+import { useAppRoute, useBanner } from '../../hooks';
+import { BaseUrlParamsType } from '../../schemas/params';
 import type { Tab } from '../Tabs/Tabs.tsx';
 
 import { useCaseInfoStore } from '../../stores';
@@ -12,6 +13,8 @@ import './Layout.scss';
 
 export const Layout = ({ children }: PropsWithChildren) => {
   const location = useLocation();
+  const { banners } = useBanner();
+  const { caseId, urn } = useParams<BaseUrlParamsType>();
 
   const [communicationsRoute, materialsRoute, pcdRequestRoute, reviewRoute] =
     useAppRoute([
@@ -54,7 +57,12 @@ export const Layout = ({ children }: PropsWithChildren) => {
   return (
     <>
       <main className="main-container">
-        <CaseInfo />
+        <div role="status" aria-atomic="true">
+          {banners &&
+            banners.map((banner, index) => <Banner key={index} {...banner} />)}
+        </div>
+
+        <case-info-summary urn={urn} caseid={caseId} />
 
         {caseInfo ? (
           <>

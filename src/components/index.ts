@@ -1,4 +1,5 @@
 export { Accordion } from './Accordion/Accordion';
+export { Banner } from './Banner/Banner';
 export { ButtonMenuComponent } from './ButtonMenu/ButtonMenu';
 export { CaseInfo } from './CaseInfo/CaseInfo';
 export { DefinitionList } from './DefinitionList/DefinitionList';

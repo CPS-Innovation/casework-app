@@ -3,6 +3,10 @@
     "esModuleInterop": true
   },
   "files": [],
+  "include": [
+    "src/**/*",
+    "src/types/**/*.d.ts"
+  ],
   "references": [
     {
       "path": "./tsconfig.app.json"

@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { AppContext } from '../context/AppContext';
-import { BannerType } from '../schemas/banner';
+import { BannerType } from '../schemas';
 
 export const useBanner = () => {
   const { banners, clearBanners, removeBanner, setBannerState } =
