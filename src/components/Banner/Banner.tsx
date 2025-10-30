@@ -7,8 +7,7 @@ type Props = BannerType;
 export const Banner = ({
   type = 'success',
   header,
-  content,
-  isFullWidth = false
+  content
 }: PropsWithChildren<Props>) => {
   const getBannerClass = () => {
     switch (type) {
@@ -32,11 +31,11 @@ export const Banner = ({
       default:
         return '';
     }
-  }
+  };
 
   return (
     <div
-      className={`govuk-notification-banner ${getBannerClass()} success-banner-custom-width${isFullWidth ? ' govuk-notification-banner--full-width' : ''}`}
+      className={`govuk-notification-banner ${getBannerClass()} success-banner-custom-width`}
       role="region"
       aria-labelledby="govuk-notification-banner-title"
       data-module="govuk-notification-banner"
@@ -50,11 +49,10 @@ export const Banner = ({
         </h2>
       </div>
 
-        <div className="govuk-notification-banner__content">
-          <h3 className="govuk-notification-banner__heading">{header}</h3>
-          {content && <p className="govuk-body">{content}</p>}
-        </div>
-
+      <div className="govuk-notification-banner__content">
+        <h3 className="govuk-notification-banner__heading">{header}</h3>
+        {content && <p className="govuk-body">{content}</p>}
+      </div>
     </div>
   );
 };

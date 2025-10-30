@@ -62,7 +62,7 @@ export const Layout = ({ children }: PropsWithChildren) => {
             banners.map((banner, index) => <Banner key={index} {...banner} />)}
         </div>
 
-        <case-info-summary urn={urn} caseid={caseId} />
+        {urn && caseId && <case-info-summary urn={urn} caseid={caseId} />}
 
         {caseInfo ? (
           <>

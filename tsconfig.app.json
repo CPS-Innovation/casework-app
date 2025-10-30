@@ -33,6 +33,7 @@
     "types": [
       "node",
       "vitest/globals",
+      "./src/types/global.d.ts"
     ]
   }
 }
