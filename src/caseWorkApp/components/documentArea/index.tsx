@@ -2,7 +2,6 @@ import { Button } from '../Button';
 import { Tabs } from '../tabs';
 import { HIDE_CATEROGIES } from '../utils/constants';
 import { useStoreCWA } from '../../store';
-import { TwoCol } from '../../../components/TwoCol/TwoCol';
 import './styles.scss';
 
 const items = [
@@ -39,11 +38,9 @@ const DocumentArea = () => {
   const { handleTabSelection, handleClosePdf } = useStoreCWA();
 
   return (
-    <div className="govuk-main-wrapper">
-      <TwoCol sidebar={<></>}>
-
+    <>
+     
       <Button>{HIDE_CATEROGIES}</Button>
-
       <Tabs
         idPrefix="idpref"
         title="Tabs title"
@@ -54,8 +51,7 @@ const DocumentArea = () => {
         handleUnLockDocuments={unlockDocumentsHandler}
         dcfMode={undefined}
       />
-      </TwoCol>
-    </div>
+    </>
   );
 };
 
