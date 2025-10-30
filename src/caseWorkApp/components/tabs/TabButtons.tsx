@@ -1,10 +1,8 @@
 import { useEffect, useRef, useMemo } from "react";
 import classes from "./Tabs.module.scss";
 import { Tab } from "../../../components/Tabs/Tabs";
-import  CloseIcon  from "/caseWorkAppAssets/svgs/closeIconBold.svg";
-import DownArrow  from "/caseWorkAppAssets/svgs/down.svg";
-
-
+import  CloseIcon  from "../../assetsCWA/svgs/closeIconBold.svg?react";
+import DownArrow  from "../../assetsCWA/svgs/down.svg?react";
 import { LinkButton } from "../../components/LinkButton/LinkButton";
 import { DropdownButton } from "../DropDownButton/DropdownButton";
 
@@ -102,10 +100,10 @@ const TabButtons: React.FC<TabButtonProps> = ({
           onClick={() => {
             moveToNextOrPreviousTab(-1);
           }}
-        >
-          <img src={DownArrow} alt="Arrow left" />
+        >            
+            <DownArrow />
         </LinkButton>
-        <LinkButton
+<LinkButton
           disabled={activeTabIndex === items.length - 1}
           className={classes.tabNextButton}
           data-test-id="btn-tab-next"
@@ -114,7 +112,7 @@ const TabButtons: React.FC<TabButtonProps> = ({
             moveToNextOrPreviousTab(1);
           }}
         >
-          <img src={DownArrow} alt="Arrow right" />
+          <DownArrow />
         </LinkButton>
       </div>
 
@@ -166,7 +164,7 @@ const TabButtons: React.FC<TabButtonProps> = ({
                   data-testid="tab-remove"
                   aria-label="close tab"
                 >
-                  <img src={CloseIcon} alt="Close icon" />
+                  <CloseIcon />
                 </button>
               )}
             </li>

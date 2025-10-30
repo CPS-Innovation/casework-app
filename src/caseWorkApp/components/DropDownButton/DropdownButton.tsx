@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import DownArrow  from "/caseWorkAppAssets/svgs/down.svg";
+import DownArrow  from "../../assetsCWA/svgs/down.svg?react";
 import { LinkButton } from "../LinkButton/LinkButton";
 
 import classes from "./DropdownButton.module.scss";
@@ -64,7 +64,7 @@ export const DropdownButton: React.FC<DropdownButtonProps> = ({
         }}
       >
         {name && <span className={classes.dropdownBtnName}>{name}</span>}
-        <img src={DownArrow} alt="Down arrow" />
+        <DownArrow />
       </LinkButton>
 
       {buttonOpen && (

@@ -2,12 +2,11 @@ import { Button } from '../Button';
 import { Tabs } from '../tabs';
 import { HIDE_CATEROGIES } from '../utils/constants';
 import { useStoreCWA } from '../../store';
-import './styles.scss';
 import { TwoCol } from '../../../components/TwoCol/TwoCol';
-import { LoadingSpinner } from '../../../components';
+import './styles.scss';
 
-const items = [ 
-    {
+const items = [
+  {
     isDirty: false,
     id: 'CMS-MG1',
     versionId: 1,
@@ -20,7 +19,7 @@ const items = [
     versionId: 2,
     label: 'MG2 CARMINE Victim',
     panel: <></>
-  },    
+  }  
 ];
 
 // const tabSelectionHandler = (documentId: string): void => {      
@@ -40,10 +39,11 @@ const DocumentArea = () => {
   const { handleTabSelection, handleClosePdf } = useStoreCWA();
 
   return (
-    <div className="document-area">
+    <div className="govuk-main-wrapper">
       <TwoCol sidebar={<></>}>
 
       <Button>{HIDE_CATEROGIES}</Button>
+
       <Tabs
         idPrefix="idpref"
         title="Tabs title"

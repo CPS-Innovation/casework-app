@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useFocusTrap } from "../../hooks/useFocusTrap";
 import { useLastFocus } from "../../hooks/useLastFocus";
-import  CloseIcon  from "/caseWorkAppAssets/svgs/closeIconBold.svg";
+import  CloseIcon  from "../../assetsCWA/svgs/closeIconBold.svg";
 import classes from "./Modal.module.scss";
 
 type Props = {
@@ -99,7 +99,7 @@ export const Modal: React.FC<Props> = ({
                 aria-label="close modal"
                 onClick={handleCloseClickHandler}
               >
-                <img src={CloseIcon} alt="Close icon" height={"2.5rem"} width={"2.5rem"} />
+               <img src={CloseIcon} alt="Close icon" height={"2.5rem"} width={"2.5rem"} />
               </button>
             </div>
           )}
