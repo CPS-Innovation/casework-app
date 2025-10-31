@@ -1,12 +1,8 @@
 import { useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-import {
-  useCaseMaterials,
-  useFeatureFlag,
-  useFilters,
-  usePager
-} from '../../hooks';
+import { useCaseMaterials, useFilters, usePager } from '../../hooks';
+
 import { CaseMaterialsType } from '../../schemas';
 import {
   defaultFilterFn,
@@ -29,8 +25,6 @@ import {
 import { useMaterialTags } from '../../stores';
 
 export const CaseMaterialsTable = () => {
-  const hasAccess = useFeatureFlag();
-
   const [queryParams] = useSearchParams();
   const {
     filteredData,
@@ -105,9 +99,7 @@ export const CaseMaterialsTable = () => {
       heading: 'Material',
       render: (row) => (
         <>
-          {hasAccess([2, 3, 4, 5]) && row.readStatus == READ_STATUS.UNREAD && (
-            <StatusTag status="New" />
-          )}
+          {row.readStatus == READ_STATUS.UNREAD && <StatusTag status="New" />}
           <span className="subject-field">{row.subject}</span>
           {row.statusLabel && <StatusTag status={row.statusLabel} />}
         </>

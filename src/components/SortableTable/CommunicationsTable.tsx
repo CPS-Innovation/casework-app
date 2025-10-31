@@ -1,11 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import {
-  useCaseMaterials,
-  useFeatureFlag,
-  useFilters,
-  usePager
-} from '../../hooks';
+import { useCaseMaterials, useFilters, usePager } from '../../hooks';
 
 import { CaseMaterialsType } from '../../schemas';
 import {
@@ -29,8 +24,6 @@ import { useMaterialTags } from '../../stores';
 import { formatDate } from '../../utils/date';
 
 export const CommunicationsTable = () => {
-  const hasAccess = useFeatureFlag();
-
   const [queryParams] = useSearchParams();
   const {
     filteredData,
@@ -106,9 +99,7 @@ export const CommunicationsTable = () => {
       heading: 'Subject',
       render: (row) => (
         <>
-          {hasAccess([2, 3, 4, 5]) && row.readStatus == READ_STATUS.UNREAD && (
-            <StatusTag status="New" />
-          )}
+          {row.readStatus == READ_STATUS.UNREAD && <StatusTag status="New" />}
           <span className="subject-field">{row.subject}</span>
           {row.statusLabel && <StatusTag status={row.statusLabel} />}
         </>
