@@ -102,7 +102,7 @@ export const Tabs: React.FC<TabsProps> = ({
             Document view port
           </span>
         )}
-        {panel.children}
+        {panel?.children}
       </div>
     );
   });
@@ -114,7 +114,7 @@ export const Tabs: React.FC<TabsProps> = ({
   }));
 
   return (
-    <>
+    <>  
       <div
         data-testid="tabs"
         className={`govuk-tabs ${classes.tabs} ${className || ''} `}
