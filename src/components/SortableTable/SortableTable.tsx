@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { Fragment, memo, ReactNode } from 'react';
+import { Checkbox, DocumentActions, LoadingSpinner } from '../';
 import { FilterItem } from '../../context/FiltersContext/helpers/types';
 import { useAutoReclassify, useCaseMaterial, useFilters } from '../../hooks';
 import {
@@ -8,9 +9,6 @@ import {
   CaseMaterialsType
 } from '../../schemas';
 import { useSelectedItemsStore } from '../../stores';
-import Checkbox from '../Checkbox/Checkbox';
-import DocumentActions from '../DocumentPreview/DocumentActions';
-import { LoadingSpinner } from '../LoadingSpinner/LoadingSpinner';
 import './SortableTable.scss';
 
 export type Column<T> = {

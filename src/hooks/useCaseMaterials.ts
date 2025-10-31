@@ -30,7 +30,7 @@ export const useCaseMaterials = (dataType: CaseMaterialDataType) => {
     return response.data;
   };
 
-  const { data, error, isLoading, mutate } = useSWR(
+  const { data, error, isLoading, isValidating, mutate } = useSWR(
     QUERY_KEYS.CASE_MATERIAL,
     getCaseMaterials
   );
@@ -53,5 +53,11 @@ export const useCaseMaterials = (dataType: CaseMaterialDataType) => {
   //   });
   // }, [log, caseInfo, dataType, error, data?.length]);
 
-  return { data, loading: isLoading, error, filteredData, mutate };
+  return {
+    data,
+    loading: isLoading || isValidating,
+    error,
+    filteredData,
+    mutate
+  };
 };
