@@ -1,4 +1,4 @@
-import { describe } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { useMaterialTags } from '../../stores';
 
 describe('useMaterialTags Store', () => {
@@ -7,7 +7,7 @@ describe('useMaterialTags Store', () => {
     expect(store.materialTags).toEqual([]);
   });
 
-  it('should set new tags correctly and avoid duplicates', () => {
+  it('should set new tags correctly', () => {
     const newTags = [
       { materialId: 1, tagName: 'tag1' },
       { materialId: 2, tagName: 'tag2' }
@@ -19,7 +19,30 @@ describe('useMaterialTags Store', () => {
     expect(store.materialTags).toEqual(newTags);
   });
 
-  it('should prevent duplicate tags when setting new tags', () => {
+  it('should update existing tags when the same materialId is added with new tagName', () => {
+    const initialTags = [
+      { materialId: 1, tagName: 'tag1' },
+      { materialId: 2, tagName: 'tag2' }
+    ];
+
+    useMaterialTags.getState().setTags(initialTags);
+
+    const updatedTags = [
+      { materialId: 1, tagName: 'updatedTag1' },
+      { materialId: 3, tagName: 'tag3' }
+    ];
+
+    useMaterialTags.getState().setTags(updatedTags);
+
+    const store = useMaterialTags.getState();
+    expect(store.materialTags).toEqual([
+      { materialId: 1, tagName: 'updatedTag1' },
+      { materialId: 2, tagName: 'tag2' },
+      { materialId: 3, tagName: 'tag3' }
+    ]);
+  });
+
+  it('should add new tags and update existing ones with the same materialId', () => {
     const newTags = [
       { materialId: 1, tagName: 'tag1' },
       { materialId: 2, tagName: 'tag2' }
@@ -28,17 +51,17 @@ describe('useMaterialTags Store', () => {
     useMaterialTags.getState().setTags(newTags);
 
     const duplicateTags = [
-      { materialId: 1, tagName: 'tag3' },
-      { materialId: 3, tagName: 'tag3' }
+      { materialId: 1, tagName: 'newTag1' },
+      { materialId: 3, tagName: 'newTag3' }
     ];
 
     useMaterialTags.getState().setTags(duplicateTags);
 
     const store = useMaterialTags.getState();
     expect(store.materialTags).toEqual([
-      { materialId: 1, tagName: 'tag1' },
+      { materialId: 1, tagName: 'newTag1' },
       { materialId: 2, tagName: 'tag2' },
-      { materialId: 3, tagName: 'tag3' }
+      { materialId: 3, tagName: 'newTag3' }
     ]);
   });
 

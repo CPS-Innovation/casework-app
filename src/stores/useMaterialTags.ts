@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-
 import { StatusTag } from '../schemas';
 
 type MaterialTagItem = { materialId: number; tagName: StatusTag };
@@ -15,18 +14,21 @@ export const useMaterialTags = create<MaterialTagsStore>((set) => ({
 
   setTags: (newMaterialTags) =>
     set((state) => {
-      const combinedTags = [...state.materialTags, ...newMaterialTags];
+      const updatedMaterialTags = [...state.materialTags];
 
-      const uniqueMaterialIds = Array.from(
-        new Set(combinedTags.map((item) => item.materialId))
-      );
+      newMaterialTags.forEach((newTag) => {
+        const existingIndex = updatedMaterialTags.findIndex(
+          (item) => item.materialId === newTag.materialId
+        );
 
-      const uniqueMaterialTags = uniqueMaterialIds.map(
-        (materialId) =>
-          combinedTags.find((item) => item.materialId === materialId)!
-      );
+        if (existingIndex === -1) {
+          updatedMaterialTags.push(newTag);
+        } else {
+          updatedMaterialTags[existingIndex] = newTag;
+        }
+      });
 
-      return { materialTags: uniqueMaterialTags };
+      return { materialTags: updatedMaterialTags };
     }),
 
   clearTags: (materialIdsToRemove) =>
