@@ -1,5 +1,5 @@
 import React from 'react';
-import { DocumentArea } from '../../documentArea';
+import { DocumentControlArea } from '../../documentControlArea';
 import { TwoCol } from '../../../../components';
 
 export const CaseDetailsWrapper: React.FC<{
@@ -8,7 +8,7 @@ export const CaseDetailsWrapper: React.FC<{
 }> = ({}) => (
   <div  className="govuk-main-wrapper">
      <TwoCol sidebar={<></>}>
-    <DocumentArea></DocumentArea>
+    <DocumentControlArea></DocumentControlArea>
     <div>fldknflk</div>    
     </TwoCol>
   </div>

@@ -1,4 +1,4 @@
-import { Button } from '../Button';
+import { Button } from '../button';
 import { Tabs } from '../tabs';
 import { HIDE_CATEROGIES } from '../utils/constants';
 import { useStoreCWA } from '../../store';
@@ -33,7 +33,7 @@ const unlockDocumentsHandler = (documentId: string[]): void => {
   console.log('unlockDocumentsHandler');
 };
 
-const DocumentArea = () => {
+const DocumentControlArea = () => {
 
   const { handleTabSelection, handleClosePdf } = useStoreCWA();
 
@@ -55,5 +55,5 @@ const DocumentArea = () => {
   );
 };
 
-export { DocumentArea };
+export { DocumentControlArea };
 

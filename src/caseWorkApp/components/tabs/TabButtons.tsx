@@ -4,7 +4,7 @@ import { Tab } from "../../../components/Tabs/Tabs";
 import  CloseIcon  from "../../assetsCWA/svgs/closeIconBold.svg?react";
 import DownArrow  from "../../assetsCWA/svgs/down.svg?react";
 import { LinkButton } from "../../components/LinkButton/LinkButton";
-import { DropdownButton } from "../DropDownButton/DropdownButton";
+import { DropdownButton } from "../dropDownButton/DropdownButton";
 
 export type TabButtonProps = {
   items: { id: string; label: string; ariaLabel: string }[];
