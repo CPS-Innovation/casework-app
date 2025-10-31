@@ -76,7 +76,8 @@ export default defineConfig(({ mode }) => {
             'slash-div',
             'global-builtin',
             'function-units'
-          ]
+          ],
+          quietDeps: true
         }
       }
     },

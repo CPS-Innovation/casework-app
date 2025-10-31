@@ -1,7 +1,7 @@
-import './Tabs.scss';
+import { KeyboardEvent, MouseEvent } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { isPathCurrentUrl } from '../../utils/url';
-import { KeyboardEvent, MouseEvent } from 'react';
+import './Tabs.scss';
 
 export type Tab = { id: string; name: string; href: string; active?: boolean };
 
@@ -23,7 +23,6 @@ export const Tabs = ({ tabs }: Props) => {
   };
 
   const handleKeyboardPress = (event: KeyboardEvent, index: number) => {
-    //
     const key = event.key;
 
     if (key === 'ArrowLeft') {

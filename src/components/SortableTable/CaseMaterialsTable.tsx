@@ -1,7 +1,6 @@
-import { useContext, useEffect, useMemo } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useEffect, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
-import { URL } from '../../constants/url';
 import {
   useCaseMaterials,
   useFeatureFlag,
@@ -17,36 +16,29 @@ import {
 import SortableTable, { Column } from './SortableTable';
 
 import { DEFAULT_RESULTS_PER_PAGE } from '../../constants/query';
-import { Pagination } from '../Pagination/Pagination';
 
 import { READ_STATUS } from '../../constants';
-import { ReclassificationContext } from '../../context/ReclassificationContext';
 import { formatDate } from '../../utils/date';
-import DocumentPreview from '../DocumentPreview/DocumentPreview';
 
-import { LoadingSpinner } from '../LoadingSpinner/LoadingSpinner';
-import { StatusTag } from '../StatusTag/StatusTag';
+import {
+  DocumentPreview,
+  LoadingSpinner,
+  Pagination,
+  StatusTag
+} from '../../components';
+import { useMaterialTags } from '../../stores';
 
-type Props = {
-  selectedMaterial: CaseMaterialsType | null;
-  renamedMaterialId: number | null;
-  setRenamedMaterialId?: (id: number | null) => void;
-};
-
-export const CaseMaterialsTable = ({ renamedMaterialId }: Props) => {
+export const CaseMaterialsTable = () => {
   const hasAccess = useFeatureFlag();
 
   const [queryParams] = useSearchParams();
-  const navigate = useNavigate();
   const {
     filteredData,
     loading: caseMaterialsLoading,
     error
   } = useCaseMaterials('materials');
   const { filters } = useFilters('materials');
-
-  // @ts-expect-error: Context may not have reclassifiedMaterialIds in some cases
-  const { reclassifiedMaterialIds } = useContext(ReclassificationContext);
+  const { materialTags } = useMaterialTags();
 
   const filteredSortedData = useMemo(() => {
     const sortFn = defaultSortFn<CaseMaterialsType>(filters?.sort);
@@ -62,12 +54,13 @@ export const CaseMaterialsTable = ({ renamedMaterialId }: Props) => {
 
     return filteredData
       ?.map((material) => {
-        if (reclassifiedMaterialIds.includes(material.materialId))
-          return { ...material, statusLabel: 'Reclassified' };
-        if (renamedMaterialId && [+renamedMaterialId].includes(material.id))
-          return { ...material, statusLabel: 'Renamed' };
+        const materialTag = materialTags.find(
+          (materialTag) => materialTag.materialId === material.materialId
+        );
 
-        return material;
+        return materialTag
+          ? { ...material, statusLabel: materialTag.tagName }
+          : material;
       })
       ?.filter(searchFn)
       ?.filter(filterFn)
@@ -88,7 +81,7 @@ export const CaseMaterialsTable = ({ renamedMaterialId }: Props) => {
       })
       ?.sort(sortFn)
       ?.sort(sortByStatusFn);
-  }, [filters, filteredData, renamedMaterialId, reclassifiedMaterialIds]);
+  }, [filters, filteredData, materialTags]);
 
   const currentPageParam = queryParams?.get('page');
 
@@ -148,19 +141,8 @@ export const CaseMaterialsTable = ({ renamedMaterialId }: Props) => {
   const recordsOnCurrentPage = endIndex + 1 - startIndex;
 
   useEffect(() => {
-    // if someone renames or reclassifies and they're not on page one, we want to
-    // set pagination to first page and clear the url query params
-    if (
-      currentPage > 0 &&
-      (renamedMaterialId || reclassifiedMaterialIds.length)
-    ) {
-      navigate(URL.MATERIALS, { state: { persistBanner: true } });
-    }
-  }, [renamedMaterialId, reclassifiedMaterialIds, currentPage, navigate]);
-
-  useEffect(() => {
     setPage(0);
-  }, [filters, renamedMaterialId, reclassifiedMaterialIds, setPage]);
+  }, [filters, setPage]);
 
   if (caseMaterialsLoading) {
     return <LoadingSpinner textContent="Loading materials..." />;

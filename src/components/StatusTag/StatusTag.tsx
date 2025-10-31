@@ -1,4 +1,6 @@
-type Props = { status: string };
+import { StatusTag as StatusTagEnum } from '../../schemas';
+
+type Props = { status: StatusTagEnum };
 
 export const StatusTag = ({ status }: Props) => {
   let className = 'govuk-tag';
