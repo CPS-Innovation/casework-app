@@ -9,7 +9,6 @@ import { MsalProvider } from '@azure/msal-react';
 import './App.scss';
 import { AppContextProvider } from './context/AppContext';
 import { FilterProvider } from './context/FiltersContext';
-import { ReclassificationProvider } from './context/ReclassificationContext';
 import { msalConfig } from './msalInstance';
 
 if (import.meta.env.DEV) {
@@ -25,9 +24,7 @@ pca.initialize().then(() => {
       <BrowserRouter>
         <AppContextProvider>
           <FilterProvider>
-            <ReclassificationProvider>
-              <App />
-            </ReclassificationProvider>
+            <App />
           </FilterProvider>
         </AppContextProvider>
       </BrowserRouter>
