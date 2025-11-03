@@ -1,6 +1,7 @@
 import '@ministryofjustice/frontend/moj/all.scss';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
+import { SWRConfig } from 'swr';
 
 import { App } from './app';
 
@@ -21,13 +22,21 @@ const pca = new PublicClientApplication(msalConfig);
 pca.initialize().then(() => {
   ReactDOM.createRoot(document.getElementById('root')!).render(
     <MsalProvider instance={pca}>
-      <BrowserRouter>
-        <AppContextProvider>
-          <FilterProvider>
-            <App />
-          </FilterProvider>
-        </AppContextProvider>
-      </BrowserRouter>
+      <SWRConfig
+        value={{
+          errorRetryCount: 0,
+          revalidateOnFocus: false,
+          shouldRetryOnError: false
+        }}
+      >
+        <BrowserRouter>
+          <AppContextProvider>
+            <FilterProvider>
+              <App />
+            </FilterProvider>
+          </AppContextProvider>
+        </BrowserRouter>
+      </SWRConfig>
     </MsalProvider>
   );
 });
