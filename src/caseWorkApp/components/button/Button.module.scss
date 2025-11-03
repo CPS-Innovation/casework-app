@@ -1,7 +1,14 @@
-button[type="submit"] {
-  font-size: .875rem;
-   height: 35px;
-   min-width: 133px; 
-   padding: 0;
-   float: left;
+@media screen and (min-width: 40.0625em) {
+  :global(.two-col__content .govuk-button) {
+      margin-bottom: 0px !important;
+    }
+  }
+
+
+button[type='submit'] {
+  font-size: 0.875rem;
+  height: 33px;
+  min-width: 133px;
+  padding: 0;
+  float: left;
 }
