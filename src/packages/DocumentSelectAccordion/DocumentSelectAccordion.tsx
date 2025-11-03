@@ -1,11 +1,16 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import './DocumentSelectAccordion.scss';
 
 export const DocumentSelectAccordionSection = (p: {
   title: string;
   children: ReactNode;
+  isExpandedController: boolean;
 }) => {
-  const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  useEffect(() => {
+    setIsExpanded(p.isExpandedController);
+  }, [p.isExpandedController]);
 
   return (
     <div>
