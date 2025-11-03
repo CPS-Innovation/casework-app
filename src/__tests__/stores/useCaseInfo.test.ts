@@ -8,7 +8,8 @@ const caseInfoData1: CaseInfoType = {
   urn: 'ABC123DEF',
   leadDefendantFirstNames: 'Joe',
   leadDefendantSurname: 'Bloggs',
-  numberOfDefendants: 2
+  numberOfDefendants: 2,
+  unitName: 'Unit name 1'
 };
 
 const caseInfoData2: CaseInfoType = {
@@ -16,7 +17,8 @@ const caseInfoData2: CaseInfoType = {
   urn: 'ABC123DEG',
   leadDefendantFirstNames: 'John',
   leadDefendantSurname: 'Doe',
-  numberOfDefendants: 1
+  numberOfDefendants: 1,
+  unitName: 'Unit name 2'
 };
 
 describe('stores > useCaseInfoStore', () => {

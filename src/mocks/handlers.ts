@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw';
 import { API_ENDPOINTS, POLARIS_GATEWAY_URL } from '../constants/url.ts';
-import { mockCaseMaterials } from './mockCaseMaterials.ts';
+import { mockCaseMaterials } from './data/caseMaterials';
 
 import { PCDListingType } from '../schemas/pcd';
 import { mockPcdListResponse, mockPcdRequestResponse } from './data/pcdRequest';
