@@ -32,6 +32,7 @@ export const DocumentSelectAccordionDocument = (p: {
   UpdatedTag?: boolean;
   showUnreadNotesIndicator?: boolean;
   showLeftBorder?: boolean;
+  onDocumentClick: () => void;
 }) => {
   return (
     <div
@@ -48,7 +49,7 @@ export const DocumentSelectAccordionDocument = (p: {
           {p.UpdatedTag && <DocumentSelectTag tagName="Updated" />}
         </div>
         <div>
-          <a className="govuk-link" onClick={() => {}}>
+          <a className="govuk-link" onClick={() => p.onDocumentClick()}>
             {p.documentName}
           </a>
         </div>

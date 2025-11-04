@@ -44,191 +44,6 @@ const unusedCommRegexes = [
   /(?<=^|\s)SDC(?=\s|$)/gi
 ];
 
-const mockDocumentSelectAccordionDataSchema = z.array(
-  z.object({
-    key: z.string(),
-    label: z.string(),
-    documents: z.array(
-      z.object({
-        documentName: z.string(),
-        documentDate: z.string(),
-        tagNames: z.array(
-          z.enum([
-            'ActiveDocument',
-            'NewVersion',
-            'New',
-            'Reclassified',
-            'Updated'
-          ])
-        ),
-        showLeftBorder: z.boolean().optional(),
-        showUnreadNotesIndicator: z.boolean().optional()
-      })
-    )
-  })
-);
-
-const data = [
-  {
-    key: 'reviews',
-    label: 'Reviews',
-    documents: [
-      {
-        documentName: 'hi',
-        documentDate: 'hi',
-        tagNames: ['ActiveDocument', 'New'],
-        showLeftBorder: true,
-        showUnreadNotesIndicator: true
-      }
-    ]
-  },
-  {
-    key: 'case-overview',
-    label: 'Case overview',
-    documents: [
-      {
-        documentName: 'hi',
-        documentDate: 'hi',
-        tagNames: ['ActiveDocument', 'New']
-      },
-      {
-        documentName: 'hi2',
-        documentDate: 'hi2',
-        tagNames: ['ActiveDocument', 'New']
-      }
-    ]
-  },
-  {
-    key: 'statements',
-    label: 'Statements',
-    documents: [
-      {
-        documentName: 'hi1',
-        documentDate: 'hi1',
-        tagNames: ['ActiveDocument']
-      },
-      {
-        documentName: 'hi2',
-        documentDate: 'hi2',
-        tagNames: ['ActiveDocument']
-      },
-      {
-        documentName: 'hi3',
-        documentDate: 'hi3',
-        tagNames: ['ActiveDocument']
-      },
-      {
-        documentName: 'hi4',
-        documentDate: 'hi4',
-        tagNames: ['ActiveDocument']
-      },
-      {
-        documentName: 'hi5',
-        documentDate: 'hi5',
-        tagNames: ['ActiveDocument']
-      },
-      { documentName: 'hi6', documentDate: 'hi6', tagNames: ['ActiveDocument'] }
-    ]
-  },
-  {
-    key: 'exhibits',
-    label: 'Exhibits',
-    documents: [
-      {
-        documentName: 'hi1',
-        documentDate: 'hi1',
-        tagNames: ['ActiveDocument']
-      },
-      {
-        documentName: 'hi2',
-        documentDate: 'hi2',
-        tagNames: ['ActiveDocument']
-      },
-      {
-        documentName: 'hi3',
-        documentDate: 'hi3',
-        tagNames: ['ActiveDocument']
-      },
-      {
-        documentName: 'hi4',
-        documentDate: 'hi4',
-        tagNames: ['ActiveDocument']
-      },
-      {
-        documentName: 'hi5',
-        documentDate: 'hi5',
-        tagNames: ['ActiveDocument']
-      },
-      { documentName: 'hi6', documentDate: 'hi6', tagNames: ['ActiveDocument'] }
-    ]
-  },
-  { key: 'forensics', label: 'Forensics', documents: [] },
-  {
-    key: 'unused material',
-    label: 'Unused material',
-    documents: [
-      {
-        documentName: 'hi1',
-        documentDate: 'hi1',
-        tagNames: ['ActiveDocument']
-      },
-      {
-        documentName: 'hi2',
-        documentDate: 'hi2',
-        tagNames: ['ActiveDocument']
-      },
-      {
-        documentName: 'hi3',
-        documentDate: 'hi3',
-        tagNames: ['ActiveDocument']
-      },
-      { documentName: 'hi4', documentDate: 'hi4', tagNames: ['ActiveDocument'] }
-    ]
-  },
-  {
-    key: 'defendant',
-    label: 'Defendant',
-    documents: [
-      { documentName: 'hi1', documentDate: 'hi1', tagNames: ['ActiveDocument'] }
-    ]
-  },
-  { key: 'court-preparation', label: 'Court preparation', documents: [] },
-  {
-    key: 'communications',
-    label: 'Communication',
-    documents: [
-      {
-        documentName: 'hi1',
-        documentDate: 'hi1',
-        tagNames: ['ActiveDocument']
-      },
-      {
-        documentName: 'hi2',
-        documentDate: 'hi2',
-        tagNames: ['ActiveDocument']
-      },
-      {
-        documentName: 'hi3',
-        documentDate: 'hi3',
-        tagNames: ['ActiveDocument']
-      },
-      {
-        documentName: 'hi4',
-        documentDate: 'hi4',
-        tagNames: ['ActiveDocument']
-      },
-      { documentName: 'hi5', documentDate: 'hi5', tagNames: ['ActiveDocument'] }
-    ]
-  },
-  {
-    key: 'uncategorised',
-    label: 'Uncategorised',
-    documents: [
-      { documentName: 'hi1', documentDate: 'hi1', tagNames: ['ActiveDocument'] }
-    ]
-  }
-] as z.infer<typeof mockDocumentSelectAccordionDataSchema>;
-
 const documentTypeIdsMap = {
   review: [101, 102, 103, 104, 189, 212, 227, 1034, 1035, 1064],
   caseOverview: [
@@ -347,80 +162,32 @@ const getDocumentCategory = (
   return 'uncategorised' as const;
 };
 
-export const ExampleDocumentSelectAccordion = (p: {
+export const CaseDocumentsSelectAccordion = (p: {
   urn: string;
   caseId: number;
   openDocumentIds: string[];
   onSetDocumentOpenIds: (docIds: string[]) => void;
 }) => {
   const [isExpandedController, setIsExpandedController] = useState(false);
-  const cd = useGetCaseDocumentList({ urn: p.urn, caseId: p.caseId });
+  const documentList = useGetCaseDocumentList({ urn: p.urn, caseId: p.caseId });
+
+  const parsed = documentListSchema.safeParse(documentList.data);
+
+  if (!parsed.success) return <></>;
+
+  const docsOnDocCategoryNames = initDocsOnDocCategoryNamesMap();
+  parsed.data.forEach((doc) => {
+    const categoryName = getDocumentCategory(doc);
+    docsOnDocCategoryNames[categoryName].push(doc);
+  });
+  const newData = categoryDetails.map((x) => ({
+    key: x.label,
+    label: x.label,
+    documents: docsOnDocCategoryNames[x.categoryName]
+  }));
 
   return (
     <div>
-      <pre>{JSON.stringify(cd.data, null, 2)}</pre>
-      {(() => {
-        const parsed = documentListSchema.safeParse(cd.data);
-
-        if (!parsed.success) return <></>;
-
-        const docsOnDocCategoryNames = initDocsOnDocCategoryNamesMap();
-        parsed.data.forEach((doc) => {
-          const categoryName = getDocumentCategory(doc);
-          docsOnDocCategoryNames[categoryName].push(doc);
-        });
-        const newData = categoryDetails.map((x) => ({
-          key: x.label,
-          label: x.label,
-          documents: docsOnDocCategoryNames[x.categoryName]
-        }));
-
-        return (
-          <>
-            <a
-              className="govuk-link"
-              onClick={() => setIsExpandedController((x) => !x)}
-              style={{
-                float: 'right',
-                paddingBottom: '8px',
-                cursor: 'pointer'
-              }}
-            >
-              {isExpandedController ? 'Close' : 'Open'} all sections
-            </a>
-            <DocumentSelectAccordion>
-              {newData.map((item) => (
-                <DocumentSelectAccordionSection
-                  key={item.key}
-                  title={`${item.label} (${item.documents.length})`}
-                  isExpandedController={isExpandedController}
-                >
-                  {item.documents.length === 0 ? (
-                    <div style={{ height: '60px', padding: '12px' }}>
-                      There are no documents available.
-                    </div>
-                  ) : (
-                    item.documents.map((document) => (
-                      <DocumentSelectAccordionDocument
-                        key={`${item.key}-${document.documentId}`}
-                        documentName={document.presentationTitle}
-                        documentDate={document.documentId}
-                        ActiveDocumentTag={p.openDocumentIds.includes(
-                          document.documentId
-                        )}
-                        showLeftBorder={p.openDocumentIds.includes(
-                          document.documentId
-                        )}
-                        showUnreadNotesIndicator={true}
-                      />
-                    ))
-                  )}
-                </DocumentSelectAccordionSection>
-              ))}
-            </DocumentSelectAccordion>
-          </>
-        );
-      })()}
       <a
         className="govuk-link"
         onClick={() => setIsExpandedController((x) => !x)}
@@ -429,7 +196,7 @@ export const ExampleDocumentSelectAccordion = (p: {
         {isExpandedController ? 'Close' : 'Open'} all sections
       </a>
       <DocumentSelectAccordion>
-        {data.map((item) => (
+        {newData.map((item) => (
           <DocumentSelectAccordionSection
             key={item.key}
             title={`${item.label} (${item.documents.length})`}
@@ -442,17 +209,31 @@ export const ExampleDocumentSelectAccordion = (p: {
             ) : (
               item.documents.map((document) => (
                 <DocumentSelectAccordionDocument
-                  documentName={document.documentName}
-                  documentDate={document.documentDate}
-                  key={`${item.key}-${document.documentName}`}
-                  showLeftBorder={document.showLeftBorder}
-                  showUnreadNotesIndicator={document.showUnreadNotesIndicator}
+                  key={`${item.key}-${document.documentId}`}
+                  documentName={document.presentationTitle}
+                  documentDate={document.documentId}
+                  ActiveDocumentTag={p.openDocumentIds.includes(
+                    document.documentId
+                  )}
+                  showLeftBorder={p.openDocumentIds.includes(
+                    document.documentId
+                  )}
+                  showUnreadNotesIndicator={true}
+                  onDocumentClick={() => {
+                    const docSet = new Set([
+                      ...p.openDocumentIds,
+                      document.documentId
+                    ]);
+                    p.onSetDocumentOpenIds([...docSet]);
+                  }}
                 />
               ))
             )}
           </DocumentSelectAccordionSection>
         ))}
       </DocumentSelectAccordion>
+
+      <pre>{JSON.stringify(documentList.data, null, 2)}</pre>
     </div>
   );
 };
