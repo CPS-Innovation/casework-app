@@ -25,7 +25,11 @@ const NotesIcon = (p: { width: number; isNewNotes?: boolean }) => {
 export const DocumentSelectAccordionDocument = (p: {
   documentName: string;
   documentDate: string;
-  tagNames?: React.ComponentProps<typeof DocumentSelectTag>['tagName'][];
+  ActiveDocumentTag?: boolean;
+  NewVersionTag?: boolean;
+  NewTag?: boolean;
+  ReclassifiedTag?: boolean;
+  UpdatedTag?: boolean;
   showUnreadNotesIndicator?: boolean;
   showLeftBorder?: boolean;
 }) => {
@@ -35,9 +39,13 @@ export const DocumentSelectAccordionDocument = (p: {
     >
       <div className="document-select-accordion-document--inner-wrapper">
         <div className="document-select-accordion-document--tag-wrapper">
-          {p.tagNames?.map((tagName) => (
-            <DocumentSelectTag key={tagName} tagName={tagName} />
-          ))}
+          {p.ActiveDocumentTag && (
+            <DocumentSelectTag tagName="ActiveDocument" />
+          )}
+          {p.NewTag && <DocumentSelectTag tagName="New" />}
+          {p.NewVersionTag && <DocumentSelectTag tagName="NewVersion" />}
+          {p.ReclassifiedTag && <DocumentSelectTag tagName="Reclassified" />}
+          {p.UpdatedTag && <DocumentSelectTag tagName="Updated" />}
         </div>
         <div>
           <a className="govuk-link" onClick={() => {}}>
