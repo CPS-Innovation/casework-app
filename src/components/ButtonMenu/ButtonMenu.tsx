@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import './ButtonMenu.scss';
 
+// @ts-ignore
 import { ButtonMenu } from '@ministryofjustice/frontend/moj/components/button-menu/button-menu.mjs';
 
 type MenuItem = {

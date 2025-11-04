@@ -149,6 +149,13 @@ export const MaterialsPage = () => {
               selectedItems={selectedItems.materials}
             />
 
+            {caseInfo && (
+              <cps-materials-table
+                caseid={caseInfo.id}
+                urn={caseInfo.urn}
+              ></cps-materials-table>
+            )}
+
             <CaseMaterialsTable />
 
             <div className="action-on-selection-container">
