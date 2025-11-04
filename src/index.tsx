@@ -1,6 +1,7 @@
 import '@ministryofjustice/frontend/moj/all.scss';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
+import { SWRConfig } from 'swr';
 
 import { App } from './app';
 
@@ -9,7 +10,6 @@ import { MsalProvider } from '@azure/msal-react';
 import './App.scss';
 import { AppContextProvider } from './context/AppContext';
 import { FilterProvider } from './context/FiltersContext';
-import { ReclassificationProvider } from './context/ReclassificationContext';
 import { msalConfig } from './msalInstance';
 
 if (import.meta.env.DEV) {
@@ -22,15 +22,21 @@ const pca = new PublicClientApplication(msalConfig);
 pca.initialize().then(() => {
   ReactDOM.createRoot(document.getElementById('root')!).render(
     <MsalProvider instance={pca}>
-      <BrowserRouter>
-        <AppContextProvider>
-          <FilterProvider>
-            <ReclassificationProvider>
+      <SWRConfig
+        value={{
+          errorRetryCount: 0,
+          revalidateOnFocus: false,
+          shouldRetryOnError: false
+        }}
+      >
+        <BrowserRouter>
+          <AppContextProvider>
+            <FilterProvider>
               <App />
-            </ReclassificationProvider>
-          </FilterProvider>
-        </AppContextProvider>
-      </BrowserRouter>
+            </FilterProvider>
+          </AppContextProvider>
+        </BrowserRouter>
+      </SWRConfig>
     </MsalProvider>
   );
 });

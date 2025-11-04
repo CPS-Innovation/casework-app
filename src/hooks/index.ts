@@ -2,6 +2,7 @@ export { useCaseInfoStore } from '../stores/useCaseInfo';
 export { useAppRoute } from './useAppRoute';
 export { useAutoReclassify } from './useAutoReclassify';
 export { useBanner } from './useBanner';
+export { useCaseInfo } from './useCaseInfo';
 export { useCaseMaterial } from './useCaseMaterial';
 export { useCaseMaterials } from './useCaseMaterials';
 export { useDocumentPreview } from './useDocumentPreview';

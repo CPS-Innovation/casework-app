@@ -1,4 +1,4 @@
-import { CaseMaterialsType } from '../../src/schemas/caseMaterials';
+import { CaseMaterialsType } from '../../schemas';
 
 const material: CaseMaterialsType[] = [
   {
@@ -12,7 +12,7 @@ const material: CaseMaterialsType[] = [
     type: 'Other Material',
     hasAttachments: false,
     status: 'Used',
-    readStatus: 'Read',
+    readStatus: 'Unread',
     method: 'Item',
     direction: 'Outgoing',
     party: 'Police',

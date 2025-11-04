@@ -1,9 +1,11 @@
+import { useEffect, useState } from 'react';
 import z from 'zod';
 import {
   DocumentSelectAccordion,
   DocumentSelectAccordionSection
 } from './DocumentSelectAccordion';
 import { DocumentSelectAccordionDocument } from './DocumentSelectAccordionDocument';
+import { useGetCase } from './getters/useGetCase';
 
 const mockDocumentSelectAccordionDataSchema = z.array(
   z.object({
@@ -191,13 +193,30 @@ const data = [
 ] as z.infer<typeof mockDocumentSelectAccordionDataSchema>;
 
 export const ExampleDocumentSelectAccordion = () => {
+  const [isExpandedController, setIsExpandedController] = useState(false);
+
+  const urn = '54KR7689125';
+  const caseId = 2160797;
+  const gd = useGetCase({ urn, caseId });
+  useEffect(() => {
+    console.log({ p: gd.data });
+  }, [gd.data]);
   return (
     <div>
+      <pre>{JSON.stringify({ p: gd.data }, null, 2)}</pre>
+      <a
+        className="govuk-link"
+        onClick={() => setIsExpandedController((x) => !x)}
+        style={{ float: 'right', paddingBottom: '8px', cursor: 'pointer' }}
+      >
+        {isExpandedController ? 'Close' : 'Open'} all sections
+      </a>
       <DocumentSelectAccordion>
         {data.map((item) => (
           <DocumentSelectAccordionSection
             key={item.key}
             title={`${item.label} (${item.documents.length})`}
+            isExpandedController={isExpandedController}
           >
             {item.documents.length === 0 ? (
               <div style={{ height: '60px', padding: '12px' }}>
