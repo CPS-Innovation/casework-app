@@ -1,4 +1,4 @@
-import { CaseMaterialsType } from '../../src/schemas/caseMaterials';
+import { CaseMaterialsType } from '../../schemas';
 
 const material: CaseMaterialsType[] = [
   {

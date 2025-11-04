@@ -139,7 +139,7 @@ export const MaterialsPage = () => {
 
       <TwoCol sidebar={showFilter ? <MaterialsFilters /> : undefined}>
         {caseMaterialsLoading || isReadStatusUpdating ? (
-          <LoadingSpinner textContent="Refreshing materials" />
+          <LoadingSpinner textContent="Loading materials" />
         ) : (
           <>
             <TableActions
