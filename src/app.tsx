@@ -1,6 +1,7 @@
 import { useMsal } from '@azure/msal-react';
 import { useEffect } from 'react';
 import { RouteChangeListener } from './components';
+import { POLARIS_GATEWAY_SCOPE } from './constants/url';
 import { loginRequest } from './msalInstance';
 import { Routes } from './routes';
 
@@ -24,6 +25,30 @@ export const App = () => {
 
   if (!account) {
     return <p>Redirecting to login...</p>;
+  }
+
+  // set up cpsContext for interaction with cps web components
+  if (typeof window !== 'undefined') {
+    window.cpsContext = {
+      acquireAccessToken: async () => {
+        try {
+          const accessTokenResponse = await instance.acquireTokenSilent({
+            scopes: [POLARIS_GATEWAY_SCOPE],
+            account: accounts[0]
+          });
+
+          return accessTokenResponse.accessToken;
+        } catch {
+          console.error('There was an error getting the access token');
+        }
+      },
+      init: () => {
+        window.addEventListener('unauthorised', (event) => {
+          const customEvent = event as CustomEvent<{ error?: string }>;
+          console.error(customEvent.detail);
+        });
+      }
+    };
   }
 
   return (
