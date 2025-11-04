@@ -181,14 +181,11 @@ const safeGetReadCaseDocumentIdsFromLocalStorage = (caseId: number) => {
 };
 const safeSetReadCaseDocumentsFromLocalStorage = (p: {
   caseId: number;
-  readDocumentIds: string[];
+  newReadDocIds: string[];
 }) => {
   const localStorageKey = `caseDocumentAccordionReadDocIds-${p.caseId}`;
 
-  window.localStorage.setItem(
-    localStorageKey,
-    JSON.stringify(p.readDocumentIds)
-  );
+  window.localStorage.setItem(localStorageKey, JSON.stringify(p.newReadDocIds));
 };
 
 export const CaseDocumentsSelectAccordion = (p: {
@@ -197,13 +194,11 @@ export const CaseDocumentsSelectAccordion = (p: {
   openDocumentIds: string[];
   onSetDocumentOpenIds: (docIds: string[]) => void;
 }) => {
+  const { caseId, urn } = p;
   const [isExpandedController, setIsExpandedController] = useState(false);
-  const documentList = useGetCaseDocumentList({ urn: p.urn, caseId: p.caseId });
+  const documentList = useGetCaseDocumentList({ urn, caseId });
   const [readDocumentIds, setReadDocumentIds] = useState<string[]>(
-    (() => {
-      const x = safeGetReadCaseDocumentIdsFromLocalStorage(p.caseId);
-      return x;
-    })()
+    safeGetReadCaseDocumentIdsFromLocalStorage(caseId)
   );
 
   useEffect(() => {
@@ -211,10 +206,7 @@ export const CaseDocumentsSelectAccordion = (p: {
       ...new Set([...readDocumentIds, ...p.openDocumentIds])
     ];
 
-    safeSetReadCaseDocumentsFromLocalStorage({
-      caseId: p.caseId,
-      readDocumentIds: newReadDocIds
-    });
+    safeSetReadCaseDocumentsFromLocalStorage({ caseId, newReadDocIds });
   }, [readDocumentIds]);
 
   const parsed = documentListSchema.safeParse(documentList.data);
