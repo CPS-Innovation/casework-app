@@ -14,7 +14,7 @@
   }
   &:focus {
     svg {
-      fill: #000;
+      fill: #fff;
     }
   }
   &:disabled {
@@ -39,8 +39,8 @@
   position: absolute;
   top: 2.375rem;
   right: 0;
-  border-bottom-left-radius: 0.3125rem;
-  border-bottom-right-radius: 0.3125rem;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
   background: #fff;
   z-index: 7;
   overflow-y: auto;
@@ -67,6 +67,11 @@
 
 .panelListItem {
   width: 100%;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid #ccc;
+  }
+
   & button {
     margin: 0;
     text-align: right;

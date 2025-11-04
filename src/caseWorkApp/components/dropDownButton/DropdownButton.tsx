@@ -1,9 +1,9 @@
-import { useState, useRef } from "react";
-import DownArrow  from "../../assetsCWA/svgs/down.svg?react";
-import { LinkButton } from "../LinkButton/LinkButton";
+import { useRef, useState } from 'react';
+import DownArrow from '../../assetsCWA/svgs/down.svg?react';
+import { LinkButton } from '../LinkButton/LinkButton';
 
-import classes from "./DropdownButton.module.scss";
-import { useGlobalDropdownClose } from "../../hooks/useGlobalDropdownClose";
+import { useGlobalDropdownClose } from '../../hooks/useGlobalDropdownClose';
+import classes from './DropdownButton.module.scss';
 
 export type DropdownButtonItem = {
   id: string;
@@ -26,8 +26,8 @@ export const DropdownButton: React.FC<DropdownButtonProps> = ({
   dropDownItems,
   callBackFn,
   name,
-  dataTestId = "dropdown-btn",
-  ariaLabel = "dropdown",
+  dataTestId = 'dropdown-btn',
+  ariaLabel = 'dropdown',
   disabled = false,
   showLastItemSeparator = false
 }) => {
@@ -39,7 +39,7 @@ export const DropdownButton: React.FC<DropdownButtonProps> = ({
     dropDownBtnRef,
     panelRef,
     setButtonOpen,
-    "#dropdown-panel"
+    '#dropdown-panel'
   );
 
   const handleBtnClick = (id: string) => {
@@ -74,13 +74,7 @@ export const DropdownButton: React.FC<DropdownButtonProps> = ({
           id="dropdown-panel"
           data-testid={`dropdown-panel`}
         >
-          <ul
-            className={
-              showLastItemSeparator
-                ? `${classes.panelList} ${classes.panelListWithSeparator}`
-                : `${classes.panelList}`
-            }
-          >
+          <ul className={classes.panelList}>
             {dropDownItems.map((item) => (
               <li key={item.id} className={classes.panelListItem}>
                 <LinkButton
@@ -100,3 +94,4 @@ export const DropdownButton: React.FC<DropdownButtonProps> = ({
     </div>
   );
 };
+

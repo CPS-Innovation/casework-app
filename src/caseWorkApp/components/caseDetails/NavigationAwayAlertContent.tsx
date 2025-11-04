@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "../Button";
+import { Button } from "../button";
 import { LinkButton } from "../LinkButton/LinkButton";
 // import { CaseDocumentViewModel } from "../../../domain/CaseDocumentViewModel";
 // import { UnSavedRedactionDoc } from "../../../hooks/useNavigationAlert";

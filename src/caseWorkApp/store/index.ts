@@ -51,11 +51,11 @@ type StoreCWA = {
 export const useStoreCWA = create<StoreCWA>(
   // @ts-ignore-next-line
   devtools((set) => ({
-    handleTabSelection: (documentId: string) => set((state) => ({
+    handleTabSelection: (documentId) => set((state) => ({
       tabsState:
       {...state.tabsState,activeTabId: documentId}
     })),
-    handleClosePdf: (documentId: string, versionId: number, pdfId?: string) => set((state) => ({
+    handleClosePdf: (documentId, versionId, pdfId) => set((state) => ({
         tabsState: {
           ...state.tabsState,  
           items: state.tabsState.items.filter(

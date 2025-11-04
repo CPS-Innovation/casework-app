@@ -2,9 +2,9 @@ import AreaIcon from '../../assetsCWA/svgs/areaIcon.svg?react';
 import { DropdownButton } from '../dropDownButton/DropdownButton';
 import { LinkButton } from '../LinkButton/LinkButton';
 import Tooltip from '../tooltip';
-import classes from './documentViewportArea.module.scss';
+import classes from './index.module.scss';
 
-type TItems = { items: any };
+type TItems = { items: DropdownButtonItem[] };
 
 export type DropdownButtonItem = {
   id: string;
@@ -12,6 +12,7 @@ export type DropdownButtonItem = {
   ariaLabel: string;
   disabled: boolean;
 };
+
 export type DropdownButtonProps = {
   name?: string;
   dropDownItems: DropdownButtonItem[];
@@ -40,7 +41,7 @@ const DocumentViewportArea = ({ items }: TItems) => {
    {
       id: '3',
       label: true ? 'Hide delete page options' : 'Show dotate page options',
-      ariaLabel: true ? 'hide delete page options' : 'hide delete page options',
+      ariaLabel: true ? 'hide delete page options' : 'show delete page options',
       disabled: false
     },
     {
@@ -51,7 +52,7 @@ const DocumentViewportArea = ({ items }: TItems) => {
     },        
     {
       id: '5',
-      label: "Reclaffify",
+      label: "Reclassify",
       ariaLabel: 'reclassify',
       disabled: false
     },  
