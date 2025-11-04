@@ -226,9 +226,6 @@ export const CaseDocumentsSelectAccordion = (p: {
 
   return (
     <div>
-      <div>
-        <pre>{JSON.stringify(readDocumentIds, null, 2)}</pre>
-      </div>
       <a
         className="govuk-link"
         onClick={() => setIsExpandedController((x) => !x)}
@@ -260,7 +257,14 @@ export const CaseDocumentsSelectAccordion = (p: {
                   showLeftBorder={p.openDocumentIds.includes(
                     document.documentId
                   )}
-                  showUnreadNotesIndicator={true}
+                  notesStatus={(() => {
+                    if (
+                      document.cmsDocType.documentType === 'PCD' ||
+                      document.cmsDocType.documentCategory === 'Review'
+                    )
+                      return 'disabled';
+                    return document.hasNotes ? 'newNotes' : 'none';
+                  })()}
                   onDocumentClick={() => {
                     setReadDocumentIds((docIds) => [
                       ...new Set([...docIds, document.documentId])

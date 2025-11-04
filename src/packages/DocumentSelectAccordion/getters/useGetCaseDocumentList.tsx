@@ -39,7 +39,8 @@ export const documentSchema = z
     }),
     cmsOriginalFileName: z.string(),
     presentationTitle: z.string(),
-    isUnused: z.boolean()
+    isUnused: z.boolean(),
+    hasNotes: z.boolean()
   })
   .brand<'TDocument'>();
 export const documentListSchema = z.array(documentSchema);
