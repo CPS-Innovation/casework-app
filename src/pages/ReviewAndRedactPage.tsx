@@ -6,7 +6,14 @@ export const ReviewAndRedactPage = () => {
 
   return (
     <div>
-      {/* <pre>{JSON.stringify({ openDocumentIds }, null, 2)}</pre> */}
+      <button
+        onClick={() => {
+          setOpenDocumentIds([]);
+        }}
+      >
+        click me
+      </button>
+      <pre>{JSON.stringify({ openDocumentIds }, null, 2)}</pre>
       <CaseDocumentsSelectAccordion
         urn="54KR7689125"
         caseId={2160797}

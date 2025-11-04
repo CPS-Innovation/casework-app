@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import z from 'zod';
 import {
   DocumentSelectAccordion,
@@ -162,6 +162,35 @@ const getDocumentCategory = (
   return 'uncategorised' as const;
 };
 
+const safeJsonParse = (x: unknown) => {
+  try {
+    return { success: true, data: JSON.parse(x as string) } as const;
+  } catch (error) {
+    return { success: false, error: {} } as const;
+  }
+};
+
+const safeGetReadCaseDocumentIdsFromLocalStorage = (caseId: number) => {
+  const localStorageKey = `caseDocumentAccordionReadDocIds-${caseId}`;
+  const schema = z.array(z.string());
+  const readDocsJson = window.localStorage.getItem(localStorageKey) ?? '[]';
+  const readDocsJsonParsed = safeJsonParse(readDocsJson);
+  const readDocsSchemaParsed = schema.safeParse(readDocsJsonParsed.data);
+
+  return readDocsSchemaParsed.success ? readDocsSchemaParsed.data : [];
+};
+const safeSetReadCaseDocumentsFromLocalStorage = (p: {
+  caseId: number;
+  readDocumentIds: string[];
+}) => {
+  const localStorageKey = `caseDocumentAccordionReadDocIds-${p.caseId}`;
+
+  window.localStorage.setItem(
+    localStorageKey,
+    JSON.stringify(p.readDocumentIds)
+  );
+};
+
 export const CaseDocumentsSelectAccordion = (p: {
   urn: string;
   caseId: number;
@@ -170,6 +199,23 @@ export const CaseDocumentsSelectAccordion = (p: {
 }) => {
   const [isExpandedController, setIsExpandedController] = useState(false);
   const documentList = useGetCaseDocumentList({ urn: p.urn, caseId: p.caseId });
+  const [readDocumentIds, setReadDocumentIds] = useState<string[]>(
+    (() => {
+      const x = safeGetReadCaseDocumentIdsFromLocalStorage(p.caseId);
+      return x;
+    })()
+  );
+
+  useEffect(() => {
+    const newReadDocIds = [
+      ...new Set([...readDocumentIds, ...p.openDocumentIds])
+    ];
+
+    safeSetReadCaseDocumentsFromLocalStorage({
+      caseId: p.caseId,
+      readDocumentIds: newReadDocIds
+    });
+  }, [readDocumentIds]);
 
   const parsed = documentListSchema.safeParse(documentList.data);
 
@@ -188,6 +234,9 @@ export const CaseDocumentsSelectAccordion = (p: {
 
   return (
     <div>
+      <div>
+        <pre>{JSON.stringify(readDocumentIds, null, 2)}</pre>
+      </div>
       <a
         className="govuk-link"
         onClick={() => setIsExpandedController((x) => !x)}
@@ -215,11 +264,15 @@ export const CaseDocumentsSelectAccordion = (p: {
                   ActiveDocumentTag={p.openDocumentIds.includes(
                     document.documentId
                   )}
+                  NewTag={!readDocumentIds.includes(document.documentId)}
                   showLeftBorder={p.openDocumentIds.includes(
                     document.documentId
                   )}
                   showUnreadNotesIndicator={true}
                   onDocumentClick={() => {
+                    setReadDocumentIds((docIds) => [
+                      ...new Set([...docIds, document.documentId])
+                    ]);
                     const docSet = new Set([
                       ...p.openDocumentIds,
                       document.documentId
