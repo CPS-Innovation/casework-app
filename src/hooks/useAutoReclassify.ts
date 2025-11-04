@@ -1,12 +1,13 @@
 import { AxiosError } from 'axios';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSWRConfig } from 'swr';
 import useSWRMutation from 'swr/mutation';
+
 import { QUERY_KEYS } from '../constants/query';
 import { API_ENDPOINTS, URL } from '../constants/url';
-import { ReclassificationContext } from '../context/ReclassificationContext';
 import { AutoReclassifyResponseType } from '../schemas/classification';
+import { useMaterialTags } from '../stores';
 import { useBanner, useRequest } from './';
 
 export const useAutoReclassify = () => {
@@ -15,8 +16,7 @@ export const useAutoReclassify = () => {
   const { resetBanner, setBanner } = useBanner();
   const [errorCount, setErrorCount] = useState(0);
   const { mutate } = useSWRConfig();
-  // @ts-expect-error need to type ReclassificationContext or get rid eventually
-  const { setReclassifiedMaterialIds } = useContext(ReclassificationContext);
+  const { setTags } = useMaterialTags();
 
   const postAutoReclassify = () => {
     resetBanner();
@@ -31,9 +31,12 @@ export const useAutoReclassify = () => {
     postAutoReclassify,
     {
       onSuccess: async ({ data }) => {
-        const materialsProcessed = data.reclassifiedMaterials.length || 1;
-        setReclassifiedMaterialIds(
-          data?.reclassifiedMaterials?.map((material) => material?.materialId)
+        const totalMaterialsProcessed = data.reclassifiedMaterials.length || 1;
+        setTags(
+          data?.reclassifiedMaterials?.map((material) => ({
+            materialId: material?.materialId,
+            tagName: 'Reclassified'
+          }))
         );
 
         await mutate(QUERY_KEYS.CASE_MATERIAL);
@@ -41,7 +44,7 @@ export const useAutoReclassify = () => {
         setBanner({
           type: 'success',
           header: 'Reclassification successful',
-          content: `${materialsProcessed} Unused Material${materialsProcessed === 1 ? '' : 's'} reclassified successfully.`
+          content: `${totalMaterialsProcessed} Unused Material${totalMaterialsProcessed === 1 ? '' : 's'} reclassified successfully.`
         });
 
         navigate(URL.MATERIALS, { state: { persistBanner: true } });
