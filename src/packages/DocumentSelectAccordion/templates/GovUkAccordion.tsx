@@ -13,7 +13,7 @@ export const GovUkAccordionSectionTemplate = (p: {
   }, [p.isExpandedController]);
 
   return (
-    <div>
+    <>
       <div className="govuk-accordion__section">
         <div className="govuk-accordion__section-header">
           <h2 className="govuk-accordion__section-heading">
@@ -46,7 +46,7 @@ export const GovUkAccordionSectionTemplate = (p: {
       <div hidden={!isExpanded}>
         <div className="govuk-accordion-content-wrapper">{p.children}</div>
       </div>
-    </div>
+    </>
   );
 };
 

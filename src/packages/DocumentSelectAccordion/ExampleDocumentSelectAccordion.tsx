@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import z from 'zod';
 import { DocumentSelectAccordionDocumentTemplate } from './DocumentSelectAccordionDocument';
+import { DocumentSidebarWrapper } from './DocumentSidebarWrapper';
 import {
   categoryDetails,
   initDocsOnDocCategoryNamesMap
@@ -20,21 +21,27 @@ const safeJsonParse = (x: unknown) => {
   }
 };
 
-const safeGetReadCaseDocumentIdsFromLocalStorage = (caseId: number) => {
-  const localStorageKey = `caseDocumentAccordionReadDocIds-${caseId}`;
+const createLocalStorageKeyForDocumentIds = (caseId: number) =>
+  `caseDocumentAccordionReadDocIds-${caseId}`;
+
+const safeGetReadCaseDocumentIdsFromLocalStorage = (
+  caseId: number
+): string[] => {
+  const localStorageKey = createLocalStorageKeyForDocumentIds(caseId);
   const schema = z.array(z.string());
-  const readDocsJson = window.localStorage.getItem(localStorageKey) ?? '[]';
-  const readDocsJsonParsed = safeJsonParse(readDocsJson);
+  const readDocsJsonParsed = safeJsonParse(
+    window.localStorage.getItem(localStorageKey)
+  );
   const readDocsSchemaParsed = schema.safeParse(readDocsJsonParsed.data);
 
   return readDocsSchemaParsed.success ? readDocsSchemaParsed.data : [];
 };
-const safeSetReadCaseDocumentsFromLocalStorage = (p: {
+
+const safeSetReadCaseDocumentIdsFromLocalStorage = (p: {
   caseId: number;
   newReadDocIds: string[];
 }) => {
-  const localStorageKey = `caseDocumentAccordionReadDocIds-${p.caseId}`;
-
+  const localStorageKey = createLocalStorageKeyForDocumentIds(p.caseId);
   window.localStorage.setItem(localStorageKey, JSON.stringify(p.newReadDocIds));
 };
 
@@ -77,7 +84,7 @@ export const DocumentSelectAccordion = (p: {
     const newReadDocIds = [
       ...new Set([...readDocumentIds, ...p.activeDocumentIds])
     ];
-    safeSetReadCaseDocumentsFromLocalStorage({ caseId, newReadDocIds });
+    safeSetReadCaseDocumentIdsFromLocalStorage({ caseId, newReadDocIds });
   }, [readDocumentIds]);
 
   const docsOnDocCategoryNames = initDocsOnDocCategoryNamesMap();
@@ -100,55 +107,57 @@ export const DocumentSelectAccordion = (p: {
       >
         {isExpandedController ? 'Close' : 'Open'} all sections
       </a>
-      <GovUkAccordionTemplate>
-        {newData.map((item) => (
-          <GovUkAccordionSectionTemplate
-            key={item.key}
-            title={`${item.label} (${item.documents.length})`}
-            isExpandedController={isExpandedController}
-          >
-            {item.documents.length === 0 ? (
-              <div style={{ height: '60px', padding: '12px' }}>
-                There are no documents available.
-              </div>
-            ) : (
-              item.documents.map((document) => (
-                <DocumentSelectAccordionDocumentTemplate
-                  key={`${item.key}-${document.documentId}`}
-                  documentName={document.presentationTitle}
-                  documentDate={document.documentId}
-                  ActiveDocumentTag={activeDocumentIds.includes(
-                    document.documentId
-                  )}
-                  NewTag={!readDocumentIds.includes(document.documentId)}
-                  showLeftBorder={activeDocumentIds.includes(
-                    document.documentId
-                  )}
-                  notesStatus={(() => {
-                    if (
-                      document.cmsDocType.documentType === 'PCD' ||
-                      document.cmsDocType.documentCategory === 'Review'
-                    )
-                      return 'disabled';
-                    return document.hasNotes ? 'newNotes' : 'none';
-                  })()}
-                  onDocumentClick={() => {
-                    setReadDocumentIds((docIds) => [
-                      ...new Set([...docIds, document.documentId])
-                    ]);
-                    const docSet = new Set([
-                      ...activeDocumentIds,
+      <DocumentSidebarWrapper>
+        <GovUkAccordionTemplate>
+          {newData.map((item) => (
+            <GovUkAccordionSectionTemplate
+              key={item.key}
+              title={`${item.label} (${item.documents.length})`}
+              isExpandedController={isExpandedController}
+            >
+              {item.documents.length === 0 ? (
+                <div style={{ height: '60px', padding: '12px' }}>
+                  There are no documents available.
+                </div>
+              ) : (
+                item.documents.map((document) => (
+                  <DocumentSelectAccordionDocumentTemplate
+                    key={`${item.key}-${document.documentId}`}
+                    documentName={document.presentationTitle}
+                    documentDate={document.documentId}
+                    ActiveDocumentTag={activeDocumentIds.includes(
                       document.documentId
-                    ]);
-                    setActiveDocumentIds([...docSet]);
-                  }}
-                  onNotesClick={() => p.onNotesClick(document.documentId)}
-                />
-              ))
-            )}
-          </GovUkAccordionSectionTemplate>
-        ))}
-      </GovUkAccordionTemplate>
+                    )}
+                    NewTag={!readDocumentIds.includes(document.documentId)}
+                    showLeftBorder={activeDocumentIds.includes(
+                      document.documentId
+                    )}
+                    notesStatus={(() => {
+                      if (
+                        document.cmsDocType.documentType === 'PCD' ||
+                        document.cmsDocType.documentCategory === 'Review'
+                      )
+                        return 'disabled';
+                      return document.hasNotes ? 'newNotes' : 'none';
+                    })()}
+                    onDocumentClick={() => {
+                      setReadDocumentIds((docIds) => [
+                        ...new Set([...docIds, document.documentId])
+                      ]);
+                      const docSet = new Set([
+                        ...activeDocumentIds,
+                        document.documentId
+                      ]);
+                      setActiveDocumentIds([...docSet]);
+                    }}
+                    onNotesClick={() => p.onNotesClick(document.documentId)}
+                  />
+                ))
+              )}
+            </GovUkAccordionSectionTemplate>
+          ))}
+        </GovUkAccordionTemplate>
+      </DocumentSidebarWrapper>
 
       <pre>{JSON.stringify(p.documentList, null, 2)}</pre>
     </div>

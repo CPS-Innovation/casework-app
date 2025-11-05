@@ -1,8 +1,19 @@
 .govuk-frontend-supported .govuk-accordion {
   border:0;
+  margin: 0;
 
   .govuk-accordion-content-wrapper {
     border-top: solid 1px #b1b4b6;
+  }
+
+  .govuk-accordion__section {
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: #b1b4b6;
+
+    &:nth-last-child(2) {
+      border-bottom-width: 0;
+    }
   }
 
   .govuk-accordion__section-button {
