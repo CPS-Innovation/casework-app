@@ -39,7 +39,12 @@ export const DocumentSelectAccordionDocumentTemplate = (p: {
       <div
         style={{ display: 'flex', justifyContent: 'center', alignItems: 'end' }}
       >
-        <a className="govuk-link" onClick={() => p.onNotesClick()}>
+        <a
+          className={`govuk-link ${p.notesStatus === 'disabled' ? 'disabled' : ''}`}
+          onClick={() => {
+            if (p.notesStatus !== 'disabled') p.onNotesClick();
+          }}
+        >
           <NotesIcon width={20} notesStatus={p.notesStatus} />
         </a>
       </div>

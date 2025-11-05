@@ -87,6 +87,10 @@
     &:hover {
       color: #003078
     }
+   
+    &.disabled {
+      cursor: default;
+    }
   }
 }
 
