@@ -1,10 +1,12 @@
+import './GovUkTextarea.scss';
+
 type TTextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 type TProps = Omit<TTextareaProps, 'onInput'> & {
   onInput: (x: string) => void;
 };
 
-export const Textarea = (p: TProps) => {
-  const { style, className, onInput, ...otherProps } = p;
+export const GovUkTextarea = (p: TProps) => {
+  const { className, onInput, ...otherProps } = p;
 
   return (
     <textarea
@@ -13,7 +15,6 @@ export const Textarea = (p: TProps) => {
         const x = (e.target as unknown as { value: string }).value;
         onInput(x);
       }}
-      style={{ marginBottom: 0, ...style }}
       {...otherProps}
     />
   );

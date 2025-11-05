@@ -13,8 +13,8 @@ export const CloseIconButton = (p: { onClick: () => void }) => {
       height="45px"
       width="45px"
     >
-      <path stroke="white" stroke-width="3" d="M7.25,7.25,17.75,17.75" />
-      <path stroke="white" stroke-width="3" d="M7.25,17.75,17.75,7.25" />
+      <path stroke="white" strokeWidth="3" d="M7.25,7.25,17.75,17.75" />
+      <path stroke="white" strokeWidth="3" d="M7.25,17.75,17.75,7.25" />
     </svg>
   );
 };
@@ -26,8 +26,8 @@ export const CloseIcon = () => {
       height="45px"
       width="45px"
     >
-      <path stroke="white" stroke-width="3" d="M7.25,7.25,17.75,17.75" />
-      <path stroke="white" stroke-width="3" d="M7.25,17.75,17.75,7.25" />
+      <path stroke="white" strokeWidth="3" d="M7.25,7.25,17.75,17.75" />
+      <path stroke="white" strokeWidth="3" d="M7.25,17.75,17.75,7.25" />
     </svg>
   );
 };

@@ -3,7 +3,7 @@ import { DocumentSidebarWrapper } from './DocumentSidebarWrapper';
 import { CloseIconButton } from './templates/CloseIconButton';
 import { GovUkButton } from './templates/GovUkButton';
 import { GovUkLink } from './templates/GovUkLink';
-import { Textarea } from './templates/Textarea';
+import { GovUkTextarea } from './templates/GovUkTextarea';
 
 export const DocumentSidebarNotes = (p: {
   documentId: string;
@@ -39,7 +39,7 @@ export const DocumentSidebarNotes = (p: {
         >
           Add a note to the document
         </label>
-        <Textarea
+        <GovUkTextarea
           id="notes-textarea"
           value={text}
           onInput={(x) => setText(x)}
