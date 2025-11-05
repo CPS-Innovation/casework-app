@@ -1,9 +1,5 @@
 import { useEffect, useState } from 'react';
 import z from 'zod';
-import {
-  DocumentSelectAccordionSectionTemplate,
-  DocumentSelectAccordionTemplate
-} from './DocumentSelectAccordion';
 import { DocumentSelectAccordionDocumentTemplate } from './DocumentSelectAccordionDocument';
 import {
   categoryDetails,
@@ -15,6 +11,10 @@ import {
   TDocumentList,
   useGetCaseDocumentList
 } from './getters/useGetCaseDocumentList';
+import {
+  GovUkAccordionSectionTemplate,
+  GovUkAccordionTemplate
+} from './templates/GovUkAccordion';
 
 const unusedCommRegexes = [
   //UM, must be standalone word
@@ -300,9 +300,9 @@ const DocumentSelectAccordion = (p: {
       >
         {isExpandedController ? 'Close' : 'Open'} all sections
       </a>
-      <DocumentSelectAccordionTemplate>
+      <GovUkAccordionTemplate>
         {newData.map((item) => (
-          <DocumentSelectAccordionSectionTemplate
+          <GovUkAccordionSectionTemplate
             key={item.key}
             title={`${item.label} (${item.documents.length})`}
             isExpandedController={isExpandedController}
@@ -346,9 +346,9 @@ const DocumentSelectAccordion = (p: {
                 />
               ))
             )}
-          </DocumentSelectAccordionSectionTemplate>
+          </GovUkAccordionSectionTemplate>
         ))}
-      </DocumentSelectAccordionTemplate>
+      </GovUkAccordionTemplate>
 
       <pre>{JSON.stringify(p.documentList, null, 2)}</pre>
     </div>

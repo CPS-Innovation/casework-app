@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useState } from 'react';
-import './DocumentSelectAccordion.scss';
+import './GovUkAccordion.scss';
 
-export const DocumentSelectAccordionSectionTemplate = (p: {
+export const GovUkAccordionSectionTemplate = (p: {
   title: string;
   children: ReactNode;
   isExpandedController: boolean;
@@ -50,7 +50,7 @@ export const DocumentSelectAccordionSectionTemplate = (p: {
   );
 };
 
-export const DocumentSelectAccordionTemplate = (p: { children: ReactNode }) => {
+export const GovUkAccordionTemplate = (p: { children: ReactNode }) => {
   return (
     <div className="govuk-accordion" data-testid="accordion">
       {p.children}
