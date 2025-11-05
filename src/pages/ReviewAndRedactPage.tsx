@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { CaseDocumentsSelectAccordion } from '../packages/DocumentSelectAccordion/ExampleDocumentSelectAccordion';
+import { DocumentSidebar } from '../packages/DocumentSelectAccordion/ExampleDocumentSelectAccordion';
 
 export const ReviewAndRedactPage = () => {
   const [openDocumentIds, setOpenDocumentIds] = useState<string[]>([]);
 
   return (
     <div>
-      <CaseDocumentsSelectAccordion
+      <DocumentSidebar
         urn="54KR7689125"
         caseId={2160797}
         openDocumentIds={openDocumentIds}
