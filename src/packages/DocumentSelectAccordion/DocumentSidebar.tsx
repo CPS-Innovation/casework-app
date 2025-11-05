@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { DocumentSelectAccordion } from './ExampleDocumentSelectAccordion';
+import { DocumentSelectAccordion } from './DocumentSelectAccordion';
 import {
   documentListSchema,
   useGetCaseDocumentList

@@ -6,7 +6,7 @@ import {
   categoryDetails,
   initDocsOnDocCategoryNamesMap
 } from './getters/categoriseDocument';
-import { getDocumentCategory } from './getters/categoriseDocumentHelpers';
+import { categoriseDocument } from './getters/categoriseDocumentHelpers';
 import { TDocumentList } from './getters/useGetCaseDocumentList';
 import {
   GovUkAccordionSectionTemplate,
@@ -89,7 +89,7 @@ export const DocumentSelectAccordion = (p: {
 
   const docsOnDocCategoryNames = initDocsOnDocCategoryNamesMap();
   p.documentList.forEach((doc) => {
-    const categoryName = getDocumentCategory(doc);
+    const categoryName = categoriseDocument(doc);
     docsOnDocCategoryNames[categoryName].push(doc);
   });
   const newData = categoryDetails.map((x) => ({
