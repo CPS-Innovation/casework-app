@@ -2,6 +2,20 @@ import { DocumentSidebarTag } from './DocumentSidebarTag';
 import './templates/GovUkAccordion.scss';
 import { NotesIcon } from './templates/NotesIcon';
 
+export const DocumentSidebarAccordionNoDocumentsAvailable = () => {
+  return (
+    <div
+      style={{
+        borderTop: 'solid 1px #b1b4b6',
+        background: '#ffffff',
+        height: '60px',
+        padding: '12px'
+      }}
+    >
+      There are no documents available.
+    </div>
+  );
+};
 export const DocumentSidebarAccordionDocumentTemplate = (p: {
   documentName: string;
   documentDate: string;

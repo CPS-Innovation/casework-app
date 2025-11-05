@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react';
-import { DocumentSidebarAccordionDocumentTemplate } from './DocumentSidebarAccordionDocument';
+import {
+  DocumentSidebarAccordionDocumentTemplate,
+  DocumentSidebarAccordionNoDocumentsAvailable
+} from './DocumentSidebarAccordionDocument';
 import { DocumentSidebarWrapper } from './DocumentSidebarWrapper';
 import { TDocumentList } from './getters/useGetCaseDocumentList';
 import {
@@ -82,9 +85,7 @@ export const DocumentSidebarAccordion = (p: {
               isExpandedController={isExpandedController}
             >
               {item.documents.length === 0 ? (
-                <div style={{ height: '60px', padding: '12px' }}>
-                  There are no documents available.
-                </div>
+                <DocumentSidebarAccordionNoDocumentsAvailable />
               ) : (
                 item.documents.map((document) => (
                   <DocumentSidebarAccordionDocumentTemplate

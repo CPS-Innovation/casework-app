@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { DocumentSidebarAccordion } from './DocumentSidebarAccordion';
+import { DocumentSidebarNotes } from './DocumentSidebarNotes';
 import {
   documentListSchema,
   useGetCaseDocumentList
@@ -42,16 +43,10 @@ export const DocumentSidebar = (p: {
     const documentId = mode.documentId;
 
     return (
-      <>
-        <button
-          onClick={() => {
-            setMode({ mode: 'accordion' });
-          }}
-        >
-          go back
-        </button>
-        {documentId}
-      </>
+      <DocumentSidebarNotes
+        documentId={documentId}
+        onBackButtonClick={() => setMode({ mode: 'accordion' })}
+      />
     );
   }
 };
