@@ -57,3 +57,19 @@ export const GovUkAccordionTemplate = (p: { children: ReactNode }) => {
     </div>
   );
 };
+export const GovUkAccordionOpenCloseLinkTemplate = (p: {
+  isExpandedController: boolean;
+  onClick: () => void;
+}) => {
+  return (
+    <div style={{ display: 'flex', justifyContent: 'end' }}>
+      <a
+        className="govuk-link"
+        onClick={() => p.onClick()}
+        style={{ paddingBottom: '8px', cursor: 'pointer' }}
+      >
+        {p.isExpandedController ? 'Close' : 'Open'} all sections
+      </a>
+    </div>
+  );
+};

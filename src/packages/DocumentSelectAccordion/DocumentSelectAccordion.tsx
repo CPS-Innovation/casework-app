@@ -9,6 +9,7 @@ import {
 import { categoriseDocument } from './getters/categoriseDocumentHelpers';
 import { TDocumentList } from './getters/useGetCaseDocumentList';
 import {
+  GovUkAccordionOpenCloseLinkTemplate,
   GovUkAccordionSectionTemplate,
   GovUkAccordionTemplate
 } from './templates/GovUkAccordion';
@@ -100,13 +101,10 @@ export const DocumentSelectAccordion = (p: {
 
   return (
     <div>
-      <a
-        className="govuk-link"
+      <GovUkAccordionOpenCloseLinkTemplate
+        isExpandedController={isExpandedController}
         onClick={() => setIsExpandedController((x) => !x)}
-        style={{ float: 'right', paddingBottom: '8px', cursor: 'pointer' }}
-      >
-        {isExpandedController ? 'Close' : 'Open'} all sections
-      </a>
+      />
       <DocumentSidebarWrapper>
         <GovUkAccordionTemplate>
           {newData.map((item) => (
@@ -159,7 +157,7 @@ export const DocumentSelectAccordion = (p: {
         </GovUkAccordionTemplate>
       </DocumentSidebarWrapper>
 
-      <pre>{JSON.stringify(p.documentList, null, 2)}</pre>
+      {/* <pre>{JSON.stringify(p.documentList, null, 2)}</pre> */}
     </div>
   );
 };

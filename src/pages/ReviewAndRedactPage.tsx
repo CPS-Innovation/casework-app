@@ -12,6 +12,7 @@ export const ReviewAndRedactPage = () => {
         openDocumentIds={openDocumentIds}
         onSetDocumentOpenIds={(docIds) => setOpenDocumentIds(docIds)}
       />
+      <br />
     </div>
   );
 };
