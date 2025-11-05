@@ -1,6 +1,5 @@
 import { http, HttpResponse } from 'msw';
 import { API_ENDPOINTS, POLARIS_GATEWAY_URL } from '../constants/url.ts';
-import { mockCaseMaterials } from './data/caseMaterials';
 
 import { PCDListingType } from '../schemas/pcd';
 import { mockPcdListResponse, mockPcdRequestResponse } from './data/pcdRequest';
@@ -52,15 +51,6 @@ export const handlers = [
   http.get('http://localhost:3000/cases/:caseId/history', () => {
     return HttpResponse.json(mockPcdCaseHistory, { status: 200 });
   }),
-
-  http.get(
-    `${POLARIS_GATEWAY_URL}/api/urns/16123630825/cases/2167259/materials`,
-    async () => {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      return HttpResponse.json(mockCaseMaterials(), { status: 200 });
-    }
-  ),
 
   http.patch(`${POLARIS_GATEWAY_URL}/material/rename`, async ({ request }) => {
     const body = (await request.json()) as {

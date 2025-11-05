@@ -29,7 +29,7 @@ export const CommunicationsTable = () => {
     filteredData,
     loading: caseMaterialsLoading,
     error
-  } = useCaseMaterials('communications');
+  } = useCaseMaterials({ dataType: 'communications' });
 
   const { filters } = useFilters('communications');
   const { materialTags } = useMaterialTags();
