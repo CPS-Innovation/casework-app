@@ -1,4 +1,5 @@
 import { DocumentSidebarWrapper } from './DocumentSidebarWrapper';
+import { CloseButton } from './templates/CloseButton';
 
 export const DocumentSidebarNotes = (p: {
   documentId: string;
@@ -6,12 +7,19 @@ export const DocumentSidebarNotes = (p: {
 }) => {
   return (
     <DocumentSidebarWrapper>
-      <div style={{ padding: '10px' }}>
-        <a className="govuk-link" onClick={() => p.onBackButtonClick()}>
-          go back
-        </a>
-        {p.documentId}
+      <div
+        style={{
+          borderBottom: 'solid 1px #b1b4b6',
+          display: 'flex',
+          justifyContent: 'space-between'
+        }}
+      >
+        <div style={{ fontSize: '20px', fontWeight: 700, padding: '10px' }}>
+          Notes
+        </div>
+        <CloseButton onClick={() => p.onBackButtonClick()} />
       </div>
+      <div style={{ padding: '10px' }}>{p.documentId}</div>
     </DocumentSidebarWrapper>
   );
 };
