@@ -1,14 +1,11 @@
 import { useState } from 'react';
-import { CommonTabsProps } from './types';
 import { useLastFocus } from '../../hooks/useLastFocus';
-import { Modal } from "../modal/Modal";
-import { NavigationAwayAlertContent } from "../caseDetails/NavigationAwayAlertContent";
-import TabButtons from './TabButtons';
 import { useStoreCWA } from '../../store';
+import TabButtons from './TabButtons';
 import classes from './Tabs.module.scss';
+import { CommonTabsProps } from './types';
 
 export type TabsProps = CommonTabsProps & {
-  // activeTabId: string | undefined;
   handleTabSelection: (documentId: string) => void;
   handleClosePdf: (documentId: string, versionId: number) => void;
   handleUnLockDocuments: (documentIds: string[]) => void;
@@ -21,20 +18,22 @@ export const Tabs: React.FC<TabsProps> = ({
   idPrefix,
   items,
   title,
-  // activeTabId,
   handleTabSelection,
   handleClosePdf,
   handleUnLockDocuments,
   dcfMode,
   ...attributes
 }) => {
+  // @ts-expect-error
   const [showDocumentNavAlert, setShowDocumentNavAlert] = useState(false);
 
   useLastFocus('#case-details-search');
 
   const { tabsState } = useStoreCWA();
-  
-  const activeTabArrayPos = items.findIndex((item) => item.id === tabsState?.activeTabId);
+
+  const activeTabArrayPos = items.findIndex(
+    (item) => item.id === tabsState?.activeTabId
+  );
   const activeTabIndex = activeTabArrayPos === -1 ? 0 : activeTabArrayPos;
 
   const handleCloseTab = () => {
@@ -60,15 +59,9 @@ export const Tabs: React.FC<TabsProps> = ({
     handleClosePdf(items[activeTabIndex].id, items[activeTabIndex].versionId);
   };
 
-  const handleNavigateAwayCancelAction = () => {
-    setShowDocumentNavAlert(false);
-  };
-
-  const handleNavigateAwayContinueAction = (documentIds: string[]) => {
-    setShowDocumentNavAlert(false);
-    localHandleClosePdf();
-    handleUnLockDocuments(documentIds);
-  };
+  // const handleNavigateAwayCancelAction = () => {
+  //   setShowDocumentNavAlert(false);
+  // };
 
   const panels = items.map((item, index) => {
     const { id: itemId, panel } = item;
@@ -114,7 +107,7 @@ export const Tabs: React.FC<TabsProps> = ({
   }));
 
   return (
-    <>  
+    <>
       <div
         data-testid="tabs"
         className={`govuk-tabs ${classes.tabs} ${className || ''} `}
@@ -130,23 +123,6 @@ export const Tabs: React.FC<TabsProps> = ({
         />
         {panels}
       </div>
-
-      {showDocumentNavAlert && (
-        <Modal
-          isVisible
-          handleClose={handleNavigateAwayCancelAction}
-          type={"alert"}
-          ariaLabel="Unsaved redaction warning modal"
-          ariaDescription="You are navigating away from document with unsaved redaction"
-        >
-          <NavigationAwayAlertContent
-            type="document"
-            documentId={tabsState?.activeTabId!}
-            handleCancelAction={handleNavigateAwayCancelAction}
-            handleContinueAction={handleNavigateAwayContinueAction}
-          />
-        </Modal>
-      )}
     </>
   );
 };

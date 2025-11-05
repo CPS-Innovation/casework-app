@@ -1,7 +1,7 @@
 import { useAppInsightsContext } from "@microsoft/applicationinsights-react-js";
 import { useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useUserDetails } from "../../../app/auth";
+// import { useUserDetails } from "../../../app/auth";
 type AppInsightsTrackEventNames =
   | "Search URN"
   | "Back To Search URN"
@@ -194,7 +194,8 @@ const eventDescription: { [key in AppInsightsTrackEventNames]: string } = {
 const useAppInsightsTrackEvent = () => {
   const { id: caseId, urn } = useParams<{ id: string; urn: string }>();
   const appInsights = useAppInsightsContext();
-  const userDetails = useUserDetails();
+  //const userDetails = useUserDetails();
+  const userDetails = function(){};
 
   const trackEvent = useCallback(
     (
@@ -232,7 +233,8 @@ const useAppInsightsTrackEvent = () => {
 
 const useAppInsightsTrackPageView = (name: string) => {
   const appInsights = useAppInsightsContext();
-  const userDetails = useUserDetails();
+  // const userDetails = useUserDetails();
+  const userDetails = function(){};
 
   const trackPageView = (name: string) => {
     if (!name || !appInsights?.trackPageView) {
