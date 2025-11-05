@@ -260,9 +260,11 @@ const DocumentSelectAccordion = (p: {
     return [...set1].every((item) => set2.has(item));
   };
 
+  //handle two-way binding: parent to child
   useEffect(() => {
     if (!isNoChangeInActiveDocIds()) setActiveDocumentIds(p.activeDocumentIds);
   }, [p.activeDocumentIds]);
+  //handle two-way binding: child to parent
   useEffect(() => {
     if (!isNoChangeInActiveDocIds())
       p.onSetActiveDocumentIds(activeDocumentIds);
