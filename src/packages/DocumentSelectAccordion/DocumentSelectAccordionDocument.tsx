@@ -28,7 +28,7 @@ const NotesIcon = (p: {
   );
 };
 
-export const DocumentSelectAccordionDocument = (p: {
+export const DocumentSelectAccordionDocumentTemplate = (p: {
   documentName: string;
   documentDate: string;
   ActiveDocumentTag?: boolean;

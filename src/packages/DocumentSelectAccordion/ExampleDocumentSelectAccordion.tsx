@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import z from 'zod';
 import {
-  DocumentSelectAccordion,
-  DocumentSelectAccordionSection
+  DocumentSelectAccordionSectionTemplate,
+  DocumentSelectAccordionTemplate
 } from './DocumentSelectAccordion';
-import { DocumentSelectAccordionDocument } from './DocumentSelectAccordionDocument';
+import { DocumentSelectAccordionDocumentTemplate } from './DocumentSelectAccordionDocument';
 import {
   categoryDetails,
   initDocsOnDocCategoryNamesMap
@@ -12,6 +12,7 @@ import {
 import {
   documentListSchema,
   documentSchema,
+  TDocumentList,
   useGetCaseDocumentList
 } from './getters/useGetCaseDocumentList';
 
@@ -237,9 +238,9 @@ export const CaseDocumentsSelectAccordion = (p: {
         >
           {isExpandedController ? 'Close' : 'Open'} all sections
         </a>
-        <DocumentSelectAccordion>
+        <DocumentSelectAccordionTemplate>
           {newData.map((item) => (
-            <DocumentSelectAccordionSection
+            <DocumentSelectAccordionSectionTemplate
               key={item.key}
               title={`${item.label} (${item.documents.length})`}
               isExpandedController={isExpandedController}
@@ -250,7 +251,7 @@ export const CaseDocumentsSelectAccordion = (p: {
                 </div>
               ) : (
                 item.documents.map((document) => (
-                  <DocumentSelectAccordionDocument
+                  <DocumentSelectAccordionDocumentTemplate
                     key={`${item.key}-${document.documentId}`}
                     documentName={document.presentationTitle}
                     documentDate={document.documentId}
@@ -288,9 +289,9 @@ export const CaseDocumentsSelectAccordion = (p: {
                   />
                 ))
               )}
-            </DocumentSelectAccordionSection>
+            </DocumentSelectAccordionSectionTemplate>
           ))}
-        </DocumentSelectAccordion>
+        </DocumentSelectAccordionTemplate>
 
         <pre>{JSON.stringify(documentList.data, null, 2)}</pre>
       </div>
@@ -312,4 +313,102 @@ export const CaseDocumentsSelectAccordion = (p: {
       </>
     );
   }
+};
+
+const DocumentSelectAccordion = (p: {
+  caseId: number;
+  documentList: TDocumentList;
+  openDocumentIds: string[];
+  onNotesClick: (docId: string) => void;
+  onSetDocumentOpenIds: (docIds: string[]) => void;
+}) => {
+  const [isExpandedController, setIsExpandedController] = useState(false);
+  const [readDocumentIds, setReadDocumentIds] = useState<string[]>(
+    safeGetReadCaseDocumentIdsFromLocalStorage(p.caseId)
+  );
+
+  useEffect(() => {
+    const newReadDocIds = [
+      ...new Set([...readDocumentIds, ...p.openDocumentIds])
+    ];
+
+    safeSetReadCaseDocumentsFromLocalStorage({
+      caseId: p.caseId,
+      newReadDocIds
+    });
+  }, [readDocumentIds]);
+
+  const docsOnDocCategoryNames = initDocsOnDocCategoryNamesMap();
+  p.documentList.forEach((doc) => {
+    const categoryName = getDocumentCategory(doc);
+    docsOnDocCategoryNames[categoryName].push(doc);
+  });
+  const newData = categoryDetails.map((x) => ({
+    key: x.label,
+    label: x.label,
+    documents: docsOnDocCategoryNames[x.categoryName]
+  }));
+
+  return (
+    <div>
+      <a
+        className="govuk-link"
+        onClick={() => setIsExpandedController((x) => !x)}
+        style={{ float: 'right', paddingBottom: '8px', cursor: 'pointer' }}
+      >
+        {isExpandedController ? 'Close' : 'Open'} all sections
+      </a>
+      <DocumentSelectAccordionTemplate>
+        {newData.map((item) => (
+          <DocumentSelectAccordionSectionTemplate
+            key={item.key}
+            title={`${item.label} (${item.documents.length})`}
+            isExpandedController={isExpandedController}
+          >
+            {item.documents.length === 0 ? (
+              <div style={{ height: '60px', padding: '12px' }}>
+                There are no documents available.
+              </div>
+            ) : (
+              item.documents.map((document) => (
+                <DocumentSelectAccordionDocumentTemplate
+                  key={`${item.key}-${document.documentId}`}
+                  documentName={document.presentationTitle}
+                  documentDate={document.documentId}
+                  ActiveDocumentTag={p.openDocumentIds.includes(
+                    document.documentId
+                  )}
+                  NewTag={!readDocumentIds.includes(document.documentId)}
+                  showLeftBorder={p.openDocumentIds.includes(
+                    document.documentId
+                  )}
+                  notesStatus={(() => {
+                    if (
+                      document.cmsDocType.documentType === 'PCD' ||
+                      document.cmsDocType.documentCategory === 'Review'
+                    )
+                      return 'disabled';
+                    return document.hasNotes ? 'newNotes' : 'none';
+                  })()}
+                  onDocumentClick={() => {
+                    setReadDocumentIds((docIds) => [
+                      ...new Set([...docIds, document.documentId])
+                    ]);
+                    const docSet = new Set([
+                      ...p.openDocumentIds,
+                      document.documentId
+                    ]);
+                    p.onSetDocumentOpenIds([...docSet]);
+                  }}
+                  onNotesClick={() => p.onNotesClick(document.documentId)}
+                />
+              ))
+            )}
+          </DocumentSelectAccordionSectionTemplate>
+        ))}
+      </DocumentSelectAccordionTemplate>
+
+      <pre>{JSON.stringify(p.documentList, null, 2)}</pre>
+    </div>
+  );
 };
