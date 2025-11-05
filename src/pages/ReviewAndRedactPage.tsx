@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { DocumentSidebar } from '../packages/DocumentSelectAccordion/ExampleDocumentSelectAccordion';
+import { DocumentSidebar } from '../packages/DocumentSelectAccordion/DocumentSidebar';
 
 export const ReviewAndRedactPage = () => {
   const [openDocumentIds, setOpenDocumentIds] = useState<string[]>([]);

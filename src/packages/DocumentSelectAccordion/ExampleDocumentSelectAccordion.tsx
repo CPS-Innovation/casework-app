@@ -6,11 +6,7 @@ import {
   initDocsOnDocCategoryNamesMap
 } from './getters/categoriseDocument';
 import { getDocumentCategory } from './getters/categoriseDocumentHelpers';
-import {
-  documentListSchema,
-  TDocumentList,
-  useGetCaseDocumentList
-} from './getters/useGetCaseDocumentList';
+import { TDocumentList } from './getters/useGetCaseDocumentList';
 import {
   GovUkAccordionSectionTemplate,
   GovUkAccordionTemplate
@@ -42,58 +38,7 @@ const safeSetReadCaseDocumentsFromLocalStorage = (p: {
   window.localStorage.setItem(localStorageKey, JSON.stringify(p.newReadDocIds));
 };
 
-export const DocumentSidebar = (p: {
-  urn: string;
-  caseId: number;
-  openDocumentIds: string[];
-  onSetDocumentOpenIds: (docIds: string[]) => void;
-}) => {
-  const { caseId, urn } = p;
-  const documentList = useGetCaseDocumentList({ urn, caseId });
-  const [mode, setMode] = useState<
-    { mode: 'accordion' } | { mode: 'notes'; documentId: string }
-  >({ mode: 'accordion' });
-
-  const parsed = documentListSchema.safeParse(documentList.data);
-
-  if (!parsed.success) return <></>;
-
-  if (mode.mode === 'accordion')
-    return (
-      <div>
-        <DocumentSelectAccordion
-          caseId={caseId}
-          documentList={documentList.data}
-          activeDocumentIds={p.openDocumentIds}
-          onSetActiveDocumentIds={(docIds) => {
-            p.onSetDocumentOpenIds(docIds);
-          }}
-          onNotesClick={(docId: string) =>
-            setMode({ mode: 'notes', documentId: docId })
-          }
-        />
-      </div>
-    );
-
-  if (mode.mode === 'notes') {
-    const documentId = mode.documentId;
-
-    return (
-      <>
-        <button
-          onClick={() => {
-            setMode({ mode: 'accordion' });
-          }}
-        >
-          go back
-        </button>
-        {documentId}
-      </>
-    );
-  }
-};
-
-const DocumentSelectAccordion = (p: {
+export const DocumentSelectAccordion = (p: {
   caseId: number;
   documentList: TDocumentList;
   activeDocumentIds: string[];
