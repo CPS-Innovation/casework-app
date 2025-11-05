@@ -55,7 +55,7 @@ export const useStoreCWA = create<StoreCWA>(
       tabsState:
       {...state.tabsState,activeTabId: documentId}
     })),
-    handleClosePdf: (documentId, versionId, pdfId) => set((state) => ({
+    handleClosePdf: () => set((state) => ({
         tabsState: {
           ...state.tabsState,  
           items: state.tabsState.items.filter(

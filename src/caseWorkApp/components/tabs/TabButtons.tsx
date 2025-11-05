@@ -1,6 +1,6 @@
 import { useEffect, useRef, useMemo } from "react";
 import classes from "./Tabs.module.scss";
-import { Tab } from "../../../components/Tabs/Tabs";
+// import { Tab } from "../../../components/Tabs/Tabs";
 import  CloseIcon  from "../../assetsCWA/svgs/closeIconBold.svg?react";
 import DownArrow  from "../../assetsCWA/svgs/down.svg?react";
 import { LinkButton } from "../../components/LinkButton/LinkButton";

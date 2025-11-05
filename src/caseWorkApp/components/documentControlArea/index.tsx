@@ -29,7 +29,7 @@ import './styles.scss';
 //   console.log('close pgf handler');
 // };
 
-const unlockDocumentsHandler = (documentId: string[]): void => {
+const unlockDocumentsHandler = (): void => {
   console.log('unlockDocumentsHandler');
 };
 

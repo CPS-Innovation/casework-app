@@ -1,10 +1,11 @@
+import { useState } from 'react';
 import AreaIcon from '../../assetsCWA/svgs/areaIcon.svg?react';
 import { DropdownButton } from '../dropDownButton/DropdownButton';
 import { LinkButton } from '../LinkButton/LinkButton';
 import Tooltip from '../tooltip';
 import classes from './index.module.scss';
 
-type TItems = { items: DropdownButtonItem[] };
+// type TItems = { items: DropdownButtonItem[] };
 
 export type DropdownButtonItem = {
   id: string;
@@ -24,7 +25,13 @@ export type DropdownButtonProps = {
   icon?: React.ReactElement;
 };
 
-const DocumentViewportArea = ({ items }: TItems) => {
+const DocumentViewportArea = () => {
+  const [readactAreaState, setReadactAreaState] = useState<boolean>(false);
+
+  const handleRedactAreaToolButtonClick = () => {
+    setReadactAreaState(!readactAreaState);
+  };
+
   const dropDownItems: DropdownButtonItem[] = [
     {
       id: '1',
@@ -34,63 +41,41 @@ const DocumentViewportArea = ({ items }: TItems) => {
     },
     {
       id: '2',
-      label: "Rotate document pages",
+      label: 'Rotate document pages',
       ariaLabel: 'rotate document pages',
       disabled: false
     },
-   {
+    {
       id: '3',
       label: true ? 'Hide delete page options' : 'Show dotate page options',
       ariaLabel: true ? 'hide delete page options' : 'show delete page options',
       disabled: false
     },
-    {
-      id: '4',
-      label: "Discard",
-      ariaLabel: 'discard',
-      disabled: false
-    },        
-    {
-      id: '5',
-      label: "Reclassify",
-      ariaLabel: 'reclassify',
-      disabled: false
-    },  
-    {
-      id: '6',
-      label: 'Rename',
-      ariaLabel: 'rename',
-      disabled: false
-    }
+    { id: '4', label: 'Discard', ariaLabel: 'discard', disabled: false },
+    { id: '5', label: 'Reclassify', ariaLabel: 'reclassify', disabled: false },
+    { id: '6', label: 'Rename', ariaLabel: 'rename', disabled: false }
   ];
 
   return (
     <div className={classes.content}>
       <p>MG1 CARMINE Victim</p>
       <Tooltip
-        text={
-          // contextData.areaOnlyRedactionMode
-          //   ? "Redact area tool Off"
-          //   :
-          'Redact area tool On'
-        }
+        text={readactAreaState ? 'Redact area tool On' : 'Redact area tool Off'}
       >
         <LinkButton
           className={
-            // contextData.areaOnlyRedactionMode
-            //   ? `${classes.areaToolBtn} ${classes.areaToolBtnEnabled}`
-            //   :
-            classes.areaToolBtn
+            readactAreaState
+              ? `${classes.areaToolBtn} ${classes.areaToolBtnEnabled}`
+              : `${classes.areaToolBtn}`
           }
-          // dataTestId={`btn-area-tool-${contextData.tabIndex}`}
-          // id={`btn-area-tool-${contextData.tabIndex}`}
-          // ariaLabel={
-          //   contextData.areaOnlyRedactionMode
-          //     ? "disable area redaction mode"
-          //     : "enable area redaction mode"
-          // }
-          // onClick={handleRedactAreaToolButtonClick}
-          onClick={() => {}}
+          dataTestId={'btn-area-tool'}
+          id={'btn-area-tool'}
+          ariaLabel={
+            readactAreaState
+              ? "disable area redaction mode"
+              : "enable area redaction mode"
+          }
+          onClick={handleRedactAreaToolButtonClick}
         >
           <AreaIcon />
         </LinkButton>
@@ -100,7 +85,6 @@ const DocumentViewportArea = ({ items }: TItems) => {
         dropDownItems={dropDownItems}
         callBackFn={() => {}}
         ariaLabel="document actions dropdown"
-        // dataTestId={`document-actions-dropdown-${contextData.tabIndex}`}
         dataTestId={`document-actions-dropdown`}
         showLastItemSeparator={true}
       />

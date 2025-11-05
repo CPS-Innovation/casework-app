@@ -29,7 +29,6 @@ export const DropdownButton: React.FC<DropdownButtonProps> = ({
   dataTestId = 'dropdown-btn',
   ariaLabel = 'dropdown',
   disabled = false,
-  showLastItemSeparator = false
 }) => {
   const dropDownBtnRef = useRef<HTMLButtonElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);

@@ -25,7 +25,7 @@ const CaseDetailsWrapper: React.FC<{}> = () => {
     <div className="govuk-main-wrapper">
       <TwoCol sidebar={<></>}>
         <DocumentControlArea items={items} ></DocumentControlArea>
-        <DocumentViewportArea items={items}></DocumentViewportArea>
+        <DocumentViewportArea></DocumentViewportArea>
       </TwoCol>
     </div>
   );
