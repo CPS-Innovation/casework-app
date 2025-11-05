@@ -1,10 +1,10 @@
 import z from 'zod';
+import { documentSchema } from '../getters/useGetCaseDocumentList';
 import {
   documentTypeIdsMap,
   TCategoryName,
   unusedCommRegexes
-} from './categoriseDocument';
-import { documentSchema } from './useGetCaseDocumentList';
+} from './categoriseDocumentHelperUtils';
 
 export const categoriseDocument = (
   doc: z.infer<typeof documentSchema>

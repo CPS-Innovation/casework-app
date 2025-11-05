@@ -1,22 +1,22 @@
 import { useEffect, useState } from 'react';
 import { DocumentSidebarAccordionDocumentTemplate } from './DocumentSidebarAccordionDocument';
-import {
-  safeGetDocumentSidebarReadDocIdsFromLocalStorage,
-  safeSetDocumentSidebarReadDocIdsFromLocalStorage
-} from './DocumentSidebarLocalStorageUtils';
 import { DocumentSidebarWrapper } from './DocumentSidebarWrapper';
-import {
-  categoryDetails,
-  initDocsOnDocCategoryNamesMap
-} from './getters/categoriseDocument';
-import { categoriseDocument } from './getters/categoriseDocumentHelpers';
 import { TDocumentList } from './getters/useGetCaseDocumentList';
 import {
   GovUkAccordionOpenCloseLinkTemplate,
   GovUkAccordionSectionTemplate,
   GovUkAccordionTemplate
 } from './templates/GovUkAccordion';
-import { areSetsEqual } from './utils';
+import { categoriseDocument } from './utils/categoriseDocument';
+import {
+  categoryDetails,
+  initDocsOnDocCategoryNamesMap
+} from './utils/categoriseDocumentHelperUtils';
+import {
+  safeGetDocumentSidebarReadDocIdsFromLocalStorage,
+  safeSetDocumentSidebarReadDocIdsFromLocalStorage
+} from './utils/DocumentSidebarLocalStorageUtils';
+import { areSetsEqual } from './utils/generalUtils';
 
 export const DocumentSidebarAccordion = (p: {
   caseId: number;

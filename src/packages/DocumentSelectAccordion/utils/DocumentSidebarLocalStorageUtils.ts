@@ -1,5 +1,5 @@
 import z from 'zod';
-import { safeJsonParse } from './utils';
+import { safeJsonParse } from './generalUtils';
 
 export const createDocumentSidebarReadDocIdsLocalStorageKey = (
   caseId: number
