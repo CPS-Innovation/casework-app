@@ -30,7 +30,7 @@ export const CaseMaterialsTable = () => {
     filteredData,
     loading: caseMaterialsLoading,
     error
-  } = useCaseMaterials('materials');
+  } = useCaseMaterials({ dataType: 'materials' });
   const { filters } = useFilters('materials');
   const { materialTags } = useMaterialTags();
 
