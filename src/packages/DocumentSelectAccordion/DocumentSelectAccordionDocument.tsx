@@ -39,6 +39,7 @@ export const DocumentSelectAccordionDocument = (p: {
   notesStatus: 'disabled' | 'newNotes' | 'none';
   showLeftBorder?: boolean;
   onDocumentClick: () => void;
+  onNotesClick: () => void;
 }) => {
   return (
     <div
@@ -64,7 +65,9 @@ export const DocumentSelectAccordionDocument = (p: {
       <div
         style={{ display: 'flex', justifyContent: 'center', alignItems: 'end' }}
       >
-        <NotesIcon width={20} notesStatus={p.notesStatus} />
+        <a className="govuk-link" onClick={() => p.onNotesClick()}>
+          <NotesIcon width={20} notesStatus={p.notesStatus} />
+        </a>
       </div>
     </div>
   );

@@ -6,13 +6,6 @@ export const ReviewAndRedactPage = () => {
 
   return (
     <div>
-      <button
-        onClick={() => {
-          setOpenDocumentIds([]);
-        }}
-      >
-        click me
-      </button>
       <CaseDocumentsSelectAccordion
         urn="54KR7689125"
         caseId={2160797}

@@ -200,6 +200,9 @@ export const CaseDocumentsSelectAccordion = (p: {
   const [readDocumentIds, setReadDocumentIds] = useState<string[]>(
     safeGetReadCaseDocumentIdsFromLocalStorage(caseId)
   );
+  const [mode, setMode] = useState<
+    { mode: 'accordion' } | { mode: 'notes'; documentId: string }
+  >({ mode: 'accordion' });
 
   useEffect(() => {
     const newReadDocIds = [
@@ -224,65 +227,89 @@ export const CaseDocumentsSelectAccordion = (p: {
     documents: docsOnDocCategoryNames[x.categoryName]
   }));
 
-  return (
-    <div>
-      <a
-        className="govuk-link"
-        onClick={() => setIsExpandedController((x) => !x)}
-        style={{ float: 'right', paddingBottom: '8px', cursor: 'pointer' }}
-      >
-        {isExpandedController ? 'Close' : 'Open'} all sections
-      </a>
-      <DocumentSelectAccordion>
-        {newData.map((item) => (
-          <DocumentSelectAccordionSection
-            key={item.key}
-            title={`${item.label} (${item.documents.length})`}
-            isExpandedController={isExpandedController}
-          >
-            {item.documents.length === 0 ? (
-              <div style={{ height: '60px', padding: '12px' }}>
-                There are no documents available.
-              </div>
-            ) : (
-              item.documents.map((document) => (
-                <DocumentSelectAccordionDocument
-                  key={`${item.key}-${document.documentId}`}
-                  documentName={document.presentationTitle}
-                  documentDate={document.documentId}
-                  ActiveDocumentTag={p.openDocumentIds.includes(
-                    document.documentId
-                  )}
-                  NewTag={!readDocumentIds.includes(document.documentId)}
-                  showLeftBorder={p.openDocumentIds.includes(
-                    document.documentId
-                  )}
-                  notesStatus={(() => {
-                    if (
-                      document.cmsDocType.documentType === 'PCD' ||
-                      document.cmsDocType.documentCategory === 'Review'
-                    )
-                      return 'disabled';
-                    return document.hasNotes ? 'newNotes' : 'none';
-                  })()}
-                  onDocumentClick={() => {
-                    setReadDocumentIds((docIds) => [
-                      ...new Set([...docIds, document.documentId])
-                    ]);
-                    const docSet = new Set([
-                      ...p.openDocumentIds,
+  if (mode.mode === 'accordion')
+    return (
+      <div>
+        <a
+          className="govuk-link"
+          onClick={() => setIsExpandedController((x) => !x)}
+          style={{ float: 'right', paddingBottom: '8px', cursor: 'pointer' }}
+        >
+          {isExpandedController ? 'Close' : 'Open'} all sections
+        </a>
+        <DocumentSelectAccordion>
+          {newData.map((item) => (
+            <DocumentSelectAccordionSection
+              key={item.key}
+              title={`${item.label} (${item.documents.length})`}
+              isExpandedController={isExpandedController}
+            >
+              {item.documents.length === 0 ? (
+                <div style={{ height: '60px', padding: '12px' }}>
+                  There are no documents available.
+                </div>
+              ) : (
+                item.documents.map((document) => (
+                  <DocumentSelectAccordionDocument
+                    key={`${item.key}-${document.documentId}`}
+                    documentName={document.presentationTitle}
+                    documentDate={document.documentId}
+                    ActiveDocumentTag={p.openDocumentIds.includes(
                       document.documentId
-                    ]);
-                    p.onSetDocumentOpenIds([...docSet]);
-                  }}
-                />
-              ))
-            )}
-          </DocumentSelectAccordionSection>
-        ))}
-      </DocumentSelectAccordion>
+                    )}
+                    NewTag={!readDocumentIds.includes(document.documentId)}
+                    showLeftBorder={p.openDocumentIds.includes(
+                      document.documentId
+                    )}
+                    notesStatus={(() => {
+                      if (
+                        document.cmsDocType.documentType === 'PCD' ||
+                        document.cmsDocType.documentCategory === 'Review'
+                      )
+                        return 'disabled';
+                      return document.hasNotes ? 'newNotes' : 'none';
+                    })()}
+                    onDocumentClick={() => {
+                      setReadDocumentIds((docIds) => [
+                        ...new Set([...docIds, document.documentId])
+                      ]);
+                      const docSet = new Set([
+                        ...p.openDocumentIds,
+                        document.documentId
+                      ]);
+                      p.onSetDocumentOpenIds([...docSet]);
+                    }}
+                    onNotesClick={() => {
+                      setMode({
+                        mode: 'notes',
+                        documentId: document.documentId
+                      });
+                    }}
+                  />
+                ))
+              )}
+            </DocumentSelectAccordionSection>
+          ))}
+        </DocumentSelectAccordion>
 
-      <pre>{JSON.stringify(documentList.data, null, 2)}</pre>
-    </div>
-  );
+        <pre>{JSON.stringify(documentList.data, null, 2)}</pre>
+      </div>
+    );
+
+  if (mode.mode === 'notes') {
+    const documentId = mode.documentId;
+
+    return (
+      <>
+        <button
+          onClick={() => {
+            setMode({ mode: 'accordion' });
+          }}
+        >
+          go back
+        </button>
+        {documentId}
+      </>
+    );
+  }
 };
