@@ -27,19 +27,19 @@ import { URL } from '../constants/url';
 import { CaseMaterialsType } from '../schemas';
 
 export const MaterialsPage = () => {
+  const { caseInfo } = useCaseInfoStore();
   const [showFilter, setShowFilter] = useState(true);
   const [selectedMaterial, setSelectedMaterial] =
     useState<CaseMaterialsType | null>(null);
 
   const { mutate: refreshCaseMaterials, loading: caseMaterialsLoading } =
-    useCaseMaterials('materials');
+    useCaseMaterials({ dataType: 'materials' });
   const hasAccess = useFeatureFlag();
   const { setBanner, resetBanner } = useBanner();
   const { deselectMaterial } = useCaseMaterial();
 
   const { items: selectedItems, clear: clearSelectedItems } =
     useSelectedItemsStore();
-  const { caseInfo } = useCaseInfoStore();
   const { setTags } = useMaterialTags();
 
   const {
