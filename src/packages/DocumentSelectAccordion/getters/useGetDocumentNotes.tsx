@@ -8,23 +8,12 @@ export const getDocumentNotesFromAxiosInstance = async (p: {
   documentId: string | undefined;
   caseId: number | undefined;
 }) => {
-  const url = `/api/urns/${p.urn}/cases/${p.caseId}/documents/${p.documentId}/notes`;
-  const response = await p.axiosInstance.get(url);
+  const response = await p.axiosInstance.get(
+    `/api/urns/${p.urn}/cases/${p.caseId}/documents/${p.documentId}/notes`
+  );
 
   return response.data;
 };
-/*
-[
-    {
-      "id": 8884800,
-      "createdByName": "Robert Molloy",
-      "sortOrder": 1,
-      "date": "2025-11-04",
-      "text": "here is a note",
-      "type": "MA"
-    }
-]
-*/
 
 export const useGetDocumentNotes = (p: {
   urn: string | undefined;

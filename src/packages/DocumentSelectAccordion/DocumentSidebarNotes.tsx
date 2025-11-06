@@ -19,27 +19,9 @@ export const DocumentSidebarNotes = (p: {
     caseId: p.caseId,
     documentId: p.documentId
   });
-  // const axiosInstance = useAxiosInstance();
 
-  // useEffect(() => {
-  //   (async () => {
-  //     getDocumentNotesFromAxiosInstance({
-  //       axiosInstance,
-  //       urn: p.urn,
-  //       documentId: p.documentId,
-  //       caseId: p.caseId
-  //     });
-  //   })();
-  // }, [axiosInstance]);
   return (
     <DocumentSidebarWrapper>
-      <GovUkButton
-        onClick={() => {
-          console.log(resp);
-        }}
-      >
-        click
-      </GovUkButton>
       <div
         style={{
           borderBottom: 'solid 1px #b1b4b6',
@@ -87,6 +69,14 @@ export const DocumentSidebarNotes = (p: {
           </GovUkButton>
           <GovUkLink onClick={() => p.onBackButtonClick()}>Cancel</GovUkLink>
         </div>
+        <br />
+        {resp.data.map((note) => (
+          <div>
+            <div style={{ fontWeight: 700 }}>{note.createdByName}</div>
+            <div>{note.date}</div>
+            <div>{note.text}</div>
+          </div>
+        ))}
         <pre>{JSON.stringify(resp, null, 2)}</pre>
       </div>
     </DocumentSidebarWrapper>
