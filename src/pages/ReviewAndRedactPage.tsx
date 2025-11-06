@@ -1,28 +1,18 @@
-import { Accordion } from '../components';
-import { ExampleDocumentSelectAccordion } from '../packages/DocumentSelectAccordion/ExampleDocumentSelectAccordion';
+import { useState } from 'react';
+import { DocumentSidebar } from '../packages/DocumentSelectAccordion/DocumentSidebar';
 
 export const ReviewAndRedactPage = () => {
+  const [openDocumentIds, setOpenDocumentIds] = useState<string[]>([]);
+
   return (
     <div>
-      <ExampleDocumentSelectAccordion />
-      <br />
-      <Accordion
-        items={[
-          {
-            title: { expanded: 'asd', collapsed: 'dsa' },
-            content: <div>asd</div>
-          },
-          {
-            title: { expanded: 'asd', collapsed: 'dsa' },
-            content: <div>asd</div>
-          },
-          {
-            title: { expanded: 'asd', collapsed: 'dsa' },
-            content: <div>asd</div>
-          }
-        ]}
+      <DocumentSidebar
+        urn="54KR7689125"
+        caseId={2160797}
+        openDocumentIds={openDocumentIds}
+        onSetDocumentOpenIds={(docIds) => setOpenDocumentIds(docIds)}
       />
-      <p className="govuk-heading-xl">Review &amp; Redact</p>
+      <br />
     </div>
   );
 };

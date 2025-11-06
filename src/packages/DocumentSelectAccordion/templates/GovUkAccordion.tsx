@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useState } from 'react';
-import './DocumentSelectAccordion.scss';
+import './GovUkAccordion.scss';
 
-export const DocumentSelectAccordionSection = (p: {
+export const GovUkAccordionSectionTemplate = (p: {
   title: string;
   children: ReactNode;
   isExpandedController: boolean;
@@ -13,7 +13,7 @@ export const DocumentSelectAccordionSection = (p: {
   }, [p.isExpandedController]);
 
   return (
-    <div>
+    <>
       <div className="govuk-accordion__section">
         <div className="govuk-accordion__section-header">
           <h2 className="govuk-accordion__section-heading">
@@ -46,14 +46,30 @@ export const DocumentSelectAccordionSection = (p: {
       <div hidden={!isExpanded}>
         <div className="govuk-accordion-content-wrapper">{p.children}</div>
       </div>
-    </div>
+    </>
   );
 };
 
-export const DocumentSelectAccordion = (p: { children: ReactNode }) => {
+export const GovUkAccordionTemplate = (p: { children: ReactNode }) => {
   return (
     <div className="govuk-accordion" data-testid="accordion">
       {p.children}
+    </div>
+  );
+};
+export const GovUkAccordionOpenCloseLinkTemplate = (p: {
+  isExpandedController: boolean;
+  onClick: () => void;
+}) => {
+  return (
+    <div style={{ display: 'flex', justifyContent: 'end' }}>
+      <a
+        className="govuk-link"
+        onClick={() => p.onClick()}
+        style={{ paddingBottom: '8px', cursor: 'pointer' }}
+      >
+        {p.isExpandedController ? 'Close' : 'Open'} all sections
+      </a>
     </div>
   );
 };
