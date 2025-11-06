@@ -45,6 +45,8 @@ export const DocumentSidebar = (p: {
     return (
       <DocumentSidebarNotes
         documentId={documentId}
+        caseId={caseId}
+        urn={urn}
         onBackButtonClick={() => setMode({ mode: 'accordion' })}
       />
     );
