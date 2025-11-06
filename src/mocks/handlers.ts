@@ -1,6 +1,5 @@
 import { http, HttpResponse } from 'msw';
 import { API_ENDPOINTS, POLARIS_GATEWAY_URL } from '../constants/url.ts';
-import { mockCaseMaterials } from './mockCaseMaterials.ts';
 
 import { PCDListingType } from '../schemas/pcd';
 import { mockPcdListResponse, mockPcdRequestResponse } from './data/pcdRequest';
@@ -53,10 +52,29 @@ export const handlers = [
     return HttpResponse.json(mockPcdCaseHistory, { status: 200 });
   }),
 
-  http.get(
-    `${POLARIS_GATEWAY_URL}/api/urns/16123630825/cases/2167259/materials`,
-    () => {
-      return HttpResponse.json(mockCaseMaterials(), { status: 200 });
-    }
-  )
+  http.patch(`${POLARIS_GATEWAY_URL}/material/rename`, async ({ request }) => {
+    const body = (await request.json()) as {
+      materialId: number;
+      subject: string;
+    };
+
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    return HttpResponse.json(
+      { updateCommunication: { id: body.materialId } },
+      { status: 200 }
+    );
+  }),
+
+  http.post(`${POLARIS_GATEWAY_URL}/hk-logger`, async ({ request }) => {
+    const body = (await request.json()) as {
+      logLevel: number;
+      message: string;
+    };
+
+    console.log('HK Logger mocked');
+    console.table(body);
+
+    return HttpResponse.json({}, { status: 200 });
+  })
 ];

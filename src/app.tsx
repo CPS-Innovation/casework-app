@@ -1,5 +1,6 @@
 import { useMsal } from '@azure/msal-react';
 import { useEffect } from 'react';
+import { RouteChangeListener } from './components';
 import { loginRequest } from './msalInstance';
 import { Routes } from './routes';
 
@@ -27,9 +28,9 @@ export const App = () => {
 
   return (
     <>
-      <div className="govuk-width-container">
+      <div className="govuk-width-container custom-width-container">
         <cps-global-header></cps-global-header>
-        {/*<button onClick={() => instance.logoutRedirect()}>Logout</button>*/}
+        <RouteChangeListener />
         <Routes />
       </div>
 

@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import '../../App.scss';
+import { useState } from 'react';
+import '../App.scss';
 import {
   ButtonMenuComponent,
   CaseMaterialsTable,
@@ -8,7 +8,7 @@ import {
   RenameDrawer,
   TableActions,
   TwoCol
-} from '../../components';
+} from '../components';
 
 import {
   useBanner,
@@ -16,28 +16,33 @@ import {
   useCaseMaterials,
   useFeatureFlag,
   useTableActions
-} from '../../hooks';
-import { useCaseInfoStore, useSelectedItemsStore } from '../../stores';
+} from '../hooks';
+import {
+  useCaseInfoStore,
+  useMaterialTags,
+  useSelectedItemsStore
+} from '../stores';
 
-import { URL } from '../../constants/url';
+import { URL } from '../constants/url';
+import { CaseMaterialsType } from '../schemas';
 
 export const MaterialsPage = () => {
+  const { caseInfo } = useCaseInfoStore();
   const [showFilter, setShowFilter] = useState(true);
+  const [selectedMaterial, setSelectedMaterial] =
+    useState<CaseMaterialsType | null>(null);
+
   const { mutate: refreshCaseMaterials, loading: caseMaterialsLoading } =
-    useCaseMaterials('materials');
-  const { items: selectedItems, clear: clearSelectedItems } =
-    useSelectedItemsStore();
-  const [isRenameDrawerOpen, setIsRenameDrawerOpen] = useState(false);
+    useCaseMaterials({ dataType: 'materials' });
+  const hasAccess = useFeatureFlag();
   const { setBanner, resetBanner } = useBanner();
   const { deselectMaterial } = useCaseMaterial();
-  const [renamedMaterialId, setRenamedMaterialId] = useState<number | null>(
-    null
-  );
-  const { caseInfo } = useCaseInfoStore();
-  const hasAccess = useFeatureFlag();
+
+  const { items: selectedItems, clear: clearSelectedItems } =
+    useSelectedItemsStore();
+  const { setTags } = useMaterialTags();
 
   const {
-    handleRenameClick,
     handleReclassifyClick,
     handleReadStatusClick,
     handleDiscardClick,
@@ -51,10 +56,37 @@ export const MaterialsPage = () => {
     setBanner,
     deselectItem: deselectMaterial,
     caseInfoData: caseInfo || undefined,
-    resetBanner,
-    setIsRenameDrawerOpen,
-    setRenamedMaterialId
+    resetBanner
   });
+
+  const handleRenameClick = () => {
+    if (selectedItems.materials.length) {
+      setSelectedMaterial(selectedItems.materials[0]);
+    }
+  };
+
+  const handleCancelRename = () => {
+    setSelectedMaterial(null);
+    clearSelectedItems();
+  };
+
+  const handleSuccessfulRename = async () => {
+    setTags([
+      { materialId: selectedMaterial?.materialId as number, tagName: 'Renamed' }
+    ]);
+
+    setSelectedMaterial(null);
+    deselectMaterial();
+    clearSelectedItems('materials');
+
+    setBanner({
+      type: 'success',
+      header: 'Renaming successful',
+      content: 'Material successfully renamed.'
+    });
+
+    await refreshCaseMaterials();
+  };
 
   const row = selectedItems.materials?.[0];
 
@@ -68,7 +100,7 @@ export const MaterialsPage = () => {
     },
     {
       label: 'Reclassify',
-      onClick: () => handleReclassifyClick(),
+      onClick: handleReclassifyClick,
       hide:
         !hasAccess([5]) ||
         selectedItems.materials?.length > 1 ||
@@ -97,50 +129,17 @@ export const MaterialsPage = () => {
     }
   ];
 
-  useEffect(() => {
-    if (isReadStatusUpdating || caseMaterialsLoading) {
-      window.scrollTo(0, 0);
-    }
-  }, [caseMaterialsLoading, isReadStatusUpdating]);
-
-  useEffect(() => {
-    clearSelectedItems('materials');
-  }, []);
-
   return (
-    <div
-      className={`govuk-main-wrapper ${
-        selectedItems.materials?.length > 1 ? 'multiple-selected' : ''
-      }`}
-    >
-      {isRenameDrawerOpen && (
-        <RenameDrawer
-          material={selectedItems.materials[0]}
-          onCancel={() => {
-            setIsRenameDrawerOpen(false);
-          }}
-          onSuccess={async () => {
-            await refreshCaseMaterials();
-
-            deselectMaterial();
-            setRenamedMaterialId(selectedItems.materials[0].id || null);
-            clearSelectedItems('materials');
-
-            setIsRenameDrawerOpen(false);
-            setBanner({
-              type: 'success',
-              header: 'Renaming successful',
-              content: 'Material successfully renamed.'
-            });
-          }}
-        />
-      )}
+    <div className="govuk-main-wrapper">
+      <RenameDrawer
+        material={selectedMaterial}
+        onCancel={handleCancelRename}
+        onSuccess={handleSuccessfulRename}
+      />
 
       <TwoCol sidebar={showFilter ? <MaterialsFilters /> : undefined}>
-        {caseMaterialsLoading ? (
-          <LoadingSpinner />
-        ) : isReadStatusUpdating ? (
-          <LoadingSpinner textContent="Updating read status..." />
+        {caseMaterialsLoading || isReadStatusUpdating ? (
+          <LoadingSpinner textContent="Loading materials" />
         ) : (
           <>
             <TableActions
@@ -149,11 +148,8 @@ export const MaterialsPage = () => {
               menuItems={menuItems}
               selectedItems={selectedItems.materials}
             />
-            <CaseMaterialsTable
-              selectedMaterial={selectedItems.materials?.[0]}
-              renamedMaterialId={renamedMaterialId}
-              setRenamedMaterialId={setRenamedMaterialId}
-            />
+
+            <CaseMaterialsTable />
 
             <div className="action-on-selection-container">
               <ButtonMenuComponent
