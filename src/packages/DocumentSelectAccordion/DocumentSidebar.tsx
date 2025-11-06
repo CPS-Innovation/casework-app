@@ -3,7 +3,7 @@ import { DocumentSidebarAccordion } from './DocumentSidebarAccordion';
 import { DocumentSidebarNotes } from './DocumentSidebarNotes';
 import {
   documentListSchema,
-  useGetCaseDocumentList
+  useGetDocumentList
 } from './getters/useGetCaseDocumentList';
 
 export const DocumentSidebar = (p: {
@@ -13,7 +13,7 @@ export const DocumentSidebar = (p: {
   onSetDocumentOpenIds: (docIds: string[]) => void;
 }) => {
   const { caseId, urn } = p;
-  const documentList = useGetCaseDocumentList({ urn, caseId });
+  const documentList = useGetDocumentList({ urn, caseId });
   const [mode, setMode] = useState<
     { mode: 'accordion' } | { mode: 'notes'; documentId: string }
   >({ mode: 'accordion' });

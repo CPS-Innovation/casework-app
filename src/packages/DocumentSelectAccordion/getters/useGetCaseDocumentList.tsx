@@ -3,7 +3,7 @@ import useSWR from 'swr';
 import z from 'zod';
 import { useAxiosInstance } from './useAxiosInstance';
 
-export const getCaseDocumentListFromAxiosInstance = async (p: {
+export const getDocumentListFromAxiosInstance = async (p: {
   axiosInstance: AxiosInstance;
   urn: string | undefined;
   caseId: number | undefined;
@@ -16,14 +16,14 @@ export const getCaseDocumentListFromAxiosInstance = async (p: {
   return response.data;
 };
 
-export const useGetCaseDocumentList = (p: {
+export const useGetDocumentList = (p: {
   urn: string | undefined;
   caseId: number | undefined;
 }) => {
   const axiosInstance = useAxiosInstance();
 
   const { data, error, isLoading } = useSWR('getCaseDocumentList', () => {
-    return getCaseDocumentListFromAxiosInstance({ axiosInstance, ...p });
+    return getDocumentListFromAxiosInstance({ axiosInstance, ...p });
   });
 
   return { data, error, isLoading };

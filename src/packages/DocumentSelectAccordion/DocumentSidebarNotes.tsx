@@ -1,10 +1,16 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DocumentSidebarWrapper } from './DocumentSidebarWrapper';
-import { useGetDocumentNotes } from './getters/useGetDocumentNotes';
+import { useAxiosInstance } from './getters/useAxiosInstance';
+import {
+  postDocumentNotesFromAxiosInstance,
+  safeGetDocumentNotesFromAxiosInstance,
+  TDocumentNotes
+} from './getters/useGetDocumentNotes';
 import { CloseIconButton } from './templates/CloseIconButton';
 import { GovUkButton } from './templates/GovUkButton';
 import { GovUkLink } from './templates/GovUkLink';
 import { GovUkTextarea } from './templates/GovUkTextarea';
+import { formatDate } from './utils/dateUtils';
 
 export const DocumentSidebarNotes = (p: {
   urn: string;
@@ -14,12 +20,24 @@ export const DocumentSidebarNotes = (p: {
 }) => {
   const [text, setText] = useState('');
 
-  const resp = useGetDocumentNotes({
-    urn: p.urn,
-    caseId: p.caseId,
-    documentId: p.documentId
-  });
+  const [documentNotes, setDocumentNotes] = useState<
+    TDocumentNotes | null | undefined
+  >(undefined);
 
+  const axiosInstance = useAxiosInstance();
+
+  useEffect(() => {
+    (async () => {
+      const resp = await safeGetDocumentNotesFromAxiosInstance({
+        axiosInstance,
+        urn: p.urn,
+        caseId: p.caseId,
+        documentId: p.documentId
+      });
+
+      setDocumentNotes(resp.success ? resp.data : null);
+    })();
+  }, []);
   return (
     <DocumentSidebarWrapper>
       <div
@@ -34,50 +52,60 @@ export const DocumentSidebarNotes = (p: {
         </div>
         <CloseIconButton onClick={() => p.onBackButtonClick()} />
       </div>
-      <div
-        style={{
-          padding: '10px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '6px'
-        }}
-      >
-        <label
-          htmlFor="notes-textarea"
-          className="govuk-label"
-          style={{ fontWeight: 700 }}
-        >
-          Add a note to the document
-        </label>
-        <GovUkTextarea
-          id="notes-textarea"
-          value={text}
-          onInput={(x) => setText(x)}
-          maxLength={500}
-          rows={5}
-        />
-        <div>You have {500 - text.length} characters remaining</div>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center'
-          }}
-        >
-          <GovUkButton onClick={() => window.alert('save and continue')}>
-            Save and close
-          </GovUkButton>
-          <GovUkLink onClick={() => p.onBackButtonClick()}>Cancel</GovUkLink>
+      <div style={{ padding: '10px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          <label
+            htmlFor="notes-textarea"
+            className="govuk-label"
+            style={{ fontWeight: 700 }}
+          >
+            Add a note to the document
+          </label>
+          <GovUkTextarea
+            id="notes-textarea"
+            value={text}
+            onInput={(x) => setText(x)}
+            maxLength={500}
+            rows={5}
+          />
+          <div>You have {500 - text.length} characters remaining</div>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}
+          >
+            <GovUkButton
+              onClick={async () => {
+                await postDocumentNotesFromAxiosInstance({
+                  axiosInstance,
+                  urn: p.urn,
+                  documentId: p.documentId,
+                  caseId: p.caseId,
+                  text
+                });
+                p.onBackButtonClick();
+              }}
+            >
+              Save and close
+            </GovUkButton>
+            <GovUkLink onClick={() => p.onBackButtonClick()}>Cancel</GovUkLink>
+          </div>
         </div>
         <br />
-        {resp.data.map((note) => (
-          <div>
-            <div style={{ fontWeight: 700 }}>{note.createdByName}</div>
-            <div>{note.date}</div>
-            <div>{note.text}</div>
-          </div>
-        ))}
-        <pre>{JSON.stringify(resp, null, 2)}</pre>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {documentNotes === undefined && <div>loading</div>}
+          {documentNotes === null && <div>error</div>}
+          {documentNotes?.map((note) => (
+            <div>
+              <div style={{ fontWeight: 700 }}>{note.createdByName}</div>
+              <div>{formatDate(note.date)}</div>
+              <div>{note.text}</div>
+            </div>
+          ))}
+          {documentNotes?.length === 0 && <div>No notes to display</div>}
+        </div>
       </div>
     </DocumentSidebarWrapper>
   );
