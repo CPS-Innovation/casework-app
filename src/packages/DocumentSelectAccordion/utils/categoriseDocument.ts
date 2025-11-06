@@ -1,5 +1,5 @@
 import z from 'zod';
-import { documentSchema } from '../getters/useGetCaseDocumentList';
+import { documentSchema } from '../getters/getDocumentList';
 import {
   documentTypeIdsMap,
   TCategoryName,

@@ -4,7 +4,7 @@ import {
   DocumentSidebarAccordionNoDocumentsAvailable
 } from './DocumentSidebarAccordionDocument';
 import { DocumentSidebarWrapper } from './DocumentSidebarWrapper';
-import { TDocumentList } from './getters/useGetCaseDocumentList';
+import { TDocumentList } from './getters/getDocumentList';
 import {
   GovUkAccordionOpenCloseLinkTemplate,
   GovUkAccordionSectionTemplate,

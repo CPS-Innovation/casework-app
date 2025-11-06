@@ -1,10 +1,7 @@
 import { useState } from 'react';
 import { DocumentSidebarAccordion } from './DocumentSidebarAccordion';
 import { DocumentSidebarNotes } from './DocumentSidebarNotes';
-import {
-  documentListSchema,
-  useGetDocumentList
-} from './getters/useGetCaseDocumentList';
+import { useGetDocumentList } from './getters/getDocumentList';
 
 export const DocumentSidebar = (p: {
   urn: string;
@@ -13,21 +10,20 @@ export const DocumentSidebar = (p: {
   onSetDocumentOpenIds: (docIds: string[]) => void;
 }) => {
   const { caseId, urn } = p;
-  const documentList = useGetDocumentList({ urn, caseId });
+  const { documentList } = useGetDocumentList({ urn, caseId });
   const [mode, setMode] = useState<
     { mode: 'accordion' } | { mode: 'notes'; documentId: string }
   >({ mode: 'accordion' });
 
-  const parsed = documentListSchema.safeParse(documentList.data);
-
-  if (!parsed.success) return <></>;
+  if (documentList === null) return <div>error</div>;
+  if (documentList === undefined) return <div>loading</div>;
 
   if (mode.mode === 'accordion')
     return (
       <div>
         <DocumentSidebarAccordion
           caseId={caseId}
-          documentList={documentList.data}
+          documentList={documentList}
           activeDocumentIds={p.openDocumentIds}
           onSetActiveDocumentIds={(docIds) => {
             p.onSetDocumentOpenIds(docIds);

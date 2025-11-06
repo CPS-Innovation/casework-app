@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { DocumentSidebarWrapper } from './DocumentSidebarWrapper';
-import { useAxiosInstance } from './getters/useAxiosInstance';
+import { useAxiosInstance } from './getters/getAxiosInstance';
 import {
   postDocumentNotesFromAxiosInstance,
-  safeGetDocumentNotesFromAxiosInstance,
-  TDocumentNotes
-} from './getters/useGetDocumentNotes';
+  useGetDocumentNotes
+} from './getters/getDocumentNotes';
 import { CloseIconButton } from './templates/CloseIconButton';
 import { GovUkButton } from './templates/GovUkButton';
 import { GovUkLink } from './templates/GovUkLink';
@@ -20,24 +19,14 @@ export const DocumentSidebarNotes = (p: {
 }) => {
   const [text, setText] = useState('');
 
-  const [documentNotes, setDocumentNotes] = useState<
-    TDocumentNotes | null | undefined
-  >(undefined);
-
   const axiosInstance = useAxiosInstance();
 
-  useEffect(() => {
-    (async () => {
-      const resp = await safeGetDocumentNotesFromAxiosInstance({
-        axiosInstance,
-        urn: p.urn,
-        caseId: p.caseId,
-        documentId: p.documentId
-      });
+  const { documentNotes } = useGetDocumentNotes({
+    urn: p.urn,
+    caseId: p.caseId,
+    documentId: p.documentId
+  });
 
-      setDocumentNotes(resp.success ? resp.data : null);
-    })();
-  }, []);
   return (
     <DocumentSidebarWrapper>
       <div

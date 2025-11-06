@@ -1,5 +1,7 @@
 import { AxiosInstance } from 'axios';
+import { useEffect, useState } from 'react';
 import z from 'zod';
+import { useAxiosInstance } from './getAxiosInstance';
 
 const documentNoteSchema = z.object({
   createdByName: z.string(),
@@ -55,17 +57,28 @@ export const safeGetDocumentNotesFromAxiosInstance = async (p: {
   return documentNotesSchema.safeParse(resp);
 };
 
-// export const useGetDocumentNotes = (p: {
-//   urn: string | undefined;
-//   caseId: number | undefined;
-//   documentId: string | undefined;
-// }) => {
-//   const axiosInstance = useAxiosInstance();
+export const useGetDocumentNotes = (p: {
+  urn: string;
+  caseId: number;
+  documentId: string;
+}) => {
+  const axiosInstance = useAxiosInstance();
+  const [documentNotes, setDocumentNotes] = useState<
+    TDocumentNotes | null | undefined
+  >(undefined);
 
-//   const { data, error, isLoading } = useSWR(
-//     `getDocumentNotes-${p.urn}-${p.caseId}-${p.documentId}`,
-//     () => getDocumentNotesFromAxiosInstance({ axiosInstance, ...p })
-//   );
+  useEffect(() => {
+    (async () => {
+      const resp = await safeGetDocumentNotesFromAxiosInstance({
+        axiosInstance,
+        urn: p.urn,
+        caseId: p.caseId,
+        documentId: p.documentId
+      });
 
-//   return { data, error, isLoading };
-// };
+      setDocumentNotes(resp.success ? resp.data : null);
+    })();
+  }, []);
+
+  return { documentNotes };
+};

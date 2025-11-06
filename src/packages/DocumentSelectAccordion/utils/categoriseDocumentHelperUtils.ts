@@ -1,4 +1,4 @@
-import { TDocumentList } from '../getters/useGetCaseDocumentList';
+import { TDocumentList } from '../getters/getDocumentList';
 
 export const unusedCommRegexes = [
   //UM, must be standalone word
