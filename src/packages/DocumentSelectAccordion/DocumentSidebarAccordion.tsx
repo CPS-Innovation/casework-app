@@ -18,7 +18,7 @@ import {
 import {
   safeGetDocumentSidebarReadDocIdsFromLocalStorage,
   safeSetDocumentSidebarReadDocIdsFromLocalStorage
-} from './utils/DocumentSidebarLocalStorageUtils';
+} from './utils/documentSidebarLocalStorageUtils';
 import { areSetsEqual } from './utils/generalUtils';
 
 export const DocumentSidebarAccordion = (p: {

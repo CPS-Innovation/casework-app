@@ -1,5 +1,5 @@
 import { AxiosInstance } from 'axios';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import z from 'zod';
 import { useAxiosInstance } from './getAxiosInstance';
 
@@ -47,38 +47,42 @@ export const safeGetDocumentNotesFromAxiosInstance = async (p: {
   documentId: string | undefined;
   caseId: number | undefined;
 }) => {
-  const resp = await getDocumentNotesFromAxiosInstance({
-    urn: p.urn,
-    caseId: p.caseId,
-    documentId: p.documentId,
-    axiosInstance: p.axiosInstance
-  });
+  try {
+    const resp = await getDocumentNotesFromAxiosInstance({
+      urn: p.urn,
+      caseId: p.caseId,
+      documentId: p.documentId,
+      axiosInstance: p.axiosInstance
+    });
 
-  return documentNotesSchema.safeParse(resp);
+    return documentNotesSchema.safeParse(resp);
+  } catch (error) {
+    return { success: false } as const;
+  }
 };
 
-export const useGetDocumentNotes = (p: {
-  urn: string;
-  caseId: number;
-  documentId: string;
-}) => {
+export const useGetDocumentNotes = () => {
   const axiosInstance = useAxiosInstance();
-  const [documentNotes, setDocumentNotes] = useState<
-    TDocumentNotes | null | undefined
-  >(undefined);
+  const [data, setDocumentNotes] = useState<TDocumentNotes | null | undefined>(
+    undefined
+  );
 
-  useEffect(() => {
-    (async () => {
-      const resp = await safeGetDocumentNotesFromAxiosInstance({
-        axiosInstance,
-        urn: p.urn,
-        caseId: p.caseId,
-        documentId: p.documentId
-      });
+  const load = async (p: {
+    urn: string | undefined;
+    caseId: number | undefined;
+    documentId: string | undefined;
+  }) => {
+    const resp = await safeGetDocumentNotesFromAxiosInstance({
+      axiosInstance,
+      urn: p.urn,
+      caseId: p.caseId,
+      documentId: p.documentId
+    });
 
-      setDocumentNotes(resp.success ? resp.data : null);
-    })();
-  }, []);
+    setDocumentNotes(resp.success ? resp.data : null);
+  };
 
-  return { documentNotes };
+  const clear = () => setDocumentNotes(undefined);
+
+  return { data, reload: load, clear };
 };

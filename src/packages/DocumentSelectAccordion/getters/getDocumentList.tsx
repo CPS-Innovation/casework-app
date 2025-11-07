@@ -1,5 +1,5 @@
 import { AxiosInstance } from 'axios';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import z from 'zod';
 import { useAxiosInstance } from './getAxiosInstance';
 
@@ -39,36 +39,41 @@ export const safeGetDocumentListFromAxiosInstance = async (p: {
   urn: string | undefined;
   caseId: number | undefined;
 }) => {
-  const resp = await getDocumentListFromAxiosInstance({
-    urn: p.urn,
-    caseId: p.caseId,
-    axiosInstance: p.axiosInstance
-  });
+  try {
+    const resp = await getDocumentListFromAxiosInstance({
+      urn: p.urn,
+      caseId: p.caseId,
+      axiosInstance: p.axiosInstance
+    });
 
-  return documentListSchema.safeParse(resp);
+    return documentListSchema.safeParse(resp);
+  } catch (error) {
+    return { success: false } as const;
+  }
 };
 
-export const useGetDocumentList = (p: {
-  urn: string | undefined;
-  caseId: number | undefined;
-}) => {
+export const useGetDocumentList = () => {
   const axiosInstance = useAxiosInstance();
 
-  const [documentList, setDocumentList] = useState<
-    TDocumentList | null | undefined
-  >(undefined);
+  const [data, setDocumentList] = useState<TDocumentList | null | undefined>(
+    undefined
+  );
 
-  useEffect(() => {
-    (async () => {
-      const resp = await safeGetDocumentListFromAxiosInstance({
-        axiosInstance,
-        urn: p.urn,
-        caseId: p.caseId
-      });
+  const load = async (p: {
+    urn: string | undefined;
+    caseId: number | undefined;
+  }) => {
+    const resp = await safeGetDocumentListFromAxiosInstance({
+      axiosInstance,
+      urn: p.urn,
+      caseId: p.caseId
+    });
+    console.log({ resp });
 
-      setDocumentList(resp.success ? resp.data : null);
-    })();
-  }, []);
+    setDocumentList(resp.success ? resp.data : null);
+  };
 
-  return { documentList };
+  const clear = () => setDocumentList(undefined);
+
+  return { data, reload: load, clear };
 };
