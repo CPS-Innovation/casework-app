@@ -2,8 +2,6 @@ import { useState } from 'react';
 import '../App.scss';
 import {
   ButtonMenuComponent,
-  CaseMaterialsTable,
-  LoadingSpinner,
   MaterialsFilters,
   RenameDrawer,
   TableActions,
@@ -27,19 +25,17 @@ import { URL } from '../constants/url';
 import { CaseMaterialsType } from '../schemas';
 
 export const MaterialsPage = () => {
+  const { caseInfo } = useCaseInfoStore();
   const [showFilter, setShowFilter] = useState(true);
   const [selectedMaterial, setSelectedMaterial] =
     useState<CaseMaterialsType | null>(null);
-
-  const { mutate: refreshCaseMaterials } =
-    useCaseMaterials('materials');
+  const { mutate: refreshCaseMaterials } = useCaseMaterials('materials');
   const hasAccess = useFeatureFlag();
   const { setBanner, resetBanner } = useBanner();
   const { deselectMaterial } = useCaseMaterial();
 
   const { items: selectedItems, clear: clearSelectedItems } =
     useSelectedItemsStore();
-  const { caseInfo } = useCaseInfoStore();
   const { setTags } = useMaterialTags();
 
   const {
@@ -48,7 +44,7 @@ export const MaterialsPage = () => {
     handleDiscardClick,
     handleRedactClick,
     handleUnusedClick,
-    determineReadStatusLabel,
+    determineReadStatusLabel
   } = useTableActions({
     selectedItems: selectedItems.materials,
     refreshData: refreshCaseMaterials,
@@ -137,29 +133,29 @@ export const MaterialsPage = () => {
       />
 
       <TwoCol sidebar={showFilter ? <MaterialsFilters /> : undefined}>
-          {caseInfo && (
-            <>
-              <TableActions
-                showFilter={showFilter}
-                onSetShowFilter={setShowFilter}
+        {caseInfo && (
+          <>
+            <TableActions
+              showFilter={showFilter}
+              onSetShowFilter={setShowFilter}
+              menuItems={menuItems}
+              selectedItems={selectedItems.materials}
+            />
+
+            <cps-materials-table
+              caseid={caseInfo.id}
+              urn={caseInfo.urn}
+            ></cps-materials-table>
+
+            <div className="action-on-selection-container">
+              <ButtonMenuComponent
+                menuTitle="Action on selection"
                 menuItems={menuItems}
-                selectedItems={selectedItems.materials}
+                isDisabled={selectedItems.materials?.length === 0}
               />
-
-              <cps-materials-table
-                caseid={caseInfo.id}
-                urn={caseInfo.urn}
-              ></cps-materials-table>
-
-              <div className="action-on-selection-container">
-                <ButtonMenuComponent
-                  menuTitle="Action on selection"
-                  menuItems={menuItems}
-                  isDisabled={selectedItems.materials?.length === 0}
-                />
-              </div>
-            </>
-          )}
+            </div>
+          </>
+        )}
       </TwoCol>
     </div>
   );

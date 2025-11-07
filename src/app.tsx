@@ -53,7 +53,7 @@ export const App = () => {
 
   return (
     <>
-      <div className="govuk-width-container">
+      <div className="govuk-width-container custom-width-container">
         <cps-global-header></cps-global-header>
         <RouteChangeListener />
         <Routes />

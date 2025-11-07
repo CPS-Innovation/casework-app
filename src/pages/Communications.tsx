@@ -31,7 +31,7 @@ export const CommunicationsPage = () => {
   const hasAccess = useFeatureFlag();
   const { setBanner, resetBanner } = useBanner();
   const { loading: caseMaterialsLoading, mutate: refreshCommunications } =
-    useCaseMaterials('communications');
+    useCaseMaterials({ dataType: 'communications' });
   const { deselectMaterial } = useCaseMaterial();
 
   const { caseInfo } = useCaseInfoStore();
