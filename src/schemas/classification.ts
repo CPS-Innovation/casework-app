@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const AutoReclassifyMaterialSchema = z.object({
-  materialId: z.string(),
+  materialId: z.number(),
   subject: z.string()
 });
 

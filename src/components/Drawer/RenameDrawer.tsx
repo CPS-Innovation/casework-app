@@ -1,11 +1,11 @@
-import { useState, ChangeEvent, FormEvent } from 'react';
-import Drawer from './Drawer';
-import { LoadingSpinner } from '../LoadingSpinner/LoadingSpinner';
+import { ChangeEvent, FormEvent, useState } from 'react';
 import { useRename } from '../../hooks';
-import { CaseMaterialsType } from '../../schemas/caseMaterials.ts';
+import { CaseMaterialsType } from '../../schemas';
+import { LoadingSpinner } from '../LoadingSpinner/LoadingSpinner';
+import Drawer from './Drawer';
 
 type Props = {
-  material: CaseMaterialsType;
+  material: CaseMaterialsType | null;
   onCancel: () => void;
   onSuccess: () => void;
 };
@@ -15,7 +15,9 @@ export const RenameDrawer = ({ material, onCancel, onSuccess }: Props) => {
     onSuccess
   });
   const [error, setError] = useState<string>('');
-  const [inputValue, setInputValue] = useState<string>(material.subject);
+  const [inputValue, setInputValue] = useState<string>(material?.subject || '');
+
+  if (!material) return null;
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
@@ -85,7 +87,7 @@ export const RenameDrawer = ({ material, onCancel, onSuccess }: Props) => {
                 id="new-material-name"
                 name="newMaterialName"
                 type="text"
-                value={inputValue}
+                defaultValue={material?.subject}
                 aria-describedby="event-name-hint event-name-error"
                 onChange={handleInputChange}
                 autoFocus
