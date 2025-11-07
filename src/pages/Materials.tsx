@@ -29,7 +29,9 @@ export const MaterialsPage = () => {
   const [showFilter, setShowFilter] = useState(true);
   const [selectedMaterial, setSelectedMaterial] =
     useState<CaseMaterialsType | null>(null);
-  const { mutate: refreshCaseMaterials } = useCaseMaterials('materials');
+  const { mutate: refreshCaseMaterials } = useCaseMaterials({
+    dataType: 'materials'
+  });
   const hasAccess = useFeatureFlag();
   const { setBanner, resetBanner } = useBanner();
   const { deselectMaterial } = useCaseMaterial();
