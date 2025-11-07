@@ -68,7 +68,6 @@ export const useGetDocumentList = () => {
       urn: p.urn,
       caseId: p.caseId
     });
-    console.log({ resp });
 
     setDocumentList(resp.success ? resp.data : null);
   };
