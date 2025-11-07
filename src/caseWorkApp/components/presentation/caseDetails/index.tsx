@@ -30,7 +30,7 @@ const CaseDetailsWrapper: React.FC<{}> = () => {
           <DocumentSidebar
             urn="54KR7689125"
             caseId={2160797}
-            openDocumentIds={['#1234', '#456']}
+            openDocumentIds={openDocumentIds}
             onSetDocumentOpenIds={(docIds) => setOpenDocumentIds(docIds)}
           />
         }
