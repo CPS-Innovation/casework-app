@@ -10,7 +10,12 @@ import { useCaseInfoStore } from '../../stores';
 import { BaseUrlParamsType } from '../../schemas/params';
 import './Layout.scss';
 
-export const Layout = ({ children }: PropsWithChildren) => {
+type Props = { plain?: boolean };
+
+export const Layout = ({
+  children,
+  plain = false
+}: PropsWithChildren<Props>) => {
   const { caseId, urn } = useParams<BaseUrlParamsType>();
   const location = useLocation();
   const { banners } = useBanner();
@@ -69,16 +74,22 @@ export const Layout = ({ children }: PropsWithChildren) => {
             banners.map((banner, index) => <Banner key={index} {...banner} />)}
         </div>
 
-        {!isCaseInfoLoading ? (
+        {!plain ? (
           <>
-            <Tabs tabs={tabs} />
-            <div id="main-content">
-              <Outlet />
-              {children}
-            </div>
+            {!isCaseInfoLoading ? (
+              <>
+                <Tabs tabs={tabs} />
+                <div id="main-content">
+                  <Outlet />
+                  {children}
+                </div>
+              </>
+            ) : (
+              <LoadingSpinner textContent="Loading case" />
+            )}
           </>
         ) : (
-          <LoadingSpinner textContent="Loading case" />
+          children
         )}
       </main>
     </>

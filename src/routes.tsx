@@ -5,22 +5,35 @@ import { useAppRoute } from './hooks';
 import {
   CommunicationsPage,
   MaterialsPage,
+  NotAuthorisedPage,
   NotFoundPage,
-  PcdRequestPage
+  PcdRequestPage,
+  ServerErrorPage
 } from './pages';
 import { ReviewAndRedactPage } from './pages/ReviewAndRedactPage';
 
 export const Routes = () => {
-  const [communicationsRoute, materialsRoute, pcdRequestRoute, reviewRoute] =
-    useAppRoute([
-      'COMMUNICATIONS',
-      'MATERIALS',
-      'PCD_REQUEST',
-      'REVIEW_REDACT'
-    ]);
+  const [
+    communicationsRoute,
+    materialsRoute,
+    pcdRequestRoute,
+    reviewRoute,
+    serviceDownRoute,
+    unauthorisedRoute
+  ] = useAppRoute([
+    'COMMUNICATIONS',
+    'MATERIALS',
+    'PCD_REQUEST',
+    'REVIEW_REDACT',
+    'SERVER_ERROR',
+    'UNAUTHORISED'
+  ]);
 
   return (
     <Router>
+      <Route path={unauthorisedRoute} element={<NotAuthorisedPage />} />
+      <Route path={serviceDownRoute} element={<ServerErrorPage />} />
+
       <Route path="/:urn/:caseId" element={<Layout />}>
         <Route path={pcdRequestRoute} element={<PcdRequestPage />}>
           <Route path=":pcdId" element={<PcdRequestPage />} />
