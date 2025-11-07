@@ -21,11 +21,7 @@ export const DocumentSidebarNotes = (p: {
 
   const axiosInstance = useAxiosInstance();
 
-  const { documentNotes } = useGetDocumentNotes({
-    urn: p.urn,
-    caseId: p.caseId,
-    documentId: p.documentId
-  });
+  const documentNotes = useGetDocumentNotes();
 
   return (
     <DocumentSidebarWrapper>
@@ -84,16 +80,16 @@ export const DocumentSidebarNotes = (p: {
         </div>
         <br />
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          {documentNotes === undefined && <div>loading</div>}
-          {documentNotes === null && <div>error</div>}
-          {documentNotes?.map((note) => (
+          {documentNotes.data === undefined && <div>loading</div>}
+          {documentNotes.data === null && <div>error</div>}
+          {documentNotes.data?.map((note) => (
             <div>
               <div style={{ fontWeight: 700 }}>{note.createdByName}</div>
               <div>{formatDate(note.date)}</div>
               <div>{note.text}</div>
             </div>
           ))}
-          {documentNotes?.length === 0 && <div>No notes to display</div>}
+          {documentNotes.data?.length === 0 && <div>No notes to display</div>}
         </div>
       </div>
     </DocumentSidebarWrapper>
