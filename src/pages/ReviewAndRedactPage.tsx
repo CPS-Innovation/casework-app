@@ -4,7 +4,6 @@ import { DocumentSidebar } from '../packages/DocumentSelectAccordion/DocumentSid
 import { CaseDetailsWrapper  as CaseDetailsPage} from '../caseWorkApp/components/presentation/caseDetails';
 
 export const ReviewAndRedactPage = () => {
-  const [openDocumentIds, setOpenDocumentIds] = useState<string[]>([]);
 
   return (
     <div>

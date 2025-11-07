@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TwoCol } from '../../../../components';
 import { DocumentSidebar } from '../../../../packages/DocumentSelectAccordion/DocumentSidebar';
 import { DocumentControlArea } from '../../documentControlArea';
 import { DocumentViewportArea } from '../../documenViewportArea';
 
 const CaseDetailsWrapper: React.FC<{}> = () => {
+  const [openDocumentIds, setOpenDocumentIds] = useState<string[]>([]);
+
   const items = [
     {
       isDirty: false,
@@ -28,7 +30,7 @@ const CaseDetailsWrapper: React.FC<{}> = () => {
           <DocumentSidebar
             urn="54KR7689125"
             caseId={2160797}
-            openDocumentIds={'openDocumentIds'}
+            openDocumentIds={['#1234', '#456']}
             onSetDocumentOpenIds={(docIds) => setOpenDocumentIds(docIds)}
           />
         }
