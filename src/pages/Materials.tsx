@@ -31,7 +31,7 @@ export const MaterialsPage = () => {
   const [selectedMaterial, setSelectedMaterial] =
     useState<CaseMaterialsType | null>(null);
 
-  const { mutate: refreshCaseMaterials, loading: caseMaterialsLoading } =
+  const { mutate: refreshCaseMaterials } =
     useCaseMaterials('materials');
   const hasAccess = useFeatureFlag();
   const { setBanner, resetBanner } = useBanner();
@@ -49,7 +49,6 @@ export const MaterialsPage = () => {
     handleRedactClick,
     handleUnusedClick,
     determineReadStatusLabel,
-    isReadStatusUpdating
   } = useTableActions({
     selectedItems: selectedItems.materials,
     refreshData: refreshCaseMaterials,
@@ -138,35 +137,29 @@ export const MaterialsPage = () => {
       />
 
       <TwoCol sidebar={showFilter ? <MaterialsFilters /> : undefined}>
-        {caseMaterialsLoading || isReadStatusUpdating ? (
-          <LoadingSpinner textContent="Loading materials" />
-        ) : (
-          <>
-            <TableActions
-              showFilter={showFilter}
-              onSetShowFilter={setShowFilter}
-              menuItems={menuItems}
-              selectedItems={selectedItems.materials}
-            />
+          {caseInfo && (
+            <>
+              <TableActions
+                showFilter={showFilter}
+                onSetShowFilter={setShowFilter}
+                menuItems={menuItems}
+                selectedItems={selectedItems.materials}
+              />
 
-            {caseInfo && (
               <cps-materials-table
                 caseid={caseInfo.id}
                 urn={caseInfo.urn}
               ></cps-materials-table>
-            )}
 
-            <CaseMaterialsTable />
-
-            <div className="action-on-selection-container">
-              <ButtonMenuComponent
-                menuTitle="Action on selection"
-                menuItems={menuItems}
-                isDisabled={selectedItems.materials?.length === 0}
-              />
-            </div>
-          </>
-        )}
+              <div className="action-on-selection-container">
+                <ButtonMenuComponent
+                  menuTitle="Action on selection"
+                  menuItems={menuItems}
+                  isDisabled={selectedItems.materials?.length === 0}
+                />
+              </div>
+            </>
+          )}
       </TwoCol>
     </div>
   );
