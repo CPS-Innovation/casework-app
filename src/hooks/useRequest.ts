@@ -1,10 +1,18 @@
 import { useMsal } from '@azure/msal-react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
 import { POLARIS_GATEWAY_URL } from '../constants/url';
 import { loginRequest } from '../msalInstance';
+import { useAppRoute } from './';
 
 export const useRequest = () => {
   const { instance: msalInstance } = useMsal();
+  const navigate = useNavigate();
+  const [serviceDownRoute, unauthorisedRoute] = useAppRoute([
+    'SERVER_ERROR',
+    'UNAUTHORISED'
+  ]);
 
   const axiosInstance = axios.create({
     baseURL: POLARIS_GATEWAY_URL,
@@ -22,6 +30,23 @@ export const useRequest = () => {
 
     return config;
   });
+
+  axiosInstance.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      const errorStatusCodes = [400, 401, 403, 422];
+
+      if (errorStatusCodes.includes(error.status)) {
+        return navigate(`/${unauthorisedRoute}`);
+      }
+
+      if (error.status === 500) {
+        return navigate(`/${serviceDownRoute}`);
+      }
+
+      return Promise.reject(error);
+    }
+  );
 
   return axiosInstance;
 };

@@ -5,7 +5,9 @@ const APP_ROUTES = {
   NOT_FOUND: 'not-found',
   PCD_REQUEST: 'pcd-request',
   PCD_REVIEW: 'pcd-review',
-  REVIEW_REDACT: 'review-and-redact'
+  SERVER_ERROR: 'service-down',
+  REVIEW_REDACT: 'review-and-redact',
+  UNAUTHORISED: 'unauthorized'
 } as const;
 
 type AppRouteKey = keyof typeof APP_ROUTES;
