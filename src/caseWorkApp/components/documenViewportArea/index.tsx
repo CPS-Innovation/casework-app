@@ -5,8 +5,6 @@ import { LinkButton } from '../LinkButton/LinkButton';
 import Tooltip from '../tooltip';
 import classes from './index.module.scss';
 
-// type TItems = { items: DropdownButtonItem[] };
-
 export type DropdownButtonItem = {
   id: string;
   label: string;
@@ -25,7 +23,7 @@ export type DropdownButtonProps = {
   icon?: React.ReactElement;
 };
 
-const DocumentViewportArea = () => {
+export const DocumentViewportArea = () => {
   const [readactAreaState, setReadactAreaState] = useState<boolean>(false);
 
   const handleRedactAreaToolButtonClick = () => {
@@ -91,6 +89,4 @@ const DocumentViewportArea = () => {
     </div>
   );
 };
-
-export { DocumentViewportArea };
 

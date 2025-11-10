@@ -1,39 +1,35 @@
-import { useEffect, useRef, useMemo } from "react";
-import classes from "./Tabs.module.scss";
+import { useEffect, useMemo, useRef } from 'react';
+import classes from './Tabs.module.scss';
 // import { Tab } from "../../../components/Tabs/Tabs";
-import  CloseIcon  from "../../assetsCWA/svgs/closeIconBold.svg?react";
-import DownArrow  from "../../assetsCWA/svgs/down.svg?react";
-import { LinkButton } from "../../components/LinkButton/LinkButton";
-import { DropdownButton } from "../dropDownButton/DropdownButton";
+import CloseIcon from '../../assetsCWA/svgs/closeIconBold.svg?react';
+import DownArrow from '../../assetsCWA/svgs/down.svg?react';
+import { LinkButton } from '../../components/LinkButton/LinkButton';
+import { DropdownButton } from '../dropDownButton/DropdownButton';
 
 export type TabButtonProps = {
   items: { id: string; label: string; ariaLabel: string }[];
   activeTabIndex: number;
   handleTabSelection: (documentId: string) => void;
   handleCloseTab: () => void;
-  handleUnLockDocuments: (documentIds: string[]) => void;
   dcfMode: string | undefined;
 };
 
-const ARROW_KEY_SHIFTS = {
-  ArrowLeft: -1,
-  ArrowRight: 1,
-};
+const ARROW_KEY_SHIFTS = { ArrowLeft: -1, ArrowRight: 1 };
 
 const TabButtons: React.FC<TabButtonProps> = ({
   items,
   activeTabIndex,
   handleTabSelection,
   handleCloseTab,
-  dcfMode,
+  dcfMode
 }) => {
   const activeTabRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     activeTabRef.current?.focus();
     activeTabRef.current?.parentElement?.scrollIntoView({
-      behavior: "smooth",
-      block: "nearest",
+      behavior: 'smooth',
+      block: 'nearest'
     });
   }, [activeTabIndex, items.length]);
 
@@ -46,7 +42,7 @@ const TabButtons: React.FC<TabButtonProps> = ({
       return;
     }
     moveToNextOrPreviousTab(thisShift);
-    if (ev.code === "ArrowRight" || ev.code === "ArrowLeft") {
+    if (ev.code === 'ArrowRight' || ev.code === 'ArrowLeft') {
       ev.preventDefault();
     }
   };
@@ -72,7 +68,7 @@ const TabButtons: React.FC<TabButtonProps> = ({
   const tabDropdownItems = useMemo(() => {
     return items.map((item) => ({
       ...item,
-      disabled: item.id === items[activeTabIndex].id,
+      disabled: item.id === items[activeTabIndex].id
     }));
   }, [items, activeTabIndex]);
 
@@ -100,10 +96,10 @@ const TabButtons: React.FC<TabButtonProps> = ({
           onClick={() => {
             moveToNextOrPreviousTab(-1);
           }}
-        >            
-            <DownArrow />
+        >
+          <DownArrow />
         </LinkButton>
-<LinkButton
+        <LinkButton
           disabled={activeTabIndex === items.length - 1}
           className={classes.tabNextButton}
           data-test-id="btn-tab-next"
@@ -135,14 +131,14 @@ const TabButtons: React.FC<TabButtonProps> = ({
                 id={`tab_${index}`}
                 aria-controls={
                   index === activeTabIndex
-                    ? "active-tab-panel"
+                    ? 'active-tab-panel'
                     : `panel-${index}`
                 }
                 aria-label={ariaLabel}
                 role="tab"
                 className={classes.tabButton}
                 data-testid={
-                  index === activeTabIndex ? "tab-active" : `btn-tab-${index}`
+                  index === activeTabIndex ? 'tab-active' : `btn-tab-${index}`
                 }
                 onClick={() => {
                   if (itemId !== items[activeTabIndex].id) {
@@ -185,3 +181,4 @@ const TabButtons: React.FC<TabButtonProps> = ({
 };
 
 export default TabButtons;
+

@@ -1,54 +1,37 @@
+import React from 'react';
+import { useStoreCWA } from '../../store';
 import { Button } from '../button';
 import { Tabs } from '../tabs';
 import { HIDE_CATEROGIES } from '../utils/constants';
-import { useStoreCWA } from '../../store';
 import './styles.scss';
 
-// const items = [
-//   {
-//     isDirty: false,
-//     id: 'CMS-MG1',
-//     versionId: 1,
-//     label: 'MG1 CARMINE Victim',
-//     panel: <></>
-//   },
-//   {
-//     isDirty: false,
-//     id: 'CMS-MG2',
-//     versionId: 2,
-//     label: 'MG2 CARMINE Victim',
-//     panel: <></>
-//   }  
-// ];
+type PanelProps = React.DetailedHTMLProps<
+  React.LabelHTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+>;
 
-// const tabSelectionHandler = (documentId: string): void => {      
-//   console.log('TabSelectionHandler');
-// };
-
-// const closePdfHandler = (documentId: string): void => {
-//   console.log('close pgf handler');
-// };
-
-const unlockDocumentsHandler = (): void => {
-  console.log('unlockDocumentsHandler');
+type TabItem = {
+  id: string;
+  versionId: number;
+  label: string;
+  panel: PanelProps;
+  isDirty: boolean;
 };
 
-const DocumentControlArea = ({ items }:any) => {
+type DocumentControlAreaProps = { items: TabItem[] };
 
+const DocumentControlArea: React.FC<DocumentControlAreaProps> = ({ items }) => {
   const { handleTabSelection, handleClosePdf } = useStoreCWA();
 
   return (
     <>
-     
       <Button>{HIDE_CATEROGIES}</Button>
       <Tabs
         idPrefix="idpref"
         title="Tabs title"
         items={items}
-        // activeTabId={undefined}
         handleTabSelection={handleTabSelection}
         handleClosePdf={handleClosePdf}
-        handleUnLockDocuments={unlockDocumentsHandler}
         dcfMode={undefined}
       />
     </>

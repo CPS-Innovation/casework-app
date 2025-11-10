@@ -8,7 +8,6 @@ import { CommonTabsProps } from './types';
 export type TabsProps = CommonTabsProps & {
   handleTabSelection: (documentId: string) => void;
   handleClosePdf: (documentId: string, versionId: number) => void;
-  handleUnLockDocuments: (documentIds: string[]) => void;
   dcfMode: string | undefined;
 };
 
@@ -20,7 +19,6 @@ export const Tabs: React.FC<TabsProps> = ({
   title,
   handleTabSelection,
   handleClosePdf,
-  handleUnLockDocuments,
   dcfMode,
   ...attributes
 }) => {
@@ -118,7 +116,6 @@ export const Tabs: React.FC<TabsProps> = ({
           activeTabIndex={activeTabIndex}
           handleTabSelection={handleTabSelection}
           handleCloseTab={handleCloseTab}
-          handleUnLockDocuments={handleUnLockDocuments}
           dcfMode={dcfMode}
         />
         {panels}
