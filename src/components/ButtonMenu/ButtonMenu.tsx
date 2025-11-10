@@ -134,6 +134,7 @@ export function ButtonMenuComponent({
         aria-haspopup="true"
         aria-expanded={openMenu}
         aria-disabled={isDisabled}
+        disabled={isDisabled}
         onClick={() => handleToggleMenu(false)}
       >
         <span>
