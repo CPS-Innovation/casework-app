@@ -58,18 +58,18 @@ export const DocumentViewportArea = () => {
     <div className={classes.content}>
       <p>MG1 CARMINE Victim</p>
       <Tooltip
-        text={readactAreaState ? 'Redact area tool On' : 'Redact area tool Off'}
+        text={redactAreaState ? 'Redact area tool On' : 'Redact area tool Off'}
       >
         <LinkButton
           className={
-            readactAreaState
+            redactAreaState
               ? `${classes.areaToolBtn} ${classes.areaToolBtnEnabled}`
               : `${classes.areaToolBtn}`
           }
           dataTestId={'btn-area-tool'}
           id={'btn-area-tool'}
           ariaLabel={
-            readactAreaState
+            redactAreaState
               ? "disable area redaction mode"
               : "enable area redaction mode"
           }
