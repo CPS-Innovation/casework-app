@@ -1,7 +1,7 @@
+import { useStoreCWA } from '../../store';
 import { Button } from '../button';
 import { Tabs } from '../tabs';
-import { HIDE_CATEROGIES } from '../utils/constants';
-import { useStoreCWA } from '../../store';
+import { HIDE_CATEROGIES, SHOW_CATEROGIES } from '../utils/constants';
 import './styles.scss';
 
 // const items = [
@@ -18,10 +18,10 @@ import './styles.scss';
 //     versionId: 2,
 //     label: 'MG2 CARMINE Victim',
 //     panel: <></>
-//   }  
+//   }
 // ];
 
-// const tabSelectionHandler = (documentId: string): void => {      
+// const tabSelectionHandler = (documentId: string): void => {
 //   console.log('TabSelectionHandler');
 // };
 
@@ -33,14 +33,24 @@ const unlockDocumentsHandler = (): void => {
   console.log('unlockDocumentsHandler');
 };
 
-const DocumentControlArea = ({ items }:any) => {
+type DocumentControlAreaProps = {
+  items: any;
+  isSidebarVisible?: boolean;
+  onToggleSidebar?: () => void;
+};
 
+const DocumentControlArea = ({
+  items,
+  isSidebarVisible = false,
+  onToggleSidebar
+}: DocumentControlAreaProps) => {
+  console.log('isSidebarvisible: ', isSidebarVisible);
   const { handleTabSelection, handleClosePdf } = useStoreCWA();
-
   return (
     <>
-     
-      <Button>{HIDE_CATEROGIES}</Button>
+      <Button onClick={() => onToggleSidebar?.()}>
+        {isSidebarVisible ? HIDE_CATEROGIES : SHOW_CATEROGIES}
+      </Button>
       <Tabs
         idPrefix="idpref"
         title="Tabs title"
