@@ -81,7 +81,6 @@ const TabButtons: React.FC<TabButtonProps> = ({
     <div
       role="region"
       aria-labelledby="document-tabs-region-label"
-      // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
       tabIndex={0}
       id="document-tabs"
       className={`${classes.tabsWrapper} ${classes.contentArea}`}

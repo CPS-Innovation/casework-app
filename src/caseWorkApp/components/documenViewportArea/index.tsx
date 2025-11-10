@@ -23,29 +23,29 @@ export type DropdownButtonProps = {
   icon?: React.ReactElement;
 };
 
-  const dropDownItems: DropdownButtonItem[] = [
-    {
-      id: '1',
-      label: 'Log an Under/Over redaction',
-      ariaLabel: 'log an under or over redaction',
-      disabled: false
-    },
-    {
-      id: '2',
-      label: 'Rotate document pages',
-      ariaLabel: 'rotate document pages',
-      disabled: false
-    },
-    {
-      id: '3',
-      label: true ? 'Hide delete page options' : 'Show dotate page options',
-      ariaLabel: true ? 'hide delete page options' : 'show delete page options',
-      disabled: false
-    },
-    { id: '4', label: 'Discard', ariaLabel: 'discard', disabled: false },
-    { id: '5', label: 'Reclassify', ariaLabel: 'reclassify', disabled: false },
-    { id: '6', label: 'Rename', ariaLabel: 'rename', disabled: false }
-  ];
+const dropDownItems: DropdownButtonItem[] = [
+  {
+    id: '1',
+    label: 'Log an Under/Over redaction',
+    ariaLabel: 'log an under or over redaction',
+    disabled: false
+  },
+  {
+    id: '2',
+    label: 'Rotate document pages',
+    ariaLabel: 'rotate document pages',
+    disabled: false
+  },
+  {
+    id: '3',
+    label: true ? 'Hide delete page options' : 'Show dotate page options',
+    ariaLabel: true ? 'hide delete page options' : 'show delete page options',
+    disabled: false
+  },
+  { id: '4', label: 'Discard', ariaLabel: 'discard', disabled: false },
+  { id: '5', label: 'Reclassify', ariaLabel: 'reclassify', disabled: false },
+  { id: '6', label: 'Rename', ariaLabel: 'rename', disabled: false }
+];
 
 export const DocumentViewportArea = () => {
   const [redactAreaState, setRedactAreaState] = useState<boolean>(false);
@@ -70,8 +70,8 @@ export const DocumentViewportArea = () => {
           id={'btn-area-tool'}
           ariaLabel={
             redactAreaState
-              ? "disable area redaction mode"
-              : "enable area redaction mode"
+              ? 'disable area redaction mode'
+              : 'enable area redaction mode'
           }
           onClick={handleRedactAreaToolButtonClick}
         >
