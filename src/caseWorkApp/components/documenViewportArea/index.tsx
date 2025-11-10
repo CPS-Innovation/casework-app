@@ -24,10 +24,10 @@ export type DropdownButtonProps = {
 };
 
 export const DocumentViewportArea = () => {
-  const [readactAreaState, setReadactAreaState] = useState<boolean>(false);
+  const [redactAreaState, setRedactAreaState] = useState<boolean>(false);
 
   const handleRedactAreaToolButtonClick = () => {
-    setReadactAreaState(!readactAreaState);
+    setRedactAreaState(!redactAreaState);
   };
 
   const dropDownItems: DropdownButtonItem[] = [
