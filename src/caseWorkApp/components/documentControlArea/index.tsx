@@ -2,7 +2,6 @@ import React from 'react';
 import { useStoreCWA } from '../../store';
 import { Button } from '../button';
 import { Tabs } from '../tabs';
-import { HIDE_CATEROGIES } from '../utils/constants';
 import './styles.scss';
 
 type PanelProps = React.DetailedHTMLProps<
@@ -25,7 +24,7 @@ const DocumentControlArea: React.FC<DocumentControlAreaProps> = ({ items }) => {
 
   return (
     <>
-      <Button>{HIDE_CATEROGIES}</Button>
+      <Button>Hide categories</Button>
       <Tabs
         idPrefix="idpref"
         title="Tabs title"

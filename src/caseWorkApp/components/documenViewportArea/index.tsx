@@ -23,13 +23,6 @@ export type DropdownButtonProps = {
   icon?: React.ReactElement;
 };
 
-export const DocumentViewportArea = () => {
-  const [redactAreaState, setRedactAreaState] = useState<boolean>(false);
-
-  const handleRedactAreaToolButtonClick = () => {
-    setRedactAreaState(!redactAreaState);
-  };
-
   const dropDownItems: DropdownButtonItem[] = [
     {
       id: '1',
@@ -53,6 +46,13 @@ export const DocumentViewportArea = () => {
     { id: '5', label: 'Reclassify', ariaLabel: 'reclassify', disabled: false },
     { id: '6', label: 'Rename', ariaLabel: 'rename', disabled: false }
   ];
+
+export const DocumentViewportArea = () => {
+  const [redactAreaState, setRedactAreaState] = useState<boolean>(false);
+
+  const handleRedactAreaToolButtonClick = () => {
+    setRedactAreaState(!redactAreaState);
+  };
 
   return (
     <div className={classes.content}>

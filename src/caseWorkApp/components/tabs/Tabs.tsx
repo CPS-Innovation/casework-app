@@ -22,8 +22,8 @@ export const Tabs: React.FC<TabsProps> = ({
   dcfMode,
   ...attributes
 }) => {
-  // @ts-expect-error
-  const [showDocumentNavAlert, setShowDocumentNavAlert] = useState(false);
+
+  const [, setShowDocumentNavAlert] = useState(false);
 
   useLastFocus('#case-details-search');
 
@@ -57,19 +57,9 @@ export const Tabs: React.FC<TabsProps> = ({
     handleClosePdf(items[activeTabIndex].id, items[activeTabIndex].versionId);
   };
 
-  // const handleNavigateAwayCancelAction = () => {
-  //   setShowDocumentNavAlert(false);
-  // };
-
   const panels = items.map((item, index) => {
     const { id: itemId, panel } = item;
     const panelId = itemId;
-
-    const coreProps = {
-      role: 'tabpanel',
-      tabIndex: 0,
-      'data-testid': `tab-content-${itemId}`
-    };
 
     return (
       <div
@@ -80,7 +70,9 @@ export const Tabs: React.FC<TabsProps> = ({
             : `tab_${index}`
         }
         key={panelId}
-        {...coreProps}
+        role="tabpanel"
+        tabIndex={0}
+        data-testid={`tab-content-${itemId}`}
         className={`govuk-tabs__panel ${
           index !== activeTabIndex ? classes.hideTabDocument : ''
         }  ${classes.contentArea}`}
