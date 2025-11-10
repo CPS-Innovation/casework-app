@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef } from 'react';
-import classes from './Tabs.module.scss';
 import CloseIcon from '../../assetsCWA/svgs/closeIconBold.svg?react';
 import DownArrow from '../../assetsCWA/svgs/down.svg?react';
 import { LinkButton } from '../../components/LinkButton/LinkButton';
 import { DropdownButton } from '../dropDownButton/DropdownButton';
+import classes from './Tabs.module.scss';
 
 export type TabButtonProps = {
   items: { id: string; label: string; ariaLabel: string }[];
@@ -12,8 +12,6 @@ export type TabButtonProps = {
   handleCloseTab: () => void;
   dcfMode: string | undefined;
 };
-
-const ARROW_KEY_SHIFTS = { ArrowLeft: -1, ArrowRight: 1 };
 
 const TabButtons: React.FC<TabButtonProps> = ({
   items,
@@ -32,17 +30,22 @@ const TabButtons: React.FC<TabButtonProps> = ({
     });
   }, [activeTabIndex, items.length]);
 
+  type ArrowKeyCodes = 'ArrowLeft' | 'ArrowRight';
+
+  const ARROW_KEY_SHIFTS: Record<ArrowKeyCodes, number> = {
+    ArrowLeft: -1,
+    ArrowRight: 1
+  };
+
   const handleKeyPressOnTab: React.KeyboardEventHandler<HTMLButtonElement> = (
     ev
   ) => {
-    const typedKeyCode = ev.code as keyof typeof ARROW_KEY_SHIFTS;
-    const thisShift = ARROW_KEY_SHIFTS[typedKeyCode]; // -1, 1 or undefined
-    if (!thisShift) {
-      return;
-    }
-    moveToNextOrPreviousTab(thisShift);
-    if (ev.code === 'ArrowRight' || ev.code === 'ArrowLeft') {
-      ev.preventDefault();
+    if (ev.code in ARROW_KEY_SHIFTS) {
+      const thisShift = ARROW_KEY_SHIFTS[ev.code as ArrowKeyCodes]; // -1, 1, or undefined
+      moveToNextOrPreviousTab(thisShift);
+      if (ev.code === 'ArrowRight' || ev.code === 'ArrowLeft') {
+        ev.preventDefault();
+      }
     }
   };
 
