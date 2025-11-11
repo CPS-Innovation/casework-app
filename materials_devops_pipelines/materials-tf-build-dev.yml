@@ -1,0 +1,37 @@
+# Terraform Build pipeline
+
+name: '$(majorMinorVersion).$(Year:yy)$(DayOfYear).$(semanticVersion)'
+
+trigger:
+  batch: true
+  branches:
+    include:
+      - development
+  paths:
+    include:
+      - "terraform/*"
+
+variables:
+  - name: tfTargetPath
+    value: "terraform"
+  - name: tfBuildFolder
+    value: "tf-materials-main-files"
+  - name: majorMinorVersion
+    value: 1.0
+  - name: semanticVersion
+    value: $[counter(variables['majorMinorVersion'], 1)]
+
+stages:
+  - stage: Publish_Artifacts
+    displayName: PR > Publish Terraform
+    jobs:
+    - job:
+      pool:
+          vmImage: ubuntu-latest
+      steps:
+        - task: PublishPipelineArtifact@1
+          displayName: 'Publish terraform artifact'
+          inputs:
+            targetPath: '$(Pipeline.Workspace)/s/$(tfTargetPath)/'
+            artifact: '$(tfBuildFolder)'
+            publishLocation: 'pipeline'
