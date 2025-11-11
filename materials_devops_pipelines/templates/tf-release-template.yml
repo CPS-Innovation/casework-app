@@ -1,4 +1,10 @@
 steps:
+
+  - script: |
+      echo "Pipeline.Workspace: $(Pipeline.Workspace)"
+      echo "pipelineName: $(pipelineName)"
+      echo "tfBuildFolder: $(tfBuildFolder)"
+
   # Install Terraform based on version variable
   - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@1
     displayName: Terraform > Install
@@ -26,7 +32,7 @@ steps:
   - bash: |
       terraform plan -input=false -out=$(envVar).tfplan -var-file="./environments/$(envVar).tfvars"
     displayName: 'Terraform > Write $(envVar) Plan'
-    workingDirectory: '$(Pipeline.Workspace)/$(pipelineName)/$(tfBuildFolder)'
+    workingDirectory: '$(Pipeline.Workspace)/$(pipelineName)/$(tfBuildFolder)/'
     env:
       ARM_CLIENT_ID: $(ARM_CLIENT_ID)
       ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
