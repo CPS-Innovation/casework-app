@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DocumentSidebarWrapper } from './DocumentSidebarWrapper';
 import { useAxiosInstance } from './getters/getAxiosInstance';
 import {
@@ -17,11 +17,15 @@ export const DocumentSidebarNotes = (p: {
   documentId: string;
   onBackButtonClick: () => void;
 }) => {
+  const { urn, caseId, documentId } = p;
   const [text, setText] = useState('');
 
   const axiosInstance = useAxiosInstance();
-
   const documentNotes = useGetDocumentNotes();
+
+  useEffect(() => {
+    documentNotes.reload({ urn, caseId, documentId });
+  }, []);
 
   return (
     <DocumentSidebarWrapper>
