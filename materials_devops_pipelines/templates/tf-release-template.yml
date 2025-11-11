@@ -2,8 +2,10 @@ steps:
 
   - script: |
       echo "Pipeline.Workspace: $(Pipeline.Workspace)"
-      echo "pipelineName: $(pipelineName)"
-      echo "tfBuildFolder: $(tfBuildFolder)"
+      echo "targetBuild: $(targetBuild)"
+      echo "targetTerraformArtifact: $(targetTerraformArtifact)"
+      echo "prod-log-level: $(prod-log-level)"
+      echo "qa-log-level: $(qa-log-level)"
 
   # Install Terraform based on version variable
   - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@1
@@ -18,7 +20,7 @@ steps:
       -backend-config="key=${TF_STATE_KEY}" \
       -backend-config="resource_group_name=${TF_RESOURCE_GROUP_NAME}" \
     displayName: Terraform > Init
-    workingDirectory: '$(Pipeline.Workspace)/$(pipelineName)/$(tfBuildFolder)/'
+    workingDirectory: '$(Pipeline.Workspace)/$(targetBuild)/$(targetTerraformArtifact)/'
     env:
       ARM_CLIENT_ID: $(ARM_CLIENT_ID)
       ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
@@ -32,7 +34,7 @@ steps:
   - bash: |
       terraform plan -input=false -out=$(envVar).tfplan -var-file="./environments/$(envVar).tfvars"
     displayName: 'Terraform > Write $(envVar) Plan'
-    workingDirectory: '$(Pipeline.Workspace)/$(pipelineName)/$(tfBuildFolder)/'
+    workingDirectory: '$(Pipeline.Workspace)/$(targetBuild)/$(targetTerraformArtifact)/'
     env:
       ARM_CLIENT_ID: $(ARM_CLIENT_ID)
       ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
@@ -44,7 +46,7 @@ steps:
       terraform apply -auto-approve $(envVar).tfplan 
     displayName: 'Terraform > Apply to $(envVar)'
     condition: eq(${{ parameters.TF_Apply }}, true)
-    workingDirectory: '$(Pipeline.Workspace)/$(pipelineName)/$(tfBuildFolder)/'
+    workingDirectory: '$(Pipeline.Workspace)/$(targetBuild)/$(targetTerraformArtifact)/'
     env:
       ARM_CLIENT_ID: $(ARM_CLIENT_ID)
       ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)

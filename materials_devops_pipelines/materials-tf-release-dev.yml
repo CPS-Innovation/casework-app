@@ -73,3 +73,5 @@ stages:
                     Storage-Resource-Group-Name: $(terraform-resource-group)
                     Storage-Account-Key: $(terraform-key)
                     terraform-version: $(terraform-version)
+                    targetBuild: $(targetBuild)
+                    targetTerraformArtifact: $(targetTerraformArtifact)
