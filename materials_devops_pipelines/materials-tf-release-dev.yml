@@ -24,16 +24,10 @@ pool:
   name: $(dev-build-agent)
 
 variables:
-  - name: pipelineName
-    value: "MaterialsBuild"
-  - name: terraform-version
-    value: 1.13.0
-  - name: tfBuildFolder
-    value: "tf-materials-main-files"
-  - name: majorMinorVersion
-    value: 1.0
-  - name: semanticVersion 
-    value: $[counter(variables['majorMinorVersion'], 1)]
+  # - name: majorMinorVersion
+  #   value: 1.0
+  # - name: semanticVersion 
+  #   value: $[counter(variables['majorMinorVersion'], 1)]
   - group: materials-kv-dev-terraform
   - group: materials-global
 
@@ -71,10 +65,11 @@ stages:
                   parameters: 
                     serviceConnection: $(dev-azure-service-connection)
                     envVar: ${{ variables.envVar }}
-                    tfBuildFolder: ${{ variables.tfBuildFolder }}
-                    pipelineName: ${{ variables.pipelineName }}
+                    tfBuildFolder: $(tfBuildFolder)
+                    PipelineName: $(BuildPipelineName)
                     TF_Apply: ${{ parameters.TF_Apply }}
                     Storage-Account-Name: $(dev-terraform-storage-account)
                     Storage-Account-Container-Name: $(materials-terraform-container-name)
                     Storage-Resource-Group-Name: $(terraform-resource-group)
                     Storage-Account-Key: $(terraform-key)
+                    terraform-version: $(terraform-version)
