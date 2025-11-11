@@ -24,8 +24,6 @@ pool:
   name: $(dev-build-agent)
 
 variables:
-  - group: materials-kv-dev-terraform
-  - group: materials-global
   - name: pipelineName
     value: "MaterialsBuild"
   - name: terraform-version
@@ -36,6 +34,8 @@ variables:
     value: 1.0
   - name: semanticVersion 
     value: $[counter(variables['majorMinorVersion'], 1)]
+  - group: materials-kv-dev-terraform
+  - group: materials-global
 
 stages:
                  
