@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DocumentSidebarWrapper } from './DocumentSidebarWrapper';
 import { useAxiosInstance } from './getters/getAxiosInstance';
 import {
   postDocumentNotesFromAxiosInstance,
-  TDocumentNotes
+  useGetDocumentNotes
 } from './getters/getDocumentNotes';
 import { CloseIconButton } from './templates/CloseIconButton';
 import { GovUkButton } from './templates/GovUkButton';
@@ -15,12 +15,17 @@ export const DocumentSidebarNotes = (p: {
   urn: string;
   caseId: number;
   documentId: string;
-  documentNotes: TDocumentNotes | null | undefined;
   onBackButtonClick: () => void;
 }) => {
+  const { urn, caseId, documentId } = p;
   const [text, setText] = useState('');
 
   const axiosInstance = useAxiosInstance();
+  const documentNotes = useGetDocumentNotes();
+
+  useEffect(() => {
+    documentNotes.reload({ urn, caseId, documentId });
+  }, []);
 
   return (
     <DocumentSidebarWrapper>
@@ -79,16 +84,16 @@ export const DocumentSidebarNotes = (p: {
         </div>
         <br />
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          {p.documentNotes === undefined && <div>loading</div>}
-          {p.documentNotes === null && <div>error</div>}
-          {p.documentNotes?.map((note) => (
+          {documentNotes.data === undefined && <div>loading</div>}
+          {documentNotes.data === null && <div>error</div>}
+          {documentNotes.data?.map((note) => (
             <div>
               <div style={{ fontWeight: 700 }}>{note.createdByName}</div>
               <div>{formatDate(note.date)}</div>
               <div>{note.text}</div>
             </div>
           ))}
-          {p.documentNotes?.length === 0 && <div>No notes to display</div>}
+          {documentNotes.data?.length === 0 && <div>No notes to display</div>}
         </div>
       </div>
     </DocumentSidebarWrapper>

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { DocumentSidebarAccordion } from './DocumentSidebarAccordion';
 import { DocumentSidebarNotes } from './DocumentSidebarNotes';
 import { useGetDocumentList } from './getters/getDocumentList';
-import { useGetDocumentNotes } from './getters/getDocumentNotes';
 
 export const DocumentSidebar = (p: {
   urn: string;
@@ -15,19 +14,9 @@ export const DocumentSidebar = (p: {
     { mode: 'accordion' } | { mode: 'notes'; documentId: string }
   >({ mode: 'accordion' });
 
-  const documentNotes = useGetDocumentNotes();
-  useEffect(() => {
-    if (status.mode === 'notes') {
-      documentNotes.reload({ urn, caseId, documentId: status.documentId });
-    }
-  }, [status]);
-
   const documentList = useGetDocumentList();
   useEffect(() => {
-    if (status.mode === 'accordion') {
-      documentList.reload({ urn, caseId });
-      documentNotes.clear();
-    }
+    if (status.mode === 'accordion') documentList.reload({ urn, caseId });
   }, [status]);
 
   if (status.mode === 'accordion') {
@@ -53,7 +42,6 @@ export const DocumentSidebar = (p: {
     return (
       <DocumentSidebarNotes
         documentId={documentId}
-        documentNotes={documentNotes.data}
         caseId={caseId}
         urn={urn}
         onBackButtonClick={() => setStatus({ mode: 'accordion' })}
