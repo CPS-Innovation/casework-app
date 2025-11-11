@@ -34,7 +34,7 @@ steps:
   - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@1
     displayName: Terraform > Install
     inputs:
-      terraformVersion: parameters.terraformVersion
+      terraformVersion: ${{ parameters.terraformVersion }}
 
   # Terraform Init
   - bash: |
