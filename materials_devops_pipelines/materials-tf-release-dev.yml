@@ -45,7 +45,7 @@ stages:
       - deployment: CI_Deploy_Materials_Terraform
         workspace:
           clean: all 
-        environment: "Development"
+        environment: "Materials_Dev"
         variables:
           envVar: "dev"      
         strategy:
