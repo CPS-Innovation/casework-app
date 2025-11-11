@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { DocumentControlArea } from '../components/documentControlArea';
-import { DocumentViewportArea } from '../components/documenViewportArea';
 import { TwoCol } from '../../components';
 import { DocumentSidebar } from '../../packages/DocumentSelectAccordion/DocumentSidebar';
+import { DocumentControlArea } from '../components/documentControlArea';
+import { DocumentViewportArea } from '../components/documenViewportArea';
 
 export const ReviewAndRedactPage = () => {
   const [openDocumentIds, setOpenDocumentIds] = useState<string[]>([]);
+  const [isSidebarVisible, setIsSidebarVisible] = useState<boolean>(true);
 
   const items = [
     {
@@ -28,17 +29,22 @@ export const ReviewAndRedactPage = () => {
     <div className="govuk-main-wrapper">
       <TwoCol
         sidebar={
-          <DocumentSidebar
-            urn="54KR7689125"
-            caseId={2160797}
-            openDocumentIds={openDocumentIds}
-            onSetDocumentOpenIds={(docIds) => setOpenDocumentIds(docIds)}
-          />
+          isSidebarVisible ? (
+            <DocumentSidebar
+              urn="54KR7689125"
+              caseId={2160797}
+              openDocumentIds={openDocumentIds}
+              onSetDocumentOpenIds={(docIds) => setOpenDocumentIds(docIds)}
+            />
+          ) : undefined
         }
       >
         <>
-          <DocumentControlArea items={items}></DocumentControlArea>
-
+          <DocumentControlArea
+            items={items}
+            isSidebarVisible={isSidebarVisible}
+            onToggleSidebar={() => setIsSidebarVisible((v) => !v)}
+          />
           <DocumentViewportArea></DocumentViewportArea>
         </>
       </TwoCol>
