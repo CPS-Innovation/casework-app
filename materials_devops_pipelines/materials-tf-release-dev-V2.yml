@@ -14,6 +14,8 @@ resources:
         stages:
           - Publish_Artifacts
 
+
+
 parameters:
 - name: TF_Apply
   displayName: Apply TF change
@@ -47,11 +49,11 @@ stages:
             deploy:
               steps:
               
-                - template: stages/jobs/tasks/task_get-credentials.yml
+                - template: templates/task_get-credentials.yml
                   parameters:
                     azureSubscription: $(prod-azure-subscription)
 
-                - template: ../stages/jobs/tasks/task_apply-terraform.yml
+                - template: templates/task_apply-terraform.yml
                   parameters:
                     targetBuild: $(targetBuild)
                     targetTerraformArtifact: $(targetTerraformArtifact)
