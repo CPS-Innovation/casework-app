@@ -1,6 +1,7 @@
-environment   = "dev"
-location      = "UK South"
-project_name  = "materials"
+environment     = "dev"
+environment_tag = "development"
+location        = "UK South"
+project_name    = "materials"
 
 
 #### TBC  #####

@@ -19,6 +19,16 @@ variable "resource_name_prefix" {
   default = "polaris"
 }
 
+variable "location_abbr" {
+  description = "The abbreviated located of this resource"
+  type        = string
+}
+
+variable "environment_tag" {
+  type        = string
+  description = "Environment tag value"
+}
+
 ## Networking ##
 variable "private_dns_zones" {
   type        = map(string)
