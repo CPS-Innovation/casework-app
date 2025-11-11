@@ -1,6 +1,7 @@
 environment     = "dev"
 environment_tag = "development"
 location        = "UK South"
+location_abbr   = "uks"
 project_name    = "materials"
 
 
