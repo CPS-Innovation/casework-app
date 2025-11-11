@@ -3,7 +3,7 @@ import { DocumentSidebarWrapper } from './DocumentSidebarWrapper';
 import { useAxiosInstance } from './getters/getAxiosInstance';
 import {
   postDocumentNotesFromAxiosInstance,
-  useGetDocumentNotes
+  TDocumentNotes
 } from './getters/getDocumentNotes';
 import { CloseIconButton } from './templates/CloseIconButton';
 import { GovUkButton } from './templates/GovUkButton';
@@ -15,13 +15,12 @@ export const DocumentSidebarNotes = (p: {
   urn: string;
   caseId: number;
   documentId: string;
+  documentNotes: TDocumentNotes | null | undefined;
   onBackButtonClick: () => void;
 }) => {
   const [text, setText] = useState('');
 
   const axiosInstance = useAxiosInstance();
-
-  const documentNotes = useGetDocumentNotes();
 
   return (
     <DocumentSidebarWrapper>
@@ -80,16 +79,16 @@ export const DocumentSidebarNotes = (p: {
         </div>
         <br />
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          {documentNotes.data === undefined && <div>loading</div>}
-          {documentNotes.data === null && <div>error</div>}
-          {documentNotes.data?.map((note) => (
+          {p.documentNotes === undefined && <div>loading</div>}
+          {p.documentNotes === null && <div>error</div>}
+          {p.documentNotes?.map((note) => (
             <div>
               <div style={{ fontWeight: 700 }}>{note.createdByName}</div>
               <div>{formatDate(note.date)}</div>
               <div>{note.text}</div>
             </div>
           ))}
-          {documentNotes.data?.length === 0 && <div>No notes to display</div>}
+          {p.documentNotes?.length === 0 && <div>No notes to display</div>}
         </div>
       </div>
     </DocumentSidebarWrapper>
