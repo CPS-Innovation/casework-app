@@ -1,0 +1,80 @@
+---
+name: '$(majorMinorVersion).$(Year:yy)$(DayOfYear).$(semanticVersion)'
+trigger: none
+pr: none
+
+resources:
+  pipelines:
+    - pipeline: MaterialsBuild
+      source: Materials Build - DEV
+      trigger:
+        branches:
+          include:
+            - refs/heads/development
+        stages:
+          - Publish_Artifacts
+
+parameters:
+- name: TF_Apply
+  displayName: Apply TF change
+  type: boolean
+  default: false
+
+pool:
+  name: $(dev-build-agent)
+
+variables:
+  - group: materials-kv-dev-terraform
+  - group: materials-global
+  - name: pipelineName
+    value: "MaterialsBuild"
+  - name: terraform-version
+    value: 1.13.0
+  - name: tfBuildFolder
+    value: "tf-materials-main-files"
+  - name: majorMinorVersion
+    value: 1.0
+  - name: semanticVersion 
+    value: $[counter(variables['majorMinorVersion'], 1)]
+
+stages:
+                 
+  - stage: Apply_Dev
+    displayName: Deployment > Materials Development
+    jobs:      
+      - deployment: CI_Deploy_Materials_Terraform
+        workspace:
+          clean: all 
+        environment: "Development"
+        variables:
+          envVar: "dev"      
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                
+                - task: AzureCLI@2
+                  displayName: Fetch credentials for azure
+                  inputs:
+                      azureSubscription: $(dev-azure-service-connection)
+                      scriptType: bash
+                      addSpnToEnvironment: true # this will add the required credentials to env vars
+                      useGlobalConfig: true
+                      scriptLocation: inlineScript
+                      inlineScript: |
+                        echo "##vso[task.setvariable variable=ARM_TENANT_ID;]$tenantId"
+                        echo "##vso[task.setvariable variable=ARM_CLIENT_ID;]$servicePrincipalId"
+                        echo "##vso[task.setvariable variable=ARM_CLIENT_SECRET;]$servicePrincipalKey"
+                        echo "##vso[task.setvariable variable=ARM_SUBSCRIPTION_ID;]$(az account show --query="id" -o tsv)"
+
+                - template: ../templates/tf-release-template.yml
+                  parameters: 
+                    serviceConnection: $(dev-azure-service-connection)
+                    envVar: ${{ variables.envVar }}
+                    tfBuildFolder: ${{ variables.tfBuildFolder }}
+                    pipelineName: ${{ variables.pipelineName }}
+                    TF_Apply: ${{ parameters.TF_Apply }}
+                    Storage-Account-Name: $(dev-terraform-storage-account)
+                    Storage-Account-Container-Name: $(materials-terraform-container-name)
+                    Storage-Resource-Group-Name: $(terraform-resource-group)
+                    Storage-Account-Key: $(terraform-key)
