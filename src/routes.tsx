@@ -10,7 +10,7 @@ import {
   PcdRequestPage,
   ServerErrorPage
 } from './pages';
-import { ReviewAndRedactPage } from './pages/ReviewAndRedactPage';
+import { ReviewAndRedactPage } from './caseWorkApp/pages/ReviewAndRedactPage';
 
 export const Routes = () => {
   const [
