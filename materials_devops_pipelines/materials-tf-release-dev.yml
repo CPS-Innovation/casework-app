@@ -6,7 +6,7 @@ pr: none
 resources:
   pipelines:
     - pipeline: MaterialsBuild
-      source: Materials Build - DEV
+      source: materials-infra-tf-dev-build
       trigger:
         branches:
           include:
