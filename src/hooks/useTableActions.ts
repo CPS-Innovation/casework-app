@@ -19,8 +19,6 @@ type TableActionsProps = {
   deselectItem: () => void;
   caseInfoData?: CaseInfoType;
   resetBanner: () => void;
-  setIsRenameDrawerOpen: (isOpen: boolean) => void;
-  setRenamedMaterialId: (id: number | null) => void;
 };
 
 export const useTableActions = ({
@@ -29,19 +27,12 @@ export const useTableActions = ({
   setBanner,
   deselectItem,
   caseInfoData,
-  resetBanner,
-  setIsRenameDrawerOpen,
-  setRenamedMaterialId
+  resetBanner
 }: TableActionsProps) => {
   const navigate = useNavigate();
   const { trigger } = useReadStatus();
   const { clear: clearSelectedItems } = useSelectedItemsStore();
   const [isReadStatusUpdating, setIsReadStatusUpdating] = useState(false);
-
-  const handleRenameClick = () => {
-    setIsRenameDrawerOpen(true);
-    setRenamedMaterialId(null);
-  };
 
   const handleReclassifyClick = () => {
     navigate(URL.RECLASSIFY, { state: { row: selectedItems[0] } });
@@ -108,7 +99,6 @@ export const useTableActions = ({
   };
 
   return {
-    handleRenameClick,
     handleReclassifyClick,
     handleDiscardClick,
     handleRedactClick,

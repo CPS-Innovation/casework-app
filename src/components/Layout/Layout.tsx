@@ -1,17 +1,26 @@
-import { Outlet, useLocation } from 'react-router-dom';
+import { PropsWithChildren, useEffect } from 'react';
+import { Outlet, useLocation, useParams } from 'react-router-dom';
 
-import { PropsWithChildren } from 'react';
-import { CaseInfo } from '../';
-import { LoadingSpinner, Tabs } from '../../components';
-import { useAppRoute } from '../../hooks';
-import type { Tab } from '../Tabs/Tabs.tsx';
+import { Banner, CaseInfo, LoadingSpinner, Tabs } from '../../components';
+import { useAppRoute, useBanner, useCaseInfo } from '../../hooks';
+import type { Tab } from '../Tabs/Tabs';
 
 import { useCaseInfoStore } from '../../stores';
 
+import { BaseUrlParamsType } from '../../schemas/params';
 import './Layout.scss';
 
-export const Layout = ({ children }: PropsWithChildren) => {
+type Props = { plain?: boolean };
+
+export const Layout = ({
+  children,
+  plain = false
+}: PropsWithChildren<Props>) => {
+  const { caseId, urn } = useParams<BaseUrlParamsType>();
   const location = useLocation();
+  const { banners } = useBanner();
+  const { caseInfo, loading: isCaseInfoLoading } = useCaseInfo({ caseId, urn });
+  const { setCaseInfo } = useCaseInfoStore();
 
   const [communicationsRoute, materialsRoute, pcdRequestRoute, reviewRoute] =
     useAppRoute([
@@ -49,23 +58,38 @@ export const Layout = ({ children }: PropsWithChildren) => {
     }
   ];
 
-  const { caseInfo } = useCaseInfoStore();
+  useEffect(() => {
+    if (caseInfo) {
+      setCaseInfo(caseInfo);
+    }
+  }, [caseInfo]);
 
   return (
     <>
       <main className="main-container">
-        <CaseInfo />
+        <CaseInfo caseInfo={caseInfo} />
 
-        {caseInfo ? (
+        <div role="status" aria-atomic="true">
+          {banners &&
+            banners.map((banner, index) => <Banner key={index} {...banner} />)}
+        </div>
+
+        {!plain ? (
           <>
-            <Tabs tabs={tabs} />
-            <div id="main-content">
-              <Outlet />
-              {children}
-            </div>
+            {!isCaseInfoLoading ? (
+              <>
+                <Tabs tabs={tabs} />
+                <div id="main-content">
+                  <Outlet />
+                  {children}
+                </div>
+              </>
+            ) : (
+              <LoadingSpinner textContent="Loading case" />
+            )}
           </>
         ) : (
-          <LoadingSpinner textContent="Loading..." />
+          children
         )}
       </main>
     </>

@@ -2,12 +2,12 @@ import useSWRMutation from 'swr/mutation';
 import { QUERY_KEYS } from '../constants/query';
 import { API_ENDPOINTS } from '../constants/url';
 import { useLogger, useRequest } from '../hooks';
-import { SwrPayload } from '../schemas/api';
+import { SwrPayload } from '../schemas';
 import {
   CaseMaterialRenameResponseType,
   CaseMaterialsType
 } from '../schemas/caseMaterials.ts';
-import { useCaseInfoStore } from '../stores/useCaseInfo.ts';
+import { useCaseInfoStore } from '../stores';
 
 type UseRenameOptions = {
   onError?: (error: Error) => void;
@@ -15,7 +15,7 @@ type UseRenameOptions = {
 };
 
 export const useRename = (
-  material: CaseMaterialsType,
+  material: CaseMaterialsType | null,
   options?: UseRenameOptions
 ) => {
   const request = useRequest();
@@ -28,7 +28,7 @@ export const useRename = (
   ) => {
     return request.patch<CaseMaterialRenameResponseType>(
       API_ENDPOINTS.CASE_MATERIAL_RENAME,
-      { materialId: material.materialId, subject: newSubject }
+      { materialId: material?.materialId, subject: newSubject }
     );
   };
   const { trigger, isMutating } = useSWRMutation(
@@ -42,7 +42,7 @@ export const useRename = (
         console.error('Error renaming material:', error);
         log({
           logLevel: 1,
-          message: `HK-UI-FE: caseId [${caseInfo?.id}] - materialID [${material.materialId}] has not been renamed.`
+          message: `HK-UI-FE: caseId [${caseInfo?.id}] - materialID [${material?.materialId}] has not been renamed.`
         });
       },
       onSuccess: () => {
@@ -51,7 +51,7 @@ export const useRename = (
 
         log({
           logLevel: 1,
-          message: `HK-UI-FE: caseId [${caseInfo?.id}] - materialID [${material.materialId}] has been renamed.`
+          message: `HK-UI-FE: caseId [${caseInfo?.id}] - materialID [${material?.materialId}] has been renamed.`
         });
       }
     }
