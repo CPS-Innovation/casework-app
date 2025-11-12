@@ -12,6 +12,8 @@ vnet_name       = "vnet-innovation-development"
 vnet_rg         = "rg-networking"
 app_subnet_name = "polaris-apps-subnet"
 ui_subnet_name  = "polaris-ui-subnet"
+as_web_pe_ip    = null # initially set to null, will be changed once IP auto assigned
+as_comp_pe_ip   = null
 
 private_dns_zones = {
   blob        = "privatelink.blob.core.windows.net"

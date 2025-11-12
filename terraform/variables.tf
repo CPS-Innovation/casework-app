@@ -64,6 +64,11 @@ variable "as_web_pe_ip" {
   default     = null
 }
 
+variable "as_comp_pe_ip" {
+  type        = string
+  description = "A static private IP address to use for the Materials UI private endpoint."
+  default     = null
+}
 
 ## UI ##
 variable "web_asp_materials" {
