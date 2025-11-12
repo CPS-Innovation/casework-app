@@ -29,7 +29,7 @@ const DocumentControlArea = ({
   onToggleSidebar
 }: DocumentControlAreaProps) => {
   const { handleTabSelection, handleClosePdf } = useStoreCWA();
-
+console.log('conreolarea: ', items)
   return (
     <>
       <Button onClick={() => onToggleSidebar?.()}>

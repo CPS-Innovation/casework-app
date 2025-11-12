@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { TwoCol } from '../../components';
 import { DocumentSidebar } from '../../packages/DocumentSelectAccordion/DocumentSidebar';
 import { DocumentControlArea } from '../components/documentControlArea';
@@ -7,23 +7,32 @@ import { DocumentViewportArea } from '../components/documenViewportArea';
 export const ReviewAndRedactPage = () => {
   const [openDocumentIds, setOpenDocumentIds] = useState<string[]>([]);
   const [isSidebarVisible, setIsSidebarVisible] = useState<boolean>(true);
+  const [documentIDs, setDocumentIDs] = useState<any[]>([]);
 
-  const items = [
-    {
-      isDirty: false,
-      id: 'CMS-MG1',
-      versionId: 1,
-      label: 'MG1 CARMINE Victim',
-      panel: <></>
-    },
-    {
-      isDirty: false,
-      id: 'CMS-MG2',
-      versionId: 2,
-      label: 'MG2 CARMINE Victim',
-      panel: <></>
-    }
-  ];
+  useEffect(() => {
+    const res = openDocumentIds?.map((item) => {
+      return { id: item, label: item, title: item };
+    });
+
+    setDocumentIDs(res);
+  }, [openDocumentIds]);
+
+  // const items = [
+  //   {
+  //     isDirty: false,
+  //     id: 'CMS-MG1',
+  //     versionId: 1,
+  //     label: 'MG1 CARMINE Victim',
+  //     panel: <></>
+  //   },
+  //   {
+  //     isDirty: false,
+  //     id: 'CMS-MG2',
+  //     versionId: 2,
+  //     label: 'MG2 CARMINE Victim',
+  //     panel: <></>
+  //   }
+  // ];
 
   return (
     <div className="govuk-main-wrapper">
@@ -41,7 +50,7 @@ export const ReviewAndRedactPage = () => {
       >
         <>
           <DocumentControlArea
-            items={items}
+            items={documentIDs}
             isSidebarVisible={isSidebarVisible}
             onToggleSidebar={() => setIsSidebarVisible((v) => !v)}
           />
