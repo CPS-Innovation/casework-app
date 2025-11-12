@@ -68,7 +68,7 @@ resource "azurerm_linux_web_app" "as_comp_materials" {
     type = "SystemAssigned"
   }
 
-  tags = local.tags
+  tags = local.common_tags
 
   lifecycle {
     ignore_changes = [
@@ -107,5 +107,5 @@ resource "azurerm_private_endpoint" "pep_as_comp_materials" {
   #   }
   # }
 
-  tags = local.tags
+  tags = local.common_tags
 }

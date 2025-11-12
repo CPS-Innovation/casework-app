@@ -76,5 +76,8 @@ variable "web_asp_materials" {
     sku     = string
     worker_count           = string
     zone_balancing_enabled = string
+    autoscale_default      = string
+    autoscale_minimum      = string
+    autoscale_maximum      = string 
   })
 }
