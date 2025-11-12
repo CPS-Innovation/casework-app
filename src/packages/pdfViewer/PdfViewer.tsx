@@ -180,15 +180,25 @@ export const PdfViewer = (p: { fileUrl: string }) => {
                 padding: '10px'
               }}
             >
-              <span>
-                {flattenedRedactions.length === 1 && <>There is 1 redaction</>}
-                {flattenedRedactions.length > 1 && (
-                  <>There are {flattenedRedactions.length} redactions</>
-                )}
-              </span>
-              <button onClick={() => setRedactionsOnPageNumber({})}>
-                Clear all redactions
+              <button
+                className="govuk-button govuk-button--inverse"
+                onClick={() => setRedactionsOnPageNumber({})}
+              >
+                Remove all redactions
               </button>
+              <span
+                style={{ display: 'flex', gap: '8px', alignItems: 'center' }}
+              >
+                <span>
+                  {flattenedRedactions.length === 1 && (
+                    <>There is 1 redaction</>
+                  )}
+                  {flattenedRedactions.length > 1 && (
+                    <>There are {flattenedRedactions.length} redactions</>
+                  )}
+                </span>
+                <button className="govuk-button">Save all redactions</button>
+              </span>
             </div>
           </div>
         )}
