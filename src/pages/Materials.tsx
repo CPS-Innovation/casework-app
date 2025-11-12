@@ -14,7 +14,6 @@ import {
   useBanner,
   useCaseMaterial,
   useCaseMaterials,
-  useFeatureFlag,
   useTableActions
 } from '../hooks';
 import {
@@ -34,7 +33,6 @@ export const MaterialsPage = () => {
 
   const { mutate: refreshCaseMaterials, loading: caseMaterialsLoading } =
     useCaseMaterials({ dataType: 'materials' });
-  const hasAccess = useFeatureFlag();
   const { setBanner, resetBanner } = useBanner();
   const { deselectMaterial } = useCaseMaterial();
 
@@ -101,26 +99,22 @@ export const MaterialsPage = () => {
     {
       label: 'Reclassify',
       onClick: handleReclassifyClick,
-      hide:
-        !hasAccess([5]) ||
-        selectedItems.materials?.length > 1 ||
-        !row?.isReclassifiable
+      hide: selectedItems.materials?.length > 1 || !row?.isReclassifiable
     },
     {
       label: 'Redact',
       onClick: () => handleRedactClick(row?.materialId),
-      hide: !hasAccess([2, 3, 4, 5]) || selectedItems.materials?.length > 1
+      hide: selectedItems.materials?.length > 1
     },
     {
       label: 'Discard',
       onClick: () => handleDiscardClick(URL.MATERIALS),
       disabled: selectedItems.materials?.length > 1,
-      hide: !hasAccess([2, 3, 4, 5]) || selectedItems.materials?.length > 1
+      hide: selectedItems.materials?.length > 1
     },
     {
       label: determineReadStatusLabel(selectedItems.materials),
-      onClick: () => handleReadStatusClick(selectedItems.materials),
-      hide: !hasAccess([2, 3, 4, 5])
+      onClick: () => handleReadStatusClick(selectedItems.materials)
     },
     {
       label: 'Mark as unused',
