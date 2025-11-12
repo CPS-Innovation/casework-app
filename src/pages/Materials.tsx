@@ -23,10 +23,12 @@ import {
   useSelectedItemsStore
 } from '../stores';
 
+import { useNavigate } from 'react-router-dom';
 import { URL } from '../constants/url';
 import { CaseMaterialsType } from '../schemas';
 
 export const MaterialsPage = () => {
+  const navigate = useNavigate();
   const { caseInfo } = useCaseInfoStore();
   const [showFilter, setShowFilter] = useState(true);
   const [selectedMaterial, setSelectedMaterial] =
@@ -45,7 +47,6 @@ export const MaterialsPage = () => {
   const {
     handleReclassifyClick,
     handleReadStatusClick,
-    handleDiscardClick,
     handleRedactClick,
     handleUnusedClick,
     determineReadStatusLabel,
@@ -63,6 +64,15 @@ export const MaterialsPage = () => {
     if (selectedItems.materials.length) {
       setSelectedMaterial(selectedItems.materials[0]);
     }
+  };
+
+  const handleDiscardClick = () => {
+    navigate(`../discard-material`, {
+      state: {
+        selectedMaterial: selectedItems.materials[0],
+        returnTo: URL.MATERIALS
+      }
+    });
   };
 
   const handleCancelRename = () => {
@@ -113,9 +123,9 @@ export const MaterialsPage = () => {
     },
     {
       label: 'Discard',
-      onClick: () => handleDiscardClick(URL.MATERIALS),
+      onClick: () => handleDiscardClick(),
       disabled: selectedItems.materials?.length > 1,
-      hide: !hasAccess([2, 3, 4, 5]) || selectedItems.materials?.length > 1
+      hide: selectedItems.materials?.length > 1
     },
     {
       label: determineReadStatusLabel(selectedItems.materials),

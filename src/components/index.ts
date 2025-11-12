@@ -14,6 +14,8 @@ export { CPSLink } from './Link/Link';
 export { LoadingSpinner } from './LoadingSpinner/LoadingSpinner';
 export { NavList } from './NavList/NavList';
 export { Pagination } from './Pagination/Pagination';
+export { Radios } from './Radios/Radios';
+export type { RadioOption } from './Radios/Radios';
 export { RouteChangeListener } from './RouteChangeListener/RouteChangeListener';
 export { SectionBreak } from './SectionBreak/SectionBreak';
 export { CaseMaterialsTable } from './SortableTable/CaseMaterialsTable';
