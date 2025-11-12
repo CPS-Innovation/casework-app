@@ -132,8 +132,8 @@ export const PdfViewerPage = (p: {
                     scale={p.scale}
                   >
                     <RedactionBox
-                      background="rgba(0, 0, 255, 0.2)"
-                      border="2px dashed blue"
+                      background="#fce897"
+                      border="1px dashed #333"
                     />
                   </PositionPdfOverlayBox>
                 );
@@ -153,8 +153,8 @@ export const PdfViewerPage = (p: {
                   scale={p.scale}
                 >
                   <RedactionBox
-                    background="rgba(255, 0, 0, 0.3)"
-                    border="2px solid red"
+                    background="#0000004d"
+                    border="solid 2px black"
                     onCloseClick={() =>
                       setRedactions(redactions?.filter((x) => x.id !== box.id))
                     }
