@@ -118,7 +118,7 @@ export const MaterialsPage = () => {
     },
     {
       label: 'Mark as unused',
-      onClick: () => handleUnusedClick(URL.MATERIALS),
+      onClick: () => handleUnusedClick(selectedItems.materials, URL.MATERIALS),
       hide: selectedItems.materials?.some((item) => item.status === 'Unused')
     }
   ];

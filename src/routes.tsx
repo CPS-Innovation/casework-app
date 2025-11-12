@@ -1,5 +1,6 @@
 import { Route, Routes as Router } from 'react-router';
 
+import { ReviewAndRedactPage } from './caseWorkApp/pages/ReviewAndRedactPage';
 import { Layout } from './components';
 import { useAppRoute } from './hooks';
 import {
@@ -8,15 +9,16 @@ import {
   NotAuthorisedPage,
   NotFoundPage,
   PcdRequestPage,
+  ReclassifyToUnusedPage,
   ServerErrorPage
 } from './pages';
-import { ReviewAndRedactPage } from './caseWorkApp/pages/ReviewAndRedactPage';
 
 export const Routes = () => {
   const [
     communicationsRoute,
     materialsRoute,
     pcdRequestRoute,
+    reclassifyToUnusedRoute,
     reviewRoute,
     serviceDownRoute,
     unauthorisedRoute
@@ -24,6 +26,7 @@ export const Routes = () => {
     'COMMUNICATIONS',
     'MATERIALS',
     'PCD_REQUEST',
+    'RECLASSIFY_TO_UNUSED',
     'REVIEW_REDACT',
     'SERVER_ERROR',
     'UNAUTHORISED'
@@ -41,6 +44,10 @@ export const Routes = () => {
         <Route path={materialsRoute} element={<MaterialsPage />} />
         <Route path={communicationsRoute} element={<CommunicationsPage />} />
         <Route path={reviewRoute} element={<ReviewAndRedactPage />} />
+        <Route
+          path={reclassifyToUnusedRoute}
+          element={<ReclassifyToUnusedPage />}
+        />
       </Route>
 
       <Route path="*" element={<NotFoundPage />} />

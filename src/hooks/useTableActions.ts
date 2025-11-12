@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { READ_STATUS } from '../constants';
 import { URL } from '../constants/url';
-import { useReadStatus } from '../hooks';
+import { useAppRoute, useReadStatus } from '../hooks';
 import { CaseInfoType, CaseMaterialsType } from '../schemas/';
 import { useSelectedItemsStore } from '../stores';
 import { linkToRedact } from '../utils/materials';
@@ -33,6 +33,7 @@ export const useTableActions = ({
   const { trigger } = useReadStatus();
   const { clear: clearSelectedItems } = useSelectedItemsStore();
   const [isReadStatusUpdating, setIsReadStatusUpdating] = useState(false);
+  const [reclassifyToUnusedRoute] = useAppRoute(['RECLASSIFY_TO_UNUSED'], true);
 
   const handleReclassifyClick = () => {
     navigate(URL.RECLASSIFY, { state: { row: selectedItems[0] } });
@@ -50,9 +51,14 @@ export const useTableActions = ({
     }
   };
 
-  const handleUnusedClick = (returnTo: string) => {
+  console.log(reclassifyToUnusedRoute);
+
+  const handleUnusedClick = (
+    materials: CaseMaterialsType[],
+    returnTo: string
+  ) => {
     resetBanner();
-    navigate(URL.CHECK_YOUR_SELECTION, { state: { returnTo } });
+    navigate(reclassifyToUnusedRoute, { state: { materials, returnTo } });
   };
 
   const determineReadStatusLabel = (items: CaseMaterialsType[]) => {
