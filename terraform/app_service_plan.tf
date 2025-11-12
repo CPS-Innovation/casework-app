@@ -6,7 +6,7 @@ resource "azurerm_service_plan" "web_linux" {
   os_type                   = "Linux"
   sku_name                  = var.web_asp_materials.sku
   zone_balancing_enabled    = startswith(var.web_asp_materials.sku, "B") ? false : var.web_asp_materials.zone_balancing_enabled
-  worker_count              = var.app_asp_materials_worker_count
+  worker_count              = var.web_asp_materials.worker_count   
   tags                      = local.common_tags
 }
 
