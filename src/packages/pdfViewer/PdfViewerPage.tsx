@@ -92,9 +92,9 @@ export const PdfViewerPage = (p: {
               onMouseMove={(e) => {
                 if (requestAnimationFrameRef.current) return;
 
-                const target = e.target as HTMLDivElement;
-                if (!target.className.includes('react-pdf__Page__textContent'))
-                  return;
+                const target = e.currentTarget as HTMLDivElement;
+                // const target = pdfPageWrapperElmRef.current;
+                // if (!target) return;
 
                 requestAnimationFrameRef.current = requestAnimationFrame(() => {
                   const rect = target.getBoundingClientRect();
