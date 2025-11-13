@@ -8,8 +8,9 @@ const APP_ROUTES = {
   NOT_FOUND: 'not-found',
   PCD_REQUEST: 'pcd-request',
   PCD_REVIEW: 'pcd-review',
-  SERVER_ERROR: 'service-down',
+  RECLASSIFY_TO_UNUSED: 'reclassify-to-unused',
   REVIEW_REDACT: 'review-and-redact',
+  SERVER_ERROR: 'service-down',
   UNAUTHORISED: 'unauthorized'
 } as const;
 
