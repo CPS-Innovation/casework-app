@@ -36,3 +36,6 @@ package-lock.json
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# pdfViewer test pdfs not required in prod
+/public/test-pdfs/

@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { DocumentControlArea } from '../components/documentControlArea';
-import { DocumentViewportArea } from '../components/documenViewportArea';
 import { TwoCol } from '../../components';
 import { DocumentSidebar } from '../../packages/DocumentSelectAccordion/DocumentSidebar';
+import { PdfViewer } from '../../packages/pdfViewer/PdfViewer';
+import { DocumentControlArea } from '../components/documentControlArea';
+import { DocumentViewportArea } from '../components/documenViewportArea';
 
 export const ReviewAndRedactPage = () => {
   const [openDocumentIds, setOpenDocumentIds] = useState<string[]>([]);
@@ -40,9 +41,10 @@ export const ReviewAndRedactPage = () => {
           <DocumentControlArea items={items}></DocumentControlArea>
 
           <DocumentViewportArea></DocumentViewportArea>
+
+          <PdfViewer fileUrl="http://localhost:3000/test-pdfs/different-orientations-and-sizes.pdf" />
         </>
       </TwoCol>
     </div>
   );
 };
-
