@@ -74,7 +74,7 @@ resource "azurerm_private_endpoint" "pep_as_web_materials_staging1" {
 
   private_service_connection {
     name                           = "${azurerm_linux_web_app.as_web_materials.name}-staging1"
-    private_connection_resource_id = azurerm_linux_web_app.as_web_materials.id    "${azurerm_linux_web_app.as_web_materials.id}-staging1"
+    private_connection_resource_id = azurerm_linux_web_app.as_web_materials.id
     subresource_names              = ["sites-staging1"]
     is_manual_connection           = false
   }
