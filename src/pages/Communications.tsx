@@ -4,6 +4,7 @@ import {
   ButtonMenuComponent,
   CommsFilters,
   CommunicationsTable,
+  Layout,
   LoadingSpinner,
   RenameDrawer,
   TableActions,
@@ -137,37 +138,39 @@ export const CommunicationsPage = () => {
   }, []);
 
   return (
-    <div className="govuk-main-wrapper">
-      <RenameDrawer
-        material={selectedMaterial}
-        onCancel={handleCancelRename}
-        onSuccess={handleSuccessfulRename}
-      />
+    <Layout>
+      <div className="govuk-main-wrapper">
+        <RenameDrawer
+          material={selectedMaterial}
+          onCancel={handleCancelRename}
+          onSuccess={handleSuccessfulRename}
+        />
 
-      <TwoCol sidebar={showFilter ? <CommsFilters /> : undefined}>
-        {caseMaterialsLoading || isReadStatusUpdating ? (
-          <LoadingSpinner textContent="Loading communications" />
-        ) : (
-          <>
-            <TableActions
-              showFilter={showFilter}
-              onSetShowFilter={setShowFilter}
-              menuItems={menuItems}
-              selectedItems={selectedItems.communications}
-            />
-
-            <CommunicationsTable />
-
-            <div className="action-on-selection-container">
-              <ButtonMenuComponent
-                menuTitle="Action on selection"
+        <TwoCol sidebar={showFilter ? <CommsFilters /> : undefined}>
+          {caseMaterialsLoading || isReadStatusUpdating ? (
+            <LoadingSpinner textContent="Loading communications" />
+          ) : (
+            <>
+              <TableActions
+                showFilter={showFilter}
+                onSetShowFilter={setShowFilter}
                 menuItems={menuItems}
-                isDisabled={selectedItems.communications?.length === 0}
+                selectedItems={selectedItems.communications}
               />
-            </div>
-          </>
-        )}
-      </TwoCol>
-    </div>
+
+              <CommunicationsTable />
+
+              <div className="action-on-selection-container">
+                <ButtonMenuComponent
+                  menuTitle="Action on selection"
+                  menuItems={menuItems}
+                  isDisabled={selectedItems.communications?.length === 0}
+                />
+              </div>
+            </>
+          )}
+        </TwoCol>
+      </div>
+    </Layout>
   );
 };

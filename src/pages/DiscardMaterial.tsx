@@ -1,12 +1,13 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { DISCARD_MATERIAL_OPTIONS } from '../constants';
 
-import { LoadingSpinner, RadioOption, Radios } from '../components';
+import { Layout, LoadingSpinner, RadioOption, Radios } from '../components';
 import { URL } from '../constants/url';
-import { useBanner, useCaseMaterials, useDiscard } from '../hooks';
+import { useAppRoute, useBanner, useCaseMaterials, useDiscard } from '../hooks';
 
 export const DiscardMaterialPage = () => {
+  const { getRoute } = useAppRoute();
   const [reason, setReason] = useState<RadioOption | undefined>();
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -50,11 +51,11 @@ export const DiscardMaterialPage = () => {
     }
   });
 
-  //   useEffect(() => {
-  //     if (!state?.row) {
-  //       navigate(URL.MATERIALS);
-  //     }
-  //   }, []);
+  useEffect(() => {
+    if (!material) {
+      navigate(getRoute('MATERIALS'));
+    }
+  }, []);
 
   const handleRadioChange = (option: RadioOption) => {
     setReason(option);
@@ -78,12 +79,8 @@ export const DiscardMaterialPage = () => {
     return <LoadingSpinner />;
   }
 
-  const handleReturnClick = () => {
-    navigate(returnTo, { state: { anchor: 'discard' } });
-  };
-
   return (
-    <>
+    <Layout plain>
       <Link
         to={returnTo}
         onClick={(e) => {
@@ -126,19 +123,12 @@ export const DiscardMaterialPage = () => {
             >
               Save and discard
             </button>
-            <a
-              href="#"
-              className="govuk-link cancel-status-change"
-              onClick={(event) => {
-                event.preventDefault();
-                handleReturnClick();
-              }}
-            >
+            <Link to={returnTo} className="govuk-link cancel-status-change">
               Cancel
-            </a>
+            </Link>
           </div>
         </form>
       </div>
-    </>
+    </Layout>
   );
 };

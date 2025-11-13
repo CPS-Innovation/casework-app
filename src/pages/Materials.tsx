@@ -3,6 +3,7 @@ import '../App.scss';
 import {
   ButtonMenuComponent,
   CaseMaterialsTable,
+  Layout,
   LoadingSpinner,
   MaterialsFilters,
   RenameDrawer,
@@ -11,6 +12,7 @@ import {
 } from '../components';
 
 import {
+  useAppRoute,
   useBanner,
   useCaseMaterial,
   useCaseMaterials,
@@ -28,6 +30,7 @@ import { URL } from '../constants/url';
 import { CaseMaterialsType } from '../schemas';
 
 export const MaterialsPage = () => {
+  const { getRoute } = useAppRoute();
   const navigate = useNavigate();
   const { caseInfo } = useCaseInfoStore();
   const [showFilter, setShowFilter] = useState(true);
@@ -67,10 +70,10 @@ export const MaterialsPage = () => {
   };
 
   const handleDiscardClick = () => {
-    navigate(`../discard-material`, {
+    navigate(getRoute('DISCARD'), {
       state: {
         selectedMaterial: selectedItems.materials[0],
-        returnTo: URL.MATERIALS
+        returnTo: getRoute('MATERIALS')
       }
     });
   };
@@ -123,7 +126,7 @@ export const MaterialsPage = () => {
     },
     {
       label: 'Discard',
-      onClick: () => handleDiscardClick(),
+      onClick: handleDiscardClick,
       disabled: selectedItems.materials?.length > 1,
       hide: selectedItems.materials?.length > 1
     },
@@ -140,37 +143,39 @@ export const MaterialsPage = () => {
   ];
 
   return (
-    <div className="govuk-main-wrapper">
-      <RenameDrawer
-        material={selectedMaterial}
-        onCancel={handleCancelRename}
-        onSuccess={handleSuccessfulRename}
-      />
+    <Layout>
+      <div className="govuk-main-wrapper">
+        <RenameDrawer
+          material={selectedMaterial}
+          onCancel={handleCancelRename}
+          onSuccess={handleSuccessfulRename}
+        />
 
-      <TwoCol sidebar={showFilter ? <MaterialsFilters /> : undefined}>
-        {caseMaterialsLoading || isReadStatusUpdating ? (
-          <LoadingSpinner textContent="Loading materials" />
-        ) : (
-          <>
-            <TableActions
-              showFilter={showFilter}
-              onSetShowFilter={setShowFilter}
-              menuItems={menuItems}
-              selectedItems={selectedItems.materials}
-            />
-
-            <CaseMaterialsTable />
-
-            <div className="action-on-selection-container">
-              <ButtonMenuComponent
-                menuTitle="Action on selection"
+        <TwoCol sidebar={showFilter ? <MaterialsFilters /> : undefined}>
+          {caseMaterialsLoading || isReadStatusUpdating ? (
+            <LoadingSpinner textContent="Loading materials" />
+          ) : (
+            <>
+              <TableActions
+                showFilter={showFilter}
+                onSetShowFilter={setShowFilter}
                 menuItems={menuItems}
-                isDisabled={selectedItems.materials?.length === 0}
+                selectedItems={selectedItems.materials}
               />
-            </div>
-          </>
-        )}
-      </TwoCol>
-    </div>
+
+              <CaseMaterialsTable />
+
+              <div className="action-on-selection-container">
+                <ButtonMenuComponent
+                  menuTitle="Action on selection"
+                  menuItems={menuItems}
+                  isDisabled={selectedItems.materials?.length === 0}
+                />
+              </div>
+            </>
+          )}
+        </TwoCol>
+      </div>
+    </Layout>
   );
 };

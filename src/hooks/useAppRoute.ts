@@ -1,3 +1,5 @@
+import { useMatch } from 'react-router-dom';
+
 const APP_ROUTES = {
   ROOT: '/',
   COMMUNICATIONS: 'communications',
@@ -13,5 +15,16 @@ const APP_ROUTES = {
 
 type AppRouteKey = keyof typeof APP_ROUTES;
 
-export const useAppRoute = (routeNames: AppRouteKey[]) =>
-  routeNames.map((routeName) => APP_ROUTES[routeName]);
+export const useAppRoute = () => {
+  const match = useMatch('/:urn/:caseId/*');
+  const urn = match?.params.urn;
+  const caseId = match?.params.caseId;
+
+  const getRoute = (routeName: AppRouteKey, prefix: boolean = true) => {
+    const routePrefix = urn && caseId && prefix ? `/${urn}/${caseId}/` : '';
+
+    return `${routePrefix}${APP_ROUTES[routeName]}`;
+  };
+
+  return { getRoute };
+};

@@ -14,7 +14,7 @@ import { msalConfig } from './msalInstance';
 
 if (import.meta.env.DEV) {
   const { worker } = await import('./mocks/browser');
-  await worker.start();
+  await worker.start({ onUnhandledRequest: 'bypass' });
 }
 
 const pca = new PublicClientApplication(msalConfig);
@@ -29,7 +29,9 @@ pca.initialize().then(() => {
           shouldRetryOnError: false
         }}
       >
-        <BrowserRouter>
+        <BrowserRouter
+          future={{ v7_startTransition: false, v7_relativeSplatPath: false }}
+        >
           <AppContextProvider>
             <FilterProvider>
               <App />
