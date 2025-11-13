@@ -1,8 +1,8 @@
 import { useState } from 'react';
+import { Layout, TwoCol } from '../../components';
+import { DocumentSidebar } from '../../packages/DocumentSelectAccordion/DocumentSidebar';
 import { DocumentControlArea } from '../components/documentControlArea';
 import { DocumentViewportArea } from '../components/documenViewportArea';
-import { TwoCol } from '../../components';
-import { DocumentSidebar } from '../../packages/DocumentSelectAccordion/DocumentSidebar';
 
 export const ReviewAndRedactPage = () => {
   const [openDocumentIds, setOpenDocumentIds] = useState<string[]>([]);
@@ -25,24 +25,25 @@ export const ReviewAndRedactPage = () => {
   ];
 
   return (
-    <div className="govuk-main-wrapper">
-      <TwoCol
-        sidebar={
-          <DocumentSidebar
-            urn="54KR7689125"
-            caseId={2160797}
-            openDocumentIds={openDocumentIds}
-            onSetDocumentOpenIds={(docIds) => setOpenDocumentIds(docIds)}
-          />
-        }
-      >
-        <>
-          <DocumentControlArea items={items}></DocumentControlArea>
+    <Layout>
+      <div className="govuk-main-wrapper">
+        <TwoCol
+          sidebar={
+            <DocumentSidebar
+              urn="54KR7689125"
+              caseId={2160797}
+              openDocumentIds={openDocumentIds}
+              onSetDocumentOpenIds={(docIds) => setOpenDocumentIds(docIds)}
+            />
+          }
+        >
+          <>
+            <DocumentControlArea items={items}></DocumentControlArea>
 
-          <DocumentViewportArea></DocumentViewportArea>
-        </>
-      </TwoCol>
-    </div>
+            <DocumentViewportArea></DocumentViewportArea>
+          </>
+        </TwoCol>
+      </div>
+    </Layout>
   );
 };
-

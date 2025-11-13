@@ -6,6 +6,7 @@ export { useBulkSetUnused } from './useBulkSetUnused';
 export { useCaseInfo } from './useCaseInfo';
 export { useCaseMaterial } from './useCaseMaterial';
 export { useCaseMaterials } from './useCaseMaterials';
+export { useDiscard } from './useDiscard';
 export { useDocumentPreview } from './useDocumentPreview';
 export { useFeatureFlag } from './useFeatureFlag';
 export { useFilters } from './useFilters';

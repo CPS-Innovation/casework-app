@@ -1,8 +1,9 @@
-import { useCaseInfoStore } from '../stores';
+import { useMatch } from 'react-router-dom';
 
 const APP_ROUTES = {
   ROOT: '/',
   COMMUNICATIONS: 'communications',
+  DISCARD: 'discard-material',
   MATERIALS: 'materials',
   NOT_FOUND: 'not-found',
   PCD_REQUEST: 'pcd-request',
@@ -15,13 +16,16 @@ const APP_ROUTES = {
 
 type AppRouteKey = keyof typeof APP_ROUTES;
 
-export const useAppRoute = (
-  routeNames: AppRouteKey[],
-  prefixWithCaseId?: boolean
-) => {
-  const { caseInfo } = useCaseInfoStore();
-  const prefix =
-    caseInfo && prefixWithCaseId ? `${caseInfo?.urn}/${caseInfo?.id}/` : '';
+export const useAppRoute = () => {
+  const match = useMatch('/:urn/:caseId/*');
+  const urn = match?.params.urn;
+  const caseId = match?.params.caseId;
 
-  return routeNames.map((routeName) => `/${prefix}${APP_ROUTES[routeName]}`);
+  const getRoute = (routeName: AppRouteKey, prefix: boolean = true) => {
+    const routePrefix = urn && caseId && prefix ? `/${urn}/${caseId}/` : '';
+
+    return `${routePrefix}${APP_ROUTES[routeName]}`;
+  };
+
+  return { getRoute };
 };
