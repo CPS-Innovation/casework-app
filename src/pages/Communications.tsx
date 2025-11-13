@@ -13,6 +13,7 @@ import {
 
 import { URL } from '../constants/url';
 import {
+  useAppRoute,
   useBanner,
   useCaseMaterial,
   useCaseMaterials,
@@ -32,6 +33,7 @@ export const CommunicationsPage = () => {
   const { loading: caseMaterialsLoading, mutate: refreshCommunications } =
     useCaseMaterials({ dataType: 'communications' });
   const { deselectMaterial } = useCaseMaterial();
+  const { getRoute } = useAppRoute();
 
   const { caseInfo } = useCaseInfoStore();
   const { setTags } = useMaterialTags();
@@ -117,7 +119,11 @@ export const CommunicationsPage = () => {
     },
     {
       label: 'Mark as unused',
-      onClick: () => handleUnusedClick(URL.COMMUNICATIONS)
+      onClick: () =>
+        handleUnusedClick(
+          selectedItems.communications,
+          getRoute('COMMUNICATIONS')
+        )
     }
   ];
 
