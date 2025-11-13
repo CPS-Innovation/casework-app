@@ -1,6 +1,7 @@
 import { http, HttpResponse } from 'msw';
 import { API_ENDPOINTS, POLARIS_GATEWAY_URL } from '../constants/url.ts';
 
+import { CaseMaterialsType } from '../schemas';
 import { PCDListingType } from '../schemas/pcd';
 import { mockPcdListResponse, mockPcdRequestResponse } from './data/pcdRequest';
 import {
@@ -79,6 +80,28 @@ export const handlers = [
 
       return HttpResponse.json(
         { completeCommunicationData: { id: body.materialId } },
+        { status: 200 }
+      );
+    }
+  ),
+
+  http.post(
+    `${POLARIS_GATEWAY_URL}/case-materials/bulk-set-unused`,
+    async ({ request }) => {
+      const body = (await request.json()) as CaseMaterialsType[];
+
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      return HttpResponse.json(
+        {
+          status: '',
+          message: 'This is a mock message',
+          reclassifiedMaterials: body.map(({ materialId, subject }) => ({
+            materialId,
+            subject
+          })),
+          failedMaterials: []
+        },
         { status: 200 }
       );
     }

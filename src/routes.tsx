@@ -62,7 +62,7 @@ export const Routes = () => {
           element={<ReviewAndRedactPage />}
         />
         <Route
-          path={getRoute('RECLASSIFY_TO_UNUSED')}
+          path={getRoute('RECLASSIFY_TO_UNUSED', false)}
           element={<ReclassifyToUnusedPage />}
         />
       </Route>

@@ -29,11 +29,11 @@ export const useTableActions = ({
   caseInfoData,
   resetBanner
 }: TableActionsProps) => {
+  const { getRoute } = useAppRoute();
   const navigate = useNavigate();
   const { trigger } = useReadStatus();
   const { clear: clearSelectedItems } = useSelectedItemsStore();
   const [isReadStatusUpdating, setIsReadStatusUpdating] = useState(false);
-  const [reclassifyToUnusedRoute] = useAppRoute(['RECLASSIFY_TO_UNUSED'], true);
 
   const handleReclassifyClick = () => {
     navigate(URL.RECLASSIFY, { state: { row: selectedItems[0] } });
@@ -51,14 +51,14 @@ export const useTableActions = ({
     }
   };
 
-  console.log(reclassifyToUnusedRoute);
-
   const handleUnusedClick = (
     materials: CaseMaterialsType[],
     returnTo: string
   ) => {
     resetBanner();
-    navigate(reclassifyToUnusedRoute, { state: { materials, returnTo } });
+    navigate(getRoute('RECLASSIFY_TO_UNUSED'), {
+      state: { materials, returnTo }
+    });
   };
 
   const determineReadStatusLabel = (items: CaseMaterialsType[]) => {

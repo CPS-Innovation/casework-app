@@ -2,16 +2,22 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSWRConfig } from 'swr';
 
-import { StatusTag } from '../components';
+import { Layout, StatusTag } from '../components';
 import { QUERY_KEYS } from '../constants/query';
-import { URL } from '../constants/url';
-import { useBanner, useBulkSetUnused, useFilters, useLogger } from '../hooks/';
+import {
+  useAppRoute,
+  useBanner,
+  useBulkSetUnused,
+  useFilters,
+  useLogger
+} from '../hooks/';
 import { CaseMaterialsType } from '../schemas';
 import { useMaterialTags } from '../stores';
 
 export const ReclassifyToUnusedPage = () => {
   const [caseMaterials, setCaseMaterials] = useState<CaseMaterialsType[]>([]);
   const { setTags } = useMaterialTags();
+  const { getRoute } = useAppRoute();
   const navigate = useNavigate();
   const { mutate } = useSWRConfig();
   const { resetFilters } = useFilters('materials');
@@ -24,7 +30,7 @@ export const ReclassifyToUnusedPage = () => {
     returnUrl?: string;
   };
 
-  const returnToMaterialsUrl = returnUrl || URL.MATERIALS;
+  const returnToMaterialsUrl = returnUrl || getRoute('MATERIALS');
 
   const { trigger } = useBulkSetUnused({
     onError: () => {
@@ -36,7 +42,7 @@ export const ReclassifyToUnusedPage = () => {
     },
     onSuccess: async (response) => {
       const updatedMaterials = response.data?.reclassifiedMaterials;
-
+      
       setTags(
         updatedMaterials.map((material) => ({
           materialId: material?.materialId,
@@ -87,7 +93,7 @@ export const ReclassifyToUnusedPage = () => {
   }, [materials.length]);
 
   return (
-    <>
+    <Layout plain>
       <Link to={returnToMaterialsUrl} className="govuk-back-link">
         Back
       </Link>
@@ -139,7 +145,10 @@ export const ReclassifyToUnusedPage = () => {
                       <a
                         href="#"
                         className="govuk-link"
-                        onClick={() => handleRemoveItem(item)}
+                        onClick={(event) => {
+                          event.preventDefault();
+                          handleRemoveItem(item);
+                        }}
                         aria-label={`Remove ${item.subject}`}
                       >
                         Remove
@@ -148,7 +157,11 @@ export const ReclassifyToUnusedPage = () => {
                   </tr>
                 ))
               ) : (
-                <p className="govuk-body">No items selected</p>
+                <tr className="govuk-table__row">
+                  <td className="govuk-table__cell" colSpan={4}>
+                    <p className="govuk-body">No items selected</p>
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>
@@ -172,6 +185,6 @@ export const ReclassifyToUnusedPage = () => {
           </Link>
         </div>
       </div>
-    </>
+    </Layout>
   );
 };
