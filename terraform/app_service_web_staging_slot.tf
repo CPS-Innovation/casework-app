@@ -1,4 +1,5 @@
 resource "azurerm_linux_web_app_slot" "as_web_materials_staging1" {
+  count                         = var.environment != "dev" ? 1 : 0
   name                          = "staging1"
   app_service_id                = azurerm_linux_web_app.as_web_materials.id
   #virtual_network_subnet_id     = data.azurerm_subnet.materials_subnets[var.ui_subnet_name].id #TBC vnet integration is not required
@@ -67,6 +68,7 @@ resource "azurerm_linux_web_app_slot" "as_web_materials_staging1" {
 }
 
 resource "azurerm_private_endpoint" "pep_as_web_materials_staging1" {
+  count               = var.environment != "dev" ? 1 : 0        
   name                = "${azurerm_linux_web_app.as_web_materials.name}-staging1-pe"
   location            = azurerm_resource_group.rg_materials.location
   resource_group_name = azurerm_resource_group.rg_materials.name

@@ -15,6 +15,7 @@ resource "azurerm_monitor_autoscale_setting" "amas_materials_web" {
   resource_group_name = azurerm_resource_group.rg_materials.name
   location            = azurerm_resource_group.rg_materials.location
   target_resource_id  = azurerm_service_plan.web_linux.id
+  enabled             = true
   tags                = local.common_tags
   profile {
     name = "Case Materials Web Performance Scaling Profile"
