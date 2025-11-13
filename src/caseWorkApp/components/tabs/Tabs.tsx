@@ -9,6 +9,7 @@ export type TabsProps = CommonTabsProps & {
   handleTabSelection: (documentId: string) => void;
   handleClosePdf: (documentId: string, versionId: number) => void;
   dcfMode: string | undefined;
+  handleCloseTab: (v: any) => void;
 };
 
 export const Tabs: React.FC<TabsProps> = ({
@@ -20,9 +21,9 @@ export const Tabs: React.FC<TabsProps> = ({
   handleTabSelection,
   handleClosePdf,
   dcfMode,
+  handleCloseTab,
   ...attributes
 }) => {
-
   const [, setShowDocumentNavAlert] = useState(false);
 
   useLastFocus('#case-details-search');
@@ -33,15 +34,6 @@ export const Tabs: React.FC<TabsProps> = ({
     (item) => item.id === tabsState?.activeTabId
   );
   const activeTabIndex = activeTabArrayPos === -1 ? 0 : activeTabArrayPos;
-
-  const handleCloseTab = () => {
-    const { isDirty } = items[activeTabIndex];
-    if (isDirty) {
-      setShowDocumentNavAlert(true);
-      return;
-    }
-    localHandleClosePdf();
-  };
 
   const localHandleClosePdf = () => {
     const thisItemIndex = activeTabIndex;
@@ -54,7 +46,8 @@ export const Tabs: React.FC<TabsProps> = ({
 
     const nextTabId = nextTabIndex === undefined ? '' : items[nextTabIndex].id;
     handleTabSelection(nextTabId);
-    handleClosePdf(items[activeTabIndex].id, items[activeTabIndex].versionId);
+    // getRemoveDocumentId?.('ale');
+    // handleClosePdf(items[activeTabIndex].id, items[activeTabIndex].versionId);
   };
 
   const panels = items.map((item, index) => {
@@ -90,15 +83,12 @@ export const Tabs: React.FC<TabsProps> = ({
     );
   });
 
-console.log('tas: ', items  )
-
-const tabItems = items.map((item) => ({
+  const tabItems = items.map((item) => ({
     id: item.id,
     label: item.label,
     ariaLabel: `Document ${item.label}`
   }));
 
-  
   return (
     <>
       <div

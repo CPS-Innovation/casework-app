@@ -21,15 +21,17 @@ type DocumentControlAreaProps = {
   items: TabItem[];
   isSidebarVisible?: boolean;
   onToggleSidebar?: () => void;
+  handleCloseTab: (v?: any) => void;
 };
 
 const DocumentControlArea = ({
   items,
   isSidebarVisible = false,
-  onToggleSidebar
+  onToggleSidebar,
+  handleCloseTab
 }: DocumentControlAreaProps) => {
   const { handleTabSelection, handleClosePdf } = useStoreCWA();
-console.log('conreolarea: ', items)
+  console.log('conreolarea: ', items);
   return (
     <>
       <Button onClick={() => onToggleSidebar?.()}>
@@ -41,6 +43,7 @@ console.log('conreolarea: ', items)
         items={items}
         handleTabSelection={handleTabSelection}
         handleClosePdf={handleClosePdf}
+        handleCloseTab={handleCloseTab}
         dcfMode={undefined}
       />
     </>

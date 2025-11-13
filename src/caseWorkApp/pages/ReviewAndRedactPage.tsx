@@ -8,6 +8,15 @@ export const ReviewAndRedactPage = () => {
   const [openDocumentIds, setOpenDocumentIds] = useState<string[]>([]);
   const [isSidebarVisible, setIsSidebarVisible] = useState<boolean>(true);
   const [documentIDs, setDocumentIDs] = useState<any[]>([]);
+  const [removedDocumentId, setRemovedDocumentId] = useState<{
+    id: string;
+    label: string;
+    title: string;
+  } | undefined>(undefined);
+
+  const handleCloseTab = (v: string) => {
+    setRemovedDocumentId(v as any);
+  };
 
   useEffect(() => {
     const res = openDocumentIds?.map((item) => {
@@ -17,22 +26,12 @@ export const ReviewAndRedactPage = () => {
     setDocumentIDs(res);
   }, [openDocumentIds]);
 
-  // const items = [
-  //   {
-  //     isDirty: false,
-  //     id: 'CMS-MG1',
-  //     versionId: 1,
-  //     label: 'MG1 CARMINE Victim',
-  //     panel: <></>
-  //   },
-  //   {
-  //     isDirty: false,
-  //     id: 'CMS-MG2',
-  //     versionId: 2,
-  //     label: 'MG2 CARMINE Victim',
-  //     panel: <></>
-  //   }
-  // ];
+  useEffect(() => {
+    const newArray = documentIDs?.filter((e) => {
+      return e.id !== (removedDocumentId?.id as string);
+    });
+    setDocumentIDs(newArray);
+  }, [removedDocumentId]);
 
   return (
     <div className="govuk-main-wrapper">
@@ -53,6 +52,7 @@ export const ReviewAndRedactPage = () => {
             items={documentIDs}
             isSidebarVisible={isSidebarVisible}
             onToggleSidebar={() => setIsSidebarVisible((v) => !v)}
+            handleCloseTab={handleCloseTab}
           />
           <DocumentViewportArea></DocumentViewportArea>
         </>

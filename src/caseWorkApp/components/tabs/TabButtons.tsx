@@ -9,7 +9,7 @@ export type TabButtonProps = {
   items: { id: string; label: string; ariaLabel: string }[];
   activeTabIndex: number;
   handleTabSelection: (documentId: string) => void;
-  handleCloseTab: () => void;
+  handleCloseTab: (v?: any) => void;
   dcfMode: string | undefined;
 };
 
@@ -115,7 +115,7 @@ const TabButtons: React.FC<TabButtonProps> = ({
 
       <ul className={`${classes.tabsList}`} role="tablist">
         {items.map((item, index) => {
-          const { id: itemId, label, ariaLabel } = item;
+          const { id, label, ariaLabel } = item;
 
           return (
             <li
@@ -124,7 +124,7 @@ const TabButtons: React.FC<TabButtonProps> = ({
                   ? classes.activeTab
                   : classes.inactiveTab
               } ${classes.tabListItem}`}
-              key={itemId}
+              key={id}
               data-testid={`tab-${index}`}
               role="presentation"
             >
@@ -142,8 +142,8 @@ const TabButtons: React.FC<TabButtonProps> = ({
                   index === activeTabIndex ? 'tab-active' : `btn-tab-${index}`
                 }
                 onClick={() => {
-                  if (itemId !== items[activeTabIndex].id) {
-                    handleTabSelection(itemId);
+                  if (id !== items[activeTabIndex].id) {
+                    handleTabSelection(id);
                   }
                 }}
                 onKeyDown={handleKeyPressOnTab}
@@ -156,7 +156,11 @@ const TabButtons: React.FC<TabButtonProps> = ({
                 <button
                   role="tab"
                   className={classes.tabCloseButton}
-                  onClick={handleCloseTab}
+                  onClick={()=>{
+                    console.log(items[activeTabIndex])
+                    handleCloseTab(items[activeTabIndex])}
+                  
+                  }
                   onKeyDown={handleKeyPressOnTab}
                   data-testid="tab-remove"
                   aria-label="close tab"
