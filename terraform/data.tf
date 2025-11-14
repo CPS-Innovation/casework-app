@@ -7,10 +7,6 @@ data "azuread_service_principal" "terraform_service_principal" {
 
 data "azurerm_subscription" "current" {}
 
-resource "random_uuid" "random_id" {
-  count = 7
-}
-
 # vnet lookup
 data "azurerm_virtual_network" "polaris_vnet" {
   name                = var.vnet_name
