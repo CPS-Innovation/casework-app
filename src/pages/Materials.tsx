@@ -18,11 +18,7 @@ import {
   useCaseMaterials,
   useTableActions
 } from '../hooks';
-import {
-  useCaseInfoStore,
-  useMaterialTags,
-  useSelectedItemsStore
-} from '../stores';
+import { useMaterialTags, useSelectedItemsStore } from '../stores';
 
 import { useNavigate } from 'react-router-dom';
 import { URL } from '../constants/url';
@@ -31,7 +27,6 @@ import { CaseMaterialsType } from '../schemas';
 export const MaterialsPage = () => {
   const { getRoute } = useAppRoute();
   const navigate = useNavigate();
-  const { caseInfo } = useCaseInfoStore();
   const [showFilter, setShowFilter] = useState(true);
   const [selectedMaterial, setSelectedMaterial] =
     useState<CaseMaterialsType | null>(null);
@@ -57,7 +52,6 @@ export const MaterialsPage = () => {
     refreshData: refreshCaseMaterials,
     setBanner,
     deselectItem: deselectMaterial,
-    caseInfoData: caseInfo || undefined,
     resetBanner
   });
 

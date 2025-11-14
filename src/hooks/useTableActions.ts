@@ -4,9 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { READ_STATUS } from '../constants';
 import { URL } from '../constants/url';
 import { useAppRoute, useReadStatus } from '../hooks';
-import { CaseInfoType, CaseMaterialsType } from '../schemas/';
+import { CaseMaterialsType } from '../schemas/';
 import { useSelectedItemsStore } from '../stores';
-import { linkToRedact } from '../utils/materials';
 
 type TableActionsProps = {
   selectedItems: CaseMaterialsType[];
@@ -17,7 +16,6 @@ type TableActionsProps = {
     content: string;
   }) => void;
   deselectItem: () => void;
-  caseInfoData?: CaseInfoType;
   resetBanner: () => void;
 };
 
@@ -26,7 +24,6 @@ export const useTableActions = ({
   refreshData,
   setBanner,
   deselectItem,
-  caseInfoData,
   resetBanner
 }: TableActionsProps) => {
   const { getRoute } = useAppRoute();
@@ -46,9 +43,7 @@ export const useTableActions = ({
   };
 
   const handleRedactClick = (materialId: number) => {
-    if (caseInfoData) {
-      linkToRedact(caseInfoData, materialId);
-    }
+    alert(`REDACT COMING SOON (material id ${materialId})`);
   };
 
   const handleUnusedClick = (
