@@ -22,23 +22,24 @@ type DocumentControlAreaProps = {
   isSidebarVisible?: boolean;
   onToggleSidebar?: () => void;
   handleCloseTab: (v?: any) => void;
+  children: React.ReactNode;
 };
 
 const DocumentControlArea = ({
   items,
   isSidebarVisible = false,
   onToggleSidebar,
-  handleCloseTab
+  handleCloseTab,
+  children
 }: DocumentControlAreaProps) => {
   const { handleTabSelection, handleClosePdf } = useStoreCWA();
-  console.log('conreolarea: ', items);
   return (
     <>
       <Button onClick={() => onToggleSidebar?.()}>
         {isSidebarVisible ? 'Hide categories' : 'Show categories'}
       </Button>
       <Tabs
-        idPrefix="idpref"
+        idPrefix="tabs"
         title="Tabs title"
         items={items}
         handleTabSelection={handleTabSelection}
@@ -46,6 +47,7 @@ const DocumentControlArea = ({
         handleCloseTab={handleCloseTab}
         dcfMode={undefined}
       />
+      {items.length == 0 ? null : children}
     </>
   );
 };
