@@ -20,11 +20,7 @@ import {
   useTableActions
 } from '../hooks';
 import { CaseMaterialsType } from '../schemas';
-import {
-  useCaseInfoStore,
-  useMaterialTags,
-  useSelectedItemsStore
-} from '../stores';
+import { useMaterialTags, useSelectedItemsStore } from '../stores';
 
 export const CommunicationsPage = () => {
   const [selectedMaterial, setSelectedMaterial] =
@@ -34,8 +30,6 @@ export const CommunicationsPage = () => {
     useCaseMaterials({ dataType: 'communications' });
   const { deselectMaterial } = useCaseMaterial();
   const { getRoute } = useAppRoute();
-
-  const { caseInfo } = useCaseInfoStore();
   const { setTags } = useMaterialTags();
 
   const [showFilter, setShowFilter] = useState(true);
@@ -55,7 +49,6 @@ export const CommunicationsPage = () => {
     refreshData: refreshCommunications,
     setBanner,
     deselectItem: deselectMaterial,
-    caseInfoData: caseInfo || undefined,
     resetBanner
   });
 
