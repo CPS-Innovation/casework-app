@@ -1,0 +1,5 @@
+environment     = "prd"
+environment_tag = "production"
+location        = "UK South"
+location_abbr   = "uks"
+project_name    = "materials"

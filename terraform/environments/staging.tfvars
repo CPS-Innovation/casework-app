@@ -1,0 +1,5 @@
+environment     = "stg"
+environment_tag = "staging"
+location        = "UK South"
+location_abbr   = "uks"
+project_name    = "materials"
