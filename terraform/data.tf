@@ -7,15 +7,8 @@ data "azuread_service_principal" "terraform_service_principal" {
 
 data "azurerm_subscription" "current" {}
 
-data "azuread_application_published_app_ids" "well_known" {}
-
 resource "random_uuid" "random_id" {
   count = 7
-}
-
-resource "azuread_service_principal" "msgraph" {
-  application_id = data.azuread_application_published_app_ids.well_known.result.MicrosoftGraph
-  use_existing   = true
 }
 
 # vnet lookup
@@ -42,4 +35,13 @@ data "azurerm_private_dns_zone" "hub_dns_zones" {
 #Backend
 data "azuread_application" "fa_polaris_gateway" {
   display_name = var.fa_polaris_gateway_name
+}
+
+data "azuread_application_published_app_ids" "well_known" {}
+
+# New block below using v3 of provider which replaces application ID with client_id.
+resource "azuread_service_principal" "msgraph" {
+  client_id      = data.azuread_application_published_app_ids.well_known.result.MicrosoftGraph
+  use_existing   = true
+  owners         = var.app_reg_owners
 }
