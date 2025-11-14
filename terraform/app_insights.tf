@@ -1,5 +1,5 @@
 resource "azurerm_log_analytics_workspace" "law_materials" {
-  name                = "log-ai-${local.resource_name}"
+  name                = "la-${local.resource_name}"
   location            = azurerm_resource_group.rg_materials.location
   resource_group_name = azurerm_resource_group.rg_materials.name
   sku                 = "PerGB2018"

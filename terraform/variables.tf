@@ -29,6 +29,11 @@ variable "environment_tag" {
   description = "Environment tag value"
 }
 
+variable "terraform_service_principal_display_name" {
+  type = string
+  description = "Name of the service principal responsible for running Terraform"
+}
+
 ## Networking ##
 variable "private_dns_zones" {
   type        = map(string)
@@ -80,4 +85,26 @@ variable "web_asp_materials" {
     autoscale_minimum      = string
     autoscale_maximum      = string 
   })
+}
+
+variable "app_reg_owners" {
+  description = "List of object IDs for users with owner permissions to App Registrations we are creating during this build "
+  type        = list(string)
+  default     = []
+}
+
+# Lookups
+variable "fa_polaris_gateway_name" {
+  type        = string
+  description = "The name of the polaris function app backend."
+  default     = null
+}
+
+
+variable "materials_ui_sub_folder" {
+  type = string
+  // this value must match the PUBLIC_URL=... value
+  //  as seen in the ui project top-level package.json
+  //  scripts section.
+  default = "materials-ui"
 }

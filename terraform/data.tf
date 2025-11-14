@@ -1,6 +1,23 @@
 # global config lookup
 data "azuread_client_config" "current" {}
 
+data "azuread_service_principal" "terraform_service_principal" {
+  display_name = var.terraform_service_principal_display_name
+}
+
+data "azurerm_subscription" "current" {}
+
+data "azuread_application_published_app_ids" "well_known" {}
+
+resource "random_uuid" "random_id" {
+  count = 7
+}
+
+resource "azuread_service_principal" "msgraph" {
+  application_id = data.azuread_application_published_app_ids.well_known.result.MicrosoftGraph
+  use_existing   = true
+}
+
 # vnet lookup
 data "azurerm_virtual_network" "polaris_vnet" {
   name                = var.vnet_name
@@ -20,4 +37,9 @@ data "azurerm_private_dns_zone" "hub_dns_zones" {
   for_each            = var.private_dns_zones
   name                = each.value
   resource_group_name = var.vnet_rg
+}
+
+#Backend
+data "azuread_application" "fa_polaris_gateway" {
+  display_name = var.fa_polaris_gateway_name
 }
