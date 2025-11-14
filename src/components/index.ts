@@ -1,5 +1,6 @@
 export { Accordion } from './Accordion/Accordion';
 export { Banner } from './Banner/Banner';
+export { AutoReclassifyButton } from './Button/AutoReclassifyButton';
 export { ButtonMenuComponent } from './ButtonMenu/ButtonMenu';
 export { CaseInfo } from './CaseInfo/CaseInfo';
 export { default as Checkbox } from './Checkbox/Checkbox';
