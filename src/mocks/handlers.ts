@@ -1,5 +1,5 @@
 import { http, HttpResponse } from 'msw';
-import { API_ENDPOINTS, POLARIS_GATEWAY_URL } from '../constants/url.ts';
+import { API_ENDPOINTS, POLARIS_GATEWAY_URL } from '../constants/url';
 
 import { CaseMaterialsType } from '../schemas';
 import { PCDListingType } from '../schemas/pcd';
@@ -106,6 +106,23 @@ export const handlers = [
       );
     }
   ),
+
+  http.post(`${POLARIS_GATEWAY_URL}/uma-reclassify`, async () => {
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    return HttpResponse.json(
+      {
+        status: '',
+        message: 'This is a mock message',
+        reclassifiedMaterials: [
+          { materialId: 8764449, subject: 'some subject' },
+          { materialId: 8804866, subject: 'some subject' }
+        ],
+        failedMaterials: []
+      },
+      { status: 200 }
+    );
+  }),
 
   http.post(`${POLARIS_GATEWAY_URL}/hk-logger`, async ({ request }) => {
     const body = (await request.json()) as {
