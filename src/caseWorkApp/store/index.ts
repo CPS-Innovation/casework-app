@@ -55,13 +55,5 @@ export const useStoreCWA = create<StoreCWA>(
       tabsState:
       {...state.tabsState,activeTabId: documentId}
     })),
-    // handleClosePdf: () => set((state) => ({
-    //     tabsState: {
-    //       ...state.tabsState,  
-    //       items: state.tabsState.items.filter(
-    //         (item: any) => item.documentId !== item.activeTabId
-    //       ),
-    //     },
-    // }))
   }))
 );

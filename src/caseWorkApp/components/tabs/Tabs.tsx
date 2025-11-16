@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useLastFocus } from '../../hooks/useLastFocus';
 import { useStoreCWA } from '../../store';
 import TabButtons from './TabButtons';
@@ -6,6 +5,7 @@ import classes from './Tabs.module.scss';
 import { CommonTabsProps } from './types';
 
 export type TabsProps = CommonTabsProps & {
+  activeTabId: string;
   handleTabSelection: (documentId: string) => void;
   handleClosePdf: (documentId: string, versionId: number) => void;
   dcfMode: string | undefined;
@@ -18,20 +18,20 @@ export const Tabs: React.FC<TabsProps> = ({
   idPrefix,
   items,
   title,
+  activeTabId,
   handleTabSelection,
   handleClosePdf,
   dcfMode,
   handleCloseTab,
   ...attributes
 }) => {
-  const [, setShowDocumentNavAlert] = useState(false);
 
   useLastFocus('#case-details-search');
 
   const { tabsState } = useStoreCWA();
 
   const activeTabArrayPos = items.findIndex(
-    (item) => item.id === tabsState?.activeTabId
+    (item) => item.id === activeTabId || item.id === tabsState?.activeTabId  
   );
   const activeTabIndex = activeTabArrayPos === -1 ? 0 : activeTabArrayPos;
 
@@ -40,7 +40,7 @@ export const Tabs: React.FC<TabsProps> = ({
     const nextTabIndex =
       items.length === 1
         ? undefined // there is only item so next item is empty
-        : thisItemIndex === 0
+        : thisItemIndex === 0 
           ? 1 // we are removing the first item, so we need the item to the right
           : thisItemIndex - 1; // otherwise, we need the item to the left
 

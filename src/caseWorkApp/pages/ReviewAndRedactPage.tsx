@@ -19,6 +19,7 @@ export const ReviewAndRedactPage = () => {
   const [openDocumentIds, setOpenDocumentIds] = useState<string[]>([]);
   const [isSidebarVisible, setIsSidebarVisible] = useState<boolean>(true);
   const [documentIDs, setDocumentIDs] = useState<any[]>([]);
+  const [activeTabId, setActiveTabId] = useState<string>('')
   const [removedDocumentId, setRemovedDocumentId] = useState<
     TDocumentDataList | undefined
   >(undefined);
@@ -46,11 +47,12 @@ export const ReviewAndRedactPage = () => {
   };
 
   useEffect(() => {
+    console.log('opendocumentid: ', openDocumentIds);
     const matchingDocuments = documentsDataList.filter((item) => {
       return openDocumentIds.includes(item.documentId);
     });
 
-    const res = matchingDocuments?.map((item) => {
+    const matchingResult = matchingDocuments?.map((item) => {
       return {
         id: item.documentId,
         label: item.presentationTitle,
@@ -58,7 +60,15 @@ export const ReviewAndRedactPage = () => {
       };
     });
 
-    setDocumentIDs(res);
+    setDocumentIDs(matchingResult);
+    // setDocumentIDs((prevState) => {
+    //   console.log(prevState);
+    //   return {...prevState, matchingResult};
+    // });
+  }, [openDocumentIds]);
+
+  useEffect(() => {
+    setActiveTabId(openDocumentIds[openDocumentIds.length-1])
   }, [openDocumentIds]);
 
   useEffect(() => {
@@ -66,6 +76,12 @@ export const ReviewAndRedactPage = () => {
       return e.id !== removedDocumentId?.id;
     });
     setDocumentIDs(newArray);
+
+    // setDocumentIDs((prevState) =>
+    //   prevState.filter((e) => {
+    //     return e.id !== removedDocumentId?.id;
+    //   })
+    // );
   }, [removedDocumentId]);
 
   return (
@@ -84,12 +100,13 @@ export const ReviewAndRedactPage = () => {
       >
         <>
           <DocumentControlArea
+            activeTabId={activeTabId}
             items={documentIDs}
             isSidebarVisible={isSidebarVisible}
             onToggleSidebar={() => setIsSidebarVisible((v) => !v)}
             handleCloseTab={handleCloseTab}
           >
-            <DocumentViewportArea></DocumentViewportArea>
+            <DocumentViewportArea items={documentIDs}></DocumentViewportArea>
           </DocumentControlArea>
         </>
       </TwoCol>

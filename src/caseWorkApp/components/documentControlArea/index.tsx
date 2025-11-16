@@ -18,6 +18,7 @@ type TabItem = {
 };
 
 type DocumentControlAreaProps = {
+  activeTabId: string;
   items: TabItem[];
   isSidebarVisible?: boolean;
   onToggleSidebar?: () => void;
@@ -26,8 +27,9 @@ type DocumentControlAreaProps = {
 };
 
 const DocumentControlArea = ({
+  activeTabId,
   items,
-  isSidebarVisible = false,
+  isSidebarVisible,
   onToggleSidebar,
   handleCloseTab,
   children
@@ -35,19 +37,24 @@ const DocumentControlArea = ({
   const { handleTabSelection, handleClosePdf } = useStoreCWA();
   return (
     <>
-      <Button onClick={() => onToggleSidebar?.()}>
-        {isSidebarVisible ? 'Hide categories' : 'Show categories'}
-      </Button>
-      <Tabs
-        idPrefix="tabs"
-        title="Tabs title"
-        items={items}
-        handleTabSelection={handleTabSelection}
-        handleClosePdf={handleClosePdf}
-        handleCloseTab={handleCloseTab}
-        dcfMode={undefined}
-      />
-      {items.length == 0 ? null : children}
+      {items.length !== 0 ? (
+        <>
+          <Button onClick={() => onToggleSidebar?.()}>
+            {isSidebarVisible ? 'Hide categories' : 'Show categories'}
+          </Button>
+          <Tabs
+            idPrefix="tabs"
+            title="Tabs title"
+            items={items}
+            activeTabId={activeTabId}
+            handleTabSelection={handleTabSelection}
+            handleClosePdf={handleClosePdf}
+            handleCloseTab={handleCloseTab}
+            dcfMode={undefined}
+          />
+          {children}
+        </>
+      ) : null}
     </>
   );
 };
