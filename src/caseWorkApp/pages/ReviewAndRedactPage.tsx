@@ -19,7 +19,7 @@ export const ReviewAndRedactPage = () => {
   const [openDocumentIds, setOpenDocumentIds] = useState<string[]>([]);
   const [isSidebarVisible, setIsSidebarVisible] = useState<boolean>(true);
   const [documentIDs, setDocumentIDs] = useState<any[]>([]);
-  const [activeTabId, setActiveTabId] = useState<string>('')
+  const [activeTabId, setActiveTabId] = useState<string>('');
   const [removedDocumentId, setRemovedDocumentId] = useState<
     TDocumentDataList | undefined
   >(undefined);
@@ -48,9 +48,15 @@ export const ReviewAndRedactPage = () => {
 
   useEffect(() => {
     console.log('opendocumentid: ', openDocumentIds);
-    const matchingDocuments = documentsDataList.filter((item) => {
-      return openDocumentIds.includes(item.documentId);
-    });
+    const matchingDocuments = documentsDataList
+      .filter((item) => {
+        return openDocumentIds.includes(item.documentId);
+      })
+      .sort(
+        (a, b) =>
+          openDocumentIds.indexOf(a.documentId) -
+          openDocumentIds.indexOf(b.documentId)
+      );
 
     const matchingResult = matchingDocuments?.map((item) => {
       return {
@@ -60,15 +66,16 @@ export const ReviewAndRedactPage = () => {
       };
     });
 
+    // const ar = new Array().push(matchingDocuments);
+    // console.log('ar: ',ar)
+
+    const updatedMatchingResult = [...(matchingResult || [])];
+
     setDocumentIDs(matchingResult);
     // setDocumentIDs((prevState) => {
     //   console.log(prevState);
     //   return {...prevState, matchingResult};
     // });
-  }, [openDocumentIds]);
-
-  useEffect(() => {
-    setActiveTabId(openDocumentIds[openDocumentIds.length-1])
   }, [openDocumentIds]);
 
   useEffect(() => {
@@ -83,6 +90,14 @@ export const ReviewAndRedactPage = () => {
     //   })
     // );
   }, [removedDocumentId]);
+
+  useEffect(() => {
+    const lastId =
+      openDocumentIds.length > 0
+        ? openDocumentIds[openDocumentIds.length - 1]
+        : '';
+    setActiveTabId(lastId);
+  }, [openDocumentIds]);
 
   return (
     <div className="govuk-main-wrapper">
@@ -106,7 +121,10 @@ export const ReviewAndRedactPage = () => {
             onToggleSidebar={() => setIsSidebarVisible((v) => !v)}
             handleCloseTab={handleCloseTab}
           >
-            <DocumentViewportArea items={documentIDs}></DocumentViewportArea>
+            <DocumentViewportArea
+              activeTabId={activeTabId}
+              items={documentIDs}
+            ></DocumentViewportArea>
           </DocumentControlArea>
         </>
       </TwoCol>

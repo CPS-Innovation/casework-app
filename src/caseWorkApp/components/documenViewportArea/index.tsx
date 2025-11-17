@@ -48,10 +48,11 @@ const dropDownItems: DropdownButtonItem[] = [
 ];
 
 type DocumentViewportAreaProps = {
-  items?: DropdownButtonItem[];
+  items: DropdownButtonItem[];
+  activeTabId: string;
 };
 
-export const DocumentViewportArea = ({items}: DocumentViewportAreaProps) => {
+export const DocumentViewportArea = ({ items, activeTabId }: DocumentViewportAreaProps) => {
   const [redactAreaState, setRedactAreaState] = useState<boolean>(false);
   const [name, setName] = useState<string>('');
 
@@ -59,11 +60,13 @@ export const DocumentViewportArea = ({items}: DocumentViewportAreaProps) => {
     setRedactAreaState(!redactAreaState);
   };
 
+  const activeTabLabel = items.findIndex((item) => item.id === activeTabId);
+
   useEffect(() => {
     if (items && items.length > 0) {
-      setName(items[0].label);
+      setName(items[activeTabLabel]?.label);
     }
-  }, [items]);
+  }, [items, activeTabId]);
 
   return (
     <div className={classes.content}>
