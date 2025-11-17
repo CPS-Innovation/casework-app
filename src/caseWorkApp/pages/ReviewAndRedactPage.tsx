@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Layout, TwoCol } from '../../components';
 import { DocumentSidebar } from '../../packages/DocumentSelectAccordion/DocumentSidebar';
-import { PdfViewer } from '../../packages/pdfViewer/PdfViewer';
-import { createId } from '../../packages/pdfViewer/utils/generalUtils';
+import { PdfRedactor } from '../../packages/PdfRedactor/PdfRedactor';
+import { createId } from '../../packages/PdfRedactor/utils/generalUtils';
 import { DocumentControlArea } from '../components/documentControlArea';
 import { DocumentViewportArea } from '../components/documenViewportArea';
 
@@ -47,7 +47,7 @@ export const ReviewAndRedactPage = () => {
 
           <DocumentViewportArea></DocumentViewportArea>
 
-          <PdfViewer
+          <PdfRedactor
             // fileUrls left purposefully
             // fileUrl="http://localhost:3000/test-pdfs/may-plus-images.pdf"
             // fileUrl="http://localhost:3000/test-pdfs/final.pdf"
