@@ -68,7 +68,7 @@ resource "azurerm_linux_web_app" "as_web_materials" {
     type = "SystemAssigned"
   }
 
-  tags = ["terraform"]
+  tags = local.common_tags
 
   lifecycle {
     ignore_changes = [
@@ -131,7 +131,7 @@ module "azurerm_app_reg_as_web_materials" { # Note, app roles are currently bein
       id_token_issuance_enabled     = true
     }
   }
-  tags = local.common_tags
+  tags = ["created by terraform"]
 }
 
 resource "azuread_application_password" "asap_web_materials_app_service" {
