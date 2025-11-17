@@ -27,6 +27,11 @@ output "homepage_url" {
   value       = azuread_service_principal.main.homepage_url
 }
 
+output "id" {
+  description = "The Terraform resource ID for the application, for use when referencing this resource in your Terraform configuration."
+  value       = azuread_service_principal.main.id
+}
+
 output "logout_url" {
   description = "The URL that will be used by Microsoft's authorization service to log out an user using OpenId Connect front-channel, back-channel or SAML logout protocols, taken from the associated application."
   value       = azuread_service_principal.main.logout_url

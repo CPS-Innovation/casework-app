@@ -162,7 +162,7 @@ module "azurerm_service_principal_sp_materials_web" { # Note, app roles are curr
 }
 
 resource "azuread_service_principal_password" "sp_materials_web_pw" {
-  service_principal_id = module.azurerm_service_principal_sp_materials_web.object_id
+  service_principal_id = module.azurerm_service_principal_sp_materials_web.id
 }
 
 resource "azuread_application_pre_authorized" "fapre_materials_web" { # Adding the App Reg we created above as an authorized app to the App Reg for the backend polaris function app
