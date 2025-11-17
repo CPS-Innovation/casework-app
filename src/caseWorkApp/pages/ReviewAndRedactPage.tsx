@@ -2,13 +2,13 @@ import { ComponentProps, useState } from 'react';
 import { Layout, TwoCol } from '../../components';
 import { DocumentSidebar } from '../../packages/DocumentSelectAccordion/DocumentSidebar';
 import { PdfRedactor } from '../../packages/PdfRedactor/PdfRedactor';
-import { TCoord } from '../../packages/PdfRedactor/utils/coordUtils';
-import { createId } from '../../packages/PdfRedactor/utils/generalUtils';
 import {
   PdfRedactorMiniModal,
   RedactionDetailsForm,
   useWindowMouseListener
-} from '../../packages/PdfRedactor/utils/PdfMiniModal';
+} from '../../packages/PdfRedactor/PdfRedactorMiniModal';
+import { TCoord } from '../../packages/PdfRedactor/utils/coordUtils';
+import { createId } from '../../packages/PdfRedactor/utils/generalUtils';
 import { DocumentControlArea } from '../components/documentControlArea';
 import { DocumentViewportArea } from '../components/documenViewportArea';
 
@@ -61,18 +61,18 @@ export const ReviewAndRedactPage = () => {
           <DocumentViewportArea></DocumentViewportArea>
 
           {popupProps && (
-            <PdfRedactorMiniModal coordX={popupProps.x} coordY={popupProps.y}>
+            <PdfRedactorMiniModal
+              coordX={popupProps.x}
+              coordY={popupProps.y}
+              onBackgroundClick={() => setPopupProps(null)}
+            >
               <RedactionDetailsForm
                 redactionIds={popupProps.redactionIds}
                 documentId={popupProps.documentId}
                 urn={popupProps.urn}
                 caseId={popupProps.caseId}
-                onCancelClick={function (): void {
-                  setPopupProps(null);
-                }}
-                onSaveSuccess={function (): void {
-                  setPopupProps(null);
-                }}
+                onCancelClick={() => setPopupProps(null)}
+                onSaveSuccess={() => setPopupProps(null)}
               />
             </PdfRedactorMiniModal>
           )}
