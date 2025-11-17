@@ -1,5 +1,5 @@
 resource "azurerm_linux_web_app" "as_web_materials" {
-  name                          = "as-web-${local.resource_name}"
+  name                          = "as-${local.web_materials_name}"
   location                      = azurerm_resource_group.rg_materials.location
   service_plan_id               = azurerm_service_plan.web_linux.id
   resource_group_name           = azurerm_resource_group.rg_materials.name
@@ -42,7 +42,7 @@ resource "azurerm_linux_web_app" "as_web_materials" {
     active_directory_v2 {
       tenant_auth_endpoint = "https://sts.windows.net/${data.azurerm_client_config.current.tenant_id}/v2.0"
       client_secret_setting_name = "MICROSOFT_PROVIDER_AUTHENTICATION_SECRET"
-      client_id                  = module.azurerm_app_reg_as_web_polaris.client_id
+      client_id                  = module.azurerm_app_reg_as_web_materials.client_id
     }
 
     # use a store for tokens (az blob storage backed)
@@ -77,6 +77,104 @@ resource "azurerm_linux_web_app" "as_web_materials" {
       tags
     ]
   }
+}
+
+## Below app registation will be recreated ##
+module "azurerm_app_reg_as_web_materials" { # Note, app roles are currently being managed outside of terraform and it's functionality has been commented out from the module.
+  source                  = "./modules/terraform-azurerm-azuread-app-registration"
+  display_name            = "as-${local.web_materials_name}-appreg"
+  identifier_uris         = ["https://CPSGOVUK.onmicrosoft.com/as-${local.web_materials_name}"]
+  owners                  = concat([data.azuread_service_principal.terraform_service_principal.object_id], var.app_reg_owners)
+  prevent_duplicate_names = true
+  group_membership_claims = ["ApplicationGroup"]
+  optional_claims = {
+    access_token = {
+      name = "groups"
+    }
+    id_token = {
+      name = "groups"
+    }
+    saml2_token = {
+      name = "groups"
+    }
+  }
+  #use this code for adding api permissions
+  required_resource_access = [{
+    # Microsoft Graph
+    resource_app_id = "00000003-0000-0000-c000-000000000000"  # AppId for Microsoft Graph
+    resource_access = [{
+      id   = "e1fe6dd8-ba31-4d61-89e7-88639da4683d"  # user.read for Microsoft Graph)
+      type = "Scope"
+    }]
+    },
+    {
+      resource_app_id = data.azuread_application.fa_polaris_gateway.client_id
+      resource_access = [{
+        id   = data.azuread_application.fa_polaris_gateway.oauth2_permission_scope_ids["user_impersonation"]
+        type = "Scope"
+      }]
+    }
+    ]
+
+  single_page_application = {
+    redirect_uris = ["https://as-${local.web_materials_name}.azurewebsites.net/${var.materials_ui_sub_folder}", "http://localhost:3000/${var.materials_ui_sub_folder}", "https://${local.project_name}.cps.gov.uk/${var.materials_ui_sub_folder}"]
+  }
+  api = {
+    mapped_claims_enabled          = true
+    requested_access_token_version = 1
+  }
+  web = {
+    homepage_url  = "https://as-${local.web_materials_name}.azurewebsites.net"
+    redirect_uris = ["https://getpostman.com/oauth2/callback"]
+    implicit_grant = {
+      access_token_issuance_enabled = true
+      id_token_issuance_enabled     = true
+    }
+  }
+  tags = local.common_tags
+}
+
+resource "azuread_application_password" "asap_web_materials_app_service" {
+  application_object_id = module.azurerm_app_reg_as_web_materials.object_id
+  end_date_relative     = "17520h"
+}
+
+# # Create life cycle for e2e-tests' version of the client secret
+# resource "time_rotating" "schedule" {
+#   rotation_days = 90
+# }
+
+# Will most likely be needed in future
+# resource "azuread_application_password" "e2e_test_secret" {
+#   application_object_id = module.azurerm_app_reg_as_web_materials.object_id
+#   display_name          = "e2e-tests client secret"
+#   rotate_when_changed = {
+#     rotation = time_rotating.schedule.id
+#   }
+# }
+
+module "azurerm_service_principal_sp_materials_web" { # Note, app roles are currently being managed outside of terraform and it's functionality has been commented out from the module.
+  source                       = "./modules/terraform-azurerm-azuread_service_principal"
+  application_id               = module.azurerm_app_reg_as_web_materials.client_id
+  app_role_assignment_required = false
+  owners                       = concat([data.azurerm_client_config.current.object_id], var.app_reg_owners)
+  depends_on                   = [module.azurerm_app_reg_as_web_materials]
+}
+
+resource "azuread_service_principal_password" "sp_materials_web_pw" {
+  service_principal_id = module.azurerm_service_principal_sp_materials_web.object_id
+}
+
+resource "azuread_application_pre_authorized" "fapre_materials_web" { # Adding the App Reg we created above as an authorized app to the App Reg for the backend polaris function app
+  application_object_id = data.azuread_application.fa_polaris_gateway.object_id
+  authorized_app_id     = module.azurerm_app_reg_as_web_materials.client_id
+  permission_ids        = [data.azuread_application.fa_polaris_gateway.oauth2_permission_scope_ids["user_impersonation"]]
+}
+
+resource "azuread_service_principal_delegated_permission_grant" "materials_web_grant_access_to_msgraph" {
+  service_principal_object_id          = module.azurerm_service_principal_sp_materials_web.object_id
+  resource_service_principal_object_id = azuread_service_principal.msgraph.object_id
+  claim_values                         = ["User.Read"]
 }
 
 resource "azurerm_private_endpoint" "pep_as_web_materials" {

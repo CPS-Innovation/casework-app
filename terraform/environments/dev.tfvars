@@ -37,4 +37,4 @@ web_asp_materials = {
 
 app_reg_owners = ["49a53165-9fa6-4f51-bebe-90ed1cc2e58f", "2b1e4713-81db-45cb-918c-c3bb5a5b72e5"]
 terraform_service_principal_display_name = "Azure Pipeline: Innovation-Development"
-fa_polaris_gateway_name = "fa-polaris-gateway-appreg"
+fa_polaris_gateway_name = "fa-polaris-dev-gateway-appreg"

@@ -36,3 +36,11 @@ package-lock.json
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+#terraform
+.terraform
+terraform.tfstate
+*.tfstate*
+*.tfstate.*
+_backend.tf
+*_override.tf
