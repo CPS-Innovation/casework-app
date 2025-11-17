@@ -1,34 +1,47 @@
-import { useState } from 'react';
+import { ComponentProps, useState } from 'react';
 import { Layout, TwoCol } from '../../components';
 import { DocumentSidebar } from '../../packages/DocumentSelectAccordion/DocumentSidebar';
 import { PdfRedactor } from '../../packages/PdfRedactor/PdfRedactor';
+import { TCoord } from '../../packages/PdfRedactor/utils/coordUtils';
 import { createId } from '../../packages/PdfRedactor/utils/generalUtils';
+import {
+  PdfRedactorMiniModal,
+  RedactionDetailsForm,
+  useWindowMouseListener
+} from '../../packages/PdfRedactor/utils/PdfMiniModal';
 import { DocumentControlArea } from '../components/documentControlArea';
 import { DocumentViewportArea } from '../components/documenViewportArea';
+
+const items = [
+  {
+    isDirty: false,
+    id: 'CMS-MG1',
+    versionId: 1,
+    label: 'MG1 CARMINE Victim',
+    panel: <></>
+  },
+  {
+    isDirty: false,
+    id: 'CMS-MG2',
+    versionId: 2,
+    label: 'MG2 CARMINE Victim',
+    panel: <></>
+  }
+];
 
 export const ReviewAndRedactPage = () => {
   const [openDocumentIds, setOpenDocumentIds] = useState<string[]>([]);
 
   const [redactionDetails, setRedactionDetails] = useState<
-    { redactionId: string; randomId: string; type: string }[]
+    { redactionId: string; randomId: string }[]
   >([]);
 
-  const items = [
-    {
-      isDirty: false,
-      id: 'CMS-MG1',
-      versionId: 1,
-      label: 'MG1 CARMINE Victim',
-      panel: <></>
-    },
-    {
-      isDirty: false,
-      id: 'CMS-MG2',
-      versionId: 2,
-      label: 'MG2 CARMINE Victim',
-      panel: <></>
-    }
-  ];
+  const [popupProps, setPopupProps] = useState<Omit<
+    ComponentProps<typeof RedactionDetailsForm> & TCoord,
+    'onSaveSuccess' | 'onCancelClick'
+  > | null>(null);
+
+  const mousePos = useWindowMouseListener();
 
   return (
     <Layout>
@@ -47,6 +60,22 @@ export const ReviewAndRedactPage = () => {
 
           <DocumentViewportArea></DocumentViewportArea>
 
+          {popupProps && (
+            <PdfRedactorMiniModal coordX={popupProps.x} coordY={popupProps.y}>
+              <RedactionDetailsForm
+                redactionIds={popupProps.redactionIds}
+                documentId={popupProps.documentId}
+                urn={popupProps.urn}
+                caseId={popupProps.caseId}
+                onCancelClick={function (): void {
+                  setPopupProps(null);
+                }}
+                onSaveSuccess={function (): void {
+                  setPopupProps(null);
+                }}
+              />
+            </PdfRedactorMiniModal>
+          )}
           <PdfRedactor
             // fileUrls left purposefully
             // fileUrl="http://localhost:3000/test-pdfs/may-plus-images.pdf"
@@ -58,10 +87,19 @@ export const ReviewAndRedactPage = () => {
             onAddRedactions={(add) => {
               const newRedactions = add.map((x) => ({
                 redactionId: x.id,
-                randomId: createId(),
-                type: `This redaction does something`
+                randomId: `This redaction does ${createId()}`
               }));
               setRedactionDetails((prev) => [...prev, ...newRedactions]);
+              const coord = { x: window.screenX, y: window.screenY };
+              console.log(`OfficialPdfViewer.tsx:${/*LL*/ 43}`, { coord });
+              setPopupProps(() => ({
+                x: mousePos.x,
+                y: mousePos.y,
+                redactionIds: add.map((x) => x.id),
+                documentId: 'This document does not exist',
+                urn: 'This URN does not exist',
+                caseId: 'This case does not exist'
+              }));
             }}
             onRemoveRedactions={(remove) => {
               setRedactionDetails((prev) =>

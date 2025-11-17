@@ -29,7 +29,7 @@ export const useWindowMouseListener = () => {
   return mousePos;
 };
 
-export const PdfMiniModal = (p: {
+export const PdfRedactorMiniModal = (p: {
   coordX: number;
   coordY: number;
   children: ReactNode;
