@@ -74,12 +74,6 @@ export const ReviewAndRedactPage = () => {
       return e.id !== removedDocumentId?.id;
     });
     setDocumentIDs(newArray);
-
-    // setDocumentIDs((prevState) =>
-    //   prevState.filter((e) => {
-    //     return e.id !== removedDocumentId?.id;
-    //   })
-    // );
   }, [removedDocumentId]);
 
   useEffect(() => {

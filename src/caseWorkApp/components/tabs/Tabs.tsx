@@ -46,8 +46,6 @@ export const Tabs: React.FC<TabsProps> = ({
 
     const nextTabId = nextTabIndex === undefined ? '' : items[nextTabIndex].id;
     handleTabSelection(nextTabId);
-    // getRemoveDocumentId?.('ale');
-    // handleClosePdf(items[activeTabIndex].id, items[activeTabIndex].versionId);
   };
 
   const panels = items.map((item, index) => {
