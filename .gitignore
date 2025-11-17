@@ -39,3 +39,6 @@ package-lock.json
 
 # Playwright
 /tests/.auth/
+
+# pdfViewer test pdfs not required in prod
+/public/test-pdfs/
