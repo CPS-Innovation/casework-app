@@ -1,6 +1,8 @@
 # global config lookup
 data "azuread_client_config" "current" {}
 
+data "azurerm_client_config" "current" {}
+
 data "azuread_service_principal" "terraform_service_principal" {
   display_name = var.terraform_service_principal_display_name
 }
