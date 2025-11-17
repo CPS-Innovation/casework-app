@@ -68,7 +68,7 @@ resource "azurerm_linux_web_app" "as_web_materials" {
     type = "SystemAssigned"
   }
 
-  tags = local.common_tags
+  tags = ["terraform"]
 
   lifecycle {
     ignore_changes = [
