@@ -1,3 +1,8 @@
+output "id" {
+  description = "The Terraform resource ID for the application, for use when referencing this resource in your Terraform configuration."
+  value       = azuread_application.main.id
+}
+
 output "object_id" {
   description = "The object id of application. Can be used to assign roles to user."
   value       = azuread_application.main.object_id

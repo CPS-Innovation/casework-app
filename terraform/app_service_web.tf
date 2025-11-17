@@ -117,7 +117,7 @@ module "azurerm_app_reg_as_web_materials" { # Note, app roles are currently bein
     ]
 
   single_page_application = {
-    redirect_uris = ["https://as-${local.web_materials_name}.azurewebsites.net/${var.materials_ui_sub_folder}", "http://localhost:3000/${var.materials_ui_sub_folder}", "https://${local.project_name}.cps.gov.uk/${var.materials_ui_sub_folder}"]
+    redirect_uris = ["https://as-${local.web_materials_name}.azurewebsites.net/${var.materials_ui_sub_folder}", "http://localhost:3000/${var.materials_ui_sub_folder}", "https://${local.web_materials_name}.cps.gov.uk/${var.materials_ui_sub_folder}"]
   }
   api = {
     mapped_claims_enabled          = true
@@ -135,8 +135,8 @@ module "azurerm_app_reg_as_web_materials" { # Note, app roles are currently bein
 }
 
 resource "azuread_application_password" "asap_web_materials_app_service" {
-  application_object_id = module.azurerm_app_reg_as_web_materials.object_id
-  end_date_relative     = "17520h"
+  application_id    = module.azurerm_app_reg_as_web_materials.id
+  end_date_relative = "17520h"
 }
 
 # # Create life cycle for e2e-tests' version of the client secret
@@ -166,9 +166,9 @@ resource "azuread_service_principal_password" "sp_materials_web_pw" {
 }
 
 resource "azuread_application_pre_authorized" "fapre_materials_web" { # Adding the App Reg we created above as an authorized app to the App Reg for the backend polaris function app
-  application_object_id = data.azuread_application.fa_polaris_gateway.object_id
-  authorized_app_id     = module.azurerm_app_reg_as_web_materials.client_id
-  permission_ids        = [data.azuread_application.fa_polaris_gateway.oauth2_permission_scope_ids["user_impersonation"]]
+  application_id       = data.azuread_application.fa_polaris_gateway.id
+  authorized_client_id = module.azurerm_app_reg_as_web_materials.client_id
+  permission_ids       = [data.azuread_application.fa_polaris_gateway.oauth2_permission_scope_ids["user_impersonation"]]
 }
 
 resource "azuread_service_principal_delegated_permission_grant" "materials_web_grant_access_to_msgraph" {

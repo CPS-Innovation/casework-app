@@ -113,8 +113,8 @@ variable "support_url" {
 
 variable "tags" {
   description = "A set of tags to apply to the application. Cannot be used together with the feature_tags block"
-  type        = list(string)
-  default     = []
+  type        = map(string)
+  default     = {}
 }
 
 variable "template_id" {
