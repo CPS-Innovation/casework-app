@@ -47,18 +47,18 @@ export const ReviewAndRedactPage = () => {
   };
 
   useEffect(() => {
-    console.log('opendocumentid: ', openDocumentIds);
     const matchingDocuments = documentsDataList
       .filter((item) => {
         return openDocumentIds.includes(item.documentId);
-      })
-      .sort(
+      });
+
+      const sortedMatchingDocuments = matchingDocuments.sort(
         (a, b) =>
           openDocumentIds.indexOf(a.documentId) -
           openDocumentIds.indexOf(b.documentId)
       );
 
-    const matchingResult = matchingDocuments?.map((item) => {
+    const matchingResult = sortedMatchingDocuments?.map((item) => {
       return {
         id: item.documentId,
         label: item.presentationTitle,
@@ -66,16 +66,7 @@ export const ReviewAndRedactPage = () => {
       };
     });
 
-    // const ar = new Array().push(matchingDocuments);
-    // console.log('ar: ',ar)
-
-    const updatedMatchingResult = [...(matchingResult || [])];
-
     setDocumentIDs(matchingResult);
-    // setDocumentIDs((prevState) => {
-    //   console.log(prevState);
-    //   return {...prevState, matchingResult};
-    // });
   }, [openDocumentIds]);
 
   useEffect(() => {
