@@ -155,7 +155,7 @@ resource "azuread_application_password" "asap_web_materials_app_service" {
 
 module "azurerm_service_principal_sp_materials_web" { # Note, app roles are currently being managed outside of terraform and it's functionality has been commented out from the module.
   source                       = "./modules/terraform-azurerm-azuread_service_principal"
-  application_id               = module.azurerm_app_reg_as_web_materials.client_id
+  client_id                    = module.azurerm_app_reg_as_web_materials.client_id
   app_role_assignment_required = false
   owners                       = concat([data.azurerm_client_config.current.object_id], var.app_reg_owners)
   depends_on                   = [module.azurerm_app_reg_as_web_materials]
