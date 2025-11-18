@@ -50,6 +50,7 @@ strong {
 .custom-width-container {
   max-width: 1400px !important;
   min-height: 80vh !important;
+  width: min(1400px, calc(100% - 48px));
 }
 
 .link {
