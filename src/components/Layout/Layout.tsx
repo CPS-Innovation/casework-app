@@ -1,13 +1,12 @@
-import { PropsWithChildren, useEffect } from 'react';
-import { Outlet, useLocation, useParams } from 'react-router-dom';
+import { PropsWithChildren } from 'react';
+import { Outlet, useLocation } from 'react-router-dom';
 
 import { Banner, CaseInfo, LoadingSpinner, Tabs } from '../../components';
-import { useAppRoute, useBanner, useCaseInfo } from '../../hooks';
+import { useAppRoute, useBanner } from '../../hooks';
 import type { Tab } from '../Tabs/Tabs';
 
 import { useCaseInfoStore } from '../../stores';
 
-import { BaseUrlParamsType } from '../../schemas/params';
 import './Layout.scss';
 
 type Props = { plain?: boolean };
@@ -16,59 +15,43 @@ export const Layout = ({
   children,
   plain = false
 }: PropsWithChildren<Props>) => {
-  const { caseId, urn } = useParams<BaseUrlParamsType>();
-  const location = useLocation();
   const { banners } = useBanner();
-  const { caseInfo, loading: isCaseInfoLoading } = useCaseInfo({ caseId, urn });
-  const { setCaseInfo } = useCaseInfoStore();
-
-  const [communicationsRoute, materialsRoute, pcdRequestRoute, reviewRoute] =
-    useAppRoute([
-      'COMMUNICATIONS',
-      'MATERIALS',
-      'PCD_REQUEST',
-      'REVIEW_REDACT'
-    ]);
+  const { caseInfo } = useCaseInfoStore();
+  const location = useLocation();
+  const { getRoute } = useAppRoute();
 
   const tabs: Tab[] = [
     {
       id: 'pcd-request',
       name: 'PCD Request',
-      href: pcdRequestRoute,
+      href: getRoute('PCD_REQUEST'),
       active:
-        location.pathname === '/' || location.pathname.includes(pcdRequestRoute)
+        location.pathname === '/' ||
+        location.pathname.includes(getRoute('PCD_REQUEST'))
     },
     {
       id: 'materials',
       name: 'Materials',
-      href: materialsRoute,
-      active: location.pathname === materialsRoute
+      href: getRoute('MATERIALS'),
+      active: location.pathname === getRoute('MATERIALS')
     },
     {
       id: 'review-redact',
       name: 'Review and Redact',
-      href: reviewRoute,
-      active: location.pathname === reviewRoute
+      href: getRoute('REVIEW_REDACT'),
+      active: location.pathname === getRoute('REVIEW_REDACT')
     },
     {
       id: 'communications',
       name: 'Communications',
-      href: communicationsRoute,
-      active: location.pathname === communicationsRoute
+      href: getRoute('COMMUNICATIONS'),
+      active: location.pathname === getRoute('COMMUNICATIONS')
     }
   ];
-
-  useEffect(() => {
-    if (caseInfo) {
-      setCaseInfo(caseInfo);
-    }
-  }, [caseInfo]);
 
   return (
     <>
       <main className="main-container">
-        <CaseInfo caseInfo={caseInfo} />
-
         <div role="status" aria-atomic="true">
           {banners &&
             banners.map((banner, index) => <Banner key={index} {...banner} />)}
@@ -76,8 +59,9 @@ export const Layout = ({
 
         {!plain ? (
           <>
-            {!isCaseInfoLoading ? (
+            {caseInfo ? (
               <>
+                <CaseInfo caseInfo={caseInfo} />
                 <Tabs tabs={tabs} />
                 <div id="main-content">
                   <Outlet />

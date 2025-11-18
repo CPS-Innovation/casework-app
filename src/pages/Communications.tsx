@@ -4,6 +4,7 @@ import {
   ButtonMenuComponent,
   CommsFilters,
   CommunicationsTable,
+  Layout,
   LoadingSpinner,
   RenameDrawer,
   TableActions,
@@ -12,29 +13,23 @@ import {
 
 import { URL } from '../constants/url';
 import {
+  useAppRoute,
   useBanner,
   useCaseMaterial,
   useCaseMaterials,
-  useFeatureFlag,
   useTableActions
 } from '../hooks';
 import { CaseMaterialsType } from '../schemas';
-import {
-  useCaseInfoStore,
-  useMaterialTags,
-  useSelectedItemsStore
-} from '../stores';
+import { useMaterialTags, useSelectedItemsStore } from '../stores';
 
 export const CommunicationsPage = () => {
   const [selectedMaterial, setSelectedMaterial] =
     useState<CaseMaterialsType | null>(null);
-  const hasAccess = useFeatureFlag();
   const { setBanner, resetBanner } = useBanner();
   const { loading: caseMaterialsLoading, mutate: refreshCommunications } =
     useCaseMaterials({ dataType: 'communications' });
   const { deselectMaterial } = useCaseMaterial();
-
-  const { caseInfo } = useCaseInfoStore();
+  const { getRoute } = useAppRoute();
   const { setTags } = useMaterialTags();
 
   const [showFilter, setShowFilter] = useState(true);
@@ -54,7 +49,6 @@ export const CommunicationsPage = () => {
     refreshData: refreshCommunications,
     setBanner,
     deselectItem: deselectMaterial,
-    caseInfoData: caseInfo || undefined,
     resetBanner
   });
 
@@ -100,29 +94,29 @@ export const CommunicationsPage = () => {
     {
       label: 'Reclassify',
       onClick: handleReclassifyClick,
-      hide:
-        !hasAccess([5]) ||
-        !row?.isReclassifiable ||
-        selectedItems.communications.length > 1
+      hide: !row?.isReclassifiable || selectedItems.communications.length > 1
     },
     {
       label: 'Redact',
       onClick: () => handleRedactClick(row.materialId),
-      hide: !hasAccess([2, 3, 4, 5]) || selectedItems.communications.length > 1
+      hide: selectedItems.communications.length > 1
     },
     {
       label: 'Discard',
       onClick: () => handleDiscardClick(URL.COMMUNICATIONS),
-      hide: !hasAccess([2, 3, 4, 5]) || selectedItems.communications.length > 1
+      hide: selectedItems.communications.length > 1
     },
     {
       label: determineReadStatusLabel(selectedItems.communications),
-      onClick: () => handleReadStatusClick(selectedItems.communications),
-      hide: !hasAccess([2, 3, 4, 5])
+      onClick: () => handleReadStatusClick(selectedItems.communications)
     },
     {
       label: 'Mark as unused',
-      onClick: () => handleUnusedClick(URL.COMMUNICATIONS)
+      onClick: () =>
+        handleUnusedClick(
+          selectedItems.communications,
+          getRoute('COMMUNICATIONS')
+        )
     }
   ];
 
@@ -137,37 +131,39 @@ export const CommunicationsPage = () => {
   }, []);
 
   return (
-    <div className="govuk-main-wrapper">
-      <RenameDrawer
-        material={selectedMaterial}
-        onCancel={handleCancelRename}
-        onSuccess={handleSuccessfulRename}
-      />
+    <Layout>
+      <div className="govuk-main-wrapper">
+        <RenameDrawer
+          material={selectedMaterial}
+          onCancel={handleCancelRename}
+          onSuccess={handleSuccessfulRename}
+        />
 
-      <TwoCol sidebar={showFilter ? <CommsFilters /> : undefined}>
-        {caseMaterialsLoading || isReadStatusUpdating ? (
-          <LoadingSpinner textContent="Loading communications" />
-        ) : (
-          <>
-            <TableActions
-              showFilter={showFilter}
-              onSetShowFilter={setShowFilter}
-              menuItems={menuItems}
-              selectedItems={selectedItems.communications}
-            />
-
-            <CommunicationsTable />
-
-            <div className="action-on-selection-container">
-              <ButtonMenuComponent
-                menuTitle="Action on selection"
+        <TwoCol sidebar={showFilter ? <CommsFilters /> : undefined}>
+          {caseMaterialsLoading || isReadStatusUpdating ? (
+            <LoadingSpinner textContent="Loading communications" />
+          ) : (
+            <>
+              <TableActions
+                showFilter={showFilter}
+                onSetShowFilter={setShowFilter}
                 menuItems={menuItems}
-                isDisabled={selectedItems.communications?.length === 0}
+                selectedItems={selectedItems.communications}
               />
-            </div>
-          </>
-        )}
-      </TwoCol>
-    </div>
+
+              <CommunicationsTable />
+
+              <div className="action-on-selection-container">
+                <ButtonMenuComponent
+                  menuTitle="Action on selection"
+                  menuItems={menuItems}
+                  isDisabled={selectedItems.communications?.length === 0}
+                />
+              </div>
+            </>
+          )}
+        </TwoCol>
+      </div>
+    </Layout>
   );
 };

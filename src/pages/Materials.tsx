@@ -3,6 +3,7 @@ import '../App.scss';
 import {
   ButtonMenuComponent,
   CaseMaterialsTable,
+  Layout,
   LoadingSpinner,
   MaterialsFilters,
   RenameDrawer,
@@ -11,30 +12,27 @@ import {
 } from '../components';
 
 import {
+  useAppRoute,
   useBanner,
   useCaseMaterial,
   useCaseMaterials,
-  useFeatureFlag,
   useTableActions
 } from '../hooks';
-import {
-  useCaseInfoStore,
-  useMaterialTags,
-  useSelectedItemsStore
-} from '../stores';
+import { useMaterialTags, useSelectedItemsStore } from '../stores';
 
+import { useNavigate } from 'react-router-dom';
 import { URL } from '../constants/url';
 import { CaseMaterialsType } from '../schemas';
 
 export const MaterialsPage = () => {
-  const { caseInfo } = useCaseInfoStore();
+  const { getRoute } = useAppRoute();
+  const navigate = useNavigate();
   const [showFilter, setShowFilter] = useState(true);
   const [selectedMaterial, setSelectedMaterial] =
     useState<CaseMaterialsType | null>(null);
 
   const { mutate: refreshCaseMaterials, loading: caseMaterialsLoading } =
     useCaseMaterials({ dataType: 'materials' });
-  const hasAccess = useFeatureFlag();
   const { setBanner, resetBanner } = useBanner();
   const { deselectMaterial } = useCaseMaterial();
 
@@ -45,7 +43,6 @@ export const MaterialsPage = () => {
   const {
     handleReclassifyClick,
     handleReadStatusClick,
-    handleDiscardClick,
     handleRedactClick,
     handleUnusedClick,
     determineReadStatusLabel,
@@ -55,7 +52,6 @@ export const MaterialsPage = () => {
     refreshData: refreshCaseMaterials,
     setBanner,
     deselectItem: deselectMaterial,
-    caseInfoData: caseInfo || undefined,
     resetBanner
   });
 
@@ -63,6 +59,15 @@ export const MaterialsPage = () => {
     if (selectedItems.materials.length) {
       setSelectedMaterial(selectedItems.materials[0]);
     }
+  };
+
+  const handleDiscardClick = () => {
+    navigate(getRoute('DISCARD'), {
+      state: {
+        selectedMaterial: selectedItems.materials[0],
+        returnTo: getRoute('MATERIALS')
+      }
+    });
   };
 
   const handleCancelRename = () => {
@@ -101,66 +106,64 @@ export const MaterialsPage = () => {
     {
       label: 'Reclassify',
       onClick: handleReclassifyClick,
-      hide:
-        !hasAccess([5]) ||
-        selectedItems.materials?.length > 1 ||
-        !row?.isReclassifiable
+      hide: selectedItems.materials?.length > 1 || !row?.isReclassifiable
     },
     {
       label: 'Redact',
       onClick: () => handleRedactClick(row?.materialId),
-      hide: !hasAccess([2, 3, 4, 5]) || selectedItems.materials?.length > 1
+      hide: selectedItems.materials?.length > 1
     },
     {
       label: 'Discard',
-      onClick: () => handleDiscardClick(URL.MATERIALS),
+      onClick: handleDiscardClick,
       disabled: selectedItems.materials?.length > 1,
-      hide: !hasAccess([2, 3, 4, 5]) || selectedItems.materials?.length > 1
+      hide: selectedItems.materials?.length > 1
     },
     {
       label: determineReadStatusLabel(selectedItems.materials),
-      onClick: () => handleReadStatusClick(selectedItems.materials),
-      hide: !hasAccess([2, 3, 4, 5])
+      onClick: () => handleReadStatusClick(selectedItems.materials)
     },
     {
       label: 'Mark as unused',
-      onClick: () => handleUnusedClick(URL.MATERIALS),
+      onClick: () => handleUnusedClick(selectedItems.materials, URL.MATERIALS),
       hide: selectedItems.materials?.some((item) => item.status === 'Unused')
     }
   ];
 
   return (
-    <div className="govuk-main-wrapper">
-      <RenameDrawer
-        material={selectedMaterial}
-        onCancel={handleCancelRename}
-        onSuccess={handleSuccessfulRename}
-      />
+    <Layout>
+      <div className="govuk-main-wrapper">
+        <RenameDrawer
+          material={selectedMaterial}
+          onCancel={handleCancelRename}
+          onSuccess={handleSuccessfulRename}
+        />
 
-      <TwoCol sidebar={showFilter ? <MaterialsFilters /> : undefined}>
-        {caseMaterialsLoading || isReadStatusUpdating ? (
-          <LoadingSpinner textContent="Loading materials" />
-        ) : (
-          <>
-            <TableActions
-              showFilter={showFilter}
-              onSetShowFilter={setShowFilter}
-              menuItems={menuItems}
-              selectedItems={selectedItems.materials}
-            />
-
-            <CaseMaterialsTable />
-
-            <div className="action-on-selection-container">
-              <ButtonMenuComponent
-                menuTitle="Action on selection"
+        <TwoCol sidebar={showFilter ? <MaterialsFilters /> : undefined}>
+          {caseMaterialsLoading || isReadStatusUpdating ? (
+            <LoadingSpinner textContent="Loading materials" />
+          ) : (
+            <>
+              <TableActions
+                showFilter={showFilter}
+                onSetShowFilter={setShowFilter}
                 menuItems={menuItems}
-                isDisabled={selectedItems.materials?.length === 0}
+                selectedItems={selectedItems.materials}
               />
-            </div>
-          </>
-        )}
-      </TwoCol>
-    </div>
+
+              <CaseMaterialsTable />
+
+              <div className="action-on-selection-container">
+                <ButtonMenuComponent
+                  menuTitle="Action on selection"
+                  menuItems={menuItems}
+                  isDisabled={selectedItems.materials?.length === 0}
+                />
+              </div>
+            </>
+          )}
+        </TwoCol>
+      </div>
+    </Layout>
   );
 };

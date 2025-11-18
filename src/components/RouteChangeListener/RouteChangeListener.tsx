@@ -8,7 +8,7 @@ import { useMaterialTags, useSelectedItemsStore } from '../../stores';
 // changes pages for example resetting banners, selected items, etc
 // it's to save doing it in individual contexts
 export const RouteChangeListener = () => {
-  const { pathname } = useLocation();
+  const { pathname, state } = useLocation();
   const { resetBanner } = useBanner();
   const { clearTags } = useMaterialTags();
   const { clear: clearSelectedItems } = useSelectedItemsStore();
@@ -18,9 +18,12 @@ export const RouteChangeListener = () => {
   };
 
   useEffect(() => {
-    clearTags();
+    if (!state?.persistBanner) {
+      clearTags();
+      resetBanner();
+    }
+
     clearSelectedItems();
-    resetBanner();
     scrollToTop();
   }, [pathname]);
 

@@ -1,5 +1,6 @@
 export { Accordion } from './Accordion/Accordion';
 export { Banner } from './Banner/Banner';
+export { AutoReclassifyButton } from './Button/AutoReclassifyButton';
 export { ButtonMenuComponent } from './ButtonMenu/ButtonMenu';
 export { CaseInfo } from './CaseInfo/CaseInfo';
 export { default as Checkbox } from './Checkbox/Checkbox';
@@ -14,6 +15,8 @@ export { CPSLink } from './Link/Link';
 export { LoadingSpinner } from './LoadingSpinner/LoadingSpinner';
 export { NavList } from './NavList/NavList';
 export { Pagination } from './Pagination/Pagination';
+export { Radios } from './Radios/Radios';
+export type { RadioOption } from './Radios/Radios';
 export { RouteChangeListener } from './RouteChangeListener/RouteChangeListener';
 export { SectionBreak } from './SectionBreak/SectionBreak';
 export { CaseMaterialsTable } from './SortableTable/CaseMaterialsTable';

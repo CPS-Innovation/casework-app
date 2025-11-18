@@ -1,46 +1,70 @@
+import { useEffect } from 'react';
 import { Route, Routes as Router } from 'react-router';
+import { useMatch } from 'react-router-dom';
 
-import { Layout } from './components';
-import { useAppRoute } from './hooks';
+import { ReviewAndRedactPage } from './caseWorkApp/pages/ReviewAndRedactPage';
+import { useAppRoute, useCaseInfo, useCaseInfoStore } from './hooks';
 import {
   CommunicationsPage,
+  DiscardMaterialPage,
   MaterialsPage,
   NotAuthorisedPage,
   NotFoundPage,
   PcdRequestPage,
+  ReclassifyToUnusedPage,
   ServerErrorPage
 } from './pages';
-import { ReviewAndRedactPage } from './caseWorkApp/pages/ReviewAndRedactPage';
 
 export const Routes = () => {
-  const [
-    communicationsRoute,
-    materialsRoute,
-    pcdRequestRoute,
-    reviewRoute,
-    serviceDownRoute,
-    unauthorisedRoute
-  ] = useAppRoute([
-    'COMMUNICATIONS',
-    'MATERIALS',
-    'PCD_REQUEST',
-    'REVIEW_REDACT',
-    'SERVER_ERROR',
-    'UNAUTHORISED'
-  ]);
+  const { getRoute } = useAppRoute();
+  const match = useMatch('/:urn/:caseId/*');
+  const { caseId, urn } = match?.params || {};
+
+  const { caseInfo } = useCaseInfo({ caseId, urn });
+  const { setCaseInfo } = useCaseInfoStore();
+
+  useEffect(() => {
+    if (caseInfo) {
+      setCaseInfo(caseInfo);
+    }
+  }, [caseInfo]);
 
   return (
     <Router>
-      <Route path={unauthorisedRoute} element={<NotAuthorisedPage />} />
-      <Route path={serviceDownRoute} element={<ServerErrorPage />} />
+      <Route
+        path={getRoute('UNAUTHORISED', false)}
+        element={<NotAuthorisedPage />}
+      />
+      <Route
+        path={getRoute('SERVER_ERROR', false)}
+        element={<ServerErrorPage />}
+      />
 
-      <Route path="/:urn/:caseId" element={<Layout />}>
-        <Route path={pcdRequestRoute} element={<PcdRequestPage />}>
-          <Route path=":pcdId" element={<PcdRequestPage />} />
-        </Route>
-        <Route path={materialsRoute} element={<MaterialsPage />} />
-        <Route path={communicationsRoute} element={<CommunicationsPage />} />
-        <Route path={reviewRoute} element={<ReviewAndRedactPage />} />
+      <Route path={`:urn/:caseId`}>
+        <Route
+          path={getRoute('DISCARD', false)}
+          element={<DiscardMaterialPage />}
+        />
+        <Route
+          path={`${getRoute('PCD_REQUEST', false)}/:pcdId?`}
+          element={<PcdRequestPage />}
+        />
+        <Route
+          path={getRoute('MATERIALS', false)}
+          element={<MaterialsPage />}
+        />
+        <Route
+          path={getRoute('COMMUNICATIONS', false)}
+          element={<CommunicationsPage />}
+        />
+        <Route
+          path={getRoute('REVIEW_REDACT', false)}
+          element={<ReviewAndRedactPage />}
+        />
+        <Route
+          path={getRoute('RECLASSIFY_TO_UNUSED', false)}
+          element={<ReclassifyToUnusedPage />}
+        />
       </Route>
 
       <Route path="*" element={<NotFoundPage />} />
