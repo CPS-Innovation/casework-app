@@ -30,6 +30,17 @@ export const CaseInfo = ({ caseInfo }: Props) => {
         </div>
         <div className="caseInfo__actions">
           <AutoReclassifyButton />
+
+          <a
+            href={`https://cps-tst.outsystemsenterprise.com/CaseReview/LandingPage?CMSCaseId=${caseInfo.id}`}
+            target="_blank"
+            role="button"
+            className="govuk-button"
+            data-module="govuk-button"
+            draggable="false"
+          >
+            Start review
+          </a>
         </div>
       </div>
     </div>
