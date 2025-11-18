@@ -27,7 +27,7 @@ export const ReviewAndRedactPage = () => {
   const [documentIDs, setDocumentIDs] = useState<any[]>([]);
   const [activeTabId, setActiveTabId] = useState<string>('');
   const [removedDocumentId, setRemovedDocumentId] = useState<
-    TDocumentDataList | undefined
+    string | undefined
   >(undefined);
 
   const [documentsDataList, setDocumentsDataList] = useState<
@@ -48,8 +48,13 @@ export const ReviewAndRedactPage = () => {
     });
   }, []);
 
-  const handleCloseTab = (v: string) => {
-    setRemovedDocumentId(v as any);
+  const handleCloseTab = (v:string | undefined) => {
+  // const newDocumentData: Pick<TDocumentDataList, 'id'> |  undefined = {
+  //   id,
+  // };
+  // console.log('new dara', newDocumentData.id);
+    setRemovedDocumentId(v);
+    setOpenDocumentIds(prev => prev.filter( el => el !== v))  
   };
 
   useEffect(() => {
@@ -77,7 +82,7 @@ export const ReviewAndRedactPage = () => {
 
   useEffect(() => {
     const newArray = documentIDs?.filter((e) => {
-      return e.id !== removedDocumentId?.id;
+      return e.id !== removedDocumentId;
     });
     setDocumentIDs(newArray);
   }, [removedDocumentId]);
@@ -110,7 +115,7 @@ export const ReviewAndRedactPage = () => {
             items={documentIDs}
             isSidebarVisible={isSidebarVisible}
             onToggleSidebar={() => setIsSidebarVisible((v) => !v)}
-            handleCloseTab={handleCloseTab}
+            handleCloseTab={(a)=>handleCloseTab(a)}
           >
             <DocumentViewportArea
               activeTabId={activeTabId}
@@ -122,7 +127,7 @@ export const ReviewAndRedactPage = () => {
             // fileUrls left purposefully
             // fileUrl="http://localhost:3000/test-pdfs/may-plus-images.pdf"
             // fileUrl="http://localhost:3000/test-pdfs/final.pdf"
-            fileUrl="http://localhost:3000/test-pdfs/final-with-https.pdf"
+            fileUrl="https://www.orimi.com/pdf-test.pdf"
             onRedactionsChange={(change) => {
               console.log(`OfficialPdfViewer.tsx:${/*LL*/ 16}`, { change });
             }}

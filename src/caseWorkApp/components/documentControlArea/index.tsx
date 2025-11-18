@@ -22,7 +22,7 @@ type DocumentControlAreaProps = {
   items: TabItem[];
   isSidebarVisible?: boolean;
   onToggleSidebar?: () => void;
-  handleCloseTab: (v?: any) => void;
+  handleCloseTab: (v?: string) => void;
   children: React.ReactNode;
 };
 

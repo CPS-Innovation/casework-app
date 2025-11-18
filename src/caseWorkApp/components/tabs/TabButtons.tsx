@@ -9,7 +9,7 @@ export type TabButtonProps = {
   items: { id: string; label: string; ariaLabel: string }[];
   activeTabIndex: number;
   handleTabSelection: (documentId: string) => void;
-  handleCloseTab: (v?: any) => void;
+  handleCloseTab: (v?: string) => void;
   dcfMode: string | undefined;
 };
 
@@ -157,9 +157,7 @@ const TabButtons: React.FC<TabButtonProps> = ({
                   role="tab"
                   className={classes.tabCloseButton}
                   onClick={()=>{
-                    console.log(items[activeTabIndex])
-                    handleCloseTab(items[activeTabIndex])}
-                  
+                    handleCloseTab(items[activeTabIndex]?.id)}                  
                   }
                   onKeyDown={handleKeyPressOnTab}
                   data-testid="tab-remove"

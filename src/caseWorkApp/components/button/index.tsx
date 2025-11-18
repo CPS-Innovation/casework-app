@@ -1,5 +1,5 @@
 import React from 'react';
-import './Button.module.scss';
+import classes from './Button.module.scss';
 
 type ButtonProps = {
   onClick?: () => void;
@@ -16,7 +16,7 @@ const Button: React.FC<ButtonProps> = ({
     <>
       <button
         type="submit"
-        className="govuk-button govuk-button--secondary"
+        className={`govuk-button govuk-button--secondary ${classes.cwaSubmitButton}`}
         data-module="govuk-button"
         data-govuk-button-init=""
         onClick={onClick}
