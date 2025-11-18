@@ -14,6 +14,7 @@ import {
   ReclassifyToUnusedPage,
   ServerErrorPage
 } from './pages';
+import { CaseSearchPage } from './pages/CaseSearch';
 
 export const Routes = () => {
   const { getRoute } = useAppRoute();
@@ -38,6 +39,10 @@ export const Routes = () => {
       <Route
         path={getRoute('SERVER_ERROR', false)}
         element={<ServerErrorPage />}
+      />
+      <Route
+        path={getRoute('CASE_SEARCH', false)}
+        element={<CaseSearchPage />}
       />
 
       <Route path={`:urn/:caseId`}>
