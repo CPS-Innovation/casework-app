@@ -26,11 +26,8 @@ export const ReviewAndRedactPage = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useState<boolean>(true);
   const [documentIDs, setDocumentIDs] = useState<any[]>([]);
   const [activeTabId, setActiveTabId] = useState<string>('');
-  const [removedDocumentId, setRemovedDocumentId] = useState<
-    string | undefined
-  >(undefined);
 
-  const [documentsDataList, setDocumentsDataList] = useState<
+  const [documentsDataList, setDocumentsDataList] = useState<       
     TDocumentDataList[]
   >([]);
 
@@ -40,7 +37,7 @@ export const ReviewAndRedactPage = () => {
 
   useEffect(() => {
     getDocuments({
-      axiosInstance: axiosInstance,
+      axiosInstance: axiosInstance, 
       urn: '54KR7689125',
       caseId: 2160797
     }).then((data) => {
@@ -49,11 +46,6 @@ export const ReviewAndRedactPage = () => {
   }, []);
 
   const handleCloseTab = (v:string | undefined) => {
-  // const newDocumentData: Pick<TDocumentDataList, 'id'> |  undefined = {
-  //   id,
-  // };
-  // console.log('new dara', newDocumentData.id);
-    setRemovedDocumentId(v);
     setOpenDocumentIds(prev => prev.filter( el => el !== v))  
   };
 
@@ -79,13 +71,6 @@ export const ReviewAndRedactPage = () => {
 
     setDocumentIDs(matchingResult);
   }, [openDocumentIds]);
-
-  useEffect(() => {
-    const newArray = documentIDs?.filter((e) => {
-      return e.id !== removedDocumentId;
-    });
-    setDocumentIDs(newArray);
-  }, [removedDocumentId]);
 
   useEffect(() => {
     const lastId =

@@ -7,7 +7,6 @@ import { CommonTabsProps } from './types';
 export type TabsProps = CommonTabsProps & {
   activeTabId: string;
   handleTabSelection: (documentId: string) => void;
-  handleClosePdf: (documentId: string, versionId: number) => void;
   dcfMode: string | undefined;
   handleCloseTab: (v?: string) => void;
 };
@@ -20,7 +19,6 @@ export const Tabs: React.FC<TabsProps> = ({
   title,
   activeTabId,
   handleTabSelection,
-  handleClosePdf,
   dcfMode,
   handleCloseTab,
   ...attributes

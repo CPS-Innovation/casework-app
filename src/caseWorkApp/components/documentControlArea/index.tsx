@@ -48,7 +48,6 @@ const DocumentControlArea = ({
             items={items}
             activeTabId={activeTabId}
             handleTabSelection={handleTabSelection}
-            handleClosePdf={handleClosePdf}
             handleCloseTab={handleCloseTab}
             dcfMode={undefined}
           />
