@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Layout, TwoCol } from '../../components';
 import { DocumentSidebar } from '../../packages/DocumentSelectAccordion/DocumentSidebar';
 import { PdfViewer } from '../../packages/pdfViewer/PdfViewer';
@@ -27,7 +27,7 @@ export const ReviewAndRedactPage = () => {
   const [documentIDs, setDocumentIDs] = useState<any[]>([]);
   const [activeTabId, setActiveTabId] = useState<string>('');
 
-  const [documentsDataList, setDocumentsDataList] = useState<       
+  const [documentsDataList, setDocumentsDataList] = useState<
     TDocumentDataList[]
   >([]);
 
@@ -37,7 +37,7 @@ export const ReviewAndRedactPage = () => {
 
   useEffect(() => {
     getDocuments({
-      axiosInstance: axiosInstance, 
+      axiosInstance: axiosInstance,
       urn: '54KR7689125',
       caseId: 2160797
     }).then((data) => {
@@ -45,21 +45,20 @@ export const ReviewAndRedactPage = () => {
     });
   }, []);
 
-  const handleCloseTab = (v:string | undefined) => {
-    setOpenDocumentIds(prev => prev.filter( el => el !== v))  
+  const handleCloseTab = (v: string | undefined) => {
+    setOpenDocumentIds((prev) => prev.filter((el) => el !== v));
   };
 
   useEffect(() => {
-    const matchingDocuments = documentsDataList
-      .filter((item) => {
-        return openDocumentIds.includes(item.documentId);
-      });
+    const matchingDocuments = documentsDataList.filter((item) => {
+      return openDocumentIds.includes(item.documentId);
+    });
 
-      const sortedMatchingDocuments = matchingDocuments.sort(
-        (a, b) =>
-          openDocumentIds.indexOf(a.documentId) -
-          openDocumentIds.indexOf(b.documentId)
-      );
+    const sortedMatchingDocuments = matchingDocuments.sort(
+      (a, b) =>
+        openDocumentIds.indexOf(a.documentId) -
+        openDocumentIds.indexOf(b.documentId)
+    );
 
     const matchingResult = sortedMatchingDocuments?.map((item) => {
       return {
@@ -85,14 +84,14 @@ export const ReviewAndRedactPage = () => {
       <div className="govuk-main-wrapper">
         <TwoCol
           sidebar={
-          isSidebarVisible ? (
+            isSidebarVisible ? (
               <DocumentSidebar
                 urn="54KR7689125"
                 caseId={2160797}
                 openDocumentIds={openDocumentIds}
                 onSetDocumentOpenIds={(docIds) => setOpenDocumentIds(docIds)}
               />
-          ) : undefined
+            ) : undefined
           }
         >
           <DocumentControlArea
@@ -100,7 +99,7 @@ export const ReviewAndRedactPage = () => {
             items={documentIDs}
             isSidebarVisible={isSidebarVisible}
             onToggleSidebar={() => setIsSidebarVisible((v) => !v)}
-            handleCloseTab={(a)=>handleCloseTab(a)}
+            handleCloseTab={(a) => handleCloseTab(a)}
           >
             <DocumentViewportArea
               activeTabId={activeTabId}
@@ -113,9 +112,7 @@ export const ReviewAndRedactPage = () => {
             // fileUrl="http://localhost:3000/test-pdfs/may-plus-images.pdf"
             // fileUrl="http://localhost:3000/test-pdfs/final.pdf"
             fileUrl="https://www.orimi.com/pdf-test.pdf"
-            onRedactionsChange={(change) => {
-              console.log(`OfficialPdfViewer.tsx:${/*LL*/ 16}`, { change });
-            }}
+            onRedactionsChange={(change) => {}}
             onAddRedactions={(add) => {
               const newRedactions = add.map((x) => ({
                 redactionId: x.id,
@@ -128,7 +125,6 @@ export const ReviewAndRedactPage = () => {
               setRedactionDetails((prev) =>
                 prev.filter((x) => !remove.includes(x.redactionId))
               );
-              console.log(`OfficialPdfViewer.tsx:${/*LL*/ 18}`, { remove });
             }}
             onSaveRedactions={(redactions) => {
               const redactionsWithDetails = redactions
@@ -140,9 +136,6 @@ export const ReviewAndRedactPage = () => {
                   return { ...x, ...thisDetails };
                 })
                 .filter((x) => !!x);
-              console.log(`OfficialPdfViewer.tsx:${/*LL*/ 44}`, {
-                redactionsWithDetails
-              });
             }}
           />
         </TwoCol>
@@ -150,3 +143,4 @@ export const ReviewAndRedactPage = () => {
     </Layout>
   );
 };
+

@@ -10,15 +10,13 @@ export type TabButtonProps = {
   activeTabIndex: number;
   handleTabSelection: (documentId: string) => void;
   handleCloseTab: (v?: string) => void;
-  dcfMode: string | undefined;
 };
 
 const TabButtons: React.FC<TabButtonProps> = ({
   items,
   activeTabIndex,
   handleTabSelection,
-  handleCloseTab,
-  dcfMode
+  handleCloseTab
 }) => {
   const activeTabRef = useRef<HTMLButtonElement>(null);
 
@@ -152,13 +150,13 @@ const TabButtons: React.FC<TabButtonProps> = ({
               >
                 <span className={classes.tabLabel}>{label}</span>
               </button>
-              {activeTabIndex === index && !dcfMode && (
+              {activeTabIndex === index && (
                 <button
                   role="tab"
                   className={classes.tabCloseButton}
-                  onClick={()=>{
-                    handleCloseTab(items[activeTabIndex]?.id)}                  
-                  }
+                  onClick={() => {
+                      handleCloseTab(items[activeTabIndex]?.id);
+                  }}
                   onKeyDown={handleKeyPressOnTab}
                   data-testid="tab-remove"
                   aria-label="close tab"

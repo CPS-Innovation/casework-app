@@ -34,7 +34,7 @@ const DocumentControlArea = ({
   handleCloseTab,
   children
 }: DocumentControlAreaProps) => {
-  const { handleTabSelection, handleClosePdf } = useStoreCWA();
+  const { handleTabSelection } = useStoreCWA();
   return (
     <>
       {items.length !== 0 ? (
@@ -49,7 +49,6 @@ const DocumentControlArea = ({
             activeTabId={activeTabId}
             handleTabSelection={handleTabSelection}
             handleCloseTab={handleCloseTab}
-            dcfMode={undefined}
           />
           {children}
         </>

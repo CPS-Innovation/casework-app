@@ -7,7 +7,6 @@ import { CommonTabsProps } from './types';
 export type TabsProps = CommonTabsProps & {
   activeTabId: string;
   handleTabSelection: (documentId: string) => void;
-  dcfMode: string | undefined;
   handleCloseTab: (v?: string) => void;
 };
 
@@ -19,32 +18,17 @@ export const Tabs: React.FC<TabsProps> = ({
   title,
   activeTabId,
   handleTabSelection,
-  dcfMode,
   handleCloseTab,
   ...attributes
 }) => {
-
   useLastFocus('#case-details-search');
 
   const { tabsState } = useStoreCWA();
 
   const activeTabArrayPos = items.findIndex(
-    (item) => item.id === activeTabId || item.id === tabsState?.activeTabId  
+    (item) => item.id === activeTabId || item.id === tabsState?.activeTabId
   );
   const activeTabIndex = activeTabArrayPos === -1 ? 0 : activeTabArrayPos;
-
-  const localHandleClosePdf = () => {
-    const thisItemIndex = activeTabIndex;
-    const nextTabIndex =
-      items.length === 1
-        ? undefined // there is only item so next item is empty
-        : thisItemIndex === 0 
-          ? 1 // we are removing the first item, so we need the item to the right
-          : thisItemIndex - 1; // otherwise, we need the item to the left
-
-    const nextTabId = nextTabIndex === undefined ? '' : items[nextTabIndex].id;
-    handleTabSelection(nextTabId);
-  };
 
   const panels = items.map((item, index) => {
     const { id: itemId, panel } = item;
@@ -97,7 +81,6 @@ export const Tabs: React.FC<TabsProps> = ({
           activeTabIndex={activeTabIndex}
           handleTabSelection={handleTabSelection}
           handleCloseTab={handleCloseTab}
-          dcfMode={dcfMode}
         />
         {panels}
       </div>
