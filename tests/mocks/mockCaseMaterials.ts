@@ -3,7 +3,7 @@ import { CaseMaterialsType } from '../../src/schemas/caseMaterials';
 const material: CaseMaterialsType[] = [
   {
     id: 8836399,
-    originalFileName: 'MG11 Absul Tarafdar Undated.docx',
+    originalFileName: 'MG11 Abdul Tarafdar Undated.docx',
     subject: 'test',
     documentTypeId: 1062,
     materialId: 8836399,
