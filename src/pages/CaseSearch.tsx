@@ -1,25 +1,33 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { LoadingSpinner, StatusTag } from '../components';
 import { useCaseSearch } from '../hooks/useCaseSearch';
 
 export const CaseSearchPage = () => {
-  const [urn, setUrn] = useState('');
-  const { caseDetails, loading } = useCaseSearch({ urn: urn });
+  const [inputUrn, setInputUrn] = useState('');
+  const [queryUrn, setQueryUrn] = useState('');
+  const [hasSearched, setHasSearched] = useState(false);
 
-  const handleSearch = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setUrn('06SC1234571');
+  const { caseDetails, loading } = useCaseSearch(queryUrn);
+
+  if (loading) {
+    return <LoadingSpinner textContent="Searching for a case..." />;
+  }
+
+  if (hasSearched && !caseDetails && !loading) return <p>No case found.</p>;
+
+  const handleSearch = (
+    event: React.FormEvent<HTMLFormElement> | React.MouseEvent
+  ) => {
+    event.preventDefault?.();
+    setQueryUrn(inputUrn || '');
+    setHasSearched(true);
   };
-
-  const leadDefendantFullName =
-    caseDetails?.[0]?.leadDefendantDetails.surname +
-    ', ' +
-    caseDetails?.[0]?.leadDefendantDetails.firstNames;
 
   return (
     <div className="govuk-main-wrapper govuk-main-wrapper--auto-spacing">
       <div className="govuk-grid-row">
-        <div className="govuk-grid-column-one-half">
+        <div className="govuk-grid-column-one-third">
           <h1 className="govuk-heading-l govuk-!-margin-bottom-0">
             Find a case
           </h1>
@@ -38,6 +46,8 @@ export const CaseSearchPage = () => {
               name="case-urn"
               type="text"
               className="govuk-input"
+              value={inputUrn}
+              onChange={(e) => setInputUrn(e.target.value)}
             />
           </div>
 
@@ -57,26 +67,59 @@ export const CaseSearchPage = () => {
         </div>
       </div>
 
-      <div className="govuk-grid-row">
-        <h1>Case search results</h1>
-        <p className="govuk-body">
-          We've found <b>1</b> case that matches <b>{urn}</b>
-        </p>
+      {caseDetails && !loading && (
+        <div className="govuk-grid-row">
+          <h1>Case search results</h1>
+          <p className="govuk-body">
+            We've found <b>1</b> case that matches <b>{queryUrn}</b>
+          </p>
 
-        <hr className="govuk-section-break govuk-section-break--m govuk-section-break--visible"></hr>
+          <hr className="govuk-section-break govuk-section-break--m govuk-section-break--visible"></hr>
 
-        <div>
-          <h2>
-            <Link
-              className="govuk-link"
-              to={`/${urn}/${caseDetails[0].id}/materials`}
-            >
-              {urn}
-            </Link>
-          </h2>
-          <p className="govuk-hint">{leadDefendantFullName}</p>
+          <div>
+            <h2>
+              <Link
+                className="govuk-link govuk-!-margin-bottom-0"
+                to={`/${queryUrn}/${caseDetails.id}/materials`}
+              >
+                {queryUrn}
+              </Link>
+            </h2>
+            {caseDetails && (
+              <>
+                <p className="govuk-hint govuk-!-margin-top-0 govuk-!-margin-bottom-0">
+                  {caseDetails.leadDefendantDetails.surname},{' '}
+                  {caseDetails.leadDefendantDetails.firstNames}
+                </p>
+                <p className="govuk-hint govuk-!-margin-top-0 govuk-!-margin-bottom-0">
+                  Date of birth:{' '}
+                  {new Date(
+                    caseDetails.leadDefendantDetails.dob
+                  ).toLocaleDateString('en-GB', {
+                    day: '2-digit',
+                    month: 'long',
+                    year: 'numeric'
+                  })}
+                </p>
+              </>
+            )}
+          </div>
+
+          <div className="govuk-!-margin-top-4">
+            {caseDetails.isCaseCharged ? (
+              <>
+                <p className="govuk-body">
+                  Status: <StatusTag status="Charged" />
+                </p>
+              </>
+            ) : (
+              <p className="govuk-body">
+                Status: <StatusTag status="Not yet charged" />
+              </p>
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

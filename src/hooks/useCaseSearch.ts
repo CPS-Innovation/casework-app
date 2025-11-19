@@ -1,27 +1,24 @@
 import useSWR from 'swr';
 
 import { QUERY_KEYS } from '../constants/query';
+import { CaseDetailsType } from '../schemas/caseDetails';
 import { useRequest } from './';
 
-type UseCaseSearchProps = { urn?: string };
-
-export const useCaseSearch = ({ urn }: UseCaseSearchProps) => {
+export const useCaseSearch = (urn: string | undefined) => {
   const request = useRequest();
 
   const getCase = async () =>
     await request
-      .get<any>(`/api/urns/${urn}/cases`)
-      .then((response) => response.data);
+      .get<CaseDetailsType>(`/api/urns/${urn}/cases`)
+      .then((response) => response.data[0]);
 
   const { data, isLoading, isValidating, mutate } = useSWR(
     urn ? [QUERY_KEYS.CASE_SEARCH, urn] : null,
     getCase
   );
 
-  console.log('useCaseSearch data:', data);
-
   return {
-    caseDetails: data || null,
+    caseDetails: data ?? null,
     loading: isLoading || isValidating,
     refresh: mutate
   };
