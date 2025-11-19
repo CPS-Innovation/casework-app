@@ -12,7 +12,8 @@ import { AppContextProvider } from './context/AppContext';
 import { FilterProvider } from './context/FiltersContext';
 import { msalConfig } from './msalInstance';
 
-if (import.meta.env.DEV) {
+
+if (import.meta.env.DEV && !import.meta.env.VITE_E2E) {
   const { worker } = await import('./mocks/browser');
   await worker.start({ onUnhandledRequest: 'bypass' });
 }
@@ -42,3 +43,4 @@ pca.initialize().then(() => {
     </MsalProvider>
   );
 });
+
