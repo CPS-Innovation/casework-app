@@ -67,23 +67,6 @@ export const handlers = [
   }),
 
   http.patch(
-    `${POLARIS_GATEWAY_URL}/api/material/rename`,
-    async ({ request }) => {
-      const body = (await request.json()) as {
-        materialId: number;
-        subject: string;
-      };
-
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      return HttpResponse.json(
-        { updateCommunication: { id: body.materialId } },
-        { status: 200 }
-      );
-    }
-  ),
-
-  http.patch(
     `${POLARIS_GATEWAY_URL}/api/material/read-status`,
     async ({ request }) => {
       const body = (await request.json()) as {
