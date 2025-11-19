@@ -6,7 +6,7 @@ project_name    = "materials"
 
 
 #### TBC  #####
-dns_server  = "10.8.0.6"
+dns_server      = "10.8.0.6"
 
 vnet_name       = "vnet-innovation-development"
 vnet_rg         = "rg-networking"
@@ -35,6 +35,6 @@ web_asp_materials = {
   autoscale_maximum       = 4
 }
 
-app_reg_owners = ["49a53165-9fa6-4f51-bebe-90ed1cc2e58f", "2b1e4713-81db-45cb-918c-c3bb5a5b72e5"]
+app_reg_owners = ["49a53165-9fa6-4f51-bebe-90ed1cc2e58f", "2cd0a11e-402b-4562-998c-2376d61bbb7f", "2b1e4713-81db-45cb-918c-c3bb5a5b72e5"]
 terraform_service_principal_display_name = "Azure Pipeline: Innovation-Development"
 fa_polaris_gateway_name = "fa-polaris-dev-gateway-appreg"

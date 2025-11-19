@@ -1,5 +1,5 @@
 resource "azurerm_linux_web_app" "as_comp_materials" {
-  name                          = "as-${local.comp_materials_name}"
+  name                          = "as-${local.web_components_name}"
   location                      = azurerm_resource_group.rg_materials.location
   service_plan_id               = azurerm_service_plan.web_linux.id
   resource_group_name           = azurerm_resource_group.rg_materials.name
