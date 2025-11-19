@@ -11,6 +11,7 @@ import {
   NotAuthorisedPage,
   NotFoundPage,
   PcdRequestPage,
+  ReclassificationPage,
   ReclassifyToUnusedPage,
   ServerErrorPage
 } from './pages';
@@ -64,6 +65,10 @@ export const Routes = () => {
         <Route
           path={getRoute('RECLASSIFY_TO_UNUSED', false)}
           element={<ReclassifyToUnusedPage />}
+        />
+        <Route
+          path={getRoute('RECLASSIFICATION', false)}
+          element={<ReclassificationPage />}
         />
       </Route>
 
