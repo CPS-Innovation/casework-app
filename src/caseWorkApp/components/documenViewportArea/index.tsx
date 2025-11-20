@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AreaIcon from '../../assetsCWA/svgs/areaIcon.svg?react';
 import { DropdownButton } from '../dropDownButton/DropdownButton';
 import { LinkButton } from '../LinkButton/LinkButton';
@@ -47,16 +47,30 @@ const dropDownItems: DropdownButtonItem[] = [
   { id: '6', label: 'Rename', ariaLabel: 'rename', disabled: false }
 ];
 
-export const DocumentViewportArea = () => {
+type DocumentViewportAreaProps = {
+  items: DropdownButtonItem[];
+  activeTabId: string;
+};
+
+export const DocumentViewportArea = ({ items, activeTabId }: DocumentViewportAreaProps) => {
   const [redactAreaState, setRedactAreaState] = useState<boolean>(false);
+  const [name, setName] = useState<string>('');
 
   const handleRedactAreaToolButtonClick = () => {
     setRedactAreaState(!redactAreaState);
   };
 
+  const activeTabLabel = items.findIndex((item) => item.id === activeTabId);
+
+  useEffect(() => {
+    if (items && items.length > 0) {
+      setName(items[activeTabLabel]?.label);
+    }
+  }, [items, activeTabId]);
+
   return (
     <div className={classes.content}>
-      <p>MG1 CARMINE Victim</p>
+      <p>{name}</p>
       <Tooltip
         text={redactAreaState ? 'Redact area tool On' : 'Redact area tool Off'}
       >
