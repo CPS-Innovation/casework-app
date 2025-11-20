@@ -18,57 +18,56 @@ export const handlers = [
     );
   }),
 
-  http.get(`${POLARIS_GATEWAY_URL}/case/:caseId/pcd-requests/core`, () => {
-    return HttpResponse.json(mockPcdListResponse, { status: 200 });
-  }),
+  http.get(
+    `${POLARIS_GATEWAY_URL}/api/case/:caseId/pcd-requests/core`,
+    async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-  http.get(`${POLARIS_GATEWAY_URL}/case/:caseId/pcd-request/:pcdId`, (req) => {
-    const { pcdId } = req.params;
-    const pcdListItem = mockPcdListResponse.find(
-      (item) => item.id.toString() === pcdId?.toString()
-    ) as PCDListingType;
-
-    return HttpResponse.json(
-      mockPcdRequestResponse({
-        id: pcdListItem.id,
-        decisionRequested: pcdListItem.decisionRequested,
-        decisionRequiredBy: pcdListItem.decisionRequiredBy
-      }),
-      { status: 200 }
-    );
-  }),
+      return HttpResponse.json(mockPcdListResponse, { status: 200 });
+    }
+  ),
 
   http.get(
-    'http://localhost:3000/cases/:caseId/history/pre-charge-decision',
+    `${POLARIS_GATEWAY_URL}/api/case/:caseId/pcd-request/:pcdId`,
+    async (req) => {
+      const { pcdId } = req.params;
+      const pcdListItem = mockPcdListResponse.find(
+        (item) => item.id.toString() === pcdId?.toString()
+      ) as PCDListingType;
+
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      return HttpResponse.json(
+        mockPcdRequestResponse({
+          id: pcdListItem.id,
+          decisionRequested: pcdListItem.decisionRequested,
+          decisionRequiredBy: pcdListItem.decisionRequiredBy
+        }),
+        { status: 200 }
+      );
+    }
+  ),
+
+  http.get(
+    'http://localhost:3000/api/cases/:caseId/history/pre-charge-decision',
     () => {
       return HttpResponse.json(mockPcdReview, { status: 200 });
     }
   ),
 
-  http.get('http://localhost:3000/cases/:caseId/history/initial-review', () => {
-    return HttpResponse.json(mockPcdInitialReviewResponse, { status: 200 });
-  }),
+  http.get(
+    'http://localhost:3000/api/cases/:caseId/history/initial-review',
+    () => {
+      return HttpResponse.json(mockPcdInitialReviewResponse, { status: 200 });
+    }
+  ),
 
   http.get('http://localhost:3000/cases/:caseId/history', () => {
     return HttpResponse.json(mockPcdCaseHistory, { status: 200 });
   }),
 
-  http.patch(`${POLARIS_GATEWAY_URL}/material/rename`, async ({ request }) => {
-    const body = (await request.json()) as {
-      materialId: number;
-      subject: string;
-    };
-
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    return HttpResponse.json(
-      { updateCommunication: { id: body.materialId } },
-      { status: 200 }
-    );
-  }),
-
   http.patch(
-    `${POLARIS_GATEWAY_URL}/material/read-status`,
+    `${POLARIS_GATEWAY_URL}/api/material/read-status`,
     async ({ request }) => {
       const body = (await request.json()) as {
         materialId: number;
@@ -86,7 +85,7 @@ export const handlers = [
   ),
 
   http.post(
-    `${POLARIS_GATEWAY_URL}/case-materials/bulk-set-unused`,
+    `${POLARIS_GATEWAY_URL}/api/case-materials/bulk-set-unused`,
     async ({ request }) => {
       const body = (await request.json()) as CaseMaterialsType[];
 
@@ -107,7 +106,7 @@ export const handlers = [
     }
   ),
 
-  http.post(`${POLARIS_GATEWAY_URL}/uma-reclassify`, async () => {
+  http.post(`${POLARIS_GATEWAY_URL}/api/uma-reclassify`, async () => {
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
     return HttpResponse.json(
@@ -124,7 +123,7 @@ export const handlers = [
     );
   }),
 
-  http.post(`${POLARIS_GATEWAY_URL}/hk-logger`, async ({ request }) => {
+  http.post(`${POLARIS_GATEWAY_URL}/api/hk-logger`, async ({ request }) => {
     const body = (await request.json()) as {
       logLevel: number;
       message: string;

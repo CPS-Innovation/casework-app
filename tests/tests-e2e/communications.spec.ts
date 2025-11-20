@@ -30,7 +30,7 @@ test.describe('Communications page', () => {
     await page.waitForLoadState('networkidle');
     await page.waitForFunction('() => !window.isCaseInfoLoading');
     // no materials
-    await page.route('/api/case-materials', (route) => route.abort());
+    await page.route('/case-materials', (route) => route.abort());
     await expect(page.locator('tbody')).toContainText(
       'There are no communications that match your selection for this case'
     );

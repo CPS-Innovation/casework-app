@@ -1,5 +1,6 @@
 export const QUERY_KEYS = {
   CASE_INFO: 'caseInfo',
+  CASE_LOCK_STATUS: 'caseLockStatus',
   CASE_MATERIAL: 'caseMaterial',
   AUTO_RECLASSIFY: 'autoReclassify',
   RENAME_MATERIAL: 'renameMaterial',
