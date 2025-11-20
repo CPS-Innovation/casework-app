@@ -1,6 +1,5 @@
 import useSWRMutation from 'swr/mutation';
 import { QUERY_KEYS } from '../constants/query';
-import { API_ENDPOINTS } from '../constants/url';
 import { useLogger, useRequest } from '../hooks';
 import { SwrPayload } from '../schemas';
 import {
@@ -27,12 +26,12 @@ export const useRename = (
     { arg: newSubject }: SwrPayload<string>
   ) => {
     return request.patch<CaseMaterialRenameResponseType>(
-      API_ENDPOINTS.CASE_MATERIAL_RENAME,
+      `/urns/${caseInfo?.urn}/cases/${caseInfo?.id}/materials/${material?.materialId}/rename`,
       { materialId: material?.materialId, subject: newSubject }
     );
   };
   const { trigger, isMutating } = useSWRMutation(
-    QUERY_KEYS.RENAME_MATERIAL,
+    caseInfo ? QUERY_KEYS.RENAME_MATERIAL : null,
     renameMaterialRequest,
     {
       onError: (error: Error) => {
