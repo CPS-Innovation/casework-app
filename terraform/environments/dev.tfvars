@@ -27,7 +27,7 @@ private_dns_zones = {
 }
 
 web_asp_materials = {
-  sku                     = "B2"
+  sku                     = "P0v3"
   worker_count            = "1"
   zone_balancing_enabled  = false
   autoscale_default       = 2
