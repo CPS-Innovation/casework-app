@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { LoadingSpinner, StatusTag } from '../components';
+import { DefinitionList, LoadingSpinner, StatusTag } from '../components';
 import { useCaseSearch } from '../hooks/useCaseSearch';
+import { formatDateLong } from '../utils/date';
 
 export const CaseSearchPage = () => {
   const [inputUrn, setInputUrn] = useState('');
@@ -24,10 +25,27 @@ export const CaseSearchPage = () => {
     setHasSearched(true);
   };
 
+  const lead = caseDetails?.leadDefendantDetails;
+
+  const defendantFullName = lead
+    ? `${lead.surname}, ${lead.firstNames}` +
+      ((caseDetails?.defendants?.length ?? 0) > 1 ? ' and others' : '')
+    : '';
+
+  const dateOfBirth = caseDetails
+    ? `Date of birth: ${formatDateLong(caseDetails.leadDefendantDetails?.dob)}`
+    : '';
+
+  const nextHearingDate = formatDateLong(
+    caseDetails?.headlineCharge?.nextHearingDate
+  );
+
+  const dateOfOffence = formatDateLong(caseDetails?.headlineCharge?.date);
+
   return (
     <div className="govuk-main-wrapper govuk-main-wrapper--auto-spacing">
       <div className="govuk-grid-row">
-        <div className="govuk-grid-column-one-third">
+        <div>
           <h1 className="govuk-heading-l govuk-!-margin-bottom-0">
             Find a case
           </h1>
@@ -69,9 +87,9 @@ export const CaseSearchPage = () => {
 
       {caseDetails && !loading && (
         <div className="govuk-grid-row">
-          <h1>Case search results</h1>
           <p className="govuk-body">
-            We've found <b>1</b> case that matches <b>{queryUrn}</b>
+            We've found <b>{caseDetails.defendants.length}</b> case that matches{' '}
+            <b>{queryUrn}</b>
           </p>
 
           <hr className="govuk-section-break govuk-section-break--m govuk-section-break--visible"></hr>
@@ -88,18 +106,10 @@ export const CaseSearchPage = () => {
             {caseDetails && (
               <>
                 <p className="govuk-hint govuk-!-margin-top-0 govuk-!-margin-bottom-0">
-                  {caseDetails.leadDefendantDetails.surname},{' '}
-                  {caseDetails.leadDefendantDetails.firstNames}
+                  {defendantFullName}
                 </p>
                 <p className="govuk-hint govuk-!-margin-top-0 govuk-!-margin-bottom-0">
-                  Date of birth:{' '}
-                  {new Date(
-                    caseDetails.leadDefendantDetails.dob
-                  ).toLocaleDateString('en-GB', {
-                    day: '2-digit',
-                    month: 'long',
-                    year: 'numeric'
-                  })}
+                  {dateOfBirth}
                 </p>
               </>
             )}
@@ -108,9 +118,29 @@ export const CaseSearchPage = () => {
           <div className="govuk-!-margin-top-4">
             {caseDetails.isCaseCharged ? (
               <>
-                <p className="govuk-body">
-                  Status: <StatusTag status="Charged" />
-                </p>
+                <DefinitionList
+                  fixedWidth
+                  items={[
+                    {
+                      title: 'Status: ',
+                      description: [<StatusTag status="Charged" />]
+                    },
+                    {
+                      title: 'Court hearing: ',
+                      description: [`${nextHearingDate}`]
+                    },
+                    {
+                      title: 'Date of offence: ',
+                      description: [`${dateOfOffence}`]
+                    },
+                    {
+                      title: 'Charges: ',
+                      description: [
+                        `${caseDetails.defendants[0].charges[0].shortDescription}`
+                      ]
+                    }
+                  ]}
+                />
               </>
             ) : (
               <p className="govuk-body">
