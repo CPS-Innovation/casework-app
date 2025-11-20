@@ -1,8 +1,8 @@
-import { CaseMaterialsType } from '../../schemas/caseMaterials';
-import { LoadingSpinner } from '../LoadingSpinner/LoadingSpinner';
-import { ErrorSummary } from '../ErrorSummary/ErrorSummary';
-import { PdfViewer } from '../PdfViewer/PdfViewer';
 import { useDocumentPreview } from '../../hooks/useDocumentPreview';
+import { CaseMaterialsType } from '../../schemas/caseMaterials';
+import { ErrorSummary } from '../ErrorSummary/ErrorSummary';
+import { LoadingSpinner } from '../LoadingSpinner/LoadingSpinner';
+import { PdfViewer } from '../PdfViewer/PdfViewer';
 
 type Props = { row: CaseMaterialsType };
 
@@ -21,7 +21,7 @@ export default function DocumentPreview({ row }: Props) {
     return (
       <ErrorSummary
         errorTitle="No preview available"
-        errorMessage="The material you are trying to preview is not currently available. You can view it in the CMS."
+        errorMessage="The material you are trying to preview is not currently available. You can view it in CMS."
       />
     );
   }
