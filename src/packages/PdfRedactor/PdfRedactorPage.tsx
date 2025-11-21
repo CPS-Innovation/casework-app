@@ -78,7 +78,12 @@ export const PdfRedactorPage = (p: {
         }}
       >
         <span style={{ display: 'inline-flex' }}>
-          <div ref={pdfPageWrapperElmRef} style={{ position: 'relative' }}>
+          <div
+            ref={pdfPageWrapperElmRef}
+            style={{ position: 'relative' }}
+            tabIndex={0}
+            className="react-pdf-page-wrapper"
+          >
             <Page
               pageNumber={p.pageNumber}
               onClick={() => {

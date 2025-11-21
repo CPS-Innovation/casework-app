@@ -11,6 +11,7 @@ import {
   TCoord,
   TRedaction
 } from '../../packages/PdfRedactor/utils/coordUtils';
+import { TMode } from '../../packages/PdfRedactor/utils/modeUtils';
 import { DocumentControlArea } from '../components/documentControlArea';
 import { DocumentViewportArea } from '../components/documenViewportArea';
 
@@ -51,6 +52,7 @@ const CaseworkPdfRedactor = (p: { fileUrl: string }) => {
   > | null>(null);
 
   const mousePos = useWindowMouseListener();
+  const [mode, setMode] = useState<TMode>('areaRedact');
 
   return (
     <div>
@@ -82,6 +84,9 @@ const CaseworkPdfRedactor = (p: { fileUrl: string }) => {
       )}
       <PdfRedactor
         fileUrl={p.fileUrl}
+        mode={mode}
+        hideToolbar
+        onModeChange={setMode}
         redactions={redactions}
         onRedactionsChange={(newRedactions) => setRedactions(newRedactions)}
         onAddRedactions={(add) => {

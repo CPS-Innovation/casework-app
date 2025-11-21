@@ -39,6 +39,9 @@ const indexRedactionsOnPageNumber = (redactions: TRedaction[]) => {
 export const PdfRedactor = (p: {
   fileUrl: string;
   redactions: TRedaction[];
+  hideToolbar: boolean;
+  mode: TMode;
+  onModeChange: (x: TMode) => void;
   onRedactionsChange: (redactions: TRedaction[]) => void;
   onAddRedactions: (redactions: TRedaction[]) => void;
   onRemoveRedactions: (redactionIds: string[]) => void;
@@ -49,80 +52,83 @@ export const PdfRedactor = (p: {
 
   const redactHighlightedTextTrigger = useTrigger();
 
-  const [mode, setMode] = useState<TMode>('areaRedact');
-
   const indexedRedactions = useMemo(() => {
     return indexRedactionsOnPageNumber(p.redactions);
   }, [p.redactions]);
 
   return (
     <div>
-      <ModeStyleTag mode={mode} />
-      <div
-        style={{
-          border: '1px solid black',
-          background: 'white',
-          color: 'black',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          padding: '10px'
-        }}
-      >
-        <span style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
-          <span>
-            <button
-              className={`govuk-button ${
-                mode === 'areaRedact' ? '' : 'govuk-button--secondary'
-              }`}
-              onClick={() => setMode('areaRedact')}
-            >
-              <AreaIcon width={20} height={20} />
-            </button>
-            <button
-              className={`govuk-button ${
-                mode === 'textRedact' ? '' : 'govuk-button--secondary'
-              }`}
-              onClick={() => setMode('textRedact')}
-            >
-              <EditIcon width={20} height={20} />
-            </button>
+      <ModeStyleTag mode={p.mode} />
+      {!p.hideToolbar && (
+        <div
+          style={{
+            border: '1px solid black',
+            background: 'white',
+            color: 'black',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: '10px'
+          }}
+        >
+          <span style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+            <span>
+              <button
+                className={`govuk-button ${
+                  p.mode === 'areaRedact' ? '' : 'govuk-button--secondary'
+                }`}
+                onClick={() => p.onModeChange('areaRedact')}
+              >
+                <AreaIcon width={20} height={20} />
+              </button>
+              <button
+                className={`govuk-button ${
+                  p.mode === 'textRedact' ? '' : 'govuk-button--secondary'
+                }`}
+                onClick={() => p.onModeChange('textRedact')}
+              >
+                <EditIcon width={20} height={20} />
+              </button>
+            </span>
+            {p.mode === 'textRedact' && (
+              <button
+                className="govuk-button govuk-button--secondary"
+                onClick={() => {
+                  redactHighlightedTextTrigger.fire();
+                  setTimeout(
+                    () => window.getSelection()?.removeAllRanges(),
+                    250
+                  );
+                }}
+              >
+                <TickCircleIcon width={20} height={20} />
+              </button>
+            )}
           </span>
-          {mode === 'textRedact' && (
+
+          <span style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+            <span>x{scaleHelper.scale.toFixed(2)}</span>
             <button
               className="govuk-button govuk-button--secondary"
-              onClick={() => {
-                redactHighlightedTextTrigger.fire();
-                setTimeout(() => window.getSelection()?.removeAllRanges(), 250);
-              }}
+              onClick={() => scaleHelper.decreaseScale()}
             >
-              <TickCircleIcon width={20} height={20} />
+              -
             </button>
-          )}
-        </span>
-
-        <span style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
-          <span>x{scaleHelper.scale.toFixed(2)}</span>
-          <button
-            className="govuk-button govuk-button--secondary"
-            onClick={() => scaleHelper.decreaseScale()}
-          >
-            -
-          </button>
-          <button
-            className="govuk-button govuk-button--secondary"
-            onClick={() => scaleHelper.increaseScale()}
-          >
-            +
-          </button>
-          <button
-            className="govuk-button govuk-button--secondary"
-            onClick={() => scaleHelper.resetScale()}
-          >
-            x 1.00
-          </button>
-        </span>
-      </div>
+            <button
+              className="govuk-button govuk-button--secondary"
+              onClick={() => scaleHelper.increaseScale()}
+            >
+              +
+            </button>
+            <button
+              className="govuk-button govuk-button--secondary"
+              onClick={() => scaleHelper.resetScale()}
+            >
+              x 1.00
+            </button>
+          </span>
+        </div>
+      )}
       <div style={{ position: 'relative' }}>
         <div
           style={{
@@ -150,7 +156,7 @@ export const PdfRedactor = (p: {
                 redactHighlightedTextTriggerData={
                   redactHighlightedTextTrigger.data
                 }
-                mode={mode}
+                mode={p.mode}
                 onPageRedactionsChange={() => {
                   // const newIndexed = { ...indexRedactionsOnPageNumber, [j]: x };
                   // p.onRedactionsChange(
