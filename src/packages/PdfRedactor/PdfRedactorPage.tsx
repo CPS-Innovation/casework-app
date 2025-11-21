@@ -1,30 +1,30 @@
-import { useEffect, useRef, useState } from "react";
-import { Page } from "react-pdf";
+import { useEffect, useRef, useState } from 'react';
+import { Page } from 'react-pdf';
 import {
   CloseIcon,
   PositionPdfOverlayBox,
-  RedactionBox,
-} from "./PdfViewerComponents";
+  RedactionBox
+} from './PdfRedactorComponents';
 import {
   convertCoordPairToXywh,
   getPdfCoords,
   type TCoord,
-  type TRedaction,
-} from "./utils/coordUtils";
-import { createId } from "./utils/generalUtils";
-import { getPdfCoordPairsOfHighlightedText } from "./utils/highlightedTextUtils";
-import type { TMode } from "./utils/modeUtils";
-import { useTriggerListener, type TTriggerData } from "./utils/useTriggger";
+  type TRedaction
+} from './utils/coordUtils';
+import { createId } from './utils/generalUtils';
+import { getPdfCoordPairsOfHighlightedText } from './utils/highlightedTextUtils';
+import type { TMode } from './utils/modeUtils';
+import { useTriggerListener, type TTriggerData } from './utils/useTriggger';
 
-export const PdfViewerPage = (p: {
+export const PdfRedactorPage = (p: {
   onMouseMove: (p: { x: number; y: number } | null) => void;
   pageNumber: number;
   scale: number;
   mode: TMode;
   redactHighlightedTextTriggerData: TTriggerData;
-  onRedactionsChange: (p: TRedaction[]) => void;
+  onPageRedactionsChange: (p: TRedaction[]) => void;
   onAddRedactions: (p: TRedaction[]) => void;
-  onRemoveRedactions: (p: TRedaction["id"][]) => void;
+  onRemoveRedactions: (p: TRedaction['id'][]) => void;
   redactions: TRedaction[];
 }) => {
   const { pageNumber, scale, redactions } = p;
@@ -44,7 +44,7 @@ export const PdfViewerPage = (p: {
 
       const coordPairs = getPdfCoordPairsOfHighlightedText({
         pdfPageRect,
-        scale,
+        scale
       });
 
       const newRedactions = coordPairs.map((coordPair) => {
@@ -54,8 +54,13 @@ export const PdfViewerPage = (p: {
       if (newRedactions.length === 0) return;
 
       p.onAddRedactions(newRedactions);
-      p.onRedactionsChange([...redactions, ...newRedactions]);
-    },
+      p.onPageRedactionsChange([...redactions, ...newRedactions]);
+
+      const selection = window.getSelection();
+      const selectedStr = selection?.toString();
+      if (selectedStr) navigator.clipboard.writeText(selectedStr);
+      setTimeout(() => selection?.removeAllRanges(), 0);
+    }
   });
 
   const pdfPageWrapperElmRef = useRef<HTMLDivElement | null>(null);
@@ -71,18 +76,23 @@ export const PdfViewerPage = (p: {
     <div>
       <span
         style={{
-          display: "block",
-          margin: "auto",
-          width: "fit-content",
-          padding: "10px 10px 0px 10px",
+          display: 'block',
+          margin: 'auto',
+          width: 'fit-content',
+          padding: '10px 10px 0px 10px'
         }}
       >
-        <span style={{ display: "inline-flex" }}>
-          <div ref={pdfPageWrapperElmRef} style={{ position: "relative" }}>
+        <span style={{ display: 'inline-flex' }}>
+          <div
+            ref={pdfPageWrapperElmRef}
+            style={{ position: 'relative' }}
+            tabIndex={0}
+            className="react-pdf-page-wrapper"
+          >
             <Page
               pageNumber={p.pageNumber}
               onClick={() => {
-                if (p.mode === "textRedact") return;
+                if (p.mode === 'textRedact') return;
                 if (firstCorner && mousePos) {
                   const newRect = {
                     id: crypto.randomUUID(),
@@ -90,12 +100,12 @@ export const PdfViewerPage = (p: {
                     y1: firstCorner.y,
                     x2: mousePos.x,
                     y2: mousePos.y,
-                    pageNumber: p.pageNumber,
+                    pageNumber: p.pageNumber
                   };
                   p.onAddRedactions([newRect]);
-                  p.onRedactionsChange([
+                  p.onPageRedactionsChange([
                     ...(redactions ? redactions : []),
-                    newRect,
+                    newRect
                   ]);
                 }
                 setFirstCorner(firstCorner ? null : mousePos);
@@ -113,7 +123,7 @@ export const PdfViewerPage = (p: {
                     screenX: e.clientX,
                     screenY: e.clientY,
                     scale: p.scale,
-                    pdfPageRect: rect,
+                    pdfPageRect: rect
                   });
                   setMousePos(coord);
 
@@ -130,7 +140,7 @@ export const PdfViewerPage = (p: {
                     x1: firstCorner.x,
                     y1: firstCorner.y,
                     x2: mousePos.x,
-                    y2: mousePos.y,
+                    y2: mousePos.y
                   });
 
                 return (
@@ -167,23 +177,28 @@ export const PdfViewerPage = (p: {
                     border="2px solid black"
                   />
 
-                  <div
+                  <button
+                    className="govuk-button govuk-button--inverse"
                     style={{
-                      position: "absolute",
-                      top: "-10px",
-                      right: "-10px",
-                      zIndex: 10,
+                      padding: 0,
+                      borderRadius: '50%',
+                      border: 'solid 1px black',
+                      overflow: 'hidden',
+                      boxShadow: 'none',
+                      position: 'absolute',
+                      top: '-10px',
+                      right: '-10px',
+                      zIndex: 10
+                    }}
+                    onClick={() => {
+                      p.onRemoveRedactions([box.id]);
+                      p.onPageRedactionsChange(
+                        redactions?.filter((x) => x.id !== box.id)
+                      );
                     }}
                   >
-                    <CloseIcon
-                      onClick={() => {
-                        p.onRemoveRedactions([box.id]);
-                        p.onRedactionsChange(
-                          redactions?.filter((x) => x.id !== box.id)
-                        );
-                      }}
-                    />
-                  </div>
+                    <CloseIcon />
+                  </button>
                 </PositionPdfOverlayBox>
               );
             })}
