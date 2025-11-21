@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const redactionTypeData = [
   { id: '1', name: 'Named individual' },
@@ -22,10 +22,17 @@ type TRedactionType = (typeof redactionTypeData)[number];
 
 const RedactionTypeSelect = (p: {
   onRedactionTypeChange: (x: TRedactionType | undefined) => void;
+  initFocus: boolean;
 }) => {
   const [redactionTypeId, setRedactionTypeId] = useState('');
+  const selectElmRef = useRef<HTMLSelectElement>(null);
+
+  useEffect(() => {
+    if (p.initFocus) selectElmRef.current?.focus();
+  }, []);
   return (
     <select
+      ref={selectElmRef}
       className="govuk-select"
       value={redactionTypeId}
       onChange={(e) => {
@@ -62,8 +69,15 @@ export const RedactionDetailsForm = (p: {
       <div className="govuk-label">Redaction Details</div>
       <div style={{ display: 'flex', alignItems: 'start', gap: '8px' }}>
         <RedactionTypeSelect
+          initFocus
           onRedactionTypeChange={(type) => setRedactionType(type)}
         />
+        <button
+          className="govuk-button govuk-button--secondary"
+          onClick={p.onCancelClick}
+        >
+          Cancel
+        </button>
         <button
           className="govuk-button"
           disabled={!redactionType}

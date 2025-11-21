@@ -167,23 +167,28 @@ export const PdfRedactorPage = (p: {
                     border="2px solid black"
                   />
 
-                  <div
+                  <button
+                    className="govuk-button govuk-button--inverse"
                     style={{
+                      padding: 0,
+                      borderRadius: '50%',
+                      border: 'solid 1px black',
+                      overflow: 'hidden',
+                      boxShadow: 'none',
                       position: 'absolute',
                       top: '-10px',
                       right: '-10px',
                       zIndex: 10
                     }}
+                    onClick={() => {
+                      p.onRemoveRedactions([box.id]);
+                      p.onPageRedactionsChange(
+                        redactions?.filter((x) => x.id !== box.id)
+                      );
+                    }}
                   >
-                    <CloseIcon
-                      onClick={() => {
-                        p.onRemoveRedactions([box.id]);
-                        p.onPageRedactionsChange(
-                          redactions?.filter((x) => x.id !== box.id)
-                        );
-                      }}
-                    />
-                  </div>
+                    <CloseIcon />
+                  </button>
                 </PositionPdfOverlayBox>
               );
             })}
