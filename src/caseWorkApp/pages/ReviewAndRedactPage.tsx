@@ -32,7 +32,7 @@ const items = [
   }
 ];
 
-const CaseworkPdfRedactor = (p: { fileUrl: string }) => {
+const CaseworkPdfRedactor = (p: { fileUrl: string; mode: TMode }) => {
   const [redactions, setRedactions] = useState<TRedaction[]>([]);
 
   const [redactionDetails, setRedactionDetails] = useState<
@@ -125,6 +125,7 @@ const CaseworkPdfRedactor = (p: { fileUrl: string }) => {
 
 export const ReviewAndRedactPage = () => {
   const [openDocumentIds, setOpenDocumentIds] = useState<string[]>([]);
+  const [mode, setMode] = useState<'textRedact' | 'areaRedact'>('areaRedact');
 
   return (
     <Layout>
@@ -148,6 +149,7 @@ export const ReviewAndRedactPage = () => {
             // fileUrl="http://localhost:3000/test-pdfs/may-plus-images.pdf"
             // fileUrl="http://localhost:3000/test-pdfs/final.pdf"
             fileUrl="http://localhost:3000/test-pdfs/final-with-https.pdf"
+            mode={mode}
           />
         </TwoCol>
       </div>

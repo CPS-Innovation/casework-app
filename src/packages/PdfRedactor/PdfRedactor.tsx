@@ -51,14 +51,15 @@ export const PdfRedactor = (p: {
   const scaleHelper = useScaleHelper();
   const pdfRedactorWrapperElmRef = useRef<HTMLDivElement>(null);
 
-  const redactHighlightedTextTrigger = useTrigger();
-
   const indexedRedactions = useMemo(() => {
     return indexRedactionsOnPageNumber(p.redactions);
   }, [p.redactions]);
 
+  const redactHighlightedTextTrigger = useTrigger();
   const redactHighlightedIfTextRedactionMode = () => {
-    if (p.mode !== 'textRedact') redactHighlightedTextTrigger.fire();
+    if (p.mode !== 'textRedact') return;
+
+    redactHighlightedTextTrigger.fire();
   };
 
   useEffect(() => {
@@ -72,13 +73,6 @@ export const PdfRedactor = (p: {
 
   return (
     <div ref={pdfRedactorWrapperElmRef}>
-      <button
-        onClick={() => {
-          redactHighlightedIfTextRedactionMode();
-        }}
-      >
-        asd
-      </button>
       <ModeStyleTag mode={p.mode} />
       {!p.hideToolbar && (
         <div

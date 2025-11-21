@@ -55,6 +55,11 @@ export const PdfRedactorPage = (p: {
 
       p.onAddRedactions(newRedactions);
       p.onPageRedactionsChange([...redactions, ...newRedactions]);
+
+      const selection = window.getSelection();
+      const selectedStr = selection?.toString();
+      if (selectedStr) navigator.clipboard.writeText(selectedStr);
+      setTimeout(() => selection?.removeAllRanges(), 0);
     }
   });
 
