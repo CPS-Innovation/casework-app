@@ -9,8 +9,8 @@ export const useCaseSearch = (urn: string | undefined) => {
 
   const getCase = async () =>
     await request
-      .get<CaseDetailsType>(`/api/urns/${urn}/cases`)
-      .then((response) => response.data[0]);
+      .get<CaseDetailsType>(`/urns/${urn}/cases`)
+      .then((response) => response.data);
 
   const { data, isLoading, isValidating, mutate } = useSWR(
     urn ? [QUERY_KEYS.CASE_SEARCH, urn] : null,

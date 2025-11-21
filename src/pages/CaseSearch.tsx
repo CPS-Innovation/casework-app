@@ -30,26 +30,6 @@ export const CaseSearchPage = () => {
 
   const { caseDetails, loading } = useCaseSearch(queryUrn || undefined);
 
-  if (hasSearched && !caseDetails && !loading)
-    return <p className="govuk-body">No case found.</p>;
-
-  const lead = caseDetails?.leadDefendantDetails;
-
-  const defendantFullName = lead
-    ? `${lead.surname}, ${lead.firstNames}` +
-      ((caseDetails?.defendants?.length ?? 0) > 1 ? ' and others' : '')
-    : '';
-
-  const dateOfBirth = caseDetails
-    ? `Date of birth: ${formatDateLong(caseDetails.leadDefendantDetails?.dob)}`
-    : '';
-
-  const nextHearingDate = formatDateLong(
-    caseDetails?.headlineCharge?.nextHearingDate
-  );
-
-  const dateOfOffence = formatDateLong(caseDetails?.headlineCharge?.date);
-
   return (
     <Layout plain title="Case Search">
       <div className="govuk-main-wrapper govuk-main-wrapper--auto-spacing">
@@ -95,13 +75,7 @@ export const CaseSearchPage = () => {
                   className={`govuk-input ${errors.urn ? 'govuk-input--error' : ''}`}
                   id="case-urn"
                   type="text"
-                  {...register('urn', {
-                    required: 'URN is required',
-                    pattern: {
-                      value: /^[0-9]{2}[A-Z]{2}[0-9]{5}[0-9]{2}$/,
-                      message: 'Enter a URN in the right format'
-                    }
-                  })}
+                  {...register('urn', { required: 'URN is required' })}
                 />
               </div>
 
@@ -121,90 +95,122 @@ export const CaseSearchPage = () => {
           </div>
         </div>
 
-        {loading ? (
-          <LoadingSpinner textContent="Searching for a case..." />
-        ) : (
-          caseDetails &&
-          !loading && (
-            <div className="govuk-grid-row">
-              <div className="govuk-grid-column-one-half">
-                <p className="govuk-body">
-                  We've found <b>{caseDetails.defendants.length}</b> case that
-                  matches <b>{queryUrn}</b>
-                </p>
+        {loading && <LoadingSpinner textContent="Searching for a case..." />}
 
-                <hr className="govuk-section-break govuk-section-break--m govuk-section-break--visible"></hr>
+        {!loading && hasSearched && !caseDetails && (
+          <p className="govuk-body">
+            We've found <b>0</b> case that matches <b>{queryUrn}</b>
+          </p>
+        )}
 
-                <div>
-                  <h2>
-                    <Link
-                      className="govuk-link govuk-!-margin-bottom-0"
-                      to={`/${queryUrn}/${caseDetails.id}/materials`}
-                    >
-                      {queryUrn}
-                    </Link>
-                  </h2>
-                  {caseDetails && (
-                    <>
-                      <p className="govuk-hint govuk-!-margin-top-0 govuk-!-margin-bottom-0">
-                        {defendantFullName}
-                      </p>
-                      <p className="govuk-hint govuk-!-margin-top-0 govuk-!-margin-bottom-0">
-                        {dateOfBirth}
-                      </p>
-                    </>
-                  )}
-                </div>
+        {!loading && Array.isArray(caseDetails) && caseDetails && (
+          <div className="govuk-grid-row">
+            <div className="govuk-grid-column-one-half">
+              <p className="govuk-body">
+                We've found <b>{caseDetails.length}</b> case that matches{' '}
+                <b>{queryUrn}</b>
+              </p>
 
-                <div className="govuk-!-margin-top-4">
-                  {caseDetails.isCaseCharged ? (
-                    <>
-                      <DefinitionList
-                        fixedWidth
-                        items={[
-                          {
-                            title: 'Status: ',
-                            description: [<StatusTag status="Charged" />]
-                          },
-                          {
-                            title: 'Court hearing: ',
-                            description: [`${nextHearingDate}`]
-                          },
-                          {
-                            title: 'Date of offence: ',
-                            description: [`${dateOfOffence}`]
-                          },
-                          {
-                            title: 'Charges: ',
-                            description: [
-                              `${caseDetails.defendants[0].charges[0].shortDescription}`
-                            ]
-                          }
-                        ]}
-                      />
-                    </>
-                  ) : (
-                    <DefinitionList
-                      fixedWidth
-                      items={[
-                        {
-                          title: 'Status: ',
-                          description: [<StatusTag status="Not yet charged" />]
-                        },
-                        {
-                          title: 'Proposed: ',
-                          description: [
-                            !caseDetails.defendants[0].proposedCharges.length &&
-                              'N/A'
-                          ]
-                        }
-                      ]}
-                    />
-                  )}
-                </div>
-              </div>
+              {caseDetails.map((caseItem) => {
+                const lead = caseItem.leadDefendantDetails;
+
+                const defendantFullName = lead
+                  ? `${lead.surname}, ${lead.firstNames}${
+                      (caseItem.defendants?.length ?? 0) > 1
+                        ? ' and others'
+                        : ''
+                    }`
+                  : '';
+
+                const dateOfBirth = lead
+                  ? `Date of birth: ${formatDateLong(lead.dob)}`
+                  : '';
+
+                const nextHearingDate = formatDateLong(
+                  caseItem.headlineCharge?.nextHearingDate
+                );
+
+                const dateOfOffence = formatDateLong(
+                  caseItem.headlineCharge?.date
+                );
+
+                return (
+                  <div key={caseItem.id}>
+                    <hr className="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
+                    <div>
+                      <h2>
+                        <Link
+                          className="govuk-link govuk-!-margin-bottom-0"
+                          to={`/${queryUrn}/${caseItem.id}/materials`}
+                        >
+                          {caseItem.uniqueReferenceNumber}
+                        </Link>
+                      </h2>
+                      {caseDetails && (
+                        <>
+                          <p className="govuk-hint govuk-!-margin-top-0 govuk-!-margin-bottom-0">
+                            {defendantFullName}
+                          </p>
+                          <p className="govuk-hint govuk-!-margin-top-0 govuk-!-margin-bottom-0">
+                            {dateOfBirth}
+                          </p>
+                        </>
+                      )}
+                    </div>
+
+                    <div className="govuk-!-margin-top-4">
+                      {caseItem.isCaseCharged ? (
+                        <>
+                          <DefinitionList
+                            fixedWidth
+                            items={[
+                              {
+                                title: 'Status: ',
+                                description: [<StatusTag status="Charged" />]
+                              },
+                              {
+                                title: 'Court hearing: ',
+                                description: [`${nextHearingDate}`]
+                              },
+                              {
+                                title: 'Date of offence: ',
+                                description: [`${dateOfOffence}`]
+                              },
+                              {
+                                title: 'Charges: ',
+                                description: [
+                                  `${caseItem.defendants[0].charges[0].shortDescription}`
+                                ]
+                              }
+                            ]}
+                          />
+                        </>
+                      ) : (
+                        <DefinitionList
+                          fixedWidth
+                          items={[
+                            {
+                              title: 'Status: ',
+                              description: [
+                                <StatusTag status="Not yet charged" />
+                              ]
+                            },
+                            {
+                              title: 'Proposed: ',
+                              description: [
+                                !caseItem.defendants[0].proposedCharges
+                                  .length && 'N/A'
+                              ]
+                            }
+                          ]}
+                        />
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-          )
+          </div>
         )}
       </div>
     </Layout>
