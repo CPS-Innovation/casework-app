@@ -12,7 +12,7 @@ export const useRequest = () => {
   const { getRoute } = useAppRoute();
 
   const axiosInstance = axios.create({
-    baseURL: POLARIS_GATEWAY_URL,
+    baseURL: `${POLARIS_GATEWAY_URL}/api/`,
     withCredentials: true
   });
 

@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import useSWR from 'swr';
 import { QUERY_KEYS } from '../constants/query';
-import { POLARIS_GATEWAY_URL } from '../constants/url';
 import { useCaseInfoStore, useRequest } from '../hooks';
 import {
   CaseMaterialDataType,
@@ -20,7 +19,7 @@ export const useCaseMaterials = ({ dataType }: UseCaseMaterialsProps) => {
 
   const getCaseMaterials = async () => {
     const response = await request.get<CaseMaterialsResponseType>(
-      `${POLARIS_GATEWAY_URL}/api/urns/${caseInfo?.urn}/cases/${caseInfo?.id}/case-materials`
+      `/urns/${caseInfo?.urn}/cases/${caseInfo?.id}/case-materials`
     );
 
     if (response.status === 422 || response.status !== 200) {

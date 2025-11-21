@@ -33,7 +33,9 @@ export const useTableActions = ({
   const [isReadStatusUpdating, setIsReadStatusUpdating] = useState(false);
 
   const handleReclassifyClick = () => {
-    navigate(URL.RECLASSIFY, { state: { row: selectedItems[0] } });
+    navigate(getRoute('RECLASSIFICATION'), {
+      state: { row: selectedItems[0] }
+    });
   };
 
   const handleDiscardClick = (returnToUrl: string) => {

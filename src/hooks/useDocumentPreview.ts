@@ -1,6 +1,5 @@
 import useSWR from 'swr';
 import { QUERY_KEYS } from '../constants/query';
-import { POLARIS_GATEWAY_URL } from '../constants/url';
 import { CaseMaterialDocumentPreviewResponseType } from '../schemas/caseMaterials';
 import { useCaseInfoStore } from '../stores';
 import { useRequest } from './useRequest';
@@ -14,7 +13,7 @@ export const useDocumentPreview = ({ materialId }: Props) => {
   const getDocumentPreview = async () =>
     await request
       .get<CaseMaterialDocumentPreviewResponseType>(
-        `${POLARIS_GATEWAY_URL}/api/urns/${caseInfo?.urn}/cases/${caseInfo?.id}/materials/${materialId}/preview`,
+        `/urns/${caseInfo?.urn}/cases/${caseInfo?.id}/materials/${materialId}/preview`,
         { responseType: 'blob' }
       )
       .then((response) => response.data);
