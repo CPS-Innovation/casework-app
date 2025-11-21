@@ -54,7 +54,6 @@ const CaseworkPdfRedactor = (p: { fileUrl: string }) => {
 
   return (
     <div>
-      <pre>{JSON.stringify({ redactionDetails }, null, 2)}</pre>
       {popupProps && (
         <PdfRedactorMiniModal
           coordX={popupProps.x}
@@ -111,9 +110,8 @@ const CaseworkPdfRedactor = (p: { fileUrl: string }) => {
               return { ...x, ...thisDetails };
             })
             .filter((x) => !!x);
-          console.log(`OfficialPdfViewer.tsx:${/*LL*/ 44}`, {
-            redactionsWithDetails
-          });
+
+          redactionsWithDetails;
         }}
       />
     </div>
