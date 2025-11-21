@@ -58,6 +58,8 @@ export const PdfRedactor = (p: {
     [k: number]: TRedaction[];
   }>({});
 
+  const removeRedaction = (redactionId: string) => {};
+
   const flattenedRedactions = useMemo(() => {
     return flattenRedactionsOnPageNumber(redactionsOnPageNumber);
   }, [redactionsOnPageNumber]);
