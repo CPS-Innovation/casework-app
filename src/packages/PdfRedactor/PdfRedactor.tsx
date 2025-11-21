@@ -57,28 +57,24 @@ export const PdfRedactor = (p: {
     return indexRedactionsOnPageNumber(p.redactions);
   }, [p.redactions]);
 
-  const redactHighlightedTextIfTextRedactionMode = () => {
+  const redactHighlightedIfTextRedactionMode = () => {
     if (p.mode !== 'textRedact') redactHighlightedTextTrigger.fire();
   };
 
   useEffect(() => {
     const elm = pdfRedactorWrapperElmRef.current;
-    console.log({ elm });
     if (!elm) return;
 
-    elm.addEventListener('mouseup', redactHighlightedTextIfTextRedactionMode);
+    elm.addEventListener('mouseup', redactHighlightedIfTextRedactionMode);
     return () =>
-      elm.removeEventListener(
-        'mouseup',
-        redactHighlightedTextIfTextRedactionMode
-      );
+      elm.removeEventListener('mouseup', redactHighlightedIfTextRedactionMode);
   }, []);
 
   return (
     <div ref={pdfRedactorWrapperElmRef}>
       <button
         onClick={() => {
-          redactHighlightedTextIfTextRedactionMode();
+          redactHighlightedIfTextRedactionMode();
         }}
       >
         asd
