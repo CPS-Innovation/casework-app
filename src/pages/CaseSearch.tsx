@@ -54,7 +54,7 @@ export const CaseSearchPage = () => {
     <Layout plain title="Case Search">
       <div className="govuk-main-wrapper govuk-main-wrapper--auto-spacing">
         <div className="govuk-grid-row">
-          <div className=" govuk-grid-column-one-half">
+          <div className="govuk-grid-column-one-half">
             {errors.urn &&
               (errors.urn.type === 'required' ||
                 (errors.urn.type === 'pattern' && (
