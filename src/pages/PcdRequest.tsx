@@ -81,7 +81,7 @@ export const PcdRequestPage = () => {
   );
 
   return (
-    <Layout>
+    <Layout title="PCD Request">
       {/* converting '\n' to actual line breaks with CSS*/}
       <div className="govuk-main-wrapper" style={{ whiteSpace: 'pre-wrap' }}>
         {navLinks?.length === 0 && (

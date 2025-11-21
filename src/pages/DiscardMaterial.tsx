@@ -80,7 +80,7 @@ export const DiscardMaterialPage = () => {
   }
 
   return (
-    <Layout plain>
+    <Layout plain title="Discard Material">
       <Link
         to={returnTo}
         onClick={(e) => {

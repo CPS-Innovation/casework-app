@@ -131,7 +131,7 @@ export const CommunicationsPage = () => {
   }, []);
 
   return (
-    <Layout>
+    <Layout title="Communications">
       <div className="govuk-main-wrapper">
         <RenameDrawer
           material={selectedMaterial}

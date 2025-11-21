@@ -31,7 +31,7 @@ export const ReviewAndRedactPage = () => {
   ];
 
   return (
-    <Layout>
+    <Layout title="Review and Redact">
       <div className="govuk-main-wrapper">
         <TwoCol
           sidebar={

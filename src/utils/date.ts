@@ -19,3 +19,12 @@ export const formatDateInputValue = (dateStr?: string | Date) => {
 
   return date.format(`YYYY-MM-DD`);
 };
+
+export const formatDateLong = (d?: string | null) =>
+  d
+    ? new Date(d).toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+      })
+    : '';

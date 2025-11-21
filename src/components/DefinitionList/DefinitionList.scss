@@ -10,11 +10,16 @@
   }
 
   &__title {
-    font-weight: 700;
     margin-right: 5px;
   }
 
   &__description {
     margin-inline-start: 0;
+  }
+
+  &--fixed-width {
+    .definition-list__title {
+      width: 200px;
+    }
   }
 }

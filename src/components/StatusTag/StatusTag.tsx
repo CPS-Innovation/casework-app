@@ -7,9 +7,11 @@ export const StatusTag = ({ status }: Props) => {
 
   switch (status) {
     case 'Unused':
+    case 'Not yet charged':
       className += ' govuk-tag--yellow';
       break;
     case 'Used':
+    case 'Charged':
       className += ' govuk-tag--blue';
       break;
     case 'None':

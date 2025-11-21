@@ -42,7 +42,7 @@ export const ReclassifyToUnusedPage = () => {
     },
     onSuccess: async (response) => {
       const updatedMaterials = response.data?.reclassifiedMaterials;
-      
+
       setTags(
         updatedMaterials.map((material) => ({
           materialId: material?.materialId,
@@ -93,7 +93,7 @@ export const ReclassifyToUnusedPage = () => {
   }, [materials.length]);
 
   return (
-    <Layout plain>
+    <Layout plain title="Reclassify to Unused">
       <Link to={returnToMaterialsUrl} className="govuk-back-link">
         Back
       </Link>
