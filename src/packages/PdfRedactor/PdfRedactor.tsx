@@ -29,18 +29,6 @@ const useScaleHelper = (p?: { initScale?: number }) => {
   return { scale, increaseScale, decreaseScale, resetScale };
 };
 
-const flattenRedactionsOnPageNumber = (redactionsOnPageNumber: {
-  [k: string]: TRedaction[];
-}) => {
-  const temp: TRedaction[] = [];
-  Object.entries(redactionsOnPageNumber).forEach(([pageNumber, redactions]) => {
-    redactions.forEach((redaction) => {
-      temp.push({ ...redaction, pageNumber: Number(pageNumber) });
-    });
-  });
-  return temp;
-};
-
 const indexRedactionsOnPageNumber = (redactions: TRedaction[]) => {
   const temp: { [k: number]: TRedaction[] } = {};
   redactions.forEach((redaction) => (temp[redaction.pageNumber] = []));
