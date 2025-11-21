@@ -125,7 +125,7 @@ const CaseworkPdfRedactor = (p: { fileUrl: string; mode: TMode }) => {
 
 export const ReviewAndRedactPage = () => {
   const [openDocumentIds, setOpenDocumentIds] = useState<string[]>([]);
-  const [mode, setMode] = useState<'textRedact' | 'areaRedact'>('areaRedact');
+  const [mode, _] = useState<'textRedact' | 'areaRedact'>('areaRedact');
 
   return (
     <Layout>
