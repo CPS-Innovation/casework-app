@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Document, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
@@ -49,6 +49,7 @@ export const PdfRedactor = (p: {
 }) => {
   const [numPages, setNumPages] = useState<number>();
   const scaleHelper = useScaleHelper();
+  const pdfRedactorWrapperElmRef = useRef<HTMLDivElement>(null);
 
   const redactHighlightedTextTrigger = useTrigger();
 
@@ -56,8 +57,32 @@ export const PdfRedactor = (p: {
     return indexRedactionsOnPageNumber(p.redactions);
   }, [p.redactions]);
 
+  const redactHighlightedTextIfTextRedactionMode = () => {
+    if (p.mode !== 'textRedact') redactHighlightedTextTrigger.fire();
+  };
+
+  useEffect(() => {
+    const elm = pdfRedactorWrapperElmRef.current;
+    console.log({ elm });
+    if (!elm) return;
+
+    elm.addEventListener('mouseup', redactHighlightedTextIfTextRedactionMode);
+    return () =>
+      elm.removeEventListener(
+        'mouseup',
+        redactHighlightedTextIfTextRedactionMode
+      );
+  }, []);
+
   return (
-    <div>
+    <div ref={pdfRedactorWrapperElmRef}>
+      <button
+        onClick={() => {
+          redactHighlightedTextIfTextRedactionMode();
+        }}
+      >
+        asd
+      </button>
       <ModeStyleTag mode={p.mode} />
       {!p.hideToolbar && (
         <div

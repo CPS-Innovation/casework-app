@@ -52,7 +52,7 @@ const CaseworkPdfRedactor = (p: { fileUrl: string }) => {
   > | null>(null);
 
   const mousePos = useWindowMouseListener();
-  const [mode, setMode] = useState<TMode>('areaRedact');
+  const [mode, setMode] = useState<TMode>('textRedact');
 
   return (
     <div>
