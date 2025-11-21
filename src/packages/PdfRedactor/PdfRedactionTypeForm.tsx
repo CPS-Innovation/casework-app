@@ -72,7 +72,6 @@ export const RedactionDetailsForm = (p: {
           Redact
         </button>
       </div>
-      <pre>{JSON.stringify({ redactionType }, undefined, 2)}</pre>
     </div>
   );
 };

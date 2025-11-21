@@ -1,4 +1,4 @@
-import { ComponentProps, useState } from 'react';
+import { ComponentProps, useEffect, useState } from 'react';
 import { Layout, TwoCol } from '../../components';
 import { DocumentSidebar } from '../../packages/DocumentSelectAccordion/DocumentSidebar';
 import { RedactionDetailsForm } from '../../packages/PdfRedactor/PdfRedactionTypeForm';
@@ -38,6 +38,13 @@ const CaseworkPdfRedactor = (p: { fileUrl: string }) => {
     { redactionId: string; randomId: string }[]
   >([]);
 
+  useEffect(() => {
+    const redactionIds = redactions.map((red) => red.id);
+    setRedactionDetails((prev) =>
+      prev.filter((redDetail) => redactionIds.includes(redDetail.redactionId))
+    );
+  }, [redactions]);
+
   const [popupProps, setPopupProps] = useState<Omit<
     ComponentProps<typeof RedactionDetailsForm> & TCoord,
     'onSaveSuccess' | 'onCancelClick'
@@ -47,6 +54,7 @@ const CaseworkPdfRedactor = (p: { fileUrl: string }) => {
 
   return (
     <div>
+      <pre>{JSON.stringify({ redactionDetails }, null, 2)}</pre>
       {popupProps && (
         <PdfRedactorMiniModal
           coordX={popupProps.x}
@@ -76,17 +84,13 @@ const CaseworkPdfRedactor = (p: { fileUrl: string }) => {
       <PdfRedactor
         fileUrl={p.fileUrl}
         redactions={redactions}
-        onRedactionsChange={(newRedactions) => {
-          setRedactions(newRedactions);
-        }}
+        onRedactionsChange={(newRedactions) => setRedactions(newRedactions)}
         onAddRedactions={(add) => {
-          const newRedactions = add.map((x) => ({
+          const newRedactionDetails = add.map((x) => ({
             redactionId: x.id,
             randomId: `This redaction does ${crypto.randomUUID()}`
           }));
-          setRedactionDetails((prev) => [...prev, ...newRedactions]);
-          const coord = { x: window.screenX, y: window.screenY };
-          console.log(`OfficialPdfViewer.tsx:${/*LL*/ 43}`, { coord });
+          setRedactionDetails((prev) => [...prev, ...newRedactionDetails]);
           setPopupProps(() => ({
             x: mousePos.current.x,
             y: mousePos.current.y,
@@ -96,12 +100,7 @@ const CaseworkPdfRedactor = (p: { fileUrl: string }) => {
             caseId: 'This case does not exist'
           }));
         }}
-        // onRemoveRedactions={(remove) => {
-        //   setRedactionDetails((prev) =>
-        //     prev.filter((x) => !remove.includes(x.redactionId))
-        //   );
-        //   console.log(`OfficialPdfViewer.tsx:${/*LL*/ 18}`, { remove });
-        // }}
+        onRemoveRedactions={() => {}}
         onSaveRedactions={async (redactions) => {
           const redactionsWithDetails = redactions
             .map((x) => {

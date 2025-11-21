@@ -53,7 +53,7 @@ export const PdfRedactor = (p: {
   redactions: TRedaction[];
   onRedactionsChange: (redactions: TRedaction[]) => void;
   onAddRedactions: (redactions: TRedaction[]) => void;
-  // onRemoveRedactions: (redactionIds: string[]) => void;
+  onRemoveRedactions: (redactionIds: string[]) => void;
   onSaveRedactions: (redactions: TRedaction[]) => Promise<void>;
 }) => {
   const [numPages, setNumPages] = useState<number>();
@@ -177,7 +177,7 @@ export const PdfRedactor = (p: {
                   p.onRedactionsChange(
                     p.redactions.filter((red) => !ids.includes(red.id))
                   );
-                  // p.onRemoveRedactions(x);
+                  p.onRemoveRedactions(ids);
                 }}
                 redactions={(() => {
                   const y = indexedRedactions[j + 1] ?? [];
@@ -234,6 +234,7 @@ export const PdfRedactor = (p: {
                   className="govuk-button"
                   onClick={async () => {
                     await p.onSaveRedactions(p.redactions);
+                    p.onRedactionsChange([]);
                     p.onRedactionsChange([]);
                   }}
                 >

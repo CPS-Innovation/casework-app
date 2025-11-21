@@ -129,8 +129,6 @@ export const DocumentSidebarAccordion = (p: {
           })}
         </GovUkAccordionTemplate>
       </DocumentSidebarWrapper>
-
-      {/* <pre>{JSON.stringify(p.documentList, null, 2)}</pre> */}
     </div>
   );
 };
