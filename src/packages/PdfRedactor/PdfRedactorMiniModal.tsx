@@ -1,36 +1,21 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 
 export const useWindowMouseListener = () => {
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const mousePosRef = useRef({ x: 0, y: 0 });
-  const rafIdRef = useRef<number | null>(null);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       mousePosRef.current = { x: e.clientX, y: e.clientY };
     };
 
-    const updateMousePositionIfChanged = () => {
-      // Only update state if values changed
-      setMousePos((prev) => {
-        const { x, y } = mousePosRef.current;
-        if (prev.x === x && prev.y === y) return prev;
-        return { x, y };
-      });
-
-      rafIdRef.current = requestAnimationFrame(updateMousePositionIfChanged);
-    };
-
     window.addEventListener('mousemove', handleMouseMove);
-    rafIdRef.current = requestAnimationFrame(updateMousePositionIfChanged);
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
-      if (rafIdRef.current !== null) cancelAnimationFrame(rafIdRef.current);
     };
   }, []);
 
-  return mousePos;
+  return mousePosRef;
 };
 
 export const PdfRedactorMiniModal = (p: {
