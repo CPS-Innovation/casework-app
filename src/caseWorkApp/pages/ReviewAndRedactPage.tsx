@@ -7,8 +7,10 @@ import {
   PdfRedactorMiniModal,
   useWindowMouseListener
 } from '../../packages/PdfRedactor/PdfRedactorMiniModal';
-import { TCoord } from '../../packages/PdfRedactor/utils/coordUtils';
-import { createId } from '../../packages/PdfRedactor/utils/generalUtils';
+import {
+  TCoord,
+  TRedaction
+} from '../../packages/PdfRedactor/utils/coordUtils';
 import { DocumentControlArea } from '../components/documentControlArea';
 import { DocumentViewportArea } from '../components/documenViewportArea';
 
@@ -30,6 +32,8 @@ const items = [
 ];
 
 const CaseworkPdfRedactor = (p: { fileUrl: string }) => {
+  const [redactions, setRedactions] = useState<TRedaction[]>([]);
+
   const [redactionDetails, setRedactionDetails] = useState<
     { redactionId: string; randomId: string }[]
   >([]);
@@ -47,47 +51,58 @@ const CaseworkPdfRedactor = (p: { fileUrl: string }) => {
         <PdfRedactorMiniModal
           coordX={popupProps.x}
           coordY={popupProps.y}
-          onBackgroundClick={() => setPopupProps(null)}
+          onBackgroundClick={() => {
+            setRedactions((prev) =>
+              prev.filter((x) => !popupProps.redactionIds.includes(x.id))
+            );
+            setPopupProps(null);
+          }}
         >
           <RedactionDetailsForm
             redactionIds={popupProps.redactionIds}
             documentId={popupProps.documentId}
             urn={popupProps.urn}
             caseId={popupProps.caseId}
-            onCancelClick={() => setPopupProps(null)}
+            onCancelClick={() => {
+              setRedactions((prev) =>
+                prev.filter((x) => !popupProps.redactionIds.includes(x.id))
+              );
+              setPopupProps(null);
+            }}
             onSaveSuccess={() => setPopupProps(null)}
           />
         </PdfRedactorMiniModal>
       )}
       <PdfRedactor
         fileUrl={p.fileUrl}
-        onRedactionsChange={(change) => {
-          console.log(`OfficialPdfViewer.tsx:${/*LL*/ 16}`, { change });
+        redactions={redactions}
+        onRedactionsChange={(newRedactions) => {
+          setRedactions(newRedactions);
         }}
         onAddRedactions={(add) => {
           const newRedactions = add.map((x) => ({
             redactionId: x.id,
-            randomId: `This redaction does ${createId()}`
+            randomId: `This redaction does ${crypto.randomUUID()}`
           }));
           setRedactionDetails((prev) => [...prev, ...newRedactions]);
           const coord = { x: window.screenX, y: window.screenY };
           console.log(`OfficialPdfViewer.tsx:${/*LL*/ 43}`, { coord });
           setPopupProps(() => ({
-            x: mousePos.x,
-            y: mousePos.y,
+            x: mousePos.current.x,
+            y: mousePos.current.y,
             redactionIds: add.map((x) => x.id),
             documentId: 'This document does not exist',
             urn: 'This URN does not exist',
             caseId: 'This case does not exist'
           }));
         }}
-        onRemoveRedactions={(remove) => {
-          setRedactionDetails((prev) =>
-            prev.filter((x) => !remove.includes(x.redactionId))
-          );
-          console.log(`OfficialPdfViewer.tsx:${/*LL*/ 18}`, { remove });
-        }}
-        onSaveRedactions={(redactions) => {
+        // onRemoveRedactions={(remove) => {
+        //   setRedactionDetails((prev) =>
+        //     prev.filter((x) => !remove.includes(x.redactionId))
+        //   );
+        //   console.log(`OfficialPdfViewer.tsx:${/*LL*/ 18}`, { remove });
+        // }}
+        onSaveRedactions={async (redactions) => {
           const redactionsWithDetails = redactions
             .map((x) => {
               const thisDetails = redactionDetails.find(

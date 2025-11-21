@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Document, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
@@ -41,12 +41,20 @@ const flattenRedactionsOnPageNumber = (redactionsOnPageNumber: {
   return temp;
 };
 
+const indexRedactionsOnPageNumber = (redactions: TRedaction[]) => {
+  const temp: { [k: number]: TRedaction[] } = {};
+  redactions.forEach((redaction) => (temp[redaction.pageNumber] = []));
+  redactions.forEach((redaction) => temp[redaction.pageNumber].push(redaction));
+  return temp;
+};
+
 export const PdfRedactor = (p: {
   fileUrl: string;
+  redactions: TRedaction[];
   onRedactionsChange: (redactions: TRedaction[]) => void;
   onAddRedactions: (redactions: TRedaction[]) => void;
-  onRemoveRedactions: (redactionIds: string[]) => void;
-  onSaveRedactions: (redactions: TRedaction[]) => void;
+  // onRemoveRedactions: (redactionIds: string[]) => void;
+  onSaveRedactions: (redactions: TRedaction[]) => Promise<void>;
 }) => {
   const [numPages, setNumPages] = useState<number>();
   const scaleHelper = useScaleHelper();
@@ -54,19 +62,10 @@ export const PdfRedactor = (p: {
   const redactHighlightedTextTrigger = useTrigger();
 
   const [mode, setMode] = useState<TMode>('areaRedact');
-  const [redactionsOnPageNumber, setRedactionsOnPageNumber] = useState<{
-    [k: number]: TRedaction[];
-  }>({});
 
-  const removeRedaction = (redactionId: string) => {};
-
-  const flattenedRedactions = useMemo(() => {
-    return flattenRedactionsOnPageNumber(redactionsOnPageNumber);
-  }, [redactionsOnPageNumber]);
-
-  useEffect(() => {
-    p.onRedactionsChange(flattenedRedactions);
-  }, [flattenedRedactions]);
+  const indexedRedactions = useMemo(() => {
+    return indexRedactionsOnPageNumber(p.redactions);
+  }, [p.redactions]);
 
   return (
     <div>
@@ -150,7 +149,7 @@ export const PdfRedactor = (p: {
           <Document
             file={p.fileUrl}
             onLoadSuccess={(x) => {
-              setRedactionsOnPageNumber(() => ({}));
+              p.onRedactionsChange([]);
               setNumPages(x.numPages);
             }}
           >
@@ -164,14 +163,26 @@ export const PdfRedactor = (p: {
                   redactHighlightedTextTrigger.data
                 }
                 mode={mode}
-                onRedactionsChange={(x) => {
-                  setRedactionsOnPageNumber((prev) => ({ ...prev, [j]: x }));
+                onPageRedactionsChange={() => {
+                  // const newIndexed = { ...indexRedactionsOnPageNumber, [j]: x };
+                  // p.onRedactionsChange(
+                  //   flattenRedactionsOnPageNumber(newIndexed)
+                  // );
                 }}
                 onAddRedactions={(x) => {
+                  p.onRedactionsChange([...p.redactions, ...x]);
                   p.onAddRedactions(x);
                 }}
-                onRemoveRedactions={(x) => p.onRemoveRedactions(x)}
-                redactions={redactionsOnPageNumber[j] ?? []}
+                onRemoveRedactions={(ids) => {
+                  p.onRedactionsChange(
+                    p.redactions.filter((red) => !ids.includes(red.id))
+                  );
+                  // p.onRemoveRedactions(x);
+                }}
+                redactions={(() => {
+                  const y = indexedRedactions[j + 1] ?? [];
+                  return y;
+                })()}
               />
             ))}
             <br />
@@ -179,7 +190,7 @@ export const PdfRedactor = (p: {
             <br />
           </Document>
         </div>
-        {flattenedRedactions.length > 0 && (
+        {p.redactions.length > 0 && (
           <div
             style={{
               position: 'absolute',
@@ -203,8 +214,9 @@ export const PdfRedactor = (p: {
               <button
                 className="govuk-button govuk-button--inverse"
                 onClick={() => {
-                  p.onRemoveRedactions(flattenedRedactions.map((x) => x.id));
-                  setRedactionsOnPageNumber({});
+                  p.onRedactionsChange([]);
+                  // p.onRemoveRedactions(p.redactions.map((x) => x.id));
+                  // setRedactionsOnPageNumber({});
                 }}
               >
                 Remove all redactions
@@ -213,16 +225,17 @@ export const PdfRedactor = (p: {
                 style={{ display: 'flex', gap: '8px', alignItems: 'center' }}
               >
                 <span>
-                  {flattenedRedactions.length === 1 && (
-                    <>There is 1 redaction</>
-                  )}
-                  {flattenedRedactions.length > 1 && (
-                    <>There are {flattenedRedactions.length} redactions</>
+                  {p.redactions.length === 1 && <>There is 1 redaction</>}
+                  {p.redactions.length > 1 && (
+                    <>There are {p.redactions.length} redactions</>
                   )}
                 </span>
                 <button
                   className="govuk-button"
-                  onClick={() => p.onSaveRedactions(flattenedRedactions)}
+                  onClick={async () => {
+                    await p.onSaveRedactions(p.redactions);
+                    p.onRedactionsChange([]);
+                  }}
                 >
                   Save all redactions
                 </button>

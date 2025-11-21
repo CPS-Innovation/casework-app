@@ -22,7 +22,7 @@ export const PdfRedactorPage = (p: {
   scale: number;
   mode: TMode;
   redactHighlightedTextTriggerData: TTriggerData;
-  onRedactionsChange: (p: TRedaction[]) => void;
+  onPageRedactionsChange: (p: TRedaction[]) => void;
   onAddRedactions: (p: TRedaction[]) => void;
   onRemoveRedactions: (p: TRedaction['id'][]) => void;
   redactions: TRedaction[];
@@ -54,7 +54,7 @@ export const PdfRedactorPage = (p: {
       if (newRedactions.length === 0) return;
 
       p.onAddRedactions(newRedactions);
-      p.onRedactionsChange([...redactions, ...newRedactions]);
+      p.onPageRedactionsChange([...redactions, ...newRedactions]);
     }
   });
 
@@ -93,7 +93,7 @@ export const PdfRedactorPage = (p: {
                     pageNumber: p.pageNumber
                   };
                   p.onAddRedactions([newRect]);
-                  p.onRedactionsChange([
+                  p.onPageRedactionsChange([
                     ...(redactions ? redactions : []),
                     newRect
                   ]);
@@ -178,7 +178,7 @@ export const PdfRedactorPage = (p: {
                     <CloseIcon
                       onClick={() => {
                         p.onRemoveRedactions([box.id]);
-                        p.onRedactionsChange(
+                        p.onPageRedactionsChange(
                           redactions?.filter((x) => x.id !== box.id)
                         );
                       }}
