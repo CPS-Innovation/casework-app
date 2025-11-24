@@ -5,7 +5,7 @@ import { PdfViewer } from '../../packages/pdfViewer/PdfViewer';
 import { createId } from '../../packages/pdfViewer/utils/generalUtils';
 import { DocumentControlArea } from '../components/documentControlArea';
 import { DocumentViewportArea } from '../components/documenViewportArea';
-import { GetDataFromAxios } from '../components/utils.ts/getData';
+import { GetDataFromAxios } from '../components/utils/getData';
 
 type TDocumentDataList = {
   id: string;
@@ -31,9 +31,19 @@ export const ReviewAndRedactPage = () => {
     TDocumentDataList[]
   >([]);
 
-  const { useAxiosInstance, getDocuments } = GetDataFromAxios();
+  const { useAxiosInstance, getDocuments, getPdfs } = GetDataFromAxios();
 
   const axiosInstance = useAxiosInstance();
+
+  // https://polaris-qa-notprod.cps.gov.uk/api/urns/54KR7689125/cases/2160797/documents/PCD-141956/versions/141956/pdf
+
+  // return fullUrl(
+  //   `https://polaris-dev-cmsproxy.azurewebsites.net//api/urns/${urn}/cases/${caseId}/documents/${documentId}/versions/${versionId}/pdf${
+  //     isOcrProcessed ? "?isOcrProcessed=true" : ""
+  //   }`
+  // );
+
+  // /urns/54KR7689125/cases/2160797/documents/PCD-141956/versions/141956/pdf?urn=54KR7689125&caseId=2160797
 
   useEffect(() => {
     getDocuments({
@@ -42,6 +52,19 @@ export const ReviewAndRedactPage = () => {
       caseId: 2160797
     }).then((data) => {
       setDocumentsDataList(data);
+    });
+  }, []);
+
+  useEffect(() => {
+    getPdfs({
+      axiosInstance: axiosInstance,
+      urn: '54KR7689125',
+      caseId: 2160797,
+      documentId: 'PCD-141956',
+      versionId: '141956',
+      isOcrProcessed: true
+    }).then((data) => {
+      console.log(data);
     });
   }, []);
 
@@ -64,7 +87,9 @@ export const ReviewAndRedactPage = () => {
       return {
         id: item.documentId,
         label: item.presentationTitle,
-        title: item.presentationTitle
+        title: item.presentationTitle,
+        fileName: item.cmsOriginalFileName,
+        status: item.status
       };
     });
 
@@ -105,39 +130,39 @@ export const ReviewAndRedactPage = () => {
               activeTabId={activeTabId}
               items={documentIDs}
             ></DocumentViewportArea>
-          </DocumentControlArea>
 
-          <PdfViewer
-            // fileUrls left purposefully
-            // fileUrl="http://localhost:3000/test-pdfs/may-plus-images.pdf"
-            // fileUrl="http://localhost:3000/test-pdfs/final.pdf"
-            fileUrl="https://www.orimi.com/pdf-test.pdf"
-            onRedactionsChange={(change) => {}}
-            onAddRedactions={(add) => {
-              const newRedactions = add.map((x) => ({
-                redactionId: x.id,
-                randomId: createId(),
-                type: `This redaction does something`
-              }));
-              setRedactionDetails((prev) => [...prev, ...newRedactions]);
-            }}
-            onRemoveRedactions={(remove) => {
-              setRedactionDetails((prev) =>
-                prev.filter((x) => !remove.includes(x.redactionId))
-              );
-            }}
-            onSaveRedactions={(redactions) => {
-              const redactionsWithDetails = redactions
-                .map((x) => {
-                  const thisDetails = redactionDetails.find(
-                    (y) => y.redactionId === x.id
-                  );
-                  if (!thisDetails) return undefined;
-                  return { ...x, ...thisDetails };
-                })
-                .filter((x) => !!x);
-            }}
-          />
+            <PdfViewer
+              // fileUrls left purposefully
+              // fileUrl="http://localhost:3000/test-pdfs/may-plus-images.pdf"
+              // fileUrl="http://localhost:3000/test-pdfs/final.pdf"
+              fileUrl={`${document.location.origin}/filepdf.pdf`}
+              onRedactionsChange={() => {}}
+              onAddRedactions={(add) => {
+                const newRedactions = add.map((x) => ({
+                  redactionId: x.id,
+                  randomId: createId(),
+                  type: `This redaction does something`
+                }));
+                setRedactionDetails((prev) => [...prev, ...newRedactions]);
+              }}
+              onRemoveRedactions={(remove) => {
+                setRedactionDetails((prev) =>
+                  prev.filter((x) => !remove.includes(x.redactionId))
+                );
+              }}
+              onSaveRedactions={(redactions) => {
+                redactions
+                  .map((x) => {
+                    const thisDetails = redactionDetails.find(
+                      (y) => y.redactionId === x.id
+                    );
+                    if (!thisDetails) return undefined;
+                    return { ...x, ...thisDetails };
+                  })
+                  .filter((x) => !!x);
+              }}
+            />
+          </DocumentControlArea>
         </TwoCol>
       </div>
     </Layout>

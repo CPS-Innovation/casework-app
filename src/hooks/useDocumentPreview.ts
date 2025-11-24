@@ -26,3 +26,4 @@ export const useDocumentPreview = ({ materialId }: Props) => {
 
   return { data, loading: isLoading, error };
 };
+

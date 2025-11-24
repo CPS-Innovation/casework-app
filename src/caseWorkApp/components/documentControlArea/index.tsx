@@ -58,4 +58,3 @@ const DocumentControlArea = ({
 };
 
 export { DocumentControlArea };
-

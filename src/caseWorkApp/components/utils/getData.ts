@@ -7,7 +7,8 @@ export const useAxiosInstance = () => {
 
   const axiosInstance = axios.create({
     baseURL: import.meta.env.VITE_POLARIS_GATEWAY_URL,
-    withCredentials: true
+    responseType: 'blob'
+    // withCredentials: true
   });
 
   axiosInstance.interceptors.request.use(async (config) => {
@@ -33,7 +34,23 @@ export const getDocuments = async (p: {
   return response.data;
 };
 
+//  `/api/urns/${p.urn}/cases/${p.caseId}/documents/${p.documentId}/versions/${p.versionId}/pdf$?isOcrProcessed=true`
+//{{url}}/urns/54KR7689125/cases/2160797/documents/PCD-141956/versions/141956/pdf?urn=54KR7689125&caseId=2160797
+export const getPdfs = async (p: {
+  axiosInstance: AxiosInstance;
+  urn: string;
+  caseId: number | string;
+  documentId: number | string;
+  versionId?: number | string;
+  isOcrProcessed: boolean;
+}) => {
+  const response = await p.axiosInstance.get(
+    `/api/urns/54KR7689125/cases/2160797/documents/141956/versions/141956/pdf?urn=54KR7689125&caseId=2160797`
+  );
+  return response;
+};
+
 export const GetDataFromAxios = () => {
-  return { useAxiosInstance, getDocuments };
+  return { useAxiosInstance, getDocuments, getPdfs };
 };
 
