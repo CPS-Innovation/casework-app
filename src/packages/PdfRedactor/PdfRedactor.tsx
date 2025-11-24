@@ -152,7 +152,8 @@ export const PdfRedactor = (p: {
             width: '100%',
             overflowX: 'scroll',
             overflowY: 'scroll',
-            backgroundColor: 'gray'
+            backgroundColor: '#808080',
+            paddingBottom: '70px'
           }}
         >
           <Document
@@ -164,7 +165,9 @@ export const PdfRedactor = (p: {
           >
             {[...Array(numPages)].map((_, j) => (
               <PdfRedactorPage
-                key={j}
+                // no other identifiable info for key below
+                // cannot be reordered so not an issue
+                key={`pdf-redactor-page-${j}`}
                 pageNumber={j + 1}
                 scale={scaleHelper.scale}
                 onMouseMove={() => {}}
@@ -172,12 +175,7 @@ export const PdfRedactor = (p: {
                   redactHighlightedTextTrigger.data
                 }
                 mode={p.mode}
-                onPageRedactionsChange={() => {
-                  // const newIndexed = { ...indexRedactionsOnPageNumber, [j]: x };
-                  // p.onRedactionsChange(
-                  //   flattenRedactionsOnPageNumber(newIndexed)
-                  // );
-                }}
+                onPageRedactionsChange={() => {}}
                 onAddRedactions={(x) => {
                   p.onRedactionsChange([...p.redactions, ...x]);
                   p.onAddRedactions(x);
@@ -194,9 +192,6 @@ export const PdfRedactor = (p: {
                 })()}
               />
             ))}
-            <br />
-            <br />
-            <br />
           </Document>
         </div>
         {p.redactions.length > 0 && (
@@ -222,11 +217,7 @@ export const PdfRedactor = (p: {
             >
               <button
                 className="govuk-button govuk-button--inverse"
-                onClick={() => {
-                  p.onRedactionsChange([]);
-                  // p.onRemoveRedactions(p.redactions.map((x) => x.id));
-                  // setRedactionsOnPageNumber({});
-                }}
+                onClick={() => p.onRedactionsChange([])}
               >
                 Remove all redactions
               </button>

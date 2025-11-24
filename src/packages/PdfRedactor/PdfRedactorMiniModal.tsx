@@ -72,7 +72,7 @@ export const PdfRedactorMiniModal = (p: {
           position: 'fixed',
           left: `${position.x}px`,
           top: `${position.y}px`,
-          backgroundColor: 'white',
+          backgroundColor: '#fff',
           border: '1px solid #ddd',
           borderRadius: '8px',
           boxShadow: '0 0 .3125rem .3125rem #0003',
