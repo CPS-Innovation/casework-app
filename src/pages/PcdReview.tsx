@@ -104,7 +104,7 @@ export const PcdReviewPage = () => {
   }
 
   return (
-    <Layout>
+    <Layout title="PCD Review">
       <div className="govuk-main-wrapper" style={{ whiteSpace: 'pre-wrap' }}>
         <TwoCol sidebar={renderSidebar()}>
           {data && initialReviewData ? (

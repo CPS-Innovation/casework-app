@@ -2,7 +2,7 @@ import { Layout } from '../components';
 
 export const ServerErrorPage = () => {
   return (
-    <Layout plain>
+    <Layout plain title="Service Unavailable">
       <>
         <h1 className="govuk-heading-l">
           This service is temporarily unavailable

@@ -1,14 +1,16 @@
 import './DefinitionList.scss';
 
-type ListItem = { title: string; description: string[] };
+type ListItem = { title: string; description: (string | React.ReactNode)[] };
 
-type Props = { items: ListItem[] };
+type Props = { items: ListItem[]; fixedWidth?: boolean };
 
-export const DefinitionList = ({ items }: Props) => {
+export const DefinitionList = ({ items, fixedWidth }: Props) => {
   if (!items.length) return null;
 
   return (
-    <dl className="definition-list">
+    <dl
+      className={`definition-list ${fixedWidth ? 'definition-list--fixed-width' : ''}`}
+    >
       {items.map((item, index) => (
         <div key={index} className="definition-list__row">
           <dt className="definition-list__title">{item.title}</dt>
