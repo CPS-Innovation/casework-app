@@ -80,7 +80,6 @@ export const PdfRedactor = (p: {
 
   return (
     <div ref={pdfRedactorWrapperElmRef}>
-      <pre>{JSON.stringify({ mode: p.mode }, null, 2)}</pre>
       <ModeStyleTag mode={p.mode} />
       {!p.hideToolbar && (
         <div
