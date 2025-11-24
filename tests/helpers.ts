@@ -2,18 +2,15 @@ import { Page } from '@playwright/test';
 
 export async function mockRoute(page: Page, endpoint: string, data?: unknown) {
   console.log(`Mocking route for endpoint: ${endpoint}`);
-  await page.route(
-    `**/api/urns/${process.env.E2E_URN}/cases/${process.env.E2E_CASE}/${endpoint}`,
-    // https://polaris-dev-cmsproxy.azurewebsites.net/api/urns/16123630825/cases/2167259/case-materials
-    (route) =>
-      route.fulfill({
-        contentType: 'application/json',
-        status: 200,
-        body: JSON.stringify(data)
-      })
+  await page.route(`**${endpoint}`, (route) =>
+    route.fulfill({
+      contentType: 'application/json',
+      status: 200,
+      body: JSON.stringify(data)
+    })
   );
   console.log(
-    `Route mocked successfully for endpoint: ${endpoint} + data: ${data}`
+    `Route mocked successfully for endpoint: ${endpoint} + data: ${JSON.stringify(data)}`
   );
 }
 
