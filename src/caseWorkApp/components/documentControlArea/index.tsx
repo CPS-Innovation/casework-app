@@ -17,22 +17,42 @@ type TabItem = {
   isDirty: boolean;
 };
 
-type DocumentControlAreaProps = { items: TabItem[] };
+type DocumentControlAreaProps = {
+  activeTabId: string;
+  items: TabItem[];
+  isSidebarVisible?: boolean;
+  onToggleSidebar?: () => void;
+  handleCloseTab: (v?: string) => void;
+  children: React.ReactNode;
+};
 
-const DocumentControlArea: React.FC<DocumentControlAreaProps> = ({ items }) => {
-  const { handleTabSelection, handleClosePdf } = useStoreCWA();
-
+const DocumentControlArea = ({
+  activeTabId,
+  items,
+  isSidebarVisible,
+  onToggleSidebar,
+  handleCloseTab,
+  children
+}: DocumentControlAreaProps) => {
+  const { handleTabSelection } = useStoreCWA();
   return (
     <>
-      <Button>Hide categories</Button>
-      <Tabs
-        idPrefix="idpref"
-        title="Tabs title"
-        items={items}
-        handleTabSelection={handleTabSelection}
-        handleClosePdf={handleClosePdf}
-        dcfMode={undefined}
-      />
+      {items.length !== 0 ? (
+        <>
+          <Button onClick={() => onToggleSidebar?.()}>
+            {isSidebarVisible ? 'Hide categories' : 'Show categories'}
+          </Button>
+          <Tabs
+            idPrefix="tabs"
+            title="Tabs title"
+            items={items}
+            activeTabId={activeTabId}
+            handleTabSelection={handleTabSelection}
+            handleCloseTab={handleCloseTab}
+          />
+          {children}
+        </>
+      ) : null}
     </>
   );
 };
