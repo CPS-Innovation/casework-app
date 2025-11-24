@@ -47,6 +47,15 @@ export const PdfRedactor = (p: {
   onRemoveRedactions: (redactionIds: string[]) => void;
   onSaveRedactions: (redactions: TRedaction[]) => Promise<void>;
 }) => {
+  // ref required for eventlistener
+  const modeRef = useRef(p.mode);
+
+  // Keep ref in sync with p.mode
+  // - lift state up, but worsen developer experience???
+  useEffect(() => {
+    modeRef.current = p.mode;
+  }, [p.mode]);
+
   const [numPages, setNumPages] = useState<number>();
   const scaleHelper = useScaleHelper();
   const pdfRedactorWrapperElmRef = useRef<HTMLDivElement>(null);
@@ -57,9 +66,7 @@ export const PdfRedactor = (p: {
 
   const redactHighlightedTextTrigger = useTrigger();
   const redactHighlightedIfTextRedactionMode = () => {
-    if (p.mode !== 'textRedact') return;
-
-    redactHighlightedTextTrigger.fire();
+    if (modeRef.current === 'textRedact') redactHighlightedTextTrigger.fire();
   };
 
   useEffect(() => {
@@ -108,13 +115,7 @@ export const PdfRedactor = (p: {
             {p.mode === 'textRedact' && (
               <button
                 className="govuk-button govuk-button--secondary"
-                onClick={() => {
-                  redactHighlightedTextTrigger.fire();
-                  setTimeout(
-                    () => window.getSelection()?.removeAllRanges(),
-                    250
-                  );
-                }}
+                onClick={() => redactHighlightedTextTrigger.fire()}
               >
                 <TickCircleIcon width={20} height={20} />
               </button>
