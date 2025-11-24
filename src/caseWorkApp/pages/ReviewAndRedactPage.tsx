@@ -26,23 +26,6 @@ type TDocumentDataList = {
   status: string;
 };
 
-const items = [
-  {
-    isDirty: false,
-    id: 'CMS-MG1',
-    versionId: 1,
-    label: 'MG1 CARMINE Victim',
-    panel: <></>
-  },
-  {
-    isDirty: false,
-    id: 'CMS-MG2',
-    versionId: 2,
-    label: 'MG2 CARMINE Victim',
-    panel: <></>
-  }
-];
-
 const CaseworkPdfRedactor = (p: { fileUrl: string; mode: TMode }) => {
   const [redactions, setRedactions] = useState<TRedaction[]>([]);
 
