@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import AreaIcon from '../../assetsCWA/svgs/areaIcon.svg?react';
 import { DropdownButton } from '../dropDownButton/DropdownButton';
 import { LinkButton } from '../LinkButton/LinkButton';
@@ -47,29 +46,32 @@ const dropDownItems: DropdownButtonItem[] = [
   { id: '6', label: 'Rename', ariaLabel: 'rename', disabled: false }
 ];
 
-export const DocumentViewportArea = () => {
-  const [redactAreaState, setRedactAreaState] = useState<boolean>(false);
-
+export const DocumentViewportArea = (p: {
+  redactAreaState: boolean;
+  onRedactAreaStateChange: (x: boolean) => void;
+}) => {
   const handleRedactAreaToolButtonClick = () => {
-    setRedactAreaState(!redactAreaState);
+    p.onRedactAreaStateChange(!p.redactAreaState);
   };
 
   return (
     <div className={classes.content}>
       <p>MG1 CARMINE Victim</p>
       <Tooltip
-        text={redactAreaState ? 'Redact area tool On' : 'Redact area tool Off'}
+        text={
+          p.redactAreaState ? 'Redact area tool On' : 'Redact area tool Off'
+        }
       >
         <LinkButton
           className={
-            redactAreaState
+            p.redactAreaState
               ? `${classes.areaToolBtn} ${classes.areaToolBtnEnabled}`
               : `${classes.areaToolBtn}`
           }
           dataTestId={'btn-area-tool'}
           id={'btn-area-tool'}
           ariaLabel={
-            redactAreaState
+            p.redactAreaState
               ? 'disable area redaction mode'
               : 'enable area redaction mode'
           }
@@ -89,4 +91,3 @@ export const DocumentViewportArea = () => {
     </div>
   );
 };
-

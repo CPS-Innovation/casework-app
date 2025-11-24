@@ -23,6 +23,7 @@ export const PdfRedactorMiniModal = (p: {
   coordY: number;
   children: ReactNode;
   onBackgroundClick: () => void;
+  onEscPress: () => void;
 }) => {
   const popupRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ x: p.coordX, y: p.coordY });
@@ -43,6 +44,14 @@ export const PdfRedactorMiniModal = (p: {
 
     setPosition({ x, y });
   }, [p.coordX, p.coordY]);
+
+  useEffect(() => {
+    const fn = (e: KeyboardEvent) => {
+      if (e.code === 'Escape') p.onBackgroundClick();
+    };
+    window.addEventListener('keydown', fn);
+    return () => window.removeEventListener('keydown', fn);
+  }, []);
 
   return (
     <>
