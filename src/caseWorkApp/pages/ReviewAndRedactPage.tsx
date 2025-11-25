@@ -1,4 +1,4 @@
-import { ComponentProps, useEffect, useState } from 'react';
+import { ComponentProps, useEffect, useRef, useState } from 'react';
 import { Layout, TwoCol } from '../../components';
 import { DocumentSidebar } from '../../packages/DocumentSelectAccordion/DocumentSidebar';
 import { RedactionDetailsForm } from '../../packages/PdfRedactor/PdfRedactionTypeForm';
@@ -14,7 +14,7 @@ import {
 import { TMode } from '../../packages/PdfRedactor/utils/modeUtils';
 import { DocumentControlArea } from '../components/documentControlArea';
 import { DocumentViewportArea } from '../components/documenViewportArea';
-import { GetDataFromAxios } from '../components/utils.ts/getData';
+import { GetDataFromAxios } from '../components/utils/getData';
 
 type TDocumentDataList = {
   id: string;
@@ -130,9 +130,10 @@ export const ReviewAndRedactPage = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useState<boolean>(true);
   const [documentIDs, setDocumentIDs] = useState<any[]>([]);
   const [activeTabId, setActiveTabId] = useState<string>('');
-
+  const [pdfFileData, setPdfFileData] = useState('');
   const [openDocumentIds, setOpenDocumentIds] = useState<string[]>([]);
   const [mode, setMode] = useState<TMode>('areaRedact');
+  const pdfFileRef = useRef('');
 
   const handleCloseTab = (v: string | undefined) => {
     setOpenDocumentIds((prev) => prev.filter((el) => el !== v));
@@ -141,7 +142,7 @@ export const ReviewAndRedactPage = () => {
   const [documentsDataList, setDocumentsDataList] = useState<
     TDocumentDataList[]
   >([]);
-  const { useAxiosInstance, getDocuments } = GetDataFromAxios();
+  const { useAxiosInstance, getDocuments, getPdfs } = GetDataFromAxios();
 
   const axiosInstance = useAxiosInstance();
 
@@ -154,12 +155,33 @@ export const ReviewAndRedactPage = () => {
       setDocumentsDataList(data);
     });
   }, []);
+
   useEffect(() => {
-    const matchingDocuments = documentsDataList.filter((item) => {
-      return openDocumentIds.includes(item.documentId);
+    getPdfs({
+      axiosInstance: axiosInstance,
+      urn: '54KR7689125',
+      caseId: 2160797,
+      documentId: 'PCD-141956',
+      versionId: '141956',
+      isOcrProcessed: true
+    }).then((response) => {
+      const blob = response.data;
+
+      if (blob instanceof Blob) {
+        const url = window.URL || window.webkitURL;
+        const blobResponse = url.createObjectURL(blob);
+        // setPdfFileData(blobResponse);
+        pdfFileRef.current = blobResponse;
+      }
+    });
+  }, [openDocumentIds]);
+
+  useEffect(() => {
+    const matchingDocuments = documentsDataList?.filter((item) => {
+      return openDocumentIds?.includes(item.documentId);
     });
 
-    const sortedMatchingDocuments = matchingDocuments.sort(
+    const sortedMatchingDocuments = matchingDocuments?.sort(
       (a, b) =>
         openDocumentIds.indexOf(a.documentId) -
         openDocumentIds.indexOf(b.documentId)
@@ -169,7 +191,9 @@ export const ReviewAndRedactPage = () => {
       return {
         id: item.documentId,
         label: item.presentationTitle,
-        title: item.presentationTitle
+        title: item.presentationTitle,
+        fileName: item.cmsOriginalFileName,
+        status: item.status
       };
     });
 
@@ -213,20 +237,23 @@ export const ReviewAndRedactPage = () => {
               onRedactAreaStateChange={(x) => {
                 setMode(x ? 'areaRedact' : 'textRedact');
               }}
-            ></DocumentViewportArea>
+            />
+            <CaseworkPdfRedactor
+              // fileUrls left purposefully
+              // fileUrl="http://localhost:3000/test-pdfs/may-plus-images.pdf"
+              // fileUrl="http://localhost:3000/test-pdfs/final.pdf"
+
+              // fileUrl={
+              //   pdfFileData || `${window.location.origin}/pdfNotFound.pdf`
+              // }
+              fileUrl={pdfFileRef.current}
+              onModeChange={setMode}
+              mode={mode}
+            />
           </DocumentControlArea>
-
-          <CaseworkPdfRedactor
-            // fileUrls left purposefully
-            // fileUrl="http://localhost:3000/test-pdfs/may-plus-images.pdf"
-            // fileUrl="http://localhost:3000/test-pdfs/final.pdf"
-
-            fileUrl="http://localhost:3000/test-pdfs/final-with-https.pdf"
-            mode={mode}
-            onModeChange={setMode}
-          />
         </TwoCol>
       </div>
     </Layout>
   );
 };
+
