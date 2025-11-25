@@ -17,8 +17,6 @@ import { getPdfCoordPairsOfHighlightedText } from './utils/highlightedTextUtils'
 import type { TMode } from './utils/modeUtils';
 import { useTriggerListener, type TTriggerData } from './utils/useTriggger';
 
-const COPY_HIGHLIGHTED_TEXT_TO_CLIPBOARD = false;
-
 export const PdfRedactorPage = (p: {
   onMouseMove: (p: { x: number; y: number } | null) => void;
   pageNumber: number;
@@ -58,13 +56,6 @@ export const PdfRedactorPage = (p: {
 
       p.onAddRedactions(newRedactions);
       p.onPageRedactionsChange([...redactions, ...newRedactions]);
-
-      if (!COPY_HIGHLIGHTED_TEXT_TO_CLIPBOARD) return;
-
-      const selection = window.getSelection();
-      const selectedStr = selection?.toString();
-      if (selectedStr) navigator.clipboard.writeText(selectedStr);
-      setTimeout(() => selection?.removeAllRanges(), 0);
     }
   });
 
