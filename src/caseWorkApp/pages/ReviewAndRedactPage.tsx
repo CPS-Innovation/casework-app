@@ -88,7 +88,7 @@ const CaseworkPdfRedactor = (p: {
       <PdfRedactor
         fileUrl={p.fileUrl}
         mode={p.mode}
-        hideToolbar
+        hideToolbar={false}
         onModeChange={p.onModeChange}
         redactions={redactions}
         onRedactionsChange={(newRedactions) => setRedactions(newRedactions)}
