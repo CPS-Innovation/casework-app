@@ -26,7 +26,11 @@ type TDocumentDataList = {
   status: string;
 };
 
-const CaseworkPdfRedactor = (p: { fileUrl: string; mode: TMode }) => {
+const CaseworkPdfRedactor = (p: {
+  fileUrl: string;
+  mode: TMode;
+  onModeChange: (x: TMode) => void;
+}) => {
   const [redactions, setRedactions] = useState<TRedaction[]>([]);
 
   const [redactionDetails, setRedactionDetails] = useState<
@@ -46,41 +50,46 @@ const CaseworkPdfRedactor = (p: { fileUrl: string; mode: TMode }) => {
   > | null>(null);
 
   const mousePos = useWindowMouseListener();
-  const [mode, setMode] = useState<TMode>('textRedact');
 
   return (
     <div>
-      {popupProps && (
-        <PdfRedactorMiniModal
-          coordX={popupProps.x}
-          coordY={popupProps.y}
-          onBackgroundClick={() => {
+      {popupProps &&
+        (() => {
+          const handleCloseModal = () => {
             setRedactions((prev) =>
               prev.filter((x) => !popupProps.redactionIds.includes(x.id))
             );
             setPopupProps(null);
-          }}
-        >
-          <RedactionDetailsForm
-            redactionIds={popupProps.redactionIds}
-            documentId={popupProps.documentId}
-            urn={popupProps.urn}
-            caseId={popupProps.caseId}
-            onCancelClick={() => {
-              setRedactions((prev) =>
-                prev.filter((x) => !popupProps.redactionIds.includes(x.id))
-              );
-              setPopupProps(null);
-            }}
-            onSaveSuccess={() => setPopupProps(null)}
-          />
-        </PdfRedactorMiniModal>
-      )}
+          };
+
+          return (
+            <PdfRedactorMiniModal
+              coordX={popupProps.x}
+              coordY={popupProps.y}
+              onBackgroundClick={handleCloseModal}
+              onEscPress={handleCloseModal}
+            >
+              <RedactionDetailsForm
+                redactionIds={popupProps.redactionIds}
+                documentId={popupProps.documentId}
+                urn={popupProps.urn}
+                caseId={popupProps.caseId}
+                onCancelClick={() => {
+                  setRedactions((prev) =>
+                    prev.filter((x) => !popupProps.redactionIds.includes(x.id))
+                  );
+                  setPopupProps(null);
+                }}
+                onSaveSuccess={() => setPopupProps(null)}
+              />
+            </PdfRedactorMiniModal>
+          );
+        })()}
       <PdfRedactor
         fileUrl={p.fileUrl}
-        mode={mode}
+        mode={p.mode}
         hideToolbar
-        onModeChange={setMode}
+        onModeChange={p.onModeChange}
         redactions={redactions}
         onRedactionsChange={(newRedactions) => setRedactions(newRedactions)}
         onAddRedactions={(add) => {
@@ -123,7 +132,7 @@ export const ReviewAndRedactPage = () => {
   const [activeTabId, setActiveTabId] = useState<string>('');
 
   const [openDocumentIds, setOpenDocumentIds] = useState<string[]>([]);
-  const [mode, _] = useState<'textRedact' | 'areaRedact'>('areaRedact');
+  const [mode, setMode] = useState<TMode>('areaRedact');
 
   const handleCloseTab = (v: string | undefined) => {
     setOpenDocumentIds((prev) => prev.filter((el) => el !== v));
@@ -200,6 +209,10 @@ export const ReviewAndRedactPage = () => {
             <DocumentViewportArea
               activeTabId={activeTabId}
               items={documentIDs}
+              redactAreaState={mode === 'areaRedact'}
+              onRedactAreaStateChange={(x) => {
+                setMode(x ? 'areaRedact' : 'textRedact');
+              }}
             ></DocumentViewportArea>
           </DocumentControlArea>
 
@@ -210,10 +223,10 @@ export const ReviewAndRedactPage = () => {
 
             fileUrl="http://localhost:3000/test-pdfs/final-with-https.pdf"
             mode={mode}
+            onModeChange={setMode}
           />
         </TwoCol>
       </div>
     </Layout>
   );
 };
-

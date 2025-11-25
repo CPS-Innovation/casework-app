@@ -5,6 +5,7 @@ import {
   PositionPdfOverlayBox,
   RedactionBox
 } from './PdfRedactorComponents';
+import { GovUkButton } from './templates/GovUkButton';
 import {
   convertCoordPairToXywh,
   getPdfCoords,
@@ -55,11 +56,6 @@ export const PdfRedactorPage = (p: {
 
       p.onAddRedactions(newRedactions);
       p.onPageRedactionsChange([...redactions, ...newRedactions]);
-
-      const selection = window.getSelection();
-      const selectedStr = selection?.toString();
-      if (selectedStr) navigator.clipboard.writeText(selectedStr);
-      setTimeout(() => selection?.removeAllRanges(), 0);
     }
   });
 
@@ -177,8 +173,8 @@ export const PdfRedactorPage = (p: {
                     border="2px solid black"
                   />
 
-                  <button
-                    className="govuk-button govuk-button--inverse"
+                  <GovUkButton
+                    variant="inverse"
                     style={{
                       padding: 0,
                       borderRadius: '50%',
@@ -198,7 +194,7 @@ export const PdfRedactorPage = (p: {
                     }}
                   >
                     <CloseIcon />
-                  </button>
+                  </GovUkButton>
                 </PositionPdfOverlayBox>
               );
             })}

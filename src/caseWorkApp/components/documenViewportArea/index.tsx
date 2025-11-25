@@ -50,14 +50,20 @@ const dropDownItems: DropdownButtonItem[] = [
 type DocumentViewportAreaProps = {
   items: DropdownButtonItem[];
   activeTabId: string;
+  redactAreaState: boolean;
+  onRedactAreaStateChange: (x: boolean) => void;
 };
 
-export const DocumentViewportArea = ({ items, activeTabId }: DocumentViewportAreaProps) => {
-  const [redactAreaState, setRedactAreaState] = useState<boolean>(false);
+export const DocumentViewportArea = ({
+  items,
+  activeTabId,
+  redactAreaState,
+  onRedactAreaStateChange
+}: DocumentViewportAreaProps) => {
   const [name, setName] = useState<string>('');
 
   const handleRedactAreaToolButtonClick = () => {
-    setRedactAreaState(!redactAreaState);
+    onRedactAreaStateChange(!redactAreaState);
   };
 
   const activeTabLabel = items.findIndex((item) => item.id === activeTabId);
@@ -103,4 +109,3 @@ export const DocumentViewportArea = ({ items, activeTabId }: DocumentViewportAre
     </div>
   );
 };
-
