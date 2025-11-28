@@ -6,8 +6,8 @@ import { AreaIcon } from './icons/AreaIcon';
 import { EditIcon } from './icons/EditIcon';
 import { TickCircleIcon } from './icons/TickCircleIcon';
 import { PdfRedactorCenteredModal } from './modals/PdfRedactorCenteredModal';
-import { SaveYourRedactionsToProceedModal } from './modals/SaveYourRedactionsToProceedModal';
-import { SaveYourRotationsToProceedModal } from './modals/SaveYourRotationsToProceedModal';
+import { SaveToProceedToRedactionsModal } from './modals/SaveToProceedToRedactionsModal';
+import { SaveToProceedToRotationsModal } from './modals/SaveToProceedToRotationsModal';
 import { PdfRedactorPage } from './PdfRedactorPage';
 import type { TRedaction } from './utils/coordUtils';
 import { ModeStyleTag, type TMode } from './utils/modeUtils';
@@ -157,7 +157,7 @@ export const PdfRedactor = (p: {
     modeRef.current = p.mode;
   }, [p.mode]);
 
-  const [displayCantProceedModal, setDisplayCantproceedModal] = useState<
+  const [displayToProceedModal, setDisplayToProceedModal] = useState<
     TMode | undefined
   >(undefined);
 
@@ -179,14 +179,14 @@ export const PdfRedactor = (p: {
   useEffect(() => {
     if (p.mode === 'rotation' && p.redactions.length > 0) {
       p.onModeChange(previousModeRef.current);
-      setDisplayCantproceedModal(previousModeRef.current);
+      setDisplayToProceedModal(previousModeRef.current);
     }
     if (
       (p.mode === 'textRedact' || p.mode === 'areaRedact') &&
       filteredRotations.length > 0
     ) {
       p.onModeChange(previousModeRef.current);
-      setDisplayCantproceedModal(previousModeRef.current);
+      setDisplayToProceedModal(previousModeRef.current);
     }
   }, [p.mode]);
 
@@ -206,19 +206,19 @@ export const PdfRedactor = (p: {
 
   return (
     <div ref={pdfRedactorWrapperElmRef}>
-      {displayCantProceedModal && (
+      {displayToProceedModal && (
         <PdfRedactorCenteredModal
-          onBackgroundClick={() => setDisplayCantproceedModal(undefined)}
-          onEscPress={() => setDisplayCantproceedModal(undefined)}
+          onBackgroundClick={() => setDisplayToProceedModal(undefined)}
+          onEscPress={() => setDisplayToProceedModal(undefined)}
         >
-          {['areaRedact', 'textRedact'].includes(displayCantProceedModal) && (
-            <SaveYourRedactionsToProceedModal
-              onClose={() => setDisplayCantproceedModal(undefined)}
+          {['areaRedact', 'textRedact'].includes(displayToProceedModal) && (
+            <SaveToProceedToRedactionsModal
+              onClose={() => setDisplayToProceedModal(undefined)}
             />
           )}
-          {displayCantProceedModal === 'rotation' && (
-            <SaveYourRotationsToProceedModal
-              onClose={() => setDisplayCantproceedModal(undefined)}
+          {displayToProceedModal === 'rotation' && (
+            <SaveToProceedToRotationsModal
+              onClose={() => setDisplayToProceedModal(undefined)}
             />
           )}
         </PdfRedactorCenteredModal>
