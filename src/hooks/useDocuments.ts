@@ -1,4 +1,5 @@
 import useSWR from 'swr';
+import { QUERY_KEYS } from '../constants/query';
 import { DocumentResultType } from '../schemas/documents';
 import { useCaseInfoStore, useRequest } from './';
 
@@ -15,7 +16,7 @@ export const useDocuments = () => {
       .then((res) => res.data);
 
   const { data, isLoading } = useSWR(
-    urn && caseId ? ['documents', urn, caseId] : null,
+    urn && caseId ? [QUERY_KEYS.GET_ALL_DOCUMENTS, urn, caseId] : null,
     getDocuments
   );
 

@@ -12,7 +12,11 @@ export { useCaseSearch } from './useCaseSearch';
 export { useCaseWitnesses } from './useCaseWitnesses';
 export { useDiscard } from './useDiscard';
 export { useDocumentPreview } from './useDocumentPreview';
-export { useDocumentSearch } from './useDocumentSearch';
+export { useDocuments } from './useDocuments';
+export {
+  useDocumentSearch,
+  useDocumentSearchResults
+} from './useDocumentSearch';
 export { useDocumentTypes } from './useDocumentTypes';
 export { useExhibitProducers } from './useExhibitProducers';
 export { useExhibits } from './useExhibits';
@@ -30,6 +34,7 @@ export { useReclassify } from './useReclassify';
 export { useReclassifyForm } from './useReclassifyForm';
 export { useRename } from './useRename';
 export { useRequest } from './useRequest';
+export { useSearchTracker } from './useSearchTracker';
 export { useStoreLogger } from './useStoreLogger';
 export { useTableActions } from './useTableActions';
 export { useWitnessStatements } from './useWitnessStatements';

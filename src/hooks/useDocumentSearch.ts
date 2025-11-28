@@ -1,5 +1,10 @@
 import useSWR from 'swr';
-import { SearchResultType } from '../schemas/documents';
+import { QUERY_KEYS } from '../constants/query';
+import {
+  DocumentResultType,
+  SearchResultType,
+  SearchTermResultType
+} from '../schemas/documents';
 import { useCaseInfoStore, useRequest } from './';
 
 export const useDocumentSearch = (
@@ -20,9 +25,42 @@ export const useDocumentSearch = (
       .then((res) => res.data);
 
   const { data, isLoading } = useSWR(
-    searchTerm && trackerComplete ? ['search', urn, caseId, searchTerm] : null,
+    searchTerm && trackerComplete
+      ? [QUERY_KEYS.DOCUMENT_SEARCH, urn, caseId, searchTerm]
+      : null,
     getSearch
   );
 
   return { searchResults: data ?? null, loading: isLoading };
+};
+
+export const useDocumentSearchResults = (
+  documents: DocumentResultType = [],
+  searchResults: SearchResultType[] = []
+) => {
+  if (!documents || !searchResults) return [];
+
+  const combinedSearchResults: SearchTermResultType[] = [];
+
+  for (const doc of documents) {
+    const matches = searchResults.filter(
+      (sr) => sr.documentId === doc.documentId
+    );
+
+    if (matches.length > 0) {
+      combinedSearchResults.push({
+        documentId: doc.documentId,
+        documentTitle: doc.presentationTitle ?? '',
+        cmsFileCreatedDate: doc.cmsFileCreatedDate,
+        matches: matches.map((match) => ({
+          text: match.text,
+          pageIndex: match.pageIndex,
+          lineIndex: match.lineIndex,
+          words: match.words
+        }))
+      });
+    }
+  }
+
+  return combinedSearchResults;
 };

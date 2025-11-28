@@ -1,9 +1,10 @@
 import { ChangeEvent } from 'react';
 import { materialsCategoryList } from '../../constants/categoryList';
 import { READ_STATUS } from '../../constants/readStatus';
+import { useFeatureFlag, useFilters } from '../../hooks';
 import Checkbox from '../Checkbox/Checkbox';
+import { DocumentKeywordSearch } from '../DocumentKeywordSearch/DocumentKeywordSearch';
 import { SearchInput } from '../SearchInput/SearchInput';
-import { useFilters, useFeatureFlag } from '../../hooks';
 
 export const MaterialsFilters = () => {
   const {
@@ -44,6 +45,7 @@ export const MaterialsFilters = () => {
         <h2 className="govuk-heading-m" style={{ marginBottom: '0px' }}>
           Filters
         </h2>
+
         <a
           href="#"
           className="govuk-link link"
@@ -59,6 +61,7 @@ export const MaterialsFilters = () => {
       </div>
 
       <div className="govuk-form-group">
+        <DocumentKeywordSearch />
         <SearchInput
           placeholder=""
           label="Search materials"
