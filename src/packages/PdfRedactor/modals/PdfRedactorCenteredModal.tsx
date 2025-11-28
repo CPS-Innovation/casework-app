@@ -1,4 +1,5 @@
 import { useEffect, useRef, type ReactNode } from 'react';
+import './pdfRedactorCenteredModal.scss';
 
 export const PdfRedactorCenteredModal = (p: {
   children: ReactNode;
@@ -17,13 +18,6 @@ export const PdfRedactorCenteredModal = (p: {
 
   return (
     <>
-      <style>
-        {`
-      html, body {
-        overflow: hidden !important;
-      }
-    `}
-      </style>
       <div
         style={{
           position: 'fixed',
