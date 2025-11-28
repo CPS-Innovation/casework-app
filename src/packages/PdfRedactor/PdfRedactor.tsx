@@ -190,6 +190,8 @@ export const PdfRedactor = (p: {
   onRotationsChange: (x: TIndexedRotation) => void;
   indexedDeletion: TIndexedDeletion;
   onDeletionsChange: (x: TIndexedDeletion) => void;
+  onDeletionAdd: (x: TDeletion) => void;
+  onDeletionRemove: (x: TDeletion) => void;
 }) => {
   const { previousModeRef } = usePreviousModeRef(p.mode);
 
@@ -412,13 +414,16 @@ export const PdfRedactor = (p: {
                 }}
                 pageIsDelete={!!p.indexedDeletion[j + 1]?.isDeleted}
                 onPageIsDeleteChange={(isDeleted) => {
+                  const deletion = {
+                    id: crypto.randomUUID(),
+                    pageNumber: j + 1,
+                    isDeleted
+                  };
+                  const fn = isDeleted ? p.onDeletionAdd : p.onDeletionRemove;
+                  fn(deletion);
                   p.onDeletionsChange({
                     ...p.indexedDeletion,
-                    [j + 1]: {
-                      id: crypto.randomUUID(),
-                      pageNumber: j + 1,
-                      isDeleted
-                    }
+                    [j + 1]: deletion
                   });
                 }}
               />

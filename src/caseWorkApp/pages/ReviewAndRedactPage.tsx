@@ -2,6 +2,7 @@ import { ComponentProps, useEffect, useState } from 'react';
 import { Layout, TwoCol } from '../../components';
 import { DocumentSidebar } from '../../packages/DocumentSelectAccordion/DocumentSidebar';
 import { PdfRedactorMiniModal } from '../../packages/PdfRedactor/modals/PdfRedactorMiniModal';
+import { DeletionReasonForm } from '../../packages/PdfRedactor/PdfDeletionReasonForm';
 import { RedactionDetailsForm } from '../../packages/PdfRedactor/PdfRedactionTypeForm';
 import { PdfRedactor } from '../../packages/PdfRedactor/PdfRedactor';
 import {
@@ -38,6 +39,9 @@ const CaseworkPdfRedactor = (p: {
   const [redactionDetails, setRedactionDetails] = useState<
     { redactionId: string; randomId: string }[]
   >([]);
+  const [deletionDetails, setDeletionDetails] = useState<
+    { deletionId: string; randomId: string }[]
+  >([]);
 
   useEffect(() => {
     const redactionIds = redactions.map((red) => red.id);
@@ -45,9 +49,21 @@ const CaseworkPdfRedactor = (p: {
       prev.filter((redDetail) => redactionIds.includes(redDetail.redactionId))
     );
   }, [redactions]);
+  useEffect(() => {
+    const deletionIds = Object.values(indexedDeletion)
+      .filter((del) => del.isDeleted)
+      .map((del) => del.id);
+    setDeletionDetails((prev) =>
+      prev.filter((detail) => deletionIds.includes(detail.deletionId))
+    );
+  }, [indexedDeletion]);
 
-  const [popupProps, setPopupProps] = useState<Omit<
+  const [redactionPopupProps, setRedactionPopupProps] = useState<Omit<
     ComponentProps<typeof RedactionDetailsForm> & TCoord,
+    'onSaveSuccess' | 'onCancelClick'
+  > | null>(null);
+  const [deleteReasonPopupProps, setDeleteReasonPopupProps] = useState<Omit<
+    ComponentProps<typeof DeletionReasonForm> & TCoord,
     'onSaveSuccess' | 'onCancelClick'
   > | null>(null);
 
@@ -55,34 +71,73 @@ const CaseworkPdfRedactor = (p: {
 
   return (
     <div>
-      {popupProps &&
+      {redactionPopupProps &&
         (() => {
           const handleCloseModal = () => {
             setRedactions((prev) =>
-              prev.filter((x) => !popupProps.redactionIds.includes(x.id))
+              prev.filter(
+                (x) => !redactionPopupProps.redactionIds.includes(x.id)
+              )
             );
-            setPopupProps(null);
+            setRedactionPopupProps(null);
           };
 
           return (
             <PdfRedactorMiniModal
-              coordX={popupProps.x}
-              coordY={popupProps.y}
+              coordX={redactionPopupProps.x}
+              coordY={redactionPopupProps.y}
               onBackgroundClick={handleCloseModal}
               onEscPress={handleCloseModal}
             >
               <RedactionDetailsForm
-                redactionIds={popupProps.redactionIds}
-                documentId={popupProps.documentId}
-                urn={popupProps.urn}
-                caseId={popupProps.caseId}
+                redactionIds={redactionPopupProps.redactionIds}
+                documentId={redactionPopupProps.documentId}
+                urn={redactionPopupProps.urn}
+                caseId={redactionPopupProps.caseId}
                 onCancelClick={() => {
                   setRedactions((prev) =>
-                    prev.filter((x) => !popupProps.redactionIds.includes(x.id))
+                    prev.filter(
+                      (x) => !redactionPopupProps.redactionIds.includes(x.id)
+                    )
                   );
-                  setPopupProps(null);
+                  setRedactionPopupProps(null);
                 }}
-                onSaveSuccess={() => setPopupProps(null)}
+                onSaveSuccess={() => setRedactionPopupProps(null)}
+              />
+            </PdfRedactorMiniModal>
+          );
+        })()}
+      {deleteReasonPopupProps &&
+        (() => {
+          const handleCloseModal = () => {
+            setIndexedDeletion((prev) => {
+              const { [deleteReasonPopupProps.pageNumber]: _, ...rest } = prev;
+              return rest;
+            });
+            setDeleteReasonPopupProps(null);
+          };
+
+          return (
+            <PdfRedactorMiniModal
+              coordX={deleteReasonPopupProps.x}
+              coordY={deleteReasonPopupProps.y}
+              onBackgroundClick={handleCloseModal}
+              onEscPress={handleCloseModal}
+            >
+              <DeletionReasonForm
+                pageNumber={deleteReasonPopupProps.pageNumber}
+                documentId={deleteReasonPopupProps.documentId}
+                urn={deleteReasonPopupProps.urn}
+                caseId={deleteReasonPopupProps.caseId}
+                onCancelClick={() => {
+                  setIndexedDeletion((prev) => {
+                    const { [deleteReasonPopupProps.pageNumber]: _, ...rest } =
+                      prev;
+                    return rest;
+                  });
+                  setDeleteReasonPopupProps(null);
+                }}
+                onSaveSuccess={() => setDeleteReasonPopupProps(null)}
               />
             </PdfRedactorMiniModal>
           );
@@ -100,7 +155,7 @@ const CaseworkPdfRedactor = (p: {
             randomId: `This redaction does ${crypto.randomUUID()}`
           }));
           setRedactionDetails((prev) => [...prev, ...newRedactionDetails]);
-          setPopupProps(() => ({
+          setRedactionPopupProps(() => ({
             x: mousePos.current.x,
             y: mousePos.current.y,
             redactionIds: add.map((x) => x.id),
@@ -127,6 +182,22 @@ const CaseworkPdfRedactor = (p: {
         onRotationsChange={(newRotations) => setIndexedRotation(newRotations)}
         indexedDeletion={indexedDeletion}
         onDeletionsChange={(newDeletions) => setIndexedDeletion(newDeletions)}
+        onDeletionAdd={(add) => {
+          const newDeletionDetails = {
+            deletionId: add.id,
+            randomId: `This deletion does ${crypto.randomUUID()}`
+          };
+          setDeletionDetails((prev) => [...prev, newDeletionDetails]);
+          setDeleteReasonPopupProps(() => ({
+            x: mousePos.current.x,
+            y: mousePos.current.y,
+            pageNumber: add.pageNumber,
+            documentId: 'This document does not exist',
+            urn: 'This URN does not exist',
+            caseId: 'This case does not exist'
+          }));
+        }}
+        onDeletionRemove={() => {}}
       />
     </div>
   );
