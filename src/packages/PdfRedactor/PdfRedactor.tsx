@@ -206,25 +206,21 @@ export const PdfRedactor = (p: {
 
   return (
     <div ref={pdfRedactorWrapperElmRef}>
-      {(displayCantProceedModal === 'areaRedact' ||
-        displayCantProceedModal === 'textRedact') && (
+      {displayCantProceedModal && (
         <PdfRedactorCenteredModal
           onBackgroundClick={() => setDisplayCantproceedModal(undefined)}
           onEscPress={() => setDisplayCantproceedModal(undefined)}
         >
-          <SaveYourRedactionsToProceedModal
-            onClose={() => setDisplayCantproceedModal(undefined)}
-          />
-        </PdfRedactorCenteredModal>
-      )}
-      {displayCantProceedModal === 'rotation' && (
-        <PdfRedactorCenteredModal
-          onBackgroundClick={() => setDisplayCantproceedModal(undefined)}
-          onEscPress={() => setDisplayCantproceedModal(undefined)}
-        >
-          <SaveYourRotationsToProceedModal
-            onClose={() => setDisplayCantproceedModal(undefined)}
-          />
+          {['areaRedact', 'textRedact'].includes(displayCantProceedModal) && (
+            <SaveYourRedactionsToProceedModal
+              onClose={() => setDisplayCantproceedModal(undefined)}
+            />
+          )}
+          {displayCantProceedModal === 'rotation' && (
+            <SaveYourRotationsToProceedModal
+              onClose={() => setDisplayCantproceedModal(undefined)}
+            />
+          )}
         </PdfRedactorCenteredModal>
       )}
       <ModeStyleTag mode={p.mode} />
@@ -313,8 +309,6 @@ export const PdfRedactor = (p: {
           >
             {[...Array(numPages)].map((_, j) => (
               <PdfRedactorPage
-                // no other identifiable info for key below
-                // cannot be reordered so not an issue
                 key={`pdf-redactor-page-${j}`}
                 pageNumber={j + 1}
                 scale={scaleHelper.scale}
