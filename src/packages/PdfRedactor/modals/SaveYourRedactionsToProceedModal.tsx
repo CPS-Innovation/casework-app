@@ -7,7 +7,7 @@ export const SaveYourRedactionsToProceedModal = (p: {
   return (
     <div
       style={{
-        background: 'white',
+        background: '#ffffff',
         maxWidth: '35vw',
         display: 'flex',
         flexDirection: 'column',

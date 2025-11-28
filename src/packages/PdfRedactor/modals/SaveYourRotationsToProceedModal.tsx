@@ -5,7 +5,7 @@ export const SaveYourRotationsToProceedModal = (p: { onClose: () => void }) => {
   return (
     <div
       style={{
-        background: 'white',
+        background: '#ffffff',
         maxWidth: '35vw',
         display: 'flex',
         flexDirection: 'column',
