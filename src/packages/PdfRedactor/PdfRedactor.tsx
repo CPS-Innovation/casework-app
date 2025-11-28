@@ -229,20 +229,23 @@ export const PdfRedactor = (p: {
   }, [deletions]);
 
   useEffect(() => {
-    if (p.mode === 'rotation' && p.redactions.length > 0) {
+    if (
+      p.mode === 'rotation' &&
+      (p.redactions.length > 0 || filteredDeletions.length > 0)
+    ) {
       p.onModeChange(previousModeRef.current);
       setDisplayToProceedModal(previousModeRef.current);
     }
     if (
       (p.mode === 'textRedact' || p.mode === 'areaRedact') &&
-      filteredRotations.length > 0
+      (filteredRotations.length > 0 || filteredDeletions.length > 0)
     ) {
       p.onModeChange(previousModeRef.current);
       setDisplayToProceedModal(previousModeRef.current);
     }
     if (
       p.mode === 'deletion' &&
-      (filteredRotations.length > 0 || p.redactions.length)
+      (filteredRotations.length > 0 || p.redactions.length > 0)
     ) {
       p.onModeChange(previousModeRef.current);
       setDisplayToProceedModal(previousModeRef.current);
