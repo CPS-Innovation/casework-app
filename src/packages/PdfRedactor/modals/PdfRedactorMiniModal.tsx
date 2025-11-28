@@ -57,8 +57,8 @@ export const PdfRedactorMiniModal = (p: {
     <>
       <style>
         {`
-      body {
-        overflow: hidden
+      html, body {
+        overflow: hidden !important;
       }
     `}
       </style>
@@ -69,7 +69,7 @@ export const PdfRedactorMiniModal = (p: {
           left: 0,
           right: 0,
           bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          backgroundColor: '#00000080',
           zIndex: 999,
           pointerEvents: 'auto'
         }}
@@ -84,10 +84,10 @@ export const PdfRedactorMiniModal = (p: {
           backgroundColor: '#fff',
           border: '1px solid #ddd',
           borderRadius: '8px',
-          boxShadow: '0 0 .3125rem .3125rem #0003',
+          boxShadow: '0 0 5px 5px #0003',
           padding: '16px',
           zIndex: 1000,
-          filter: 'drop-shadow(0 1px .15rem #000)',
+          filter: 'drop-shadow(0 1px 2.5px #000)',
           pointerEvents: 'auto'
         }}
       >
