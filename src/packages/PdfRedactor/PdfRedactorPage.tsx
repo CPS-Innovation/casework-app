@@ -134,6 +134,107 @@ export const PdfRedactorRotationOverlay = (p: {
     </div>
   );
 };
+export const PdfRedactorDeletionOverlay = (p: {
+  pageIsDelete: boolean;
+  onPageIsDeleteChange: (x: boolean) => void;
+}) => {
+  return (
+    <>
+      {!p.pageIsDelete && (
+        <div style={{ position: 'absolute', top: 0, right: 0, zIndex: 500 }}>
+          <GovUkButton
+            variant="inverse"
+            onClick={() => p.onPageIsDeleteChange(true)}
+            style={{
+              display: 'flex',
+              whiteSpace: 'nowrap',
+              border: 0,
+              padding: 0,
+              paddingRight: '8px',
+              gap: '8px',
+              alignItems: 'center'
+            }}
+          >
+            <span
+              style={{
+                background: '#1d70b8',
+                height: '25px',
+                width: '25px',
+                padding: '5px'
+              }}
+            >
+              <RotateIcon color="white" />
+            </span>
+            <div>Delete</div>
+          </GovUkButton>
+        </div>
+      )}
+      {p.pageIsDelete && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            right: 0,
+            left: 0,
+            backgroundColor: '#00000055',
+            zIndex: 500
+          }}
+        >
+          <div
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%,-50%)'
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                color: '#ffffff',
+                gap: '8px'
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  gap: '20px'
+                }}
+              >
+                <span style={{ height: '125px', width: '125px' }}>
+                  <DocumentIcon color="white" rotateDegrees={0} />
+                </span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <span style={{ fontSize: '2.5rem', textAlign: 'center' }}>
+                  Page selected for deletion
+                </span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <span style={{ color: '#ffffff', textAlign: 'center' }}>
+                  Click "save all deletions" to remove the page from the
+                  document
+                </span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <span
+                  onClick={() => p.onPageIsDeleteChange(false)}
+                  className="govuk-link"
+                  style={{ color: '#ffffff' }}
+                >
+                  Cancel
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
 export const PdfRedactorPage = (p: {
   onMouseMove: (p: { x: number; y: number } | null) => void;
   pageNumber: number;
@@ -146,6 +247,8 @@ export const PdfRedactorPage = (p: {
   redactions: TRedaction[];
   pageRotationDegrees: number;
   onPageRotationChange: (x: number) => void;
+  pageIsDelete: boolean;
+  onPageIsDeleteChange: (x: boolean) => void;
 }) => {
   const { pageNumber, scale, redactions } = p;
 
@@ -204,6 +307,12 @@ export const PdfRedactorPage = (p: {
               onPageRotationChange={p.onPageRotationChange}
             />
           )}
+          {p.mode === 'deletion' && (
+            <PdfRedactorDeletionOverlay
+              pageIsDelete={p.pageIsDelete}
+              onPageIsDeleteChange={p.onPageIsDeleteChange}
+            />
+          )}
           <div
             ref={pdfPageWrapperElmRef}
             style={{ position: 'relative' }}
@@ -213,7 +322,7 @@ export const PdfRedactorPage = (p: {
             <Page
               pageNumber={p.pageNumber}
               onClick={() => {
-                if (p.mode === 'textRedact') return;
+                if (p.mode !== 'areaRedact') return;
                 if (firstCorner && mousePos) {
                   const newRect = {
                     id: crypto.randomUUID(),

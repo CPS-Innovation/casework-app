@@ -8,6 +8,7 @@ import {
   TCoord,
   TRedaction
 } from '../../packages/PdfRedactor/utils/coordUtils';
+import { TIndexedDeletion } from '../../packages/PdfRedactor/utils/deletionUtils';
 import { TMode } from '../../packages/PdfRedactor/utils/modeUtils';
 import { TIndexedRotation } from '../../packages/PdfRedactor/utils/rotationUtils';
 import { useWindowMouseListener } from '../../packages/PdfRedactor/utils/useWindowMouseListener';
@@ -32,6 +33,7 @@ const CaseworkPdfRedactor = (p: {
 }) => {
   const [redactions, setRedactions] = useState<TRedaction[]>([]);
   const [indexedRotation, setIndexedRotation] = useState<TIndexedRotation>({});
+  const [indexedDeletion, setIndexedDeletion] = useState<TIndexedDeletion>({});
 
   const [redactionDetails, setRedactionDetails] = useState<
     { redactionId: string; randomId: string }[]
@@ -123,6 +125,8 @@ const CaseworkPdfRedactor = (p: {
         }}
         indexedRotation={indexedRotation}
         onRotationsChange={(newRotations) => setIndexedRotation(newRotations)}
+        indexedDeletion={indexedDeletion}
+        onDeletionsChange={(newDeletions) => setIndexedDeletion(newDeletions)}
       />
     </div>
   );
@@ -218,6 +222,11 @@ export const ReviewAndRedactPage = () => {
               onRotateModeButtonClick={() => {
                 setMode((prev) =>
                   prev === 'rotation' ? 'areaRedact' : 'rotation'
+                );
+              }}
+              onDeleteModeButtonClick={() => {
+                setMode((prev) =>
+                  prev === 'deletion' ? 'areaRedact' : 'deletion'
                 );
               }}
             ></DocumentViewportArea>
