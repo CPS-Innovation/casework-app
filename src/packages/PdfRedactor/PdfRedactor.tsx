@@ -5,9 +5,13 @@ import 'react-pdf/dist/Page/TextLayer.css';
 import { AreaIcon } from './icons/AreaIcon';
 import { EditIcon } from './icons/EditIcon';
 import { TickCircleIcon } from './icons/TickCircleIcon';
+import { PdfRedactorCenteredModal } from './modals/PdfRedactorCenteredModal';
+import { SaveYourRedactionsToProceedModal } from './modals/SaveYourRedactionsToProceedModal';
+import { SaveYourRotationsToProceedModal } from './modals/SaveYourRotationsToProceedModal';
 import { PdfRedactorPage } from './PdfRedactorPage';
 import type { TRedaction } from './utils/coordUtils';
 import { ModeStyleTag, type TMode } from './utils/modeUtils';
+import { TIndexedRotation, TRotation } from './utils/rotationUtils';
 import { useTrigger } from './utils/useTriggger';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -36,6 +40,99 @@ const indexRedactionsOnPageNumber = (redactions: TRedaction[]) => {
   return temp;
 };
 
+const RedactionsFooter = (p: {
+  redactions: TRedaction[];
+  onRemoveAllRedactionsClick: () => void;
+  onSaveRedactionsClick: (x: TRedaction[]) => void;
+}) => {
+  return (
+    <div
+      style={{
+        border: '1px solid black',
+        background: 'white',
+        color: 'black',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '10px'
+      }}
+    >
+      <button
+        className="govuk-button govuk-button--inverse"
+        onClick={() => p.onRemoveAllRedactionsClick()}
+      >
+        Remove all redactions
+      </button>
+      <span style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+        <span>
+          {p.redactions.length === 1 && <>There is 1 redaction</>}
+          {p.redactions.length > 1 && (
+            <>There are {p.redactions.length} redactions</>
+          )}
+        </span>
+        <button
+          className="govuk-button"
+          onClick={() => p.onSaveRedactionsClick(p.redactions)}
+        >
+          Save all redactions
+        </button>
+      </span>
+    </div>
+  );
+};
+const RotationsFooter = (p: {
+  rotations: TRotation[];
+  onRemoveAllRotationsClick: () => void;
+  onSaveRotationsClick: (x: TRotation[]) => void;
+}) => {
+  return (
+    <div
+      style={{
+        border: '1px solid black',
+        background: 'white',
+        color: 'black',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '10px'
+      }}
+    >
+      <button
+        className="govuk-button govuk-button--inverse"
+        onClick={() => p.onRemoveAllRotationsClick()}
+      >
+        Remove all rotations
+      </button>
+      <span style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+        <span>
+          {p.rotations.length === 1 && <>There is 1 rotation</>}
+          {p.rotations.length > 1 && (
+            <>There are {p.rotations.length} rotations</>
+          )}
+        </span>
+        <button
+          className="govuk-button"
+          onClick={() => p.onSaveRotationsClick(p.rotations)}
+        >
+          Save all rotations
+        </button>
+      </span>
+    </div>
+  );
+};
+
+const usePreviousModeRef = (value: TMode) => {
+  const currentRef = useRef(value);
+  const previousModeRef = useRef<TMode>(value);
+
+  useEffect(() => {
+    previousModeRef.current = currentRef.current;
+    currentRef.current = value;
+  }, [value]);
+
+  return { previousModeRef };
+};
+
 export const PdfRedactor = (p: {
   fileUrl: string;
   redactions: TRedaction[];
@@ -46,7 +143,11 @@ export const PdfRedactor = (p: {
   onAddRedactions: (redactions: TRedaction[]) => void;
   onRemoveRedactions: (redactionIds: string[]) => void;
   onSaveRedactions: (redactions: TRedaction[]) => Promise<void>;
+  indexedRotation: TIndexedRotation;
+  onRotationsChange: (x: TIndexedRotation) => void;
 }) => {
+  const { previousModeRef } = usePreviousModeRef(p.mode);
+
   // ref required for eventlistener
   const modeRef = useRef(p.mode);
 
@@ -56,6 +157,10 @@ export const PdfRedactor = (p: {
     modeRef.current = p.mode;
   }, [p.mode]);
 
+  const [displayCantProceedModal, setDisplayCantproceedModal] = useState<
+    TMode | undefined
+  >(undefined);
+
   const [numPages, setNumPages] = useState<number>();
   const scaleHelper = useScaleHelper();
   const pdfRedactorWrapperElmRef = useRef<HTMLDivElement>(null);
@@ -63,6 +168,27 @@ export const PdfRedactor = (p: {
   const indexedRedactions = useMemo(() => {
     return indexRedactionsOnPageNumber(p.redactions);
   }, [p.redactions]);
+
+  const rotations = useMemo(() => {
+    return Object.values(p.indexedRotation);
+  }, [p.indexedRotation]);
+  const filteredRotations = useMemo(() => {
+    return rotations.filter((rot) => rot.rotationDegrees !== 0);
+  }, [rotations]);
+
+  useEffect(() => {
+    if (p.mode === 'rotation' && p.redactions.length > 0) {
+      p.onModeChange(previousModeRef.current);
+      setDisplayCantproceedModal(previousModeRef.current);
+    }
+    if (
+      (p.mode === 'textRedact' || p.mode === 'areaRedact') &&
+      filteredRotations.length > 0
+    ) {
+      p.onModeChange(previousModeRef.current);
+      setDisplayCantproceedModal(previousModeRef.current);
+    }
+  }, [p.mode]);
 
   const redactHighlightedTextTrigger = useTrigger();
   const redactHighlightedIfTextRedactionMode = () => {
@@ -80,6 +206,27 @@ export const PdfRedactor = (p: {
 
   return (
     <div ref={pdfRedactorWrapperElmRef}>
+      {(displayCantProceedModal === 'areaRedact' ||
+        displayCantProceedModal === 'textRedact') && (
+        <PdfRedactorCenteredModal
+          onBackgroundClick={() => setDisplayCantproceedModal(undefined)}
+          onEscPress={() => setDisplayCantproceedModal(undefined)}
+        >
+          <SaveYourRedactionsToProceedModal
+            onClose={() => setDisplayCantproceedModal(undefined)}
+          />
+        </PdfRedactorCenteredModal>
+      )}
+      {displayCantProceedModal === 'rotation' && (
+        <PdfRedactorCenteredModal
+          onBackgroundClick={() => setDisplayCantproceedModal(undefined)}
+          onEscPress={() => setDisplayCantproceedModal(undefined)}
+        >
+          <SaveYourRotationsToProceedModal
+            onClose={() => setDisplayCantproceedModal(undefined)}
+          />
+        </PdfRedactorCenteredModal>
+      )}
       <ModeStyleTag mode={p.mode} />
       {!p.hideToolbar && (
         <div
@@ -187,10 +334,21 @@ export const PdfRedactor = (p: {
                   );
                   p.onRemoveRedactions(ids);
                 }}
-                redactions={(() => {
-                  const y = indexedRedactions[j + 1] ?? [];
-                  return y;
+                redactions={indexedRedactions[j + 1] ?? []}
+                pageRotationDegrees={(() => {
+                  const rotation = p.indexedRotation[j + 1];
+                  return rotation ? rotation.rotationDegrees : 0;
                 })()}
+                onPageRotationChange={(x) => {
+                  p.onRotationsChange({
+                    ...p.indexedRotation,
+                    [j + 1]: {
+                      id: crypto.randomUUID(),
+                      pageNumber: j + 1,
+                      rotationDegrees: x
+                    }
+                  });
+                }}
               />
             ))}
           </Document>
@@ -202,47 +360,31 @@ export const PdfRedactor = (p: {
               bottom: '25px',
               left: 0,
               right: 0,
-              zIndex: 10
+              zIndex: 800
             }}
           >
-            <div
-              style={{
-                border: '1px solid black',
-                background: 'white',
-                color: 'black',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '10px'
-              }}
-            >
-              <button
-                className="govuk-button govuk-button--inverse"
-                onClick={() => p.onRedactionsChange([])}
-              >
-                Remove all redactions
-              </button>
-              <span
-                style={{ display: 'flex', gap: '8px', alignItems: 'center' }}
-              >
-                <span>
-                  {p.redactions.length === 1 && <>There is 1 redaction</>}
-                  {p.redactions.length > 1 && (
-                    <>There are {p.redactions.length} redactions</>
-                  )}
-                </span>
-                <button
-                  className="govuk-button"
-                  onClick={async () => {
-                    await p.onSaveRedactions(p.redactions);
-                    p.onRedactionsChange([]);
-                    p.onRedactionsChange([]);
-                  }}
-                >
-                  Save all redactions
-                </button>
-              </span>
-            </div>
+            <RedactionsFooter
+              redactions={p.redactions}
+              onRemoveAllRedactionsClick={() => p.onRedactionsChange([])}
+              onSaveRedactionsClick={() => p.onRedactionsChange([])}
+            />
+          </div>
+        )}
+        {filteredRotations.length > 0 && (
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '25px',
+              left: 0,
+              right: 0,
+              zIndex: 800
+            }}
+          >
+            <RotationsFooter
+              rotations={filteredRotations}
+              onRemoveAllRotationsClick={() => p.onRotationsChange({})}
+              onSaveRotationsClick={() => p.onRotationsChange({})}
+            />
           </div>
         )}
       </div>

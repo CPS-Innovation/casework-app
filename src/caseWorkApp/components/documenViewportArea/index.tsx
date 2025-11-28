@@ -52,13 +52,15 @@ type DocumentViewportAreaProps = {
   activeTabId: string;
   redactAreaState: boolean;
   onRedactAreaStateChange: (x: boolean) => void;
+  onRotateModeButtonClick: () => void;
 };
 
 export const DocumentViewportArea = ({
   items,
   activeTabId,
   redactAreaState,
-  onRedactAreaStateChange
+  onRedactAreaStateChange,
+  onRotateModeButtonClick
 }: DocumentViewportAreaProps) => {
   const [name, setName] = useState<string>('');
 
@@ -101,7 +103,9 @@ export const DocumentViewportArea = ({
       <DropdownButton
         name="Document actions"
         dropDownItems={dropDownItems}
-        callBackFn={() => {}}
+        callBackFn={(id) => {
+          if (id === '2') onRotateModeButtonClick();
+        }}
         ariaLabel="document actions dropdown"
         dataTestId={`document-actions-dropdown`}
         showLastItemSeparator={true}

@@ -1,17 +1,18 @@
 import { ComponentProps, useEffect, useState } from 'react';
 import { Layout, TwoCol } from '../../components';
 import { DocumentSidebar } from '../../packages/DocumentSelectAccordion/DocumentSidebar';
-import { RedactionDetailsForm } from '../../packages/PdfRedactor/PdfRedactionTypeForm';
-import { PdfRedactor } from '../../packages/PdfRedactor/PdfRedactor';
 import {
   PdfRedactorMiniModal,
   useWindowMouseListener
-} from '../../packages/PdfRedactor/PdfRedactorMiniModal';
+} from '../../packages/PdfRedactor/modals/PdfRedactorMiniModal';
+import { RedactionDetailsForm } from '../../packages/PdfRedactor/PdfRedactionTypeForm';
+import { PdfRedactor } from '../../packages/PdfRedactor/PdfRedactor';
 import {
   TCoord,
   TRedaction
 } from '../../packages/PdfRedactor/utils/coordUtils';
 import { TMode } from '../../packages/PdfRedactor/utils/modeUtils';
+import { TIndexedRotation } from '../../packages/PdfRedactor/utils/rotationUtils';
 import { DocumentControlArea } from '../components/documentControlArea';
 import { DocumentViewportArea } from '../components/documenViewportArea';
 import { GetDataFromAxios } from '../components/utils.ts/getData';
@@ -32,6 +33,7 @@ const CaseworkPdfRedactor = (p: {
   onModeChange: (x: TMode) => void;
 }) => {
   const [redactions, setRedactions] = useState<TRedaction[]>([]);
+  const [indexedRotation, setIndexedRotation] = useState<TIndexedRotation>({});
 
   const [redactionDetails, setRedactionDetails] = useState<
     { redactionId: string; randomId: string }[]
@@ -121,6 +123,8 @@ const CaseworkPdfRedactor = (p: {
 
           redactionsWithDetails;
         }}
+        indexedRotation={indexedRotation}
+        onRotationsChange={(newRotations) => setIndexedRotation(newRotations)}
       />
     </div>
   );
@@ -212,6 +216,11 @@ export const ReviewAndRedactPage = () => {
               redactAreaState={mode === 'areaRedact'}
               onRedactAreaStateChange={(x) => {
                 setMode(x ? 'areaRedact' : 'textRedact');
+              }}
+              onRotateModeButtonClick={() => {
+                setMode((prev) =>
+                  prev === 'rotation' ? 'areaRedact' : 'rotation'
+                );
               }}
             ></DocumentViewportArea>
           </DocumentControlArea>

@@ -57,7 +57,7 @@ export const PdfRedactorMiniModal = (p: {
     <>
       <style>
         {`
-      body {
+      html, body {
         overflow: hidden
       }
     `}

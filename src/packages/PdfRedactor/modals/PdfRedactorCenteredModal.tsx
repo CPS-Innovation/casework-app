@@ -1,0 +1,60 @@
+import { useEffect, useRef, type ReactNode } from 'react';
+
+export const PdfRedactorCenteredModal = (p: {
+  children: ReactNode;
+  onBackgroundClick: () => void;
+  onEscPress: () => void;
+}) => {
+  const popupRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const fn = (e: KeyboardEvent) => {
+      if (e.code === 'Escape') p.onBackgroundClick();
+    };
+    window.addEventListener('keydown', fn);
+    return () => window.removeEventListener('keydown', fn);
+  }, []);
+
+  return (
+    <>
+      <style>
+        {`
+      html, body {
+        overflow: hidden !important;
+      }
+    `}
+      </style>
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          zIndex: 999,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+        onClick={p.onBackgroundClick}
+      >
+        <div
+          ref={popupRef}
+          style={{
+            position: 'relative',
+            border: '1px solid #ddd',
+            borderRadius: '8px',
+            boxShadow: '0 0 .3125rem .3125rem #0003',
+            zIndex: 1000,
+            filter: 'drop-shadow(0 1px .15rem #000)',
+            overflow: 'hidden'
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {p.children}
+        </div>
+      </div>
+    </>
+  );
+};
