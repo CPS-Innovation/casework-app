@@ -23,7 +23,9 @@ export const QUERY_KEYS = {
   CREATE_WITNESS: 'createWitness',
   CREATE_ACTION_PLAN: 'createActionPlan',
   RECLASSIFY_MATERIAL: 'reclassifyMaterial',
-  CASE_SEARCH: 'caseSearch'
+  CASE_SEARCH: 'caseSearch',
+  DOCUMENT_SEARCH: 'documentSearch',
+  GET_ALL_DOCUMENTS: 'getAllDocuments'
 };
 
 export const DEFAULT_RESULTS_PER_PAGE = 20;

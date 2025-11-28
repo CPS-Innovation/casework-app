@@ -21,6 +21,7 @@ import {
 import { useMaterialTags, useSelectedItemsStore } from '../stores';
 
 import { useNavigate } from 'react-router-dom';
+import { SearchTest } from '../components/SearchTest/SearchTest';
 import { URL } from '../constants/url';
 import { CaseMaterialsType } from '../schemas';
 
@@ -35,6 +36,9 @@ export const MaterialsPage = () => {
     useCaseMaterials({ dataType: 'materials' });
   const { setBanner, resetBanner } = useBanner();
   const { deselectMaterial } = useCaseMaterial();
+  // const { documents, loading: documentsLoading } = useGetAllDocuments();
+
+  // console.log({ documents });
 
   const { items: selectedItems, clear: clearSelectedItems } =
     useSelectedItemsStore();
@@ -130,8 +134,13 @@ export const MaterialsPage = () => {
     }
   ];
 
+  // const { documentSearchResults, loading } = useDocumentSearch(searchTerm);
+
+  // console.log({ documentSearchResults, loading });
+
   return (
     <Layout title="Case Materials">
+      <SearchTest />
       <div className="govuk-main-wrapper">
         <RenameDrawer
           material={selectedMaterial}
