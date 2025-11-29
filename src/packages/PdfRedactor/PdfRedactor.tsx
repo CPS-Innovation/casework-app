@@ -185,7 +185,9 @@ export const PdfRedactor = (p: {
   onRedactionsChange: (redactions: TRedaction[]) => void;
   onAddRedactions: (redactions: TRedaction[]) => void;
   onRemoveRedactions: (redactionIds: string[]) => void;
-  onSaveRedactions: (redactions: TRedaction[]) => Promise<void>;
+  onSaveRedactions: () => Promise<void>;
+  onSaveDeletions: () => Promise<void>;
+  onSaveRotations: () => Promise<void>;
   indexedRotation: TIndexedRotation;
   onRotationsChange: (x: TIndexedRotation) => void;
   indexedDeletion: TIndexedDeletion;
@@ -443,7 +445,10 @@ export const PdfRedactor = (p: {
             <RedactionsFooter
               redactions={p.redactions}
               onRemoveAllRedactionsClick={() => p.onRedactionsChange([])}
-              onSaveRedactionsClick={() => p.onRedactionsChange([])}
+              onSaveRedactionsClick={async () => {
+                await p.onSaveRedactions();
+                p.onRedactionsChange([]);
+              }}
             />
           </div>
         )}
@@ -460,7 +465,10 @@ export const PdfRedactor = (p: {
             <RotationsFooter
               rotations={filteredRotations}
               onRemoveAllRotationsClick={() => p.onRotationsChange({})}
-              onSaveRotationsClick={() => p.onRotationsChange({})}
+              onSaveRotationsClick={async () => {
+                await p.onSaveRotations();
+                p.onRotationsChange({});
+              }}
             />
           </div>
         )}
@@ -477,7 +485,10 @@ export const PdfRedactor = (p: {
             <DeletionsFooter
               deletions={filteredDeletions}
               onRemoveAllDeletionsClick={() => p.onDeletionsChange({})}
-              onSaveDeletionsClick={() => p.onDeletionsChange({})}
+              onSaveDeletionsClick={async () => {
+                await p.onSaveDeletions();
+                p.onDeletionsChange({});
+              }}
             />
           </div>
         )}

@@ -165,7 +165,7 @@ const CaseworkPdfRedactor = (p: {
           }));
         }}
         onRemoveRedactions={() => {}}
-        onSaveRedactions={async (redactions) => {
+        onSaveRedactions={async () => {
           const redactionsWithDetails = redactions
             .map((x) => {
               const thisDetails = redactionDetails.find(
@@ -198,6 +198,32 @@ const CaseworkPdfRedactor = (p: {
           }));
         }}
         onDeletionRemove={() => {}}
+        onSaveDeletions={async () => {
+          const deletionsWithDetails = Object.values(indexedDeletion);
+          // .map((x) => {
+          //   const thisDetails = redactionDetails.find(
+          //     (y) => y.redactionId === x.id
+          //   );
+          //   if (!thisDetails) return undefined;
+          //   return { ...x, ...thisDetails };
+          // })
+          // .filter((x) => !!x);
+
+          deletionsWithDetails;
+        }}
+        onSaveRotations={async () => {
+          const rotationsWithDetails = Object.values(indexedRotation);
+          // .map((x) => {
+          //   const thisDetails = redactionDetails.find(
+          //     (y) => y.redactionId === x.id
+          //   );
+          //   if (!thisDetails) return undefined;
+          //   return { ...x, ...thisDetails };
+          // })
+          // .filter((x) => !!x);
+
+          rotationsWithDetails;
+        }}
       />
     </div>
   );
