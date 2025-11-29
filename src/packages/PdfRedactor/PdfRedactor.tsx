@@ -6,10 +6,11 @@ import { AreaIcon } from './icons/AreaIcon';
 import { EditIcon } from './icons/EditIcon';
 import { TickCircleIcon } from './icons/TickCircleIcon';
 import { PdfRedactorCenteredModal } from './modals/PdfRedactorCenteredModal';
-import { SaveYourRedactionsToProceedModal } from './modals/SaveYourRedactionsToProceedModal';
-import { SaveYourRotationsToProceedModal } from './modals/SaveYourRotationsToProceedModal';
+import { SaveToProceedToRedactionsModal } from './modals/SaveToProceedToRedactionsModal';
+import { SaveToProceedToRotationsModal } from './modals/SaveToProceedToRotationsModal';
 import { PdfRedactorPage } from './PdfRedactorPage';
 import type { TRedaction } from './utils/coordUtils';
+import { TDeletion, TIndexedDeletion } from './utils/deletionUtils';
 import { ModeStyleTag, type TMode } from './utils/modeUtils';
 import { TIndexedRotation, TRotation } from './utils/rotationUtils';
 import { useTrigger } from './utils/useTriggger';
@@ -80,6 +81,7 @@ const RedactionsFooter = (p: {
     </div>
   );
 };
+
 const RotationsFooter = (p: {
   rotations: TRotation[];
   onRemoveAllRotationsClick: () => void;
@@ -121,6 +123,47 @@ const RotationsFooter = (p: {
   );
 };
 
+const DeletionsFooter = (p: {
+  deletions: TDeletion[];
+  onRemoveAllDeletionsClick: () => void;
+  onSaveDeletionsClick: (x: TDeletion[]) => void;
+}) => {
+  return (
+    <div
+      style={{
+        border: '1px solid black',
+        background: 'white',
+        color: 'black',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '10px'
+      }}
+    >
+      <button
+        className="govuk-button govuk-button--inverse"
+        onClick={() => p.onRemoveAllDeletionsClick()}
+      >
+        Remove all deletions
+      </button>
+      <span style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+        <span>
+          {p.deletions.length === 1 && <>There is 1 deletion</>}
+          {p.deletions.length > 1 && (
+            <>There are {p.deletions.length} deletions</>
+          )}
+        </span>
+        <button
+          className="govuk-button"
+          onClick={() => p.onSaveDeletionsClick(p.deletions)}
+        >
+          Save all deletions
+        </button>
+      </span>
+    </div>
+  );
+};
+
 const usePreviousModeRef = (value: TMode) => {
   const currentRef = useRef(value);
   const previousModeRef = useRef<TMode>(value);
@@ -142,9 +185,15 @@ export const PdfRedactor = (p: {
   onRedactionsChange: (redactions: TRedaction[]) => void;
   onAddRedactions: (redactions: TRedaction[]) => void;
   onRemoveRedactions: (redactionIds: string[]) => void;
-  onSaveRedactions: (redactions: TRedaction[]) => Promise<void>;
+  onSaveRedactions: () => Promise<void>;
+  onSaveDeletions: () => Promise<void>;
+  onSaveRotations: () => Promise<void>;
   indexedRotation: TIndexedRotation;
   onRotationsChange: (x: TIndexedRotation) => void;
+  indexedDeletion: TIndexedDeletion;
+  onDeletionsChange: (x: TIndexedDeletion) => void;
+  onDeletionAdd: (x: TDeletion) => void;
+  onDeletionRemove: (x: TDeletion) => void;
 }) => {
   const { previousModeRef } = usePreviousModeRef(p.mode);
 
@@ -157,7 +206,7 @@ export const PdfRedactor = (p: {
     modeRef.current = p.mode;
   }, [p.mode]);
 
-  const [displayCantProceedModal, setDisplayCantproceedModal] = useState<
+  const [displayToProceedModal, setDisplayToProceedModal] = useState<
     TMode | undefined
   >(undefined);
 
@@ -176,17 +225,34 @@ export const PdfRedactor = (p: {
     return rotations.filter((rot) => rot.rotationDegrees !== 0);
   }, [rotations]);
 
+  const deletions = useMemo(() => {
+    return Object.values(p.indexedDeletion);
+  }, [p.indexedDeletion]);
+  const filteredDeletions = useMemo(() => {
+    return deletions.filter((del) => !!del?.isDeleted);
+  }, [deletions]);
+
   useEffect(() => {
-    if (p.mode === 'rotation' && p.redactions.length > 0) {
+    if (
+      p.mode === 'rotation' &&
+      (p.redactions.length > 0 || filteredDeletions.length > 0)
+    ) {
       p.onModeChange(previousModeRef.current);
-      setDisplayCantproceedModal(previousModeRef.current);
+      setDisplayToProceedModal(previousModeRef.current);
     }
     if (
       (p.mode === 'textRedact' || p.mode === 'areaRedact') &&
-      filteredRotations.length > 0
+      (filteredRotations.length > 0 || filteredDeletions.length > 0)
     ) {
       p.onModeChange(previousModeRef.current);
-      setDisplayCantproceedModal(previousModeRef.current);
+      setDisplayToProceedModal(previousModeRef.current);
+    }
+    if (
+      p.mode === 'deletion' &&
+      (filteredRotations.length > 0 || p.redactions.length > 0)
+    ) {
+      p.onModeChange(previousModeRef.current);
+      setDisplayToProceedModal(previousModeRef.current);
     }
   }, [p.mode]);
 
@@ -206,19 +272,24 @@ export const PdfRedactor = (p: {
 
   return (
     <div ref={pdfRedactorWrapperElmRef}>
-      {displayCantProceedModal && (
+      {displayToProceedModal && (
         <PdfRedactorCenteredModal
-          onBackgroundClick={() => setDisplayCantproceedModal(undefined)}
-          onEscPress={() => setDisplayCantproceedModal(undefined)}
+          onBackgroundClick={() => setDisplayToProceedModal(undefined)}
+          onEscPress={() => setDisplayToProceedModal(undefined)}
         >
-          {['areaRedact', 'textRedact'].includes(displayCantProceedModal) && (
-            <SaveYourRedactionsToProceedModal
-              onClose={() => setDisplayCantproceedModal(undefined)}
+          {['areaRedact', 'textRedact'].includes(displayToProceedModal) && (
+            <SaveToProceedToRedactionsModal
+              onClose={() => setDisplayToProceedModal(undefined)}
             />
           )}
-          {displayCantProceedModal === 'rotation' && (
-            <SaveYourRotationsToProceedModal
-              onClose={() => setDisplayCantproceedModal(undefined)}
+          {displayToProceedModal === 'rotation' && (
+            <SaveToProceedToRotationsModal
+              onClose={() => setDisplayToProceedModal(undefined)}
+            />
+          )}
+          {displayToProceedModal === 'deletion' && (
+            <SaveToProceedToRotationsModal
+              onClose={() => setDisplayToProceedModal(undefined)}
             />
           )}
         </PdfRedactorCenteredModal>
@@ -343,6 +414,20 @@ export const PdfRedactor = (p: {
                     }
                   });
                 }}
+                pageIsDelete={!!p.indexedDeletion[j + 1]?.isDeleted}
+                onPageIsDeleteChange={(isDeleted) => {
+                  const deletion = {
+                    id: crypto.randomUUID(),
+                    pageNumber: j + 1,
+                    isDeleted
+                  };
+                  const fn = isDeleted ? p.onDeletionAdd : p.onDeletionRemove;
+                  fn(deletion);
+                  p.onDeletionsChange({
+                    ...p.indexedDeletion,
+                    [j + 1]: deletion
+                  });
+                }}
               />
             ))}
           </Document>
@@ -360,7 +445,10 @@ export const PdfRedactor = (p: {
             <RedactionsFooter
               redactions={p.redactions}
               onRemoveAllRedactionsClick={() => p.onRedactionsChange([])}
-              onSaveRedactionsClick={() => p.onRedactionsChange([])}
+              onSaveRedactionsClick={async () => {
+                await p.onSaveRedactions();
+                p.onRedactionsChange([]);
+              }}
             />
           </div>
         )}
@@ -377,7 +465,30 @@ export const PdfRedactor = (p: {
             <RotationsFooter
               rotations={filteredRotations}
               onRemoveAllRotationsClick={() => p.onRotationsChange({})}
-              onSaveRotationsClick={() => p.onRotationsChange({})}
+              onSaveRotationsClick={async () => {
+                await p.onSaveRotations();
+                p.onRotationsChange({});
+              }}
+            />
+          </div>
+        )}
+        {filteredDeletions.length > 0 && (
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '25px',
+              left: 0,
+              right: 0,
+              zIndex: 800
+            }}
+          >
+            <DeletionsFooter
+              deletions={filteredDeletions}
+              onRemoveAllDeletionsClick={() => p.onDeletionsChange({})}
+              onSaveDeletionsClick={async () => {
+                await p.onSaveDeletions();
+                p.onDeletionsChange({});
+              }}
             />
           </div>
         )}
