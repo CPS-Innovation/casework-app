@@ -199,30 +199,20 @@ const CaseworkPdfRedactor = (p: {
         }}
         onDeletionRemove={() => {}}
         onSaveDeletions={async () => {
-          const deletionsWithDetails = Object.values(indexedDeletion);
-          // .map((x) => {
-          //   const thisDetails = redactionDetails.find(
-          //     (y) => y.redactionId === x.id
-          //   );
-          //   if (!thisDetails) return undefined;
-          //   return { ...x, ...thisDetails };
-          // })
-          // .filter((x) => !!x);
+          const deletionsWithDetails = Object.values(indexedDeletion)
+            .map((x) => {
+              const thisDetails = deletionDetails.find(
+                (y) => y.deletionId === x.id
+              );
+              if (!thisDetails) return undefined;
+              return { ...x, ...thisDetails };
+            })
+            .filter((x) => !!x);
 
           deletionsWithDetails;
         }}
         onSaveRotations={async () => {
-          const rotationsWithDetails = Object.values(indexedRotation);
-          // .map((x) => {
-          //   const thisDetails = redactionDetails.find(
-          //     (y) => y.redactionId === x.id
-          //   );
-          //   if (!thisDetails) return undefined;
-          //   return { ...x, ...thisDetails };
-          // })
-          // .filter((x) => !!x);
-
-          rotationsWithDetails;
+          // rotations don't require details
         }}
       />
     </div>
