@@ -52,13 +52,15 @@ type DocumentViewportAreaProps = {
   activeTabId: string;
   redactAreaState: boolean;
   onRedactAreaStateChange: (x: boolean) => void;
+  currentActiveTabId?: string;
 };
 
 export const DocumentViewportArea = ({
   items,
   activeTabId,
   redactAreaState,
-  onRedactAreaStateChange
+  onRedactAreaStateChange,
+  currentActiveTabId
 }: DocumentViewportAreaProps) => {
   const [name, setName] = useState<string>('');
 
@@ -68,11 +70,18 @@ export const DocumentViewportArea = ({
 
   const activeTabLabel = items.findIndex((item) => item.id === activeTabId);
 
+  const documentName = items.filter((el) => el.id === currentActiveTabId);
+
   useEffect(() => {
     if (items && items.length > 0) {
       setName(items[activeTabLabel]?.label);
     }
   }, [items, activeTabId]);
+
+  useEffect(() => {
+    setName(documentName[0]?.label || '');
+    console.log('documentName: ', documentName);
+  }, [documentName]);
 
   return (
     <div className={classes.content}>
@@ -109,3 +118,4 @@ export const DocumentViewportArea = ({
     </div>
   );
 };
+
