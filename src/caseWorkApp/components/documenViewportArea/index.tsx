@@ -68,20 +68,13 @@ export const DocumentViewportArea = ({
     onRedactAreaStateChange(!redactAreaState);
   };
 
-  const activeTabLabel = items.findIndex((item) => item.id === activeTabId);
-
-  const documentName = items.filter((el) => el.id === currentActiveTabId);
-
-  useEffect(() => {
-    if (items && items.length > 0) {
-      setName(items[activeTabLabel]?.label);
-    }
-  }, [items, activeTabId]);
+  const activeTabLabel = items.findIndex(
+    (item) => item.id === activeTabId || item.id === currentActiveTabId
+  );
 
   useEffect(() => {
-    setName(documentName[0]?.label || '');
-    console.log('documentName: ', documentName);
-  }, [documentName]);
+    setName(items[activeTabLabel]?.label);
+  }, [items, activeTabLabel]);
 
   return (
     <div className={classes.content}>
