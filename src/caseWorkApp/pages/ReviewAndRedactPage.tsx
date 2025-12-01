@@ -23,6 +23,7 @@ type TDocumentDataList = {
   hasNotes: boolean;
   isUnused: boolean;
   presentationTitle: string;
+  versionId: number;
   status: string;
 };
 
@@ -130,7 +131,6 @@ export const ReviewAndRedactPage = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useState<boolean>(true);
   const [documentIDs, setDocumentIDs] = useState<any[]>([]);
   const [activeTabId, setActiveTabId] = useState<string>('');
-  const [pdfFileData, setPdfFileData] = useState('');
   const [openDocumentIds, setOpenDocumentIds] = useState<string[]>([]);
   const [mode, setMode] = useState<TMode>('areaRedact');
   const pdfFileRef = useRef('');
@@ -193,11 +193,34 @@ export const ReviewAndRedactPage = () => {
         label: item.presentationTitle,
         title: item.presentationTitle,
         fileName: item.cmsOriginalFileName,
+        versionId: item.versionId,
         status: item.status
       };
     });
 
     setDocumentIDs(matchingResult);
+
+    matchingDocuments?.map((item) => {
+      console.log('el: ', item);
+      // useCallback(()=>{
+      getPdfs({
+        axiosInstance: axiosInstance,
+        urn: item.documentId,
+        caseId: '2160797', // TODO - make it dynamic
+        documentId: item.documentId,
+        versionId: item.versionId,
+        isOcrProcessed: true
+      }).then((response) => {
+        const blob = response.data;
+
+        if (blob instanceof Blob) {
+          const url = window.URL || window.webkitURL;
+          const blobResponse = url.createObjectURL(blob);
+          pdfFileRef.current = blobResponse;
+        }
+      });
+      // }, [el.documentId]);
+    }, []);
   }, [openDocumentIds]);
 
   useEffect(() => {
@@ -246,6 +269,7 @@ export const ReviewAndRedactPage = () => {
               // fileUrl={
               //   pdfFileData || `${window.location.origin}/pdfNotFound.pdf`
               // }
+              //fileUrl={pdfFileRef.current}
               fileUrl={pdfFileRef.current}
               onModeChange={setMode}
               mode={mode}
