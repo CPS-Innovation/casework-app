@@ -12,7 +12,6 @@ export type TabsProps = CommonTabsProps & {
 };
 
 export const Tabs: React.FC<TabsProps> = ({
-  className,
   id,
   idPrefix,
   items,
@@ -76,7 +75,7 @@ export const Tabs: React.FC<TabsProps> = ({
     <>
       <div
         data-testid="tabs"
-        className={`govuk-tabs ${classes.tabs} ${className || ''} `}
+        className={`govuk-tabs ${classes.tabs}`}
         {...attributes}
       >
         <TabButtons

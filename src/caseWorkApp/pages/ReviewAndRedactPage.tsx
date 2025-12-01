@@ -1,4 +1,4 @@
-import { ComponentProps, useEffect, useState } from 'react';
+import { ComponentProps, useEffect, useRef, useState } from 'react';
 import { Layout, TwoCol } from '../../components';
 import { DocumentSidebar } from '../../packages/DocumentSelectAccordion/DocumentSidebar';
 import { PdfRedactorMiniModal } from '../../packages/PdfRedactor/modals/PdfRedactorMiniModal';
@@ -15,7 +15,7 @@ import { TIndexedRotation } from '../../packages/PdfRedactor/utils/rotationUtils
 import { useWindowMouseListener } from '../../packages/PdfRedactor/utils/useWindowMouseListener';
 import { DocumentControlArea } from '../components/documentControlArea';
 import { DocumentViewportArea } from '../components/documenViewportArea';
-import { GetDataFromAxios } from '../components/utils.ts/getData';
+import { GetDataFromAxios } from '../components/utils/getData';
 
 type TDocumentDataList = {
   id: string;
@@ -23,6 +23,7 @@ type TDocumentDataList = {
   documentId: string;
   hasNotes: boolean;
   isUnused: boolean;
+  versionId: number;
   presentationTitle: string;
   status: string;
 };
@@ -227,6 +228,8 @@ export const ReviewAndRedactPage = () => {
   const [openDocumentIds, setOpenDocumentIds] = useState<string[]>([]);
   const [currentActiveTabId, setCurrentActiveTabId] = useState<string>('');
   const [mode, setMode] = useState<TMode>('areaRedact');
+  const [pdfFileUrl, setPdfFileUrl] = useState<string>('');
+  const pdfFileRef = useRef('');
 
   const handleCloseTab = (v: string | undefined) => {
     setOpenDocumentIds((prev) => prev.filter((el) => el !== v));
@@ -237,7 +240,7 @@ export const ReviewAndRedactPage = () => {
   const [documentsDataList, setDocumentsDataList] = useState<
     TDocumentDataList[]
   >([]);
-  const { useAxiosInstance, getDocuments } = GetDataFromAxios();
+  const { useAxiosInstance, getDocuments, getPdfFiles } = GetDataFromAxios();
 
   const axiosInstance = useAxiosInstance();
 
@@ -250,6 +253,27 @@ export const ReviewAndRedactPage = () => {
       setDocumentsDataList(data);
     });
   }, []);
+
+  // useEffect(() => {
+  //   getPdfFiles({
+  //     axiosInstance: axiosInstance,
+  //     urn: '54KR7689125',
+  //     caseId: 2160797,
+  //     documentId: 'PCD-141956',
+  //     versionId: '141956',
+  //     isOcrProcessed: true
+  //   }).then((response) => {
+  //     const blob = response.data;
+
+  //     if (blob instanceof Blob) {
+  //       const url = window.URL || window.webkitURL;
+  //       const blobResponse = url.createObjectURL(blob);
+  //       // setPdfFileData(blobResponse);
+  //       pdfFileRef.current = blobResponse;
+  //     }
+  //   });
+  // }, [openDocumentIds]);
+
   useEffect(() => {
     const matchingDocuments = documentsDataList.filter((item) => {
       return openDocumentIds.includes(item.documentId);
@@ -265,11 +289,35 @@ export const ReviewAndRedactPage = () => {
       return {
         id: item.documentId,
         label: item.presentationTitle,
-        title: item.presentationTitle
+        title: item.presentationTitle,
+        versionId: item.versionId
       };
     });
 
     setDocumentIDs(matchingResult);
+
+    matchingDocuments?.map((item) => {
+      console.log('el: ', item);
+      // useCallback(()=>{
+      getPdfFiles({
+        axiosInstance: axiosInstance,
+        urn: item.documentId,
+        caseId: '2160797', // TODO - make it dynamic
+        documentId: item.documentId,
+        versionId: item.versionId,
+        isOcrProcessed: true
+      }).then((response) => {
+        const blob = response.data;
+
+        if (blob instanceof Blob) {
+          const url = window.URL || window.webkitURL;
+          const blobResponse = url.createObjectURL(blob);
+          setPdfFileUrl(blobResponse);
+          // pdfFileRef.current = blobResponse;
+        }
+      });
+      // }, [el.documentId]);
+    }, []);
   }, [openDocumentIds]);
 
   useEffect(() => {
@@ -329,7 +377,9 @@ export const ReviewAndRedactPage = () => {
             // fileUrl="http://localhost:3000/test-pdfs/may-plus-images.pdf"
             // fileUrl="http://localhost:3000/test-pdfs/final.pdf"
 
-            fileUrl="http://localhost:3000/test-pdfs/final-with-https.pdf"
+            // fileUrl="http://localhost:3000/test-pdfs/final-with-https.pdf"
+            // fileUrl={pdfFileRef.current}
+            fileUrl={pdfFileUrl}
             mode={mode}
             onModeChange={setMode}
           />
