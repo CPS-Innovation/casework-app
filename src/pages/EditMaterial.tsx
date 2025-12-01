@@ -136,14 +136,14 @@ export const EditMaterialPage = () => {
           { key: 'What is the exhibit item?', value: exhibitData?.item },
           { key: 'What is the exhibit name?', value: exhibitData?.subject },
 
-          ...(exhibitData?.existingProducerOrWitnessId ||
+          ...(exhibitData?.existingproducerOrWitnessId ||
           exhibitData?.producedBy
             ? [
                 {
                   key: 'Exhibit producer or witness',
-                  value: exhibitData?.existingProducerOrWitnessId
+                  value: exhibitData?.existingproducerOrWitnessId
                     ? formatWitnessName(
-                        getWitnessById(exhibitData?.existingProducerOrWitnessId)
+                        getWitnessById(exhibitData?.existingproducerOrWitnessId)
                       )
                     : exhibitData?.producedBy
                 }

@@ -22,7 +22,7 @@ export const EditExhibitSchema = z.object({
   subject: z.string({ message: 'Enter the exhibit name (subject)' }),
   used: z.boolean({ message: 'Choose a material status' }),
   producedBy: z.string({ message: 'Enter produced by' }).optional(),
-  existingProducerOrWitnessId: z.coerce.number().optional(),
+  existingproducerOrWitnessId: z.coerce.number().optional(),
   newProducer: z.string().optional()
 });
 

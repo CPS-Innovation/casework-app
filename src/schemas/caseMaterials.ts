@@ -23,7 +23,7 @@ export const CaseMaterialsSchema = z.object({
   producer: z.string(),
   reference: z.string(),
   item: z.string(),
-  existingProducerOrWitnessId: z.number(),
+  existingproducerOrWitnessId: z.number(),
   isReclassifiable: z.boolean()
 });
 

@@ -47,8 +47,8 @@ export const EditExhibitForm = ({
       reference: formState?.reference || material?.reference || '',
       subject: formState?.item || material?.subject || '',
       used: formState?.used || material?.status === 'Used',
-      existingProducerOrWitnessId:
-        formState?.existingProducerOrWitnessId ||
+      existingproducerOrWitnessId:
+        formState?.existingproducerOrWitnessId ||
         material?.existingproducerOrWitnessId,
       producedBy:
         formState?.producedBy ||
@@ -114,14 +114,14 @@ export const EditExhibitForm = ({
         />
 
         <Controller
-          name="existingProducerOrWitnessId"
+          name="existingproducerOrWitnessId"
           control={control}
           render={({ field }) => (
             <SelectList
               {...field}
               id={field.name}
               label="Exhibit producer or witness (optional)"
-              error={errors?.existingProducerOrWitnessId?.message as string}
+              error={errors?.existingproducerOrWitnessId?.message as string}
               disabled={isExhibitProducersLoading || !!fieldValues?.producedBy}
               options={[
                 ...(isExhibitProducersLoading
@@ -144,7 +144,7 @@ export const EditExhibitForm = ({
               id={field.name}
               label="Produced by (optional)"
               error={errors?.producedBy?.message as string}
-              disabled={!!fieldValues.existingProducerOrWitnessId}
+              disabled={!!fieldValues.existingproducerOrWitnessId}
             />
           )}
         />

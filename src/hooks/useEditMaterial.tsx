@@ -44,12 +44,12 @@ export const useEditMaterial = ({
       `/cases/${caseInfo?.id}/materials/exhibit/update`,
       {
         ...data,
-        newProducer: data?.existingProducerOrWitnessId
+        newProducer: data?.existingproducerOrWitnessId
           ? undefined
           : data?.producedBy,
-        existingProducerOrWitnessId: !data?.existingProducerOrWitnessId
+        existingProducerOrWitnessId: !data?.existingproducerOrWitnessId
           ? undefined
-          : data?.existingProducerOrWitnessId
+          : data?.existingproducerOrWitnessId
       }
     );
 
