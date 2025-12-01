@@ -44,6 +44,12 @@ export const useTableActions = ({
     });
   };
 
+  const handleEditClick = (material: CaseMaterialsType, returnTo: string) => {
+    navigate(getRoute('UPDATE_MATERIAL'), {
+      state: { returnTo, row: material }
+    });
+  };
+
   const handleRedactClick = (materialId: number) => {
     alert(`REDACT COMING SOON (material id ${materialId})`);
   };
@@ -104,6 +110,7 @@ export const useTableActions = ({
   return {
     handleReclassifyClick,
     handleDiscardClick,
+    handleEditClick,
     handleRedactClick,
     handleUnusedClick,
     determineReadStatusLabel,

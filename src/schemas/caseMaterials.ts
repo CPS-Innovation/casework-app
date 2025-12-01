@@ -1,7 +1,5 @@
 import { z } from 'zod';
 
-import { StatusTagEnum } from './statusTags';
-
 export const CaseMaterialsSchema = z.object({
   id: z.number(),
   originalFileName: z.string(),
@@ -12,9 +10,9 @@ export const CaseMaterialsSchema = z.object({
   category: z.string(),
   type: z.string(),
   hasAttachments: z.boolean(),
-  status: StatusTagEnum,
+  status: z.string(),
   readStatus: z.string(),
-  statusLabel: StatusTagEnum.optional(),
+  statusLabel: z.string().optional(),
   method: z.string(),
   direction: z.string(),
   party: z.string(),
@@ -25,7 +23,7 @@ export const CaseMaterialsSchema = z.object({
   producer: z.string(),
   reference: z.string(),
   item: z.string(),
-  existingproducerOrWitnessId: z.number(),
+  existingProducerOrWitnessId: z.number(),
   isReclassifiable: z.boolean()
 });
 

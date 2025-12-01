@@ -1,0 +1,105 @@
+import dayjs from 'dayjs';
+import useSWRMutation from 'swr/mutation';
+
+import { QUERY_KEYS } from '../constants/query.ts';
+import { SwrPayload } from '../schemas';
+import {
+  EditExhibitResponseType,
+  EditExhibitType,
+  EditStatementRequestType,
+  EditStatementResponseType,
+  EditStatementType
+} from '../schemas/forms/editStatement';
+import { useCaseInfoStore, useRequest } from './';
+
+type UseEditMaterialOptions = {
+  onError?: () => void;
+  onSuccess?: (response: { materialId: number }) => void;
+};
+
+export const useEditMaterial = ({
+  onError,
+  onSuccess
+}: UseEditMaterialOptions) => {
+  const request = useRequest();
+  const { caseInfo } = useCaseInfoStore();
+
+  const postUpdateStatement = async (
+    _url: string,
+    { arg: data }: SwrPayload<EditStatementRequestType>
+  ): Promise<EditStatementResponseType> => {
+    const response = await request.patch<EditStatementResponseType>(
+      `/cases/${caseInfo?.id}/materials/statement/update`,
+      data
+    );
+
+    return response.data;
+  };
+
+  const postUpdateExhibit = async (
+    _url: string,
+    { arg: data }: SwrPayload<EditExhibitType>
+  ): Promise<EditExhibitResponseType> => {
+    const response = await request.patch<EditExhibitResponseType>(
+      `/cases/${caseInfo?.id}/materials/exhibit/update`,
+      {
+        ...data,
+        newProducer: data?.existingProducerOrWitnessId
+          ? undefined
+          : data?.producedBy,
+        existingProducerOrWitnessId: !data?.existingProducerOrWitnessId
+          ? undefined
+          : data?.existingProducerOrWitnessId
+      }
+    );
+
+    return response.data;
+  };
+
+  const { trigger: submitUpdateStatement, isMutating: isStatementUpdating } =
+    useSWRMutation(
+      caseInfo ? QUERY_KEYS.UPDATE_STATEMENT : null,
+      postUpdateStatement,
+      {
+        onError,
+        onSuccess: (response) => {
+          if (onSuccess) {
+            onSuccess({ materialId: response.updateStatement.id });
+          }
+        }
+      }
+    );
+
+  const { trigger: submitUpdateExhibit, isMutating: isExhibitUpdating } =
+    useSWRMutation(
+      caseInfo ? QUERY_KEYS.UPDATE_EXHIBIT : null,
+      postUpdateExhibit,
+      {
+        onError,
+        onSuccess: (response) => {
+          if (onSuccess) {
+            onSuccess({ materialId: response.updateExhibit.id });
+          }
+        }
+      }
+    );
+
+  const updateStatement = async (data: EditStatementType) => {
+    await submitUpdateStatement({
+      ...data,
+      statementDate: data?.hasStatementDate
+        ? dayjs(data?.statementDate).format('YYYY-MM-DD')
+        : null
+    });
+  };
+
+  const updateExhibit = async (data: EditExhibitType) => {
+    await submitUpdateExhibit(data);
+  };
+
+  return {
+    loading: isStatementUpdating || isExhibitUpdating,
+    updateExhibit,
+    updateStatement
+  };
+};
