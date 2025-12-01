@@ -1,4 +1,4 @@
-export type TMode = 'textRedact' | 'areaRedact';
+export type TMode = 'textRedact' | 'areaRedact' | 'rotation';
 
 const modeStyleMap: { [k in TMode]: string } = {
   areaRedact: `
@@ -11,7 +11,8 @@ const modeStyleMap: { [k in TMode]: string } = {
       cursor: crosshair;
     }
     `,
-  textRedact: ``
+  textRedact: ``,
+  rotation: ``
 };
 
 const allStyles = `

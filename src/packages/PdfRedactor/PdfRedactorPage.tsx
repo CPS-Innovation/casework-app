@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { Page } from 'react-pdf';
+import { DocumentIcon } from './icons/DocumentIcon';
+import { RotateIcon } from './icons/RotateIcon';
 import {
-  CloseIcon,
+  PositionedRedactionBox,
   PositionPdfOverlayBox,
   RedactionBox
 } from './PdfRedactorComponents';
@@ -17,6 +19,121 @@ import { getPdfCoordPairsOfHighlightedText } from './utils/highlightedTextUtils'
 import type { TMode } from './utils/modeUtils';
 import { useTriggerListener, type TTriggerData } from './utils/useTriggger';
 
+export const PdfRedactorRotationOverlay = (p: {
+  pageRotation: number;
+  onPageRotationChange: (x: number) => void;
+}) => {
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        right: 0,
+        left: 0,
+        backgroundColor: '#00000055',
+        zIndex: 500
+      }}
+    >
+      <div
+        style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%,-50%)'
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            color: '#ffffff',
+            gap: '8px'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+            <GovUkButton
+              variant="inverse"
+              onClick={() => {
+                const newVal = p.pageRotation - 90;
+                p.onPageRotationChange(newVal < 0 ? 360 + newVal : newVal);
+              }}
+              style={{
+                display: 'flex',
+                whiteSpace: 'nowrap',
+                border: 0,
+                padding: 0,
+                paddingRight: '8px',
+                gap: '8px',
+                alignItems: 'center'
+              }}
+            >
+              <span
+                style={{
+                  background: '#1d70b8',
+                  height: '25px',
+                  width: '25px',
+                  padding: '5px'
+                }}
+              >
+                <RotateIcon color="white" flip />
+              </span>
+              <div>rotate page left</div>
+            </GovUkButton>
+            <span style={{ height: '125px', width: '125px' }}>
+              <DocumentIcon color="white" rotateDegrees={p.pageRotation} />
+            </span>
+            <GovUkButton
+              variant="inverse"
+              onClick={() => {
+                const newVal = p.pageRotation + 90;
+                p.onPageRotationChange(newVal >= 360 ? newVal - 360 : newVal);
+              }}
+              style={{
+                display: 'flex',
+                whiteSpace: 'nowrap',
+                border: 0,
+                padding: 0,
+                paddingLeft: '8px',
+                gap: '8px',
+                alignItems: 'center'
+              }}
+            >
+              <div>rotate page right</div>
+              <span
+                style={{
+                  background: '#1d70b8',
+                  height: '25px',
+                  width: '25px',
+                  padding: '5px'
+                }}
+              >
+                <RotateIcon color="white" />
+              </span>
+            </GovUkButton>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <span style={{ fontSize: '2.5rem' }}>
+              Rotate page {p.pageRotation}&deg;
+            </span>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <span
+              onClick={() => p.onPageRotationChange(0)}
+              className="govuk-link"
+              style={{
+                color: '#ffffff',
+                visibility: p.pageRotation === 0 ? 'hidden' : 'unset'
+              }}
+            >
+              Cancel
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 export const PdfRedactorPage = (p: {
   onMouseMove: (p: { x: number; y: number } | null) => void;
   pageNumber: number;
@@ -27,6 +144,8 @@ export const PdfRedactorPage = (p: {
   onAddRedactions: (p: TRedaction[]) => void;
   onRemoveRedactions: (p: TRedaction['id'][]) => void;
   redactions: TRedaction[];
+  pageRotationDegrees: number;
+  onPageRotationChange: (x: number) => void;
 }) => {
   const { pageNumber, scale, redactions } = p;
 
@@ -78,7 +197,13 @@ export const PdfRedactorPage = (p: {
           padding: '10px 10px 0px 10px'
         }}
       >
-        <span style={{ display: 'inline-flex' }}>
+        <span style={{ position: 'relative', display: 'inline-flex' }}>
+          {p.mode === 'rotation' && (
+            <PdfRedactorRotationOverlay
+              pageRotation={p.pageRotationDegrees}
+              onPageRotationChange={p.onPageRotationChange}
+            />
+          )}
           <div
             ref={pdfPageWrapperElmRef}
             style={{ position: 'relative' }}
@@ -160,42 +285,20 @@ export const PdfRedactorPage = (p: {
                 convertCoordPairToXywh(box);
 
               return (
-                <PositionPdfOverlayBox
+                <PositionedRedactionBox
                   key={i}
                   xLeft={xLeft}
                   yBottom={yBottom}
                   width={width}
                   height={height}
                   scale={p.scale}
-                >
-                  <RedactionBox
-                    background="#0000004d"
-                    border="2px solid black"
-                  />
-
-                  <GovUkButton
-                    variant="inverse"
-                    style={{
-                      padding: 0,
-                      borderRadius: '50%',
-                      border: 'solid 1px black',
-                      overflow: 'hidden',
-                      boxShadow: 'none',
-                      position: 'absolute',
-                      top: '-10px',
-                      right: '-10px',
-                      zIndex: 10
-                    }}
-                    onClick={() => {
-                      p.onRemoveRedactions([box.id]);
-                      p.onPageRedactionsChange(
-                        redactions?.filter((x) => x.id !== box.id)
-                      );
-                    }}
-                  >
-                    <CloseIcon />
-                  </GovUkButton>
-                </PositionPdfOverlayBox>
+                  onCloseButtonClick={() => {
+                    p.onRemoveRedactions([box.id]);
+                    p.onPageRedactionsChange(
+                      redactions?.filter((x) => x.id !== box.id)
+                    );
+                  }}
+                />
               );
             })}
           </div>

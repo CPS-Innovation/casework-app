@@ -51,6 +51,7 @@ export const DocumentSidebarNotes = (p: {
             Add a note to the document
           </label>
           <GovUkTextarea
+            initFocus
             id="notes-textarea"
             value={text}
             onInput={(x) => setText(x)}
