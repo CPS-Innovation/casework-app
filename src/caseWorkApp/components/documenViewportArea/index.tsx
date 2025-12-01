@@ -52,6 +52,7 @@ type DocumentViewportAreaProps = {
   activeTabId: string;
   redactAreaState: boolean;
   onRedactAreaStateChange: (x: boolean) => void;
+  currentActiveTabId?: string;
   onRotateModeButtonClick: () => void;
 };
 
@@ -60,6 +61,7 @@ export const DocumentViewportArea = ({
   activeTabId,
   redactAreaState,
   onRedactAreaStateChange,
+  currentActiveTabId,
   onRotateModeButtonClick
 }: DocumentViewportAreaProps) => {
   const [name, setName] = useState<string>('');
@@ -68,13 +70,13 @@ export const DocumentViewportArea = ({
     onRedactAreaStateChange(!redactAreaState);
   };
 
-  const activeTabLabel = items.findIndex((item) => item.id === activeTabId);
+  const activeTabLabel = items.findIndex(
+    (item) => item.id === activeTabId || item.id === currentActiveTabId
+  );
 
   useEffect(() => {
-    if (items && items.length > 0) {
-      setName(items[activeTabLabel]?.label);
-    }
-  }, [items, activeTabId]);
+    setName(items[activeTabLabel]?.label);
+  }, [items, activeTabLabel]);
 
   return (
     <div className={classes.content}>
@@ -113,3 +115,4 @@ export const DocumentViewportArea = ({
     </div>
   );
 };
+

@@ -134,12 +134,15 @@ export const ReviewAndRedactPage = () => {
   const [activeTabId, setActiveTabId] = useState<string>('');
 
   const [openDocumentIds, setOpenDocumentIds] = useState<string[]>([]);
+  const [currentActiveTabId, setCurrentActiveTabId] = useState<string>('');
   const [mode, setMode] = useState<TMode>('areaRedact');
 
   const handleCloseTab = (v: string | undefined) => {
     setOpenDocumentIds((prev) => prev.filter((el) => el !== v));
   };
-
+  const handleCurentActiveTabId = (x?: string) => {
+    setCurrentActiveTabId(x ? x : '');
+  };
   const [documentsDataList, setDocumentsDataList] = useState<
     TDocumentDataList[]
   >([]);
@@ -207,11 +210,13 @@ export const ReviewAndRedactPage = () => {
             isSidebarVisible={isSidebarVisible}
             onToggleSidebar={() => setIsSidebarVisible((v) => !v)}
             handleCloseTab={(a) => handleCloseTab(a)}
+            handleCurentActiveTabId={handleCurentActiveTabId}
           >
             <DocumentViewportArea
               activeTabId={activeTabId}
               items={documentIDs}
               redactAreaState={mode === 'areaRedact'}
+              currentActiveTabId={currentActiveTabId}
               onRedactAreaStateChange={(x) => {
                 setMode(x ? 'areaRedact' : 'textRedact');
               }}
@@ -237,3 +242,4 @@ export const ReviewAndRedactPage = () => {
     </Layout>
   );
 };
+
