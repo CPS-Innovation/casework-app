@@ -35,9 +35,6 @@ export const MaterialsPage = () => {
     useCaseMaterials({ dataType: 'materials' });
   const { setBanner, resetBanner } = useBanner();
   const { deselectMaterial } = useCaseMaterial();
-  // const { documents, loading: documentsLoading } = useGetAllDocuments();
-
-  // console.log({ documents });
 
   const { items: selectedItems, clear: clearSelectedItems } =
     useSelectedItemsStore();

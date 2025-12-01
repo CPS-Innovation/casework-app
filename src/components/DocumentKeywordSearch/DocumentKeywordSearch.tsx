@@ -6,16 +6,10 @@ import {
   useSearchTracker
 } from '../../hooks';
 
-import {
-  LoadingSpinner,
-  MaterialsFilters,
-  Modal,
-  SearchInput,
-  SectionBreak,
-  TwoCol
-} from '../';
+import { LoadingSpinner, Modal, SearchInput, SectionBreak, TwoCol } from '../';
 
 import { formatDateLong } from '../../utils/date';
+import { DocumentKeywordSearchFilters } from '../Filters/DocumentKeywordSearchFilters';
 
 export const DocumentKeywordSearch = () => {
   const [inputValue, setInputValue] = useState('');
@@ -67,13 +61,7 @@ export const DocumentKeywordSearch = () => {
         {!trackerComplete ? (
           <LoadingSpinner textContent="Loading search results" />
         ) : (
-          <TwoCol
-            sidebar={
-              <>
-                <MaterialsFilters />
-              </>
-            }
-          >
+          <TwoCol sidebar={<DocumentKeywordSearchFilters />}>
             {!trackerComplete && (
               <p>
                 Preparing search pipeline… <br />
@@ -101,7 +89,12 @@ export const DocumentKeywordSearch = () => {
                 return (
                   <div key={doc.documentId} style={{ marginBottom: 20 }}>
                     <h2 className="govuk-heading-m">
-                      <a>{doc.documentTitle}</a>
+                      <a
+                        href={`/materials?material=${doc.documentId}`}
+                        rel="noreferrer"
+                      >
+                        {doc.documentTitle}
+                      </a>
                     </h2>
 
                     <p className="govuk-body">
@@ -145,7 +138,6 @@ export const DocumentKeywordSearch = () => {
                 );
               })}
 
-            {/* No results */}
             {!loading &&
               trackerComplete &&
               combinedSearchResults?.length === 0 &&
