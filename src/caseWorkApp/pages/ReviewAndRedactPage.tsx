@@ -2,12 +2,14 @@ import { ComponentProps, useEffect, useState } from 'react';
 import { Layout, TwoCol } from '../../components';
 import { DocumentSidebar } from '../../packages/DocumentSelectAccordion/DocumentSidebar';
 import { PdfRedactorMiniModal } from '../../packages/PdfRedactor/modals/PdfRedactorMiniModal';
+import { DeletionReasonForm } from '../../packages/PdfRedactor/PdfDeletionReasonForm';
 import { RedactionDetailsForm } from '../../packages/PdfRedactor/PdfRedactionTypeForm';
 import { PdfRedactor } from '../../packages/PdfRedactor/PdfRedactor';
 import {
   TCoord,
   TRedaction
 } from '../../packages/PdfRedactor/utils/coordUtils';
+import { TIndexedDeletion } from '../../packages/PdfRedactor/utils/deletionUtils';
 import { TMode } from '../../packages/PdfRedactor/utils/modeUtils';
 import { TIndexedRotation } from '../../packages/PdfRedactor/utils/rotationUtils';
 import { useWindowMouseListener } from '../../packages/PdfRedactor/utils/useWindowMouseListener';
@@ -32,9 +34,13 @@ const CaseworkPdfRedactor = (p: {
 }) => {
   const [redactions, setRedactions] = useState<TRedaction[]>([]);
   const [indexedRotation, setIndexedRotation] = useState<TIndexedRotation>({});
+  const [indexedDeletion, setIndexedDeletion] = useState<TIndexedDeletion>({});
 
   const [redactionDetails, setRedactionDetails] = useState<
     { redactionId: string; randomId: string }[]
+  >([]);
+  const [deletionDetails, setDeletionDetails] = useState<
+    { deletionId: string; randomId: string }[]
   >([]);
 
   useEffect(() => {
@@ -43,9 +49,21 @@ const CaseworkPdfRedactor = (p: {
       prev.filter((redDetail) => redactionIds.includes(redDetail.redactionId))
     );
   }, [redactions]);
+  useEffect(() => {
+    const deletionIds = Object.values(indexedDeletion)
+      .filter((del) => del.isDeleted)
+      .map((del) => del.id);
+    setDeletionDetails((prev) =>
+      prev.filter((detail) => deletionIds.includes(detail.deletionId))
+    );
+  }, [indexedDeletion]);
 
-  const [popupProps, setPopupProps] = useState<Omit<
+  const [redactionPopupProps, setRedactionPopupProps] = useState<Omit<
     ComponentProps<typeof RedactionDetailsForm> & TCoord,
+    'onSaveSuccess' | 'onCancelClick'
+  > | null>(null);
+  const [deleteReasonPopupProps, setDeleteReasonPopupProps] = useState<Omit<
+    ComponentProps<typeof DeletionReasonForm> & TCoord,
     'onSaveSuccess' | 'onCancelClick'
   > | null>(null);
 
@@ -53,34 +71,73 @@ const CaseworkPdfRedactor = (p: {
 
   return (
     <div>
-      {popupProps &&
+      {redactionPopupProps &&
         (() => {
           const handleCloseModal = () => {
             setRedactions((prev) =>
-              prev.filter((x) => !popupProps.redactionIds.includes(x.id))
+              prev.filter(
+                (x) => !redactionPopupProps.redactionIds.includes(x.id)
+              )
             );
-            setPopupProps(null);
+            setRedactionPopupProps(null);
           };
 
           return (
             <PdfRedactorMiniModal
-              coordX={popupProps.x}
-              coordY={popupProps.y}
+              coordX={redactionPopupProps.x}
+              coordY={redactionPopupProps.y}
               onBackgroundClick={handleCloseModal}
               onEscPress={handleCloseModal}
             >
               <RedactionDetailsForm
-                redactionIds={popupProps.redactionIds}
-                documentId={popupProps.documentId}
-                urn={popupProps.urn}
-                caseId={popupProps.caseId}
+                redactionIds={redactionPopupProps.redactionIds}
+                documentId={redactionPopupProps.documentId}
+                urn={redactionPopupProps.urn}
+                caseId={redactionPopupProps.caseId}
                 onCancelClick={() => {
                   setRedactions((prev) =>
-                    prev.filter((x) => !popupProps.redactionIds.includes(x.id))
+                    prev.filter(
+                      (x) => !redactionPopupProps.redactionIds.includes(x.id)
+                    )
                   );
-                  setPopupProps(null);
+                  setRedactionPopupProps(null);
                 }}
-                onSaveSuccess={() => setPopupProps(null)}
+                onSaveSuccess={() => setRedactionPopupProps(null)}
+              />
+            </PdfRedactorMiniModal>
+          );
+        })()}
+      {deleteReasonPopupProps &&
+        (() => {
+          const handleCloseModal = () => {
+            setIndexedDeletion((prev) => {
+              const { [deleteReasonPopupProps.pageNumber]: _, ...rest } = prev;
+              return rest;
+            });
+            setDeleteReasonPopupProps(null);
+          };
+
+          return (
+            <PdfRedactorMiniModal
+              coordX={deleteReasonPopupProps.x}
+              coordY={deleteReasonPopupProps.y}
+              onBackgroundClick={handleCloseModal}
+              onEscPress={handleCloseModal}
+            >
+              <DeletionReasonForm
+                pageNumber={deleteReasonPopupProps.pageNumber}
+                documentId={deleteReasonPopupProps.documentId}
+                urn={deleteReasonPopupProps.urn}
+                caseId={deleteReasonPopupProps.caseId}
+                onCancelClick={() => {
+                  setIndexedDeletion((prev) => {
+                    const { [deleteReasonPopupProps.pageNumber]: _, ...rest } =
+                      prev;
+                    return rest;
+                  });
+                  setDeleteReasonPopupProps(null);
+                }}
+                onSaveSuccess={() => setDeleteReasonPopupProps(null)}
               />
             </PdfRedactorMiniModal>
           );
@@ -98,7 +155,7 @@ const CaseworkPdfRedactor = (p: {
             randomId: `This redaction does ${crypto.randomUUID()}`
           }));
           setRedactionDetails((prev) => [...prev, ...newRedactionDetails]);
-          setPopupProps(() => ({
+          setRedactionPopupProps(() => ({
             x: mousePos.current.x,
             y: mousePos.current.y,
             redactionIds: add.map((x) => x.id),
@@ -108,7 +165,7 @@ const CaseworkPdfRedactor = (p: {
           }));
         }}
         onRemoveRedactions={() => {}}
-        onSaveRedactions={async (redactions) => {
+        onSaveRedactions={async () => {
           const redactionsWithDetails = redactions
             .map((x) => {
               const thisDetails = redactionDetails.find(
@@ -123,6 +180,40 @@ const CaseworkPdfRedactor = (p: {
         }}
         indexedRotation={indexedRotation}
         onRotationsChange={(newRotations) => setIndexedRotation(newRotations)}
+        indexedDeletion={indexedDeletion}
+        onDeletionsChange={(newDeletions) => setIndexedDeletion(newDeletions)}
+        onDeletionAdd={(add) => {
+          const newDeletionDetails = {
+            deletionId: add.id,
+            randomId: `This deletion does ${crypto.randomUUID()}`
+          };
+          setDeletionDetails((prev) => [...prev, newDeletionDetails]);
+          setDeleteReasonPopupProps(() => ({
+            x: mousePos.current.x,
+            y: mousePos.current.y,
+            pageNumber: add.pageNumber,
+            documentId: 'This document does not exist',
+            urn: 'This URN does not exist',
+            caseId: 'This case does not exist'
+          }));
+        }}
+        onDeletionRemove={() => {}}
+        onSaveDeletions={async () => {
+          const deletionsWithDetails = Object.values(indexedDeletion)
+            .map((x) => {
+              const thisDetails = deletionDetails.find(
+                (y) => y.deletionId === x.id
+              );
+              if (!thisDetails) return undefined;
+              return { ...x, ...thisDetails };
+            })
+            .filter((x) => !!x);
+
+          deletionsWithDetails;
+        }}
+        onSaveRotations={async () => {
+          // rotations don't require details
+        }}
       />
     </div>
   );
@@ -134,12 +225,15 @@ export const ReviewAndRedactPage = () => {
   const [activeTabId, setActiveTabId] = useState<string>('');
 
   const [openDocumentIds, setOpenDocumentIds] = useState<string[]>([]);
+  const [currentActiveTabId, setCurrentActiveTabId] = useState<string>('');
   const [mode, setMode] = useState<TMode>('areaRedact');
 
   const handleCloseTab = (v: string | undefined) => {
     setOpenDocumentIds((prev) => prev.filter((el) => el !== v));
   };
-
+  const handleCurentActiveTabId = (x?: string) => {
+    setCurrentActiveTabId(x ? x : '');
+  };
   const [documentsDataList, setDocumentsDataList] = useState<
     TDocumentDataList[]
   >([]);
@@ -207,17 +301,24 @@ export const ReviewAndRedactPage = () => {
             isSidebarVisible={isSidebarVisible}
             onToggleSidebar={() => setIsSidebarVisible((v) => !v)}
             handleCloseTab={(a) => handleCloseTab(a)}
+            handleCurentActiveTabId={handleCurentActiveTabId}
           >
             <DocumentViewportArea
               activeTabId={activeTabId}
               items={documentIDs}
               redactAreaState={mode === 'areaRedact'}
+              currentActiveTabId={currentActiveTabId}
               onRedactAreaStateChange={(x) => {
                 setMode(x ? 'areaRedact' : 'textRedact');
               }}
               onRotateModeButtonClick={() => {
                 setMode((prev) =>
                   prev === 'rotation' ? 'areaRedact' : 'rotation'
+                );
+              }}
+              onDeleteModeButtonClick={() => {
+                setMode((prev) =>
+                  prev === 'deletion' ? 'areaRedact' : 'deletion'
                 );
               }}
             ></DocumentViewportArea>
@@ -237,3 +338,4 @@ export const ReviewAndRedactPage = () => {
     </Layout>
   );
 };
+

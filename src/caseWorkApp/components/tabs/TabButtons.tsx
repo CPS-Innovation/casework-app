@@ -135,7 +135,7 @@ const TabButtons: React.FC<TabButtonProps> = ({
                 }
                 aria-label={ariaLabel}
                 role="tab"
-                className={classes.tabButton}
+                className={`${classes.tabButton} ${index === activeTabIndex ? 'tabButtonFocused' : ''}`}
                 data-testid={
                   index === activeTabIndex ? 'tab-active' : `btn-tab-${index}`
                 }
@@ -155,7 +155,7 @@ const TabButtons: React.FC<TabButtonProps> = ({
                   role="tab"
                   className={classes.tabCloseButton}
                   onClick={() => {
-                      handleCloseTab(items[activeTabIndex]?.id);
+                    handleCloseTab(items[activeTabIndex]?.id);
                   }}
                   onKeyDown={handleKeyPressOnTab}
                   data-testid="tab-remove"

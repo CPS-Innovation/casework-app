@@ -1,12 +1,12 @@
 import { CloseIcon, CloseIconButton } from '../templates/CloseIconButton';
 import { GovUkButton } from '../templates/GovUkButton';
 
-export const SaveYourRotationsToProceedModal = (p: { onClose: () => void }) => {
+export const SaveToProceedToDeletionsModal = (p: { onClose: () => void }) => {
   return (
     <div
       style={{
         background: '#ffffff',
-        maxWidth: '35vw',
+        maxWidth: '45vw',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'stretch'
@@ -21,7 +21,7 @@ export const SaveYourRotationsToProceedModal = (p: { onClose: () => void }) => {
         }}
       >
         <div style={{ fontSize: '20px', fontWeight: 700, padding: '10px' }}>
-          Save your rotations
+          Save your rotations/redactions
         </div>
         <CloseIconButton onClick={() => p.onClose()} />
       </div>
@@ -46,12 +46,13 @@ export const SaveYourRotationsToProceedModal = (p: { onClose: () => void }) => {
             <CloseIcon backgroundColor="black" />
           </span>
           <div style={{ fontSize: '20px', fontWeight: 700 }}>
-            You cannot redact pages as you have unsaved rotations and these will
-            be lost.
+            You cannot delete pages as you have unsaved rotations/redactions and
+            these will be lost.
           </div>
         </div>
         <div style={{ fontSize: '20px' }}>
-          Remove or save your rotations and you will be able to continue
+          Remove or save your rotations/redactions and you will be able to
+          continue.
         </div>
         <div>
           <GovUkButton onClick={() => p.onClose()} variant="inverse">
