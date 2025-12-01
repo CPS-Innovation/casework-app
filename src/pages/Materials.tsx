@@ -131,7 +131,7 @@ export const MaterialsPage = () => {
   ];
 
   return (
-    <Layout>
+    <Layout title="Case Materials">
       <div className="govuk-main-wrapper">
         <RenameDrawer
           material={selectedMaterial}

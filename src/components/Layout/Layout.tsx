@@ -1,4 +1,4 @@
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 
 import { Banner, CaseInfo, LoadingSpinner, Tabs } from '../../components';
@@ -9,11 +9,12 @@ import { useCaseInfoStore } from '../../stores';
 
 import './Layout.scss';
 
-type Props = { plain?: boolean };
+type Props = { plain?: boolean; title?: string };
 
 export const Layout = ({
   children,
-  plain = false
+  plain = false,
+  title
 }: PropsWithChildren<Props>) => {
   const { banners } = useBanner();
   const { caseInfo } = useCaseInfoStore();
@@ -48,6 +49,12 @@ export const Layout = ({
       active: location.pathname === getRoute('COMMUNICATIONS')
     }
   ];
+
+  useEffect(() => {
+    if (title) {
+      document.title = title + ' - Casework App';
+    }
+  }, [location, title]);
 
   return (
     <>

@@ -567,3 +567,11 @@ strong {
   display: flex;
   justify-content: flex-end;
 }
+
+.tabButtonFocused {
+  outline: 0;
+  color: #0b0c0c;
+  background-color: transparent;
+  border-bottom: 0.625rem solid #1d70b8;
+}
+
