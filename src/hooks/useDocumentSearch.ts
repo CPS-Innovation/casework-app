@@ -53,13 +53,16 @@ export const useDocumentSearchResults = (
         documentTitle: doc.presentationTitle ?? '',
         cmsFileCreatedDate: doc.cmsFileCreatedDate,
         cmsDocType: doc.cmsDocType,
+        status: doc.status,
+        presentationTitle: doc.presentationTitle,
+        isUnused: doc.isUnused,
+        cmsOriginalFileName: doc.cmsOriginalFileName,
         matches: matches.map((match) => ({
           text: match.text,
           pageIndex: match.pageIndex,
           lineIndex: match.lineIndex,
           words: match.words
-        })),
-        status: doc.status
+        }))
       });
     }
   }
