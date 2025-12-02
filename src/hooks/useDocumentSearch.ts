@@ -58,7 +58,8 @@ export const useDocumentSearchResults = (
           pageIndex: match.pageIndex,
           lineIndex: match.lineIndex,
           words: match.words
-        }))
+        })),
+        status: doc.status
       });
     }
   }

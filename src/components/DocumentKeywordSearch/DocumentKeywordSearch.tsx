@@ -15,6 +15,8 @@ import { formatDateLong } from '../../utils/date';
 import { defaultSearchFn } from '../../utils/filtering';
 import { DocumentKeywordSearchFilters } from '../Filters/DocumentKeywordSearchFilters';
 
+import './DocumentKeywordSearch.scss';
+
 export const DocumentKeywordSearch = () => {
   const [inputValue, setInputValue] = useState('');
   const [searchTerm, setSearchTerm] = useState<string | null>(null);
@@ -62,7 +64,6 @@ export const DocumentKeywordSearch = () => {
 
     return combinedSearchResults
       .filter((doc) => {
-        // category filter
         const category = categoriseDocument(doc);
 
         return (
@@ -98,16 +99,33 @@ export const DocumentKeywordSearch = () => {
             {trackerComplete && loading && <p>Searching…</p>}
 
             {!loading && trackerComplete && filteredResults && (
-              <>
-                <p className="govuk-body govuk-!-margin-bottom-0">
-                  <strong>{filteredResults.length}</strong> results in{' '}
-                  <strong>{documents?.length}</strong> documents in this case
-                </p>
-                <p className="govuk-body">
-                  Search may not have found all instances of "{searchTerm}" in
-                  this case.
-                </p>
-              </>
+              <div className="search-results-message">
+                <div>
+                  <p className="govuk-body govuk-!-margin-bottom-0">
+                    <strong>{filteredResults.length}</strong> results in{' '}
+                    <strong>{documents?.length}</strong> documents in this case
+                  </p>
+                  <p className="govuk-body">
+                    Search may not have found all instances of "{searchTerm}" in
+                    this case.
+                  </p>
+                </div>
+
+                <div className="govuk-form-group">
+                  <label
+                    className="govuk-label govuk-visually-hidden"
+                    htmlFor="sort"
+                  >
+                    Sort by
+                  </label>
+                  <select className="govuk-select" id="sort" name="sort">
+                    <option value="date" defaultValue="date" selected>
+                      Date added
+                    </option>
+                    <option value="comments">Results per document</option>
+                  </select>
+                </div>
+              </div>
             )}
 
             {!loading &&

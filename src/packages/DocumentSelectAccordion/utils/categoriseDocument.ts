@@ -1,5 +1,5 @@
 import z from 'zod';
-import { DocumentSchema } from '../../../schemas/documents';
+import { SearchTermResultSchema } from '../../../schemas/documents';
 import { documentSchema } from '../getters/getDocumentList';
 import {
   documentTypeIdsMap,
@@ -8,7 +8,7 @@ import {
 } from './categoriseDocumentHelperUtils';
 
 export const categoriseDocument = (
-  doc: z.infer<typeof documentSchema | typeof DocumentSchema>
+  doc: z.infer<typeof documentSchema> | z.infer<typeof SearchTermResultSchema>
 ): TCategoryName => {
   if (
     doc.cmsDocType.documentType === 'PCD' ||

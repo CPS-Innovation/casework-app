@@ -1,4 +1,5 @@
 import { ChangeEvent } from 'react';
+import { READ_STATUS } from '../../constants';
 import { useDocuments, useFilters } from '../../hooks';
 import { categoriseDocument } from '../../packages/DocumentSelectAccordion/utils/categoriseDocument';
 import {
@@ -46,7 +47,7 @@ export const DocumentKeywordSearchFilters = () => {
   });
 
   const categoriesList = categoryDetails.map((category) => ({
-    key: category.label,
+    key: category.categoryName,
     label: category.label,
     documents: docsOnDocCategoryNames[category.categoryName]
   }));
@@ -119,6 +120,28 @@ export const DocumentKeywordSearchFilters = () => {
       </div>
 
       <div className="govuk-form-group">
+        <div className="govuk-form-group">
+          <fieldset className="govuk-fieldset">
+            <legend className="govuk-fieldset__legend govuk-fieldset__legend--m govuk-!-margin-bottom-1">
+              <h3 className="govuk-heading-s small-heading-spacing">
+                New materials
+              </h3>
+            </legend>
+            <Checkbox
+              id="readStatus"
+              label="Show unread"
+              checked={
+                shallowFilters?.filters?.status?.includes(READ_STATUS.UNREAD) ||
+                false
+              }
+              onChange={(event) => handleCheckboxChange('status', event)}
+              value={READ_STATUS.UNREAD}
+            />
+          </fieldset>
+        </div>
+      </div>
+
+      <div className="govuk-form-group">
         <fieldset className="govuk-fieldset">
           <legend className="govuk-fieldset__legend govuk-fieldset__legend--m">
             <h3 className="govuk-heading-s small-heading-spacing">Category</h3>
@@ -127,7 +150,7 @@ export const DocumentKeywordSearchFilters = () => {
           {categoriesList.map((category) => (
             <Checkbox
               id={`category-${category.key}`}
-              label={`${category.label} (${category.documents.length})`}
+              label={category.label}
               checked={
                 shallowFilters?.filters?.category?.includes(category.key) ||
                 false
