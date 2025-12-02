@@ -18,6 +18,7 @@ export {
   useDocumentSearchResults
 } from './useDocumentSearch';
 export { useDocumentTypes } from './useDocumentTypes';
+export { useEditMaterial } from './useEditMaterial';
 export { useExhibitProducers } from './useExhibitProducers';
 export { useExhibits } from './useExhibits';
 export { useFeatureFlag } from './useFeatureFlag';

@@ -25,7 +25,9 @@ export const QUERY_KEYS = {
   RECLASSIFY_MATERIAL: 'reclassifyMaterial',
   CASE_SEARCH: 'caseSearch',
   DOCUMENT_SEARCH: 'documentSearch',
-  GET_ALL_DOCUMENTS: 'getAllDocuments'
+  GET_ALL_DOCUMENTS: 'getAllDocuments',
+  UPDATE_STATEMENT: 'updateStatement',
+  UPDATE_EXHIBIT: 'updateExhibit'
 };
 
 export const DEFAULT_RESULTS_PER_PAGE = 20;

@@ -5,9 +5,14 @@ import 'react-pdf/dist/Page/TextLayer.css';
 import { AreaIcon } from './icons/AreaIcon';
 import { EditIcon } from './icons/EditIcon';
 import { TickCircleIcon } from './icons/TickCircleIcon';
+import { PdfRedactorCenteredModal } from './modals/PdfRedactorCenteredModal';
+import { SaveToProceedToRedactionsModal } from './modals/SaveToProceedToRedactionsModal';
+import { SaveToProceedToRotationsModal } from './modals/SaveToProceedToRotationsModal';
 import { PdfRedactorPage } from './PdfRedactorPage';
 import type { TRedaction } from './utils/coordUtils';
+import { TDeletion, TIndexedDeletion } from './utils/deletionUtils';
 import { ModeStyleTag, type TMode } from './utils/modeUtils';
+import { TIndexedRotation, TRotation } from './utils/rotationUtils';
 import { useTrigger } from './utils/useTriggger';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -36,6 +41,141 @@ const indexRedactionsOnPageNumber = (redactions: TRedaction[]) => {
   return temp;
 };
 
+const RedactionsFooter = (p: {
+  redactions: TRedaction[];
+  onRemoveAllRedactionsClick: () => void;
+  onSaveRedactionsClick: (x: TRedaction[]) => void;
+}) => {
+  return (
+    <div
+      style={{
+        border: '1px solid black',
+        background: 'white',
+        color: 'black',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '10px'
+      }}
+    >
+      <button
+        className="govuk-button govuk-button--inverse"
+        onClick={() => p.onRemoveAllRedactionsClick()}
+      >
+        Remove all redactions
+      </button>
+      <span style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+        <span>
+          {p.redactions.length === 1 && <>There is 1 redaction</>}
+          {p.redactions.length > 1 && (
+            <>There are {p.redactions.length} redactions</>
+          )}
+        </span>
+        <button
+          className="govuk-button"
+          onClick={() => p.onSaveRedactionsClick(p.redactions)}
+        >
+          Save all redactions
+        </button>
+      </span>
+    </div>
+  );
+};
+
+const RotationsFooter = (p: {
+  rotations: TRotation[];
+  onRemoveAllRotationsClick: () => void;
+  onSaveRotationsClick: (x: TRotation[]) => void;
+}) => {
+  return (
+    <div
+      style={{
+        border: '1px solid black',
+        background: 'white',
+        color: 'black',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '10px'
+      }}
+    >
+      <button
+        className="govuk-button govuk-button--inverse"
+        onClick={() => p.onRemoveAllRotationsClick()}
+      >
+        Remove all rotations
+      </button>
+      <span style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+        <span>
+          {p.rotations.length === 1 && <>There is 1 rotation</>}
+          {p.rotations.length > 1 && (
+            <>There are {p.rotations.length} rotations</>
+          )}
+        </span>
+        <button
+          className="govuk-button"
+          onClick={() => p.onSaveRotationsClick(p.rotations)}
+        >
+          Save all rotations
+        </button>
+      </span>
+    </div>
+  );
+};
+
+const DeletionsFooter = (p: {
+  deletions: TDeletion[];
+  onRemoveAllDeletionsClick: () => void;
+  onSaveDeletionsClick: (x: TDeletion[]) => void;
+}) => {
+  return (
+    <div
+      style={{
+        border: '1px solid black',
+        background: 'white',
+        color: 'black',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '10px'
+      }}
+    >
+      <button
+        className="govuk-button govuk-button--inverse"
+        onClick={() => p.onRemoveAllDeletionsClick()}
+      >
+        Remove all deletions
+      </button>
+      <span style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+        <span>
+          {p.deletions.length === 1 && <>There is 1 deletion</>}
+          {p.deletions.length > 1 && (
+            <>There are {p.deletions.length} deletions</>
+          )}
+        </span>
+        <button
+          className="govuk-button"
+          onClick={() => p.onSaveDeletionsClick(p.deletions)}
+        >
+          Save all deletions
+        </button>
+      </span>
+    </div>
+  );
+};
+
+const usePreviousModeRef = (value: TMode) => {
+  const currentRef = useRef(value);
+  const previousModeRef = useRef<TMode>(value);
+
+  useEffect(() => {
+    previousModeRef.current = currentRef.current;
+    currentRef.current = value;
+  }, [value]);
+
+  return { previousModeRef };
+};
+
 export const PdfRedactor = (p: {
   fileUrl: string;
   redactions: TRedaction[];
@@ -45,8 +185,31 @@ export const PdfRedactor = (p: {
   onRedactionsChange: (redactions: TRedaction[]) => void;
   onAddRedactions: (redactions: TRedaction[]) => void;
   onRemoveRedactions: (redactionIds: string[]) => void;
-  onSaveRedactions: (redactions: TRedaction[]) => Promise<void>;
+  onSaveRedactions: () => Promise<void>;
+  onSaveDeletions: () => Promise<void>;
+  onSaveRotations: () => Promise<void>;
+  indexedRotation: TIndexedRotation;
+  onRotationsChange: (x: TIndexedRotation) => void;
+  indexedDeletion: TIndexedDeletion;
+  onDeletionsChange: (x: TIndexedDeletion) => void;
+  onDeletionAdd: (x: TDeletion) => void;
+  onDeletionRemove: (x: TDeletion) => void;
 }) => {
+  const { previousModeRef } = usePreviousModeRef(p.mode);
+
+  // ref required for eventlistener
+  const modeRef = useRef(p.mode);
+
+  // Keep ref in sync with p.mode
+  // - lift state up, but worsen developer experience???
+  useEffect(() => {
+    modeRef.current = p.mode;
+  }, [p.mode]);
+
+  const [displayToProceedModal, setDisplayToProceedModal] = useState<
+    TMode | undefined
+  >(undefined);
+
   const [numPages, setNumPages] = useState<number>();
   const scaleHelper = useScaleHelper();
   const pdfRedactorWrapperElmRef = useRef<HTMLDivElement>(null);
@@ -55,11 +218,47 @@ export const PdfRedactor = (p: {
     return indexRedactionsOnPageNumber(p.redactions);
   }, [p.redactions]);
 
+  const rotations = useMemo(() => {
+    return Object.values(p.indexedRotation);
+  }, [p.indexedRotation]);
+  const filteredRotations = useMemo(() => {
+    return rotations.filter((rot) => rot.rotationDegrees !== 0);
+  }, [rotations]);
+
+  const deletions = useMemo(() => {
+    return Object.values(p.indexedDeletion);
+  }, [p.indexedDeletion]);
+  const filteredDeletions = useMemo(() => {
+    return deletions.filter((del) => !!del?.isDeleted);
+  }, [deletions]);
+
+  useEffect(() => {
+    if (
+      p.mode === 'rotation' &&
+      (p.redactions.length > 0 || filteredDeletions.length > 0)
+    ) {
+      p.onModeChange(previousModeRef.current);
+      setDisplayToProceedModal(previousModeRef.current);
+    }
+    if (
+      (p.mode === 'textRedact' || p.mode === 'areaRedact') &&
+      (filteredRotations.length > 0 || filteredDeletions.length > 0)
+    ) {
+      p.onModeChange(previousModeRef.current);
+      setDisplayToProceedModal(previousModeRef.current);
+    }
+    if (
+      p.mode === 'deletion' &&
+      (filteredRotations.length > 0 || p.redactions.length > 0)
+    ) {
+      p.onModeChange(previousModeRef.current);
+      setDisplayToProceedModal(previousModeRef.current);
+    }
+  }, [p.mode]);
+
   const redactHighlightedTextTrigger = useTrigger();
   const redactHighlightedIfTextRedactionMode = () => {
-    if (p.mode !== 'textRedact') return;
-
-    redactHighlightedTextTrigger.fire();
+    if (modeRef.current === 'textRedact') redactHighlightedTextTrigger.fire();
   };
 
   useEffect(() => {
@@ -73,6 +272,28 @@ export const PdfRedactor = (p: {
 
   return (
     <div ref={pdfRedactorWrapperElmRef}>
+      {displayToProceedModal && (
+        <PdfRedactorCenteredModal
+          onBackgroundClick={() => setDisplayToProceedModal(undefined)}
+          onEscPress={() => setDisplayToProceedModal(undefined)}
+        >
+          {['areaRedact', 'textRedact'].includes(displayToProceedModal) && (
+            <SaveToProceedToRedactionsModal
+              onClose={() => setDisplayToProceedModal(undefined)}
+            />
+          )}
+          {displayToProceedModal === 'rotation' && (
+            <SaveToProceedToRotationsModal
+              onClose={() => setDisplayToProceedModal(undefined)}
+            />
+          )}
+          {displayToProceedModal === 'deletion' && (
+            <SaveToProceedToRotationsModal
+              onClose={() => setDisplayToProceedModal(undefined)}
+            />
+          )}
+        </PdfRedactorCenteredModal>
+      )}
       <ModeStyleTag mode={p.mode} />
       {!p.hideToolbar && (
         <div
@@ -108,13 +329,7 @@ export const PdfRedactor = (p: {
             {p.mode === 'textRedact' && (
               <button
                 className="govuk-button govuk-button--secondary"
-                onClick={() => {
-                  redactHighlightedTextTrigger.fire();
-                  setTimeout(
-                    () => window.getSelection()?.removeAllRanges(),
-                    250
-                  );
-                }}
+                onClick={() => redactHighlightedTextTrigger.fire()}
               >
                 <TickCircleIcon width={20} height={20} />
               </button>
@@ -165,8 +380,6 @@ export const PdfRedactor = (p: {
           >
             {[...Array(numPages)].map((_, j) => (
               <PdfRedactorPage
-                // no other identifiable info for key below
-                // cannot be reordered so not an issue
                 key={`pdf-redactor-page-${j}`}
                 pageNumber={j + 1}
                 scale={scaleHelper.scale}
@@ -186,10 +399,35 @@ export const PdfRedactor = (p: {
                   );
                   p.onRemoveRedactions(ids);
                 }}
-                redactions={(() => {
-                  const y = indexedRedactions[j + 1] ?? [];
-                  return y;
+                redactions={indexedRedactions[j + 1] ?? []}
+                pageRotationDegrees={(() => {
+                  const rotation = p.indexedRotation[j + 1];
+                  return rotation ? rotation.rotationDegrees : 0;
                 })()}
+                onPageRotationChange={(x) => {
+                  p.onRotationsChange({
+                    ...p.indexedRotation,
+                    [j + 1]: {
+                      id: crypto.randomUUID(),
+                      pageNumber: j + 1,
+                      rotationDegrees: x
+                    }
+                  });
+                }}
+                pageIsDelete={!!p.indexedDeletion[j + 1]?.isDeleted}
+                onPageIsDeleteChange={(isDeleted) => {
+                  const deletion = {
+                    id: crypto.randomUUID(),
+                    pageNumber: j + 1,
+                    isDeleted
+                  };
+                  const fn = isDeleted ? p.onDeletionAdd : p.onDeletionRemove;
+                  fn(deletion);
+                  p.onDeletionsChange({
+                    ...p.indexedDeletion,
+                    [j + 1]: deletion
+                  });
+                }}
               />
             ))}
           </Document>
@@ -201,47 +439,57 @@ export const PdfRedactor = (p: {
               bottom: '25px',
               left: 0,
               right: 0,
-              zIndex: 10
+              zIndex: 800
             }}
           >
-            <div
-              style={{
-                border: '1px solid black',
-                background: 'white',
-                color: 'black',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '10px'
+            <RedactionsFooter
+              redactions={p.redactions}
+              onRemoveAllRedactionsClick={() => p.onRedactionsChange([])}
+              onSaveRedactionsClick={async () => {
+                await p.onSaveRedactions();
+                p.onRedactionsChange([]);
               }}
-            >
-              <button
-                className="govuk-button govuk-button--inverse"
-                onClick={() => p.onRedactionsChange([])}
-              >
-                Remove all redactions
-              </button>
-              <span
-                style={{ display: 'flex', gap: '8px', alignItems: 'center' }}
-              >
-                <span>
-                  {p.redactions.length === 1 && <>There is 1 redaction</>}
-                  {p.redactions.length > 1 && (
-                    <>There are {p.redactions.length} redactions</>
-                  )}
-                </span>
-                <button
-                  className="govuk-button"
-                  onClick={async () => {
-                    await p.onSaveRedactions(p.redactions);
-                    p.onRedactionsChange([]);
-                    p.onRedactionsChange([]);
-                  }}
-                >
-                  Save all redactions
-                </button>
-              </span>
-            </div>
+            />
+          </div>
+        )}
+        {filteredRotations.length > 0 && (
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '25px',
+              left: 0,
+              right: 0,
+              zIndex: 800
+            }}
+          >
+            <RotationsFooter
+              rotations={filteredRotations}
+              onRemoveAllRotationsClick={() => p.onRotationsChange({})}
+              onSaveRotationsClick={async () => {
+                await p.onSaveRotations();
+                p.onRotationsChange({});
+              }}
+            />
+          </div>
+        )}
+        {filteredDeletions.length > 0 && (
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '25px',
+              left: 0,
+              right: 0,
+              zIndex: 800
+            }}
+          >
+            <DeletionsFooter
+              deletions={filteredDeletions}
+              onRemoveAllDeletionsClick={() => p.onDeletionsChange({})}
+              onSaveDeletionsClick={async () => {
+                await p.onSaveDeletions();
+                p.onDeletionsChange({});
+              }}
+            />
           </div>
         )}
       </div>

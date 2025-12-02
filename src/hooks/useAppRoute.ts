@@ -13,7 +13,8 @@ export const APP_ROUTES = {
   REVIEW_REDACT: 'review-and-redact',
   SERVER_ERROR: 'service-down',
   UNAUTHORISED: 'unauthorized',
-  CASE_SEARCH: 'case-search'
+  CASE_SEARCH: 'case-search',
+  UPDATE_MATERIAL: 'update-material'
 } as const;
 
 type AppRouteKey = keyof typeof APP_ROUTES;

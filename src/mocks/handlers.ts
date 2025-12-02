@@ -133,5 +133,49 @@ export const handlers = [
     console.table(body);
 
     return HttpResponse.json({}, { status: 200 });
-  })
+  }),
+
+  http.patch(
+    `${POLARIS_GATEWAY_URL}/api/cases/:caseId/materials/exhibit/update`,
+    async ({ request }) => {
+      const body = (await request.json()) as {
+        documentType: number;
+        item: string;
+        materialId: number;
+        reference: string;
+        subject: string;
+        used: boolean;
+        producedBy: string;
+        newProducer: string;
+      };
+
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      return HttpResponse.json(
+        { updateExhibit: { id: body.materialId } },
+        { status: 200 }
+      );
+    }
+  ),
+
+  http.patch(
+    `${POLARIS_GATEWAY_URL}/api/cases/:caseId/materials/statement/update`,
+    async ({ request }) => {
+      const body = (await request.json()) as {
+        hasStatementDate: boolean;
+        materialId: number;
+        statementDate: string;
+        statementNumber: string;
+        used: boolean;
+        witnessId: number;
+      };
+
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      return HttpResponse.json(
+        { updateStatement: { id: body.materialId } },
+        { status: 200 }
+      );
+    }
+  )
 ];

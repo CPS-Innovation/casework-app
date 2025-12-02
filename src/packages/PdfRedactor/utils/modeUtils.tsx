@@ -1,4 +1,4 @@
-export type TMode = 'textRedact' | 'areaRedact';
+export type TMode = 'textRedact' | 'areaRedact' | 'rotation' | 'deletion';
 
 const modeStyleMap: { [k in TMode]: string } = {
   areaRedact: `
@@ -11,7 +11,14 @@ const modeStyleMap: { [k in TMode]: string } = {
       cursor: crosshair;
     }
     `,
-  textRedact: ``
+  textRedact: ``,
+  rotation: ``,
+  deletion: `
+    .react-pdf__Page__annotations a, 
+    .react-pdf__Page__textContent span {
+      pointer-events: none !important;
+    }
+    `
 };
 
 const allStyles = `

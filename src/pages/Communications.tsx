@@ -37,6 +37,7 @@ export const CommunicationsPage = () => {
     useSelectedItemsStore();
 
   const {
+    handleEditClick,
     handleReclassifyClick,
     handleRedactClick,
     handleDiscardClick,
@@ -95,6 +96,16 @@ export const CommunicationsPage = () => {
       label: 'Reclassify',
       onClick: handleReclassifyClick,
       hide: !row?.isReclassifiable || selectedItems.communications.length > 1
+    },
+    {
+      label: 'Update',
+      onClick: () =>
+        handleEditClick(row as CaseMaterialsType, getRoute('COMMUNICATIONS')),
+      hide:
+        selectedItems.communications.length > 1 ||
+        !['Exhibit', 'Statement'].includes(
+          selectedItems.communications[0]?.category
+        )
     },
     {
       label: 'Redact',

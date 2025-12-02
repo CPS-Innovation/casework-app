@@ -1,3 +1,4 @@
+import { GovUkButton } from './templates/GovUkButton';
 import type { TXywhPair } from './utils/coordUtils';
 
 export const PositionPdfOverlayBox = (
@@ -42,3 +43,37 @@ export const RedactionBox = (p: { background: string; border: string }) => (
     }}
   ></div>
 );
+
+export const PositionedRedactionBox = (
+  p: TXywhPair & { scale: number; onCloseButtonClick: () => void }
+) => {
+  return (
+    <PositionPdfOverlayBox
+      xLeft={p.xLeft}
+      yBottom={p.yBottom}
+      width={p.width}
+      height={p.height}
+      scale={p.scale}
+    >
+      <RedactionBox background="#0000004d" border="2px solid black" />
+
+      <GovUkButton
+        variant="inverse"
+        style={{
+          padding: 0,
+          borderRadius: '50%',
+          border: 'solid 1px black',
+          overflow: 'hidden',
+          boxShadow: 'none',
+          position: 'absolute',
+          top: '-10px',
+          right: '-10px',
+          zIndex: 10
+        }}
+        onClick={() => p.onCloseButtonClick()}
+      >
+        <CloseIcon />
+      </GovUkButton>
+    </PositionPdfOverlayBox>
+  );
+};

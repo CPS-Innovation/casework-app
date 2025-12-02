@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { GovUkButton } from './templates/GovUkButton';
 
 const redactionTypeData = [
   { id: '1', name: 'Named individual' },
@@ -72,19 +73,16 @@ export const RedactionDetailsForm = (p: {
           initFocus
           onRedactionTypeChange={(type) => setRedactionType(type)}
         />
-        <button
-          className="govuk-button govuk-button--secondary"
-          onClick={p.onCancelClick}
-        >
+        <GovUkButton variant="secondary" onClick={p.onCancelClick}>
           Cancel
-        </button>
-        <button
+        </GovUkButton>
+        <GovUkButton
           className="govuk-button"
           disabled={!redactionType}
           onClick={p.onSaveSuccess}
         >
           Redact
-        </button>
+        </GovUkButton>
       </div>
     </div>
   );
