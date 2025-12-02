@@ -12,6 +12,7 @@ export { useCaseWitnesses } from './useCaseWitnesses';
 export { useDiscard } from './useDiscard';
 export { useDocumentPreview } from './useDocumentPreview';
 export { useDocumentTypes } from './useDocumentTypes';
+export { useEditMaterial } from './useEditMaterial';
 export { useExhibitProducers } from './useExhibitProducers';
 export { useExhibits } from './useExhibits';
 export { useFeatureFlag } from './useFeatureFlag';
