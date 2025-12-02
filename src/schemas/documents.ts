@@ -73,10 +73,10 @@ export const SearchTermResultSchema = z.object({
       )
     })
   ),
-  status: z.string(),
-  isUnused: z.boolean(),
-  presentationTitle: z.string(),
-  cmsOriginalFileName: z.string()
+  status: z.string().optional(),
+  isUnused: z.boolean().optional(),
+  presentationTitle: z.string().optional(),
+  cmsOriginalFileName: z.string().optional()
 });
 export const documentListSchema = z.array(DocumentSchema);
 export type DocumentResultType = z.infer<typeof documentListSchema>;
