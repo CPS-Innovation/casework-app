@@ -6,16 +6,20 @@ import {
   initDocsOnDocCategoryNamesMap
 } from '../../packages/DocumentSelectAccordion/utils/categoriseDocumentHelperUtils';
 import Checkbox from '../Checkbox/Checkbox';
+import { SearchInput } from '../SearchInput/SearchInput';
+import './Filters.scss';
 
 export const DocumentKeywordSearchFilters = () => {
   const {
+    filters,
     resetFilters,
     shallowFilters,
     setCheckboxFilter,
-    saveFiltersToContext
-  } = useFilters('materials');
+    saveFiltersToContext,
+    setSearch
+  } = useFilters('documents');
 
-  const { docTypes, documents } = useDocuments();
+  const { documents } = useDocuments();
 
   const handleCheckboxChange = (
     filterGroup: string,
@@ -30,6 +34,10 @@ export const DocumentKeywordSearchFilters = () => {
     saveFiltersToContext();
   };
 
+  const handleSearchChange = (searchTerm: string) => {
+    setSearch(searchTerm);
+  };
+
   const docsOnDocCategoryNames = initDocsOnDocCategoryNamesMap();
 
   documents?.forEach((doc) => {
@@ -42,6 +50,18 @@ export const DocumentKeywordSearchFilters = () => {
     label: category.label,
     documents: docsOnDocCategoryNames[category.categoryName]
   }));
+
+  //   const docsByDocType = (() => {
+  //     const map: Record<string, number> = {};
+
+  //     documents?.forEach((doc) => {
+  //       const type = doc.cmsDocType.documentType;
+  //       if (!type) return; // skip nulls
+  //       map[type] = (map[type] ?? 0) + 1;
+  //     });
+
+  //     return map;
+  //   })();
 
   return (
     <div className="filters-container" id="filters">
@@ -66,7 +86,7 @@ export const DocumentKeywordSearchFilters = () => {
         </a>
       </div>
 
-      <div className="govuk-form-group">
+      {/* <div className="govuk-form-group">
         <fieldset className="govuk-fieldset">
           <legend className="govuk-fieldset__legend govuk-fieldset__legend--m">
             <h3 className="govuk-heading-s small-heading-spacing">
@@ -76,7 +96,7 @@ export const DocumentKeywordSearchFilters = () => {
           {docTypes.map((type) => (
             <Checkbox
               id={`documentType-${type}`}
-              label={type}
+              label={`${type} (${docsByDocType[type] ?? 0})`}
               checked={
                 shallowFilters?.filters?.documentType?.includes(type) || false
               }
@@ -86,6 +106,16 @@ export const DocumentKeywordSearchFilters = () => {
             />
           ))}
         </fieldset>
+      </div> */}
+
+      <div className="govuk-form-group">
+        <SearchInput
+          placeholder=""
+          label="Search materials"
+          id="search"
+          onChange={handleSearchChange}
+          defaultValue={filters?.search || ''}
+        />
       </div>
 
       <div className="govuk-form-group">

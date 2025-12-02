@@ -56,6 +56,7 @@ export const SearchTermResultSchema = z.object({
   documentId: z.string(),
   documentTitle: z.string(),
   cmsFileCreatedDate: z.string(),
+  cmsDocType: cmsDocTypeSchema,
   matches: z.array(
     z.object({
       text: z.string(),

@@ -52,6 +52,7 @@ export const useDocumentSearchResults = (
         documentId: doc.documentId,
         documentTitle: doc.presentationTitle ?? '',
         cmsFileCreatedDate: doc.cmsFileCreatedDate,
+        cmsDocType: doc.cmsDocType,
         matches: matches.map((match) => ({
           text: match.text,
           pageIndex: match.pageIndex,

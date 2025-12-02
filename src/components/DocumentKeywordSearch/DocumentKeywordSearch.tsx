@@ -1,14 +1,18 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   useDocuments,
   useDocumentSearch,
   useDocumentSearchResults,
+  useFilters,
   useSearchTracker
 } from '../../hooks';
 
 import { LoadingSpinner, Modal, SearchInput, SectionBreak, TwoCol } from '../';
 
+import { categoriseDocument } from '../../packages/DocumentSelectAccordion/utils/categoriseDocument';
+import { SearchTermResultType } from '../../schemas/documents';
 import { formatDateLong } from '../../utils/date';
+import { defaultSearchFn } from '../../utils/filtering';
 import { DocumentKeywordSearchFilters } from '../Filters/DocumentKeywordSearchFilters';
 
 export const DocumentKeywordSearch = () => {
@@ -34,6 +38,8 @@ export const DocumentKeywordSearch = () => {
     searchResults ?? []
   );
 
+  const { filters } = useFilters('documents');
+
   const toggleDocumentExpand = (docId: string) => {
     setExpandedDocuments((prev) => ({ ...prev, [docId]: !prev[docId] }));
   };
@@ -46,6 +52,26 @@ export const DocumentKeywordSearch = () => {
     setSearchTerm(inputValue);
     setModalOpen(true);
   };
+
+  const filteredResults = useMemo(() => {
+    const selectedCategories = filters?.filters?.category ?? [];
+    const searchFn = defaultSearchFn<SearchTermResultType>(
+      'documentTitle',
+      filters?.search
+    );
+
+    return combinedSearchResults
+      .filter((doc) => {
+        // category filter
+        const category = categoriseDocument(doc);
+
+        return (
+          selectedCategories.length === 0 ||
+          selectedCategories.includes(category)
+        );
+      })
+      .filter(searchFn);
+  }, [combinedSearchResults, filters?.filters?.category, filters?.search]);
 
   return (
     <div style={{ marginBottom: '20px' }}>
@@ -71,24 +97,30 @@ export const DocumentKeywordSearch = () => {
 
             {trackerComplete && loading && <p>Searching…</p>}
 
-            {!loading && trackerComplete && combinedSearchResults && (
-              <p className="govuk-body">
-                <strong>{combinedSearchResults.length}</strong> results in{' '}
-                <strong>{documents?.length}</strong> documents in this case
-              </p>
+            {!loading && trackerComplete && filteredResults && (
+              <>
+                <p className="govuk-body govuk-!-margin-bottom-0">
+                  <strong>{filteredResults.length}</strong> results in{' '}
+                  <strong>{documents?.length}</strong> documents in this case
+                </p>
+                <p className="govuk-body">
+                  Search may not have found all instances of "{searchTerm}" in
+                  this case.
+                </p>
+              </>
             )}
 
             {!loading &&
               trackerComplete &&
-              combinedSearchResults &&
-              combinedSearchResults.map((doc) => {
+              filteredResults &&
+              filteredResults.map((doc) => {
                 const isExpanded = expandedDocuments[doc.documentId] ?? false;
                 const first = doc.matches[0];
                 const remainingCount = doc.matches.length - 1;
 
                 return (
                   <div key={doc.documentId} style={{ marginBottom: 20 }}>
-                    <h2 className="govuk-heading-m">
+                    <h2 className="govuk-heading-m govuk-!-margin-bottom-1">
                       <a
                         href={`/materials?material=${doc.documentId}`}
                         rel="noreferrer"
@@ -97,8 +129,9 @@ export const DocumentKeywordSearch = () => {
                       </a>
                     </h2>
 
-                    <p className="govuk-body">
-                      Uploaded: {formatDateLong(doc.cmsFileCreatedDate)}
+                    <p className="govuk-body-s">
+                      Uploaded: {formatDateLong(doc.cmsFileCreatedDate)} Type{' '}
+                      {doc.cmsDocType.documentType}
                     </p>
 
                     <div className="govuk-inset-text">
@@ -140,7 +173,7 @@ export const DocumentKeywordSearch = () => {
 
             {!loading &&
               trackerComplete &&
-              combinedSearchResults?.length === 0 &&
+              filteredResults?.length === 0 &&
               searchTerm && <p>No results.</p>}
           </TwoCol>
         )}
