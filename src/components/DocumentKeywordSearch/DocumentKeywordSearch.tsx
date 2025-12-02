@@ -74,6 +74,33 @@ export const DocumentKeywordSearch = () => {
       .filter(searchFn);
   }, [combinedSearchResults, filters?.filters?.category, filters?.search]);
 
+  const highlightExactMatches = (
+    text: string,
+    words: { boundingBox: number[] | null; text: string; matchType: string[] }[]
+  ) => {
+    const exactWords = words
+      .filter((w) => w.matchType.includes('Exact'))
+      .map((w) => w.text);
+
+    if (!text || exactWords.length === 0) return text;
+
+    const escaped = exactWords.map((w) =>
+      w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    );
+
+    const regex = new RegExp(`(${escaped.join('|')})`, 'gi');
+
+    const parts = text.split(regex);
+
+    return parts.map((part, i) =>
+      exactWords.some((w) => w.toLowerCase() === part.toLowerCase()) ? (
+        <strong key={i}>{part}</strong>
+      ) : (
+        <span key={i}>{part}</span>
+      )
+    );
+  };
+
   return (
     <div style={{ marginBottom: '20px' }}>
       <SearchInput
@@ -153,15 +180,15 @@ export const DocumentKeywordSearch = () => {
                     </p>
 
                     <div className="govuk-inset-text">
-                      <p>
-                        <strong>{first.text}</strong>
-                      </p>
+                      <p>{highlightExactMatches(first.text, first.words)}</p>
 
                       {isExpanded && remainingCount > 0 && (
                         <>
                           {doc.matches.slice(1).map((match, index) => (
                             <div key={index} style={{ marginTop: '1rem' }}>
-                              <strong>{match.text}</strong>
+                              <p>
+                                {highlightExactMatches(match.text, match.words)}
+                              </p>
                             </div>
                           ))}
                         </>
