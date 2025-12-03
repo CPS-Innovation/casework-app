@@ -2,8 +2,6 @@ import { http, HttpResponse } from 'msw';
 import { API_ENDPOINTS, POLARIS_GATEWAY_URL } from '../constants/url';
 
 import { CaseMaterialsType } from '../schemas';
-import { PCDListingType } from '../schemas/pcd';
-import { mockPcdListResponse, mockPcdRequestResponse } from './data/pcdRequest';
 import {
   mockPcdCaseHistory,
   mockPcdInitialReviewResponse,
@@ -17,36 +15,6 @@ export const handlers = [
       { status: 422 }
     );
   }),
-
-  http.get(
-    `${POLARIS_GATEWAY_URL}/api/case/:caseId/pcd-requests/core`,
-    async () => {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      return HttpResponse.json(mockPcdListResponse, { status: 200 });
-    }
-  ),
-
-  http.get(
-    `${POLARIS_GATEWAY_URL}/api/case/:caseId/pcd-request/:pcdId`,
-    async (req) => {
-      const { pcdId } = req.params;
-      const pcdListItem = mockPcdListResponse.find(
-        (item) => item.id.toString() === pcdId?.toString()
-      ) as PCDListingType;
-
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      return HttpResponse.json(
-        mockPcdRequestResponse({
-          id: pcdListItem.id,
-          decisionRequested: pcdListItem.decisionRequested,
-          decisionRequiredBy: pcdListItem.decisionRequiredBy
-        }),
-        { status: 200 }
-      );
-    }
-  ),
 
   http.get(
     'http://localhost:3000/api/cases/:caseId/history/pre-charge-decision',
