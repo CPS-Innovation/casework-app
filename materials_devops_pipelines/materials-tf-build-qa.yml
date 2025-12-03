@@ -11,6 +11,8 @@ trigger:
     include:
       - "terraform/*"
 
+pr: none
+
 variables:
   - name: tfTargetPath
     value: "terraform"
