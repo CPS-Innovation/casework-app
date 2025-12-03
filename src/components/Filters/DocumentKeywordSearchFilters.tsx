@@ -1,5 +1,4 @@
 import { ChangeEvent } from 'react';
-import { READ_STATUS } from '../../constants';
 import { useDocuments, useFilters } from '../../hooks';
 import { categoriseDocument } from '../../packages/DocumentSelectAccordion/utils/categoriseDocument';
 import {
@@ -63,6 +62,8 @@ export const DocumentKeywordSearchFilters = () => {
 
   //     return map;
   //   })();
+
+  console.log({ shallowFilters });
 
   return (
     <div className="filters-container" id="filters">
@@ -131,11 +132,10 @@ export const DocumentKeywordSearchFilters = () => {
               id="readStatus"
               label="Show unread"
               checked={
-                shallowFilters?.filters?.status?.includes(READ_STATUS.UNREAD) ||
-                false
+                shallowFilters?.filters?.status?.includes('New') || false
               }
               onChange={(event) => handleCheckboxChange('status', event)}
-              value={READ_STATUS.UNREAD}
+              value={'New'}
             />
           </fieldset>
         </div>

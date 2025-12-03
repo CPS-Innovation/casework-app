@@ -57,6 +57,7 @@ export const useDocumentSearchResults = (
         presentationTitle: doc.presentationTitle,
         isUnused: doc.isUnused,
         cmsOriginalFileName: doc.cmsOriginalFileName,
+        conversionStatus: doc.conversionStatus,
         matches: matches.map((match) => ({
           text: match.text,
           pageIndex: match.pageIndex,

@@ -76,7 +76,8 @@ export const SearchTermResultSchema = z.object({
   status: z.string(),
   isUnused: z.boolean(),
   presentationTitle: z.string(),
-  cmsOriginalFileName: z.string()
+  cmsOriginalFileName: z.string(),
+  conversionStatus: z.string()
 });
 export const documentListSchema = z.array(DocumentSchema);
 export type DocumentResultType = z.infer<typeof documentListSchema>;

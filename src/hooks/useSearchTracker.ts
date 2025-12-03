@@ -1,4 +1,5 @@
 import useSWR from 'swr';
+import { SearchTermResultType } from '../schemas/documents';
 import { useCaseInfoStore } from '../stores';
 import { useRequest } from './useRequest';
 
@@ -32,9 +33,17 @@ export const useSearchTracker = (trigger: any) => {
     }
   );
 
+  const failedToConvert =
+    trackerData?.data.documents?.filter(
+      (doc: SearchTermResultType) =>
+        doc.status === 'UnableToConvertToPdf' ||
+        doc.conversionStatus === 'UnexpectedError' ||
+        doc.status === 'OcrAndIndexFailure'
+    ) ?? [];
+
   const isComplete =
     trackerData?.data.status === 'Completed' ||
     trackerData?.data.status === 'DocumentsRetrieved';
 
-  return { trackerData, trackerLoading, isComplete };
+  return { trackerData, trackerLoading, isComplete, failedToConvert };
 };

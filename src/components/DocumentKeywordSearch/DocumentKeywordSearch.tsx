@@ -7,7 +7,14 @@ import {
   useSearchTracker
 } from '../../hooks';
 
-import { LoadingSpinner, Modal, SearchInput, SectionBreak, TwoCol } from '../';
+import {
+  Banner,
+  LoadingSpinner,
+  Modal,
+  SearchInput,
+  SectionBreak,
+  TwoCol
+} from '../';
 
 import { categoriseDocument } from '../../packages/DocumentSelectAccordion/utils/categoriseDocument';
 import { SearchTermResultType } from '../../schemas/documents';
@@ -25,8 +32,11 @@ export const DocumentKeywordSearch = () => {
     Record<string, boolean>
   >({});
 
-  const { isComplete: trackerComplete, trackerData } =
-    useSearchTracker(searchTerm);
+  const {
+    isComplete: trackerComplete,
+    trackerData,
+    failedToConvert
+  } = useSearchTracker(searchTerm);
 
   const { searchResults, loading } = useDocumentSearch(
     searchTerm,
@@ -71,7 +81,16 @@ export const DocumentKeywordSearch = () => {
           selectedCategories.includes(category)
         );
       })
-      .filter(searchFn);
+      .filter(searchFn)
+      .sort((a, b) => {
+        if (a.status === 'New' && b.status !== 'New') {
+          return 1;
+        }
+        if (a.status !== 'Read' && b.status === 'Read') {
+          return -1;
+        }
+        return 0;
+      });
   }, [combinedSearchResults, filters?.filters?.category, filters?.search]);
 
   const highlightExactMatches = (
@@ -100,6 +119,8 @@ export const DocumentKeywordSearch = () => {
       )
     );
   };
+
+  console.log({ filteredResults });
 
   return (
     <div style={{ marginBottom: '20px' }}>
@@ -134,7 +155,7 @@ export const DocumentKeywordSearch = () => {
                   </p>
                   <p className="govuk-body">
                     Search may not have found all instances of "{searchTerm}" in
-                    this case.
+                    this case
                   </p>
                 </div>
 
@@ -153,6 +174,21 @@ export const DocumentKeywordSearch = () => {
                   </select>
                 </div>
               </div>
+            )}
+
+            {failedToConvert.length > 0 && (
+              <Banner
+                type="important"
+                header="Technical problems stopped us from searching these documents:"
+                content={failedToConvert.map((doc: SearchTermResultType) => (
+                  <p
+                    key={doc.documentId}
+                    style={{ fontStyle: 'italic', color: '#505a5f' }}
+                  >
+                    {doc.presentationTitle}
+                  </p>
+                ))}
+              ></Banner>
             )}
 
             {!loading &&

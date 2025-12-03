@@ -19,7 +19,7 @@ export const Modal = ({ open, onClose, title, children }: ModalProps) => {
         <div className="modal-body">{children}</div>
 
         <button className="modal-close-btn" onClick={onClose}>
-          Close
+          x
         </button>
       </div>
     </div>
