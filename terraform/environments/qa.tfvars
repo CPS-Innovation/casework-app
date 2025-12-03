@@ -4,12 +4,11 @@ location        = "UK South"
 location_abbr   = "uks"
 project_name    = "materials"
 
-dns_server      = "10.8.0.6"
-
 vnet_name       = "vnet-innovation-qa"
 vnet_rg         = "rg-networking"
 app_subnet_name = "polaris-apps-subnet"
 ui_subnet_name  = "polaris-ui-subnet"
+dns_server      = "10.8.0.6"
 as_web_pe_ip    = null # initially set to null, will be changed once IP auto assigned
 as_comp_pe_ip   = null
 
