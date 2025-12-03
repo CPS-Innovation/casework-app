@@ -1,5 +1,4 @@
 resource "azurerm_linux_web_app_slot" "as_web_materials_staging1" {
-  count                         = var.environment != "dev" ? 1 : 0
   name                          = "staging1"
   app_service_id                = azurerm_linux_web_app.as_web_materials.id
   #virtual_network_subnet_id     = data.azurerm_subnet.materials_subnets[var.ui_subnet_name].id #TBC vnet integration is not required
