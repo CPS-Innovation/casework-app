@@ -1,5 +1,6 @@
 export const QUERY_KEYS = {
   CASE_INFO: 'caseInfo',
+  CASE_LOCK_STATUS: 'caseLockStatus',
   CASE_MATERIAL: 'caseMaterial',
   AUTO_RECLASSIFY: 'autoReclassify',
   RENAME_MATERIAL: 'renameMaterial',
@@ -21,7 +22,10 @@ export const QUERY_KEYS = {
   PCD_REVIEW_CASE_HISTORY: 'pcdReviewHistory',
   CREATE_WITNESS: 'createWitness',
   CREATE_ACTION_PLAN: 'createActionPlan',
-  RECLASSIFY_MATERIAL: 'reclassifyMaterial'
+  RECLASSIFY_MATERIAL: 'reclassifyMaterial',
+  CASE_SEARCH: 'caseSearch',
+  UPDATE_STATEMENT: 'updateStatement',
+  UPDATE_EXHIBIT: 'updateExhibit'
 };
 
 export const DEFAULT_RESULTS_PER_PAGE = 20;

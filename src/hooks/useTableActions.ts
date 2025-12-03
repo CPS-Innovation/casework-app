@@ -3,10 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { READ_STATUS } from '../constants';
 import { URL } from '../constants/url';
-import { useReadStatus } from '../hooks';
-import { CaseInfoType, CaseMaterialsType } from '../schemas/';
+import { useAppRoute, useReadStatus } from '../hooks';
+import { CaseMaterialsType } from '../schemas/';
 import { useSelectedItemsStore } from '../stores';
-import { linkToRedact } from '../utils/materials';
 
 type TableActionsProps = {
   selectedItems: CaseMaterialsType[];
@@ -17,10 +16,7 @@ type TableActionsProps = {
     content: string;
   }) => void;
   deselectItem: () => void;
-  caseInfoData?: CaseInfoType;
   resetBanner: () => void;
-  setIsRenameDrawerOpen: (isOpen: boolean) => void;
-  setRenamedMaterialId: (id: number | null) => void;
 };
 
 export const useTableActions = ({
@@ -28,23 +24,18 @@ export const useTableActions = ({
   refreshData,
   setBanner,
   deselectItem,
-  caseInfoData,
-  resetBanner,
-  setIsRenameDrawerOpen,
-  setRenamedMaterialId
+  resetBanner
 }: TableActionsProps) => {
+  const { getRoute } = useAppRoute();
   const navigate = useNavigate();
   const { trigger } = useReadStatus();
   const { clear: clearSelectedItems } = useSelectedItemsStore();
   const [isReadStatusUpdating, setIsReadStatusUpdating] = useState(false);
 
-  const handleRenameClick = () => {
-    setIsRenameDrawerOpen(true);
-    setRenamedMaterialId(null);
-  };
-
   const handleReclassifyClick = () => {
-    navigate(URL.RECLASSIFY, { state: { row: selectedItems[0] } });
+    navigate(getRoute('RECLASSIFICATION'), {
+      state: { row: selectedItems[0] }
+    });
   };
 
   const handleDiscardClick = (returnToUrl: string) => {
@@ -53,15 +44,24 @@ export const useTableActions = ({
     });
   };
 
-  const handleRedactClick = (materialId: number) => {
-    if (caseInfoData) {
-      linkToRedact(caseInfoData, materialId);
-    }
+  const handleEditClick = (material: CaseMaterialsType, returnTo: string) => {
+    navigate(getRoute('UPDATE_MATERIAL'), {
+      state: { returnTo, row: material }
+    });
   };
 
-  const handleUnusedClick = (returnTo: string) => {
+  const handleRedactClick = (materialId: number) => {
+    alert(`REDACT COMING SOON (material id ${materialId})`);
+  };
+
+  const handleUnusedClick = (
+    materials: CaseMaterialsType[],
+    returnTo: string
+  ) => {
     resetBanner();
-    navigate(URL.CHECK_YOUR_SELECTION, { state: { returnTo } });
+    navigate(getRoute('RECLASSIFY_TO_UNUSED'), {
+      state: { materials, returnTo }
+    });
   };
 
   const determineReadStatusLabel = (items: CaseMaterialsType[]) => {
@@ -108,9 +108,9 @@ export const useTableActions = ({
   };
 
   return {
-    handleRenameClick,
     handleReclassifyClick,
     handleDiscardClick,
+    handleEditClick,
     handleRedactClick,
     handleUnusedClick,
     determineReadStatusLabel,

@@ -1,30 +1,85 @@
+import { useEffect } from 'react';
 import { Route, Routes as Router } from 'react-router';
+import { useMatch } from 'react-router-dom';
 
-import { Layout } from './components';
-import { useAppRoute } from './hooks';
-import { NotFoundPage, PcdRequestPage } from './pages';
-import { CommunicationsPage } from './pages/Communications';
-import { MaterialsPage } from './pages/materials/Materials';
-import { ReviewAndRedactPage } from './pages/ReviewAndRedactPage';
+import { ReviewAndRedactPage } from './caseWorkApp/pages/ReviewAndRedactPage';
+import { useAppRoute, useCaseInfo, useCaseInfoStore } from './hooks';
+import {
+  CommunicationsPage,
+  DiscardMaterialPage,
+  EditMaterialPage,
+  MaterialsPage,
+  NotAuthorisedPage,
+  NotFoundPage,
+  PcdRequestPage,
+  ReclassificationPage,
+  ReclassifyToUnusedPage,
+  ServerErrorPage
+} from './pages';
+import { CaseSearchPage } from './pages/CaseSearch';
 
 export const Routes = () => {
-  const [communicationsRoute, materialsRoute, pcdRequestRoute, reviewRoute] =
-    useAppRoute([
-      'COMMUNICATIONS',
-      'MATERIALS',
-      'PCD_REQUEST',
-      'REVIEW_REDACT'
-    ]);
+  const { getRoute } = useAppRoute();
+  const match = useMatch('/:urn/:caseId/*');
+  const { caseId, urn } = match?.params || {};
+
+  const { caseInfo } = useCaseInfo({ caseId, urn });
+  const { setCaseInfo } = useCaseInfoStore();
+
+  useEffect(() => {
+    if (caseInfo) {
+      setCaseInfo(caseInfo);
+    }
+  }, [caseInfo]);
 
   return (
     <Router>
-      <Route path="/:urn/:caseId" element={<Layout />}>
-        <Route path={pcdRequestRoute} element={<PcdRequestPage />}>
-          <Route path=":pcdId" element={<PcdRequestPage />} />
-        </Route>
-        <Route path={materialsRoute} element={<MaterialsPage />} />
-        <Route path={communicationsRoute} element={<CommunicationsPage />} />
-        <Route path={reviewRoute} element={<ReviewAndRedactPage />} />
+      <Route
+        path={getRoute('UNAUTHORISED', false)}
+        element={<NotAuthorisedPage />}
+      />
+      <Route
+        path={getRoute('SERVER_ERROR', false)}
+        element={<ServerErrorPage />}
+      />
+      <Route
+        path={getRoute('CASE_SEARCH', false)}
+        element={<CaseSearchPage />}
+      />
+
+      <Route path={`:urn/:caseId`}>
+        <Route
+          path={getRoute('DISCARD', false)}
+          element={<DiscardMaterialPage />}
+        />
+        <Route
+          path={`${getRoute('PCD_REQUEST', false)}/:pcdId?`}
+          element={<PcdRequestPage />}
+        />
+        <Route
+          path={getRoute('MATERIALS', false)}
+          element={<MaterialsPage />}
+        />
+        <Route
+          path={getRoute('COMMUNICATIONS', false)}
+          element={<CommunicationsPage />}
+        />
+        <Route
+          path={getRoute('REVIEW_REDACT', false)}
+          element={<ReviewAndRedactPage />}
+        />
+        <Route
+          path={getRoute('RECLASSIFY_TO_UNUSED', false)}
+          element={<ReclassifyToUnusedPage />}
+        />
+        <Route
+          path={getRoute('RECLASSIFICATION', false)}
+          element={<ReclassificationPage />}
+        />
+        <Route
+          path={getRoute('UPDATE_MATERIAL', false)}
+          element={<EditMaterialPage />}
+        />
       </Route>
 
       <Route path="*" element={<NotFoundPage />} />

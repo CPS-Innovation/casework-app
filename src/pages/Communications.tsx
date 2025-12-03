@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import '../App.scss';
 import {
+  ButtonMenuComponent,
   CommsFilters,
   CommunicationsTable,
+  Layout,
   LoadingSpinner,
   RenameDrawer,
   TableActions,
@@ -11,35 +13,31 @@ import {
 
 import { URL } from '../constants/url';
 import {
+  useAppRoute,
   useBanner,
-  useCaseInfoStore,
   useCaseMaterial,
   useCaseMaterials,
-  useFeatureFlag,
   useTableActions
 } from '../hooks';
-import { useSelectedItemsStore } from '../stores';
+import { CaseMaterialsType } from '../schemas';
+import { useMaterialTags, useSelectedItemsStore } from '../stores';
 
 export const CommunicationsPage = () => {
-  const hasAccess = useFeatureFlag();
+  const [selectedMaterial, setSelectedMaterial] =
+    useState<CaseMaterialsType | null>(null);
   const { setBanner, resetBanner } = useBanner();
   const { loading: caseMaterialsLoading, mutate: refreshCommunications } =
-    useCaseMaterials('communications');
+    useCaseMaterials({ dataType: 'communications' });
   const { deselectMaterial } = useCaseMaterial();
-
-  const { caseInfo } = useCaseInfoStore();
+  const { getRoute } = useAppRoute();
+  const { setTags } = useMaterialTags();
 
   const [showFilter, setShowFilter] = useState(true);
   const { items: selectedItems, clear: clearSelectedItems } =
     useSelectedItemsStore();
 
-  const [isRenameDrawerOpen, setIsRenameDrawerOpen] = useState(false);
-  const [renamedMaterialId, setRenamedMaterialId] = useState<number | null>(
-    null
-  );
-
   const {
-    handleRenameClick,
+    handleEditClick,
     handleReclassifyClick,
     handleRedactClick,
     handleDiscardClick,
@@ -52,48 +50,84 @@ export const CommunicationsPage = () => {
     refreshData: refreshCommunications,
     setBanner,
     deselectItem: deselectMaterial,
-    caseInfoData: caseInfo || undefined,
-    resetBanner,
-    setIsRenameDrawerOpen,
-    setRenamedMaterialId
+    resetBanner
   });
+
+  const handleRenameClick = () => {
+    if (selectedItems.communications.length) {
+      setSelectedMaterial(selectedItems.communications[0]);
+    }
+  };
+
+  const handleCancelRename = () => {
+    setSelectedMaterial(null);
+    clearSelectedItems();
+  };
+
+  const handleSuccessfulRename = async () => {
+    setTags([
+      { materialId: selectedMaterial?.materialId as number, tagName: 'Renamed' }
+    ]);
+
+    setSelectedMaterial(null);
+    deselectMaterial();
+    clearSelectedItems('materials');
+
+    setBanner({
+      type: 'success',
+      header: 'Renaming successful',
+      content: 'Material successfully renamed.'
+    });
+
+    await refreshCommunications();
+  };
 
   const row = selectedItems.communications?.[0];
 
   const menuItems = [
     {
       label: 'Rename',
-      onClick: () => handleRenameClick(),
+      onClick: handleRenameClick,
       hide:
         [1031, 1059].includes(row?.documentTypeId) ||
         selectedItems.communications.length > 1
     },
     {
       label: 'Reclassify',
-      onClick: () => handleReclassifyClick(),
+      onClick: handleReclassifyClick,
+      hide: !row?.isReclassifiable || selectedItems.communications.length > 1
+    },
+    {
+      label: 'Update',
+      onClick: () =>
+        handleEditClick(row as CaseMaterialsType, getRoute('COMMUNICATIONS')),
       hide:
-        !hasAccess([5]) ||
-        !row?.isReclassifiable ||
-        selectedItems.communications.length > 1
+        selectedItems.communications.length > 1 ||
+        !['Exhibit', 'Statement'].includes(
+          selectedItems.communications[0]?.category
+        )
     },
     {
       label: 'Redact',
       onClick: () => handleRedactClick(row.materialId),
-      hide: !hasAccess([2, 3, 4, 5]) || selectedItems.communications.length > 1
+      hide: selectedItems.communications.length > 1
     },
     {
       label: 'Discard',
       onClick: () => handleDiscardClick(URL.COMMUNICATIONS),
-      hide: !hasAccess([2, 3, 4, 5]) || selectedItems.communications.length > 1
+      hide: selectedItems.communications.length > 1
     },
     {
       label: determineReadStatusLabel(selectedItems.communications),
-      onClick: () => handleReadStatusClick(selectedItems.communications),
-      hide: !hasAccess([2, 3, 4, 5])
+      onClick: () => handleReadStatusClick(selectedItems.communications)
     },
     {
       label: 'Mark as unused',
-      onClick: () => handleUnusedClick(URL.COMMUNICATIONS)
+      onClick: () =>
+        handleUnusedClick(
+          selectedItems.communications,
+          getRoute('COMMUNICATIONS')
+        )
     }
   ];
 
@@ -108,56 +142,39 @@ export const CommunicationsPage = () => {
   }, []);
 
   return (
-    <div className="govuk-main-wrapper">
-      {isRenameDrawerOpen && (
+    <Layout title="Communications">
+      <div className="govuk-main-wrapper">
         <RenameDrawer
-          material={row}
-          onCancel={() => {
-            setIsRenameDrawerOpen(false);
-          }}
-          onSuccess={async () => {
-            await refreshCommunications();
-
-            setRenamedMaterialId(row.id);
-            setIsRenameDrawerOpen(false);
-            deselectMaterial();
-            setBanner({
-              type: 'success',
-              header: 'Renaming successful',
-              content: 'Material successfully renamed.'
-            });
-          }}
+          material={selectedMaterial}
+          onCancel={handleCancelRename}
+          onSuccess={handleSuccessfulRename}
         />
-      )}
 
-      <TwoCol sidebar={showFilter ? <CommsFilters /> : undefined}>
-        {caseMaterialsLoading ? (
-          <LoadingSpinner />
-        ) : isReadStatusUpdating ? (
-          <LoadingSpinner textContent="Updating read status..." />
-        ) : (
-          <>
-            <TableActions
-              showFilter={showFilter}
-              onSetShowFilter={setShowFilter}
-              menuItems={menuItems}
-              selectedItems={selectedItems.communications}
-            />
-            <CommunicationsTable
-              renamedMaterialId={renamedMaterialId}
-              setRenamedMaterialId={setRenamedMaterialId}
-            />
-
-            {/* <div className="action-on-selection-container">
-              <ButtonMenuComponent
-                menuTitle="Action on selection"
+        <TwoCol sidebar={showFilter ? <CommsFilters /> : undefined}>
+          {caseMaterialsLoading || isReadStatusUpdating ? (
+            <LoadingSpinner textContent="Loading communications" />
+          ) : (
+            <>
+              <TableActions
+                showFilter={showFilter}
+                onSetShowFilter={setShowFilter}
                 menuItems={menuItems}
-                isDisabled={selectedItems.communications?.length === 0}
+                selectedItems={selectedItems.communications}
               />
-            </div> */}
-          </>
-        )}
-      </TwoCol>
-    </div>
+
+              <CommunicationsTable />
+
+              <div className="action-on-selection-container">
+                <ButtonMenuComponent
+                  menuTitle="Action on selection"
+                  menuItems={menuItems}
+                  isDisabled={selectedItems.communications?.length === 0}
+                />
+              </div>
+            </>
+          )}
+        </TwoCol>
+      </div>
+    </Layout>
   );
 };

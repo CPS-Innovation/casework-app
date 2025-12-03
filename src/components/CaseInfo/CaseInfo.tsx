@@ -1,39 +1,13 @@
-import { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { AutoReclassifyButton } from '../';
+import { CaseInfoType } from '../../schemas';
 
-import { useRequest } from '../../hooks';
-import { BaseUrlParamsType } from '../../schemas/params';
-import { CaseInfoType as PolarisCaseInfoType } from '../../schemas/polaris/caseinfo';
-import { useCaseInfoStore } from '../../stores';
+import './CaseInfo.scss';
 
-export const CaseInfo = () => {
-  const { caseId, urn } = useParams<BaseUrlParamsType>();
+type Props = { caseInfo: CaseInfoType | null };
 
-  const { caseInfo, setCaseInfo } = useCaseInfoStore();
-  const request = useRequest();
-
-  const fetchCaseInfoSummary = async () => {
-    try {
-      const response = await request.get<PolarisCaseInfoType>(
-        `/api/urns/${urn}/cases/${caseId}`
-      );
-      setCaseInfo({
-        id: response.data.id,
-        urn: response.data.uniqueReferenceNumber,
-        leadDefendantFirstNames: response.data.leadDefendantDetails.firstNames,
-        leadDefendantSurname: response.data.leadDefendantDetails.surname,
-        numberOfDefendants: response.data.numberOfDefendants
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  useEffect(() => {
-    fetchCaseInfoSummary();
-  }, []);
-
-  if (!caseId || !urn || !caseInfo) {
+export const CaseInfo = ({ caseInfo }: Props) => {
+  if (!caseInfo) {
     return null;
   }
 
@@ -49,17 +23,41 @@ export const CaseInfo = () => {
   const caseInfoName = `${surname}${firstNames}${plusNumber}`;
 
   return (
-    <div className="case-info-details">
-      <div className="">
-        {caseInfo ? (
-          <>
-            <h2 className="govuk-heading-m case-info-name">{caseInfoName}</h2>
-            <p className="govuk-body">{caseInfo?.urn}</p>
-          </>
-        ) : (
-          <p className="govuk-body">Please wait...</p>
-        )}
+    <>
+      <div className="caseInfo">
+        <div className="govuk-grid-row">
+          <div className="govuk-grid-column-one-third">
+            <Link to={'/case-search'} className="govuk-back-link">
+              Find a case
+            </Link>
+          </div>
+
+          <div className="govuk-grid-row">
+            <div className="caseInfo__container govuk-grid-column-full">
+              <div className="caseInfo__info">
+                <h2 className="govuk-heading-m case-info-name">
+                  {caseInfoName}
+                </h2>
+                <p className="govuk-body caseInfo__urn">{caseInfo?.urn}</p>
+              </div>
+              <div className="caseInfo__actions">
+                <AutoReclassifyButton />
+
+                <a
+                  href={`https://cps-tst.outsystemsenterprise.com/CaseReview/LandingPage?CMSCaseId=${caseInfo.id}`}
+                  target="_blank"
+                  role="button"
+                  className="govuk-button"
+                  data-module="govuk-button"
+                  draggable="false"
+                >
+                  Start review
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 };

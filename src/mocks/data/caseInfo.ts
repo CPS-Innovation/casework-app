@@ -5,5 +5,6 @@ export const mockCaseInfoSummary: CaseInfoResponseType = {
   urn: '06SC1234572',
   leadDefendantFirstNames: 'James',
   leadDefendantSurname: 'Chapman',
-  numberOfDefendants: 2
+  numberOfDefendants: 2,
+  unitName: 'A unit name'
 };

@@ -1,4 +1,4 @@
-import { Suspense } from 'react';
+import { Layout } from '../components';
 import { DefinitionList } from '../components/DefinitionList/DefinitionList';
 import { LoadingSpinner } from '../components/LoadingSpinner/LoadingSpinner';
 import { NavList, NavListItem } from '../components/NavList/NavList';
@@ -104,150 +104,142 @@ export const PcdReviewPage = () => {
   }
 
   return (
-    <Suspense fallback={<LoadingSpinner />}>
-      {isLoading || historyDataLoading || initialReviewDataLoading ? (
-        <LoadingSpinner />
-      ) : (
-        <div className="govuk-main-wrapper" style={{ whiteSpace: 'pre-wrap' }}>
-          <TwoCol sidebar={renderSidebar()}>
-            {data && initialReviewData ? (
+    <Layout title="PCD Review">
+      <div className="govuk-main-wrapper" style={{ whiteSpace: 'pre-wrap' }}>
+        <TwoCol sidebar={renderSidebar()}>
+          {data && initialReviewData ? (
+            <>
+              <h1 className="govuk-heading-l">Initial Review</h1>
+              <DefinitionList
+                items={[
+                  {
+                    title: 'Review type: ',
+                    description: [`${initialReviewData?.consultationType}`]
+                  },
+                  {
+                    title: 'Prosecutor name: ',
+                    description: [data?.decisionMadeBy]
+                  },
+                  {
+                    title: 'Review date: ',
+                    description: [`${data?.pcdHistoryActionPlan[0]?.entryDate}`]
+                  }
+                ]}
+              />
+              <SectionBreak size="xl" />
+
+              <h1 className="govuk-heading-l">Case Headline / Code Test</h1>
+              <p className="govuk-body">{initialReviewData?.caseSummary}</p>
               <>
-                <h1 className="govuk-heading-l">Initial Review</h1>
-                <DefinitionList
-                  items={[
-                    {
-                      title: 'Review type: ',
-                      description: [`${initialReviewData?.consultationType}`]
-                    },
-                    {
-                      title: 'Prosecutor name: ',
-                      description: [data?.decisionMadeBy]
-                    },
-                    {
-                      title: 'Review date: ',
-                      description: [
-                        `${data?.pcdHistoryActionPlan[0]?.entryDate}`
-                      ]
-                    }
-                  ]}
-                />
-                <SectionBreak size="xl" />
-
-                <h1 className="govuk-heading-l">Case Headline / Code Test</h1>
-                <p className="govuk-body">{initialReviewData?.caseSummary}</p>
-                <>
-                  {caseHeadlineCodeTests.map((c, index) => (
-                    <div key={index}>
-                      <h3 className="govuk-heading-m">{c.header}</h3>
-                      <p className="govuk-body">{c.body}</p>
-                    </div>
-                  ))}
-                </>
-
-                <SectionBreak size="xl" />
-
-                <h1 className="govuk-heading-l">Charging Decision & Advice</h1>
-
-                <table className="govuk-table">
-                  <caption className="govuk-table__caption govuk-visually-hidden">
-                    Charging Decision & Advice Table
-                  </caption>
-
-                  <thead className="govuk-table__head">
-                    <tr className="govuk-table__row">
-                      {chargingDecisionAndAdviceTableHeadings.map(
-                        (heading, index) => (
-                          <th
-                            scope={'col'}
-                            className={'govuk-table__header'}
-                            key={index}
-                          >
-                            {heading}
-                          </th>
-                        )
-                      )}
-                    </tr>
-                  </thead>
-
-                  <tbody className={'govuk-table__body'}>
-                    {decisions?.map((decision, index) => (
-                      <tr className={'govuk-table__row'} key={index}>
-                        <th scope={'col'} className={'govuk-table__header'}>
-                          {decision.defendantName}
-                        </th>
-                        <td scope={'col'} className={'govuk-table__cell'}>
-                          {decision.chargingCode}
-                        </td>
-                        <td scope={'col'} className={'govuk-table__cell'}>
-                          {decision.advice}
-                        </td>
-                        <td scope={'col'} className={'govuk-table__cell'}>
-                          {decision.chargingCode === 'K'
-                            ? decision.reason
-                            : '-'}
-                        </td>
-                        <td scope="col" className="govuk-table__cell">
-                          {['C', 'D', 'D2', 'D5', 'E', 'F', 'L'].includes(
-                            decision.reasonCode
-                          )
-                            ? decision.publicInterestCode
-                            : '-'}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-
-                <SectionBreak size="xl" />
-
-                <h1 className="govuk-heading-l">
-                  Further action agreed for codes A, B, B2, H, I, J
-                </h1>
-                <DefinitionList
-                  items={[
-                    {
-                      title: 'Action type:',
-                      description: [
-                        `${data?.pcdHistoryActionPlan[0]?.actionType}`
-                      ]
-                    },
-                    {
-                      title: 'Action date:',
-                      description: [
-                        `${data?.pcdHistoryActionPlan[0]?.actionDate}`
-                      ]
-                    },
-                    {
-                      title: '',
-                      description: [
-                        `${data?.pcdHistoryActionPlan[0]?.actionPoint}`
-                      ]
-                    },
-                    {
-                      title: 'Return bail date:',
-                      description: [
-                        `${data?.defendantDecisions[0]?.returnBailDate}`
-                      ]
-                    },
-                    {
-                      title: 'Investigation stage at which advice sought:',
-                      description: [data?.investigationStage]
-                    },
-                    {
-                      title: 'How advice delivered:',
-                      description: [`${data?.method}`]
-                    }
-                  ]}
-                />
-
-                <SectionBreak size="xl" />
+                {caseHeadlineCodeTests.map((c, index) => (
+                  <div key={index}>
+                    <h3 className="govuk-heading-m">{c.header}</h3>
+                    <p className="govuk-body">{c.body}</p>
+                  </div>
+                ))}
               </>
-            ) : (
-              <h1 className="govuk-heading-l">No PCD Review has been made</h1>
-            )}
-          </TwoCol>
-        </div>
-      )}
-    </Suspense>
+
+              <SectionBreak size="xl" />
+
+              <h1 className="govuk-heading-l">Charging Decision & Advice</h1>
+
+              <table className="govuk-table">
+                <caption className="govuk-table__caption govuk-visually-hidden">
+                  Charging Decision & Advice Table
+                </caption>
+
+                <thead className="govuk-table__head">
+                  <tr className="govuk-table__row">
+                    {chargingDecisionAndAdviceTableHeadings.map(
+                      (heading, index) => (
+                        <th
+                          scope={'col'}
+                          className={'govuk-table__header'}
+                          key={index}
+                        >
+                          {heading}
+                        </th>
+                      )
+                    )}
+                  </tr>
+                </thead>
+
+                <tbody className={'govuk-table__body'}>
+                  {decisions?.map((decision, index) => (
+                    <tr className={'govuk-table__row'} key={index}>
+                      <th scope={'col'} className={'govuk-table__header'}>
+                        {decision.defendantName}
+                      </th>
+                      <td scope={'col'} className={'govuk-table__cell'}>
+                        {decision.chargingCode}
+                      </td>
+                      <td scope={'col'} className={'govuk-table__cell'}>
+                        {decision.advice}
+                      </td>
+                      <td scope={'col'} className={'govuk-table__cell'}>
+                        {decision.chargingCode === 'K' ? decision.reason : '-'}
+                      </td>
+                      <td scope="col" className="govuk-table__cell">
+                        {['C', 'D', 'D2', 'D5', 'E', 'F', 'L'].includes(
+                          decision.reasonCode
+                        )
+                          ? decision.publicInterestCode
+                          : '-'}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              <SectionBreak size="xl" />
+
+              <h1 className="govuk-heading-l">
+                Further action agreed for codes A, B, B2, H, I, J
+              </h1>
+              <DefinitionList
+                items={[
+                  {
+                    title: 'Action type:',
+                    description: [
+                      `${data?.pcdHistoryActionPlan[0]?.actionType}`
+                    ]
+                  },
+                  {
+                    title: 'Action date:',
+                    description: [
+                      `${data?.pcdHistoryActionPlan[0]?.actionDate}`
+                    ]
+                  },
+                  {
+                    title: '',
+                    description: [
+                      `${data?.pcdHistoryActionPlan[0]?.actionPoint}`
+                    ]
+                  },
+                  {
+                    title: 'Return bail date:',
+                    description: [
+                      `${data?.defendantDecisions[0]?.returnBailDate}`
+                    ]
+                  },
+                  {
+                    title: 'Investigation stage at which advice sought:',
+                    description: [data?.investigationStage]
+                  },
+                  {
+                    title: 'How advice delivered:',
+                    description: [`${data?.method}`]
+                  }
+                ]}
+              />
+
+              <SectionBreak size="xl" />
+            </>
+          ) : (
+            <h1 className="govuk-heading-l">No PCD Review has been made</h1>
+          )}
+        </TwoCol>
+      </div>
+    </Layout>
   );
 };

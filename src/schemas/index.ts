@@ -1,9 +1,10 @@
-export type { SwrPayload } from '../schemas/api';
-export type { AppContextType } from '../schemas/app';
-export type { BannerType } from '../schemas/banner';
-export type { CaseInfoType } from '../schemas/caseinfo';
+export type { SwrPayload } from './api';
+export type { AppContextType } from './app';
+export type { BannerType } from './banner';
+export type { CaseInfoType } from './caseinfo';
 export type {
   CaseMaterialDataType,
   CaseMaterialsResponseType,
   CaseMaterialsType
-} from '../schemas/caseMaterials';
+} from './caseMaterials';
+export type { StatusTag } from './statusTags';

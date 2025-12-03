@@ -1,24 +1,25 @@
 import { useMemo } from 'react';
 import useSWR from 'swr';
 import { QUERY_KEYS } from '../constants/query';
-import { POLARIS_GATEWAY_URL } from '../constants/url';
-import { useRequest } from '../hooks';
+import { useCaseInfoStore, useRequest } from '../hooks';
 import {
   CaseMaterialDataType,
   CaseMaterialsResponseType,
   CaseMaterialsType
 } from '../schemas';
 
-export const useCaseMaterials = (dataType: CaseMaterialDataType) => {
+type UseCaseMaterialsProps = { dataType: CaseMaterialDataType };
+
+export const useCaseMaterials = ({ dataType }: UseCaseMaterialsProps) => {
   const request = useRequest();
+  const { caseInfo } = useCaseInfoStore();
 
   // TODO: revisit this and add logging
-  // const { caseInfo } = useCaseInfoStore();
   // const { log } = useLogger();
 
   const getCaseMaterials = async () => {
     const response = await request.get<CaseMaterialsResponseType>(
-      `${POLARIS_GATEWAY_URL}/api/urns/16123630825/cases/2167259/materials`
+      `/urns/${caseInfo?.urn}/cases/${caseInfo?.id}/case-materials`
     );
 
     if (response.status === 422 || response.status !== 200) {
@@ -30,8 +31,8 @@ export const useCaseMaterials = (dataType: CaseMaterialDataType) => {
     return response.data;
   };
 
-  const { data, error, isLoading, mutate } = useSWR(
-    QUERY_KEYS.CASE_MATERIAL,
+  const { data, error, isLoading, isValidating, mutate } = useSWR(
+    caseInfo ? QUERY_KEYS.CASE_MATERIAL : null,
     getCaseMaterials
   );
 
@@ -53,5 +54,11 @@ export const useCaseMaterials = (dataType: CaseMaterialDataType) => {
   //   });
   // }, [log, caseInfo, dataType, error, data?.length]);
 
-  return { data, loading: isLoading, error, filteredData, mutate };
+  return {
+    data,
+    loading: isLoading || isValidating,
+    error,
+    filteredData,
+    mutate
+  };
 };

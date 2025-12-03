@@ -37,10 +37,8 @@ package-lock.json
 /blob-report/
 /playwright/.cache/
 
-#terraform
-.terraform
-terraform.tfstate
-*.tfstate*
-*.tfstate.*
-_backend.tf
-*_override.tf
+# Playwright
+/tests/.auth/
+
+# pdfViewer test pdfs not required in prod
+/public/test-pdfs/

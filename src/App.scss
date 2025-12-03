@@ -1,15 +1,15 @@
 $govuk-include-font-face: false;
 $govuk-font-family: 'NewTransport', 'Arial', sans-serif;
 
-@import 'node_modules/govuk-frontend/dist/govuk/index.scss';
-@import 'node_modules/home-office-kit/sass/_loadingSpinner.scss';
+@import 'node_modules/govuk-frontend/dist/govuk/index';
+@import 'node_modules/home-office-kit/sass/_loadingSpinner';
 
 @font-face {
   font-family: 'NewTransport';
   src:
     local('NewTransport-RegularWEB'),
-    url('/assets/fonts/NewTransport-RegularWEB.woff') format('woff'),
-    url('/assets/fonts/NewTransport-RegularWEB.woff2') format('woff2');
+    url('./assets/fonts/NewTransport-RegularWEB.woff') format('woff'),
+    url('./assets/fonts/NewTransport-RegularWEB.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
 }
@@ -18,8 +18,8 @@ $govuk-font-family: 'NewTransport', 'Arial', sans-serif;
   font-family: 'NewTransport';
   src:
     local('NewTransport-BoldWEB'),
-    url('/assets/fonts/NewTransport-BoldWEB.woff') format('woff'),
-    url('/assets/fonts/NewTransport-BoldWEB.woff2') format('woff2');
+    url('./assets/fonts/NewTransport-BoldWEB.woff') format('woff'),
+    url('./assets/fonts/NewTransport-BoldWEB.woff2') format('woff2');
   font-weight: bold;
   font-style: normal;
 }
@@ -50,6 +50,7 @@ strong {
 .custom-width-container {
   max-width: 1400px !important;
   min-height: 80vh !important;
+  width: min(1400px, calc(100% - 48px));
 }
 
 .link {
@@ -367,6 +368,7 @@ strong {
   cursor: pointer;
   font-weight: 700;
   font-size: 16px;
+
   &:hover {
     background: black;
     border: 0;
@@ -565,3 +567,11 @@ strong {
   display: flex;
   justify-content: flex-end;
 }
+
+.tabButtonFocused {
+  outline: 0;
+  color: #0b0c0c;
+  background-color: transparent;
+  border-bottom: 0.625rem solid #1d70b8;
+}
+

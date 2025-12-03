@@ -1,3 +1,11 @@
+export { CommunicationsPage } from './Communications';
+export { DiscardMaterialPage } from './DiscardMaterial';
+export { EditMaterialPage } from './EditMaterial';
+export { MaterialsPage } from './Materials';
+export { NotAuthorisedPage } from './NotAuthorisedPage';
 export { NotFoundPage } from './NotFoundPage';
 export { PcdRequestPage } from './PcdRequest';
 export { PcdReviewPage } from './PcdReview';
+export { ReclassificationPage } from './Reclassification';
+export { ReclassifyToUnusedPage } from './ReclassifyToUnused';
+export { ServerErrorPage } from './ServerErrorPage';

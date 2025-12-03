@@ -1,11 +1,6 @@
-import { useContext, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import {
-  useCaseMaterials,
-  useFeatureFlag,
-  useFilters,
-  usePager
-} from '../../hooks';
+import { useCaseMaterials, useFilters, usePager } from '../../hooks';
 
 import { CaseMaterialsType } from '../../schemas';
 import {
@@ -16,36 +11,29 @@ import {
 
 import SortableTable, { Column } from './SortableTable';
 
-import { DEFAULT_RESULTS_PER_PAGE } from '../../constants/query';
-import { Pagination } from '../Pagination/Pagination';
-
 import { READ_STATUS } from '../../constants';
-import { ReclassificationContext } from '../../context/ReclassificationContext';
-import { formatDate } from '../../utils/date.ts';
-import DocumentPreview from '../DocumentPreview/DocumentPreview';
-import { LoadingSpinner } from '../LoadingSpinner/LoadingSpinner';
-import { StatusTag } from '../StatusTag/StatusTag.tsx';
+import { DEFAULT_RESULTS_PER_PAGE } from '../../constants/query';
 
-type Props = {
-  renamedMaterialId: number | null;
-  setRenamedMaterialId?: (id: number | null) => void;
-};
+import {
+  DocumentPreview,
+  LoadingSpinner,
+  Pagination,
+  StatusTag
+} from '../../components';
+import { useMaterialTags } from '../../stores';
+import { formatDate } from '../../utils/date';
 
-export const CommunicationsTable = ({ renamedMaterialId }: Props) => {
-  const hasAccess = useFeatureFlag();
-
+export const CommunicationsTable = () => {
   const [queryParams] = useSearchParams();
   const {
     filteredData,
     loading: caseMaterialsLoading,
     error
-  } = useCaseMaterials('communications');
+  } = useCaseMaterials({ dataType: 'communications' });
 
   const { filters } = useFilters('communications');
+  const { materialTags } = useMaterialTags();
 
-  // @ts-ignore
-  const { reclassifiedMaterialIds } = useContext(ReclassificationContext);
-  // @ts-ignore
   const filteredSortedData = useMemo(() => {
     const sortFn = defaultSortFn<CaseMaterialsType>(filters?.sort);
     const sortByStatusFn = defaultSortFn<CaseMaterialsType>({
@@ -60,12 +48,13 @@ export const CommunicationsTable = ({ renamedMaterialId }: Props) => {
 
     return filteredData
       ?.map((material) => {
-        if (reclassifiedMaterialIds.includes(material.materialId))
-          return { ...material, statusLabel: 'Reclassified' };
-        if (renamedMaterialId && [+renamedMaterialId].includes(material?.id))
-          return { ...material, statusLabel: 'Renamed' };
+        const materialTag = materialTags.find(
+          (materialTag) => materialTag.materialId === material.materialId
+        );
 
-        return material;
+        return materialTag
+          ? { ...material, statusLabel: materialTag.tagName }
+          : material;
       })
       ?.filter(searchFn)
       ?.filter(filterFn)
@@ -86,7 +75,7 @@ export const CommunicationsTable = ({ renamedMaterialId }: Props) => {
       })
       ?.sort(sortFn)
       ?.sort(sortByStatusFn);
-  }, [filters, filteredData, renamedMaterialId, reclassifiedMaterialIds]);
+  }, [filters, filteredData, materialTags]);
 
   const currentPageParam = queryParams?.get('page');
 
@@ -110,9 +99,7 @@ export const CommunicationsTable = ({ renamedMaterialId }: Props) => {
       heading: 'Subject',
       render: (row) => (
         <>
-          {hasAccess([2, 3, 4, 5]) && row.readStatus == READ_STATUS.UNREAD && (
-            <StatusTag status="New" />
-          )}
+          {row.readStatus == READ_STATUS.UNREAD && <StatusTag status="New" />}
           <span className="subject-field">{row.subject}</span>
           {row.statusLabel && <StatusTag status={row.statusLabel} />}
         </>
@@ -143,7 +130,7 @@ export const CommunicationsTable = ({ renamedMaterialId }: Props) => {
 
   useEffect(() => {
     setPage(0);
-  }, [filters, renamedMaterialId, reclassifiedMaterialIds, setPage]);
+  }, [filters, setPage]);
 
   if (caseMaterialsLoading) {
     return <LoadingSpinner textContent="Loading materials..." />;

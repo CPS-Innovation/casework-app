@@ -1,0 +1,28 @@
+.caseInfo {
+  margin-bottom: 20px;
+
+  &__container {
+    align-items: center;
+    display: flex;
+  }
+
+  &__actions {
+    display: flex;
+    margin-left: auto;
+    align-items: center;
+    gap: 10px;
+
+    button {
+      margin-bottom: 0;
+      margin-left: 10px;
+    }
+
+    a {
+      margin-bottom: 0;
+    }
+  }
+
+  &__urn {
+    margin-bottom: 0 !important;
+  }
+}

@@ -33,6 +33,7 @@ export const CASEWORK_APP_URL = import.meta.env.VITE_CWA_URL;
 export const API_ENDPOINTS = {
   AUTO_RECLASSIFY: '/uma-reclassify',
   CASE_INFO: '/case-info',
+  CASE_LOCK_STATUS: '/case-lock-info',
   CASE_MATERIALS: '/case-materials',
   CASE_MATERIAL_RENAME: '/material/rename',
   CASE_MATERIAL_READ_STATUS: '/material/read-status',
