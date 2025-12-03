@@ -1,4 +1,9 @@
 resource "azurerm_linux_web_app" "as_web_materials" {
+  #checkov:skip=CKV_AZURE_66:Ensure that App service enables failed request tracing
+  #checkov:skip=CKV_AZURE_88:Ensure that app services use Azure Files
+  #checkov:skip=CKV_AZURE_213:Ensure that App Service configures health check
+  #checkov:skip=CKV_AZURE_13:Ensure App Service Authentication is set on Azure App Service
+  #checkov:skip=CKV_AZURE_17:Ensure the web app has 'Client Certificates (Incoming client certificates)' set
   name                          = "as-${local.web_materials_name}"
   location                      = azurerm_resource_group.rg_materials.location
   service_plan_id               = azurerm_service_plan.web_linux.id

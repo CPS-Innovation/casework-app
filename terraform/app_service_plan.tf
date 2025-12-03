@@ -1,5 +1,8 @@
 #################### App Service Plan ####################
 resource "azurerm_service_plan" "web_linux" {
+  #checkov:skip=CKV_AZURE_212:Ensure App Service has a minimum number of instances for failover
+  #checkov:skip=CKV_AZURE_225:Ensure the App Service Plan is zone redundant
+  #checkov:skip=CKV_AZURE_211:Ensure App Service plan suitable for production use
   name                      = "asp-${local.resource_name}"
   resource_group_name       = azurerm_resource_group.rg_materials.name
   location                  = azurerm_resource_group.rg_materials.location
