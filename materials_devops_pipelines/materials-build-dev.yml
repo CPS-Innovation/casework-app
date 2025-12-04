@@ -8,7 +8,7 @@ trigger:
       - development 
   paths:
     include:
-      - materials-ui
+      - materials_ui
 
 variables:
   - name: buildConfiguration
@@ -20,7 +20,7 @@ variables:
   - name: nodeVersion
     value: "24.x"
   - name: workingDir
-    value: "materials-ui"
+    value: "materials_ui"
   - group: materials-global
 
 pool:
@@ -44,27 +44,16 @@ stages:
       - job: Build_UI_Artifacts
         steps:
 
-
-          - bash: |
-              echo "PWD: $(pwd)"
-              echo "System.DefaultWorkingDirectory: '$(System.DefaultWorkingDirectory)'"
-              echo "Build.SourcesDirectory:        '$(Build.SourcesDirectory)'"
-              echo "Build.ArtifactStagingDirectory:'$(Build.ArtifactStagingDirectory)'"
-              echo "=== Top-level of sources directory ==="
-              ls -la "$(Build.SourcesDirectory)"
-              echo "=== Recursive listing (depth 2) ==="
-              find "$(Build.SourcesDirectory)" -maxdepth 2 -print
-
           # Add build version
-          # - task: PowerShell@2
-          #   displayName: "Record build version"
-          #   inputs:
-          #     targetType: "inline"
-          #     workingDirectory: '$(workingDir)'
-          #     script: |
-          #       New-Item build-version.txt -force
-          #       $currentDate = Get-Date
-          #       Set-Content build-version.txt "{`"name`":`"ui`",`"buildVersion`":`"$(Build.BuildNumber)`",`"sourceVersion`":`"$(Build.SourceVersion)`",`"lastBuilt`":`"$currentDate`"}"
+          - task: PowerShell@2
+            displayName: "Record build version"
+            inputs:
+              targetType: "inline"
+              workingDirectory: '$(workingDir)'
+              script: |
+                New-Item build-version.txt -force
+                $currentDate = Get-Date
+                Set-Content build-version.txt "{`"name`":`"ui`",`"buildVersion`":`"$(Build.BuildNumber)`",`"sourceVersion`":`"$(Build.SourceVersion)`",`"lastBuilt`":`"$currentDate`"}"
 
           # Setup Node.js
           - task: UseNode@1
