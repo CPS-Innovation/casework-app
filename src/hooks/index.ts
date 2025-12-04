@@ -8,9 +8,15 @@ export { useCaseInfo } from './useCaseInfo';
 export { useCaseLockCheck } from './useCaseLockCheck';
 export { useCaseMaterial } from './useCaseMaterial';
 export { useCaseMaterials } from './useCaseMaterials';
+export { useCaseSearch } from './useCaseSearch';
 export { useCaseWitnesses } from './useCaseWitnesses';
 export { useDiscard } from './useDiscard';
 export { useDocumentPreview } from './useDocumentPreview';
+export { useDocuments } from './useDocuments';
+export {
+  useDocumentSearch,
+  useDocumentSearchResults
+} from './useDocumentSearch';
 export { useDocumentTypes } from './useDocumentTypes';
 export { useEditMaterial } from './useEditMaterial';
 export { useExhibitProducers } from './useExhibitProducers';
@@ -29,6 +35,7 @@ export { useReclassify } from './useReclassify';
 export { useReclassifyForm } from './useReclassifyForm';
 export { useRename } from './useRename';
 export { useRequest } from './useRequest';
+export { useSearchTracker } from './useSearchTracker';
 export { useStoreLogger } from './useStoreLogger';
 export { useTableActions } from './useTableActions';
 export { useWitnessStatements } from './useWitnessStatements';
