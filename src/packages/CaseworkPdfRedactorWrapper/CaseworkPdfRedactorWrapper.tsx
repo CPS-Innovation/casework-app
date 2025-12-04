@@ -23,6 +23,7 @@ export const CaseworkPdfRedactorWrapper = (p: {
   fileUrl: string;
   mode: TMode;
   onModeChange: (x: TMode) => void;
+  onModification: () => void;
 }) => {
   const [redactions, setRedactions] = useState<TRedaction[]>([]);
   const [indexedRotation, setIndexedRotation] = useState<TIndexedRotation>({});

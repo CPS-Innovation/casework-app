@@ -3,6 +3,7 @@ import { Layout, TwoCol } from '../../components';
 import { CaseworkPdfRedactorWrapper } from '../../packages/CaseworkPdfRedactorWrapper/CaseworkPdfRedactorWrapper';
 import { DocumentSidebar } from '../../packages/DocumentSelectAccordion/DocumentSidebar';
 import { TMode } from '../../packages/PdfRedactor/utils/modeUtils';
+import { useTrigger } from '../../packages/PdfRedactor/utils/useTriggger';
 import { DocumentControlArea } from '../components/documentControlArea';
 import { DocumentViewportArea } from '../components/documenViewportArea';
 import { GetDataFromAxios } from '../components/utils.ts/getData';
@@ -21,6 +22,8 @@ export const ReviewAndRedactPage = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useState<boolean>(true);
   const [documentIDs, setDocumentIDs] = useState<any[]>([]);
   const [activeTabId, setActiveTabId] = useState<string>('');
+
+  const trigger = useTrigger();
 
   const [openDocumentIds, setOpenDocumentIds] = useState<string[]>([]);
   const [currentActiveTabId, setCurrentActiveTabId] = useState<string>('');
@@ -89,6 +92,7 @@ export const ReviewAndRedactPage = () => {
                 caseId={2160797}
                 openDocumentIds={openDocumentIds}
                 onSetDocumentOpenIds={(docIds) => setOpenDocumentIds(docIds)}
+                reloadTriggerData={trigger.data}
               />
             ) : undefined
           }
@@ -130,6 +134,7 @@ export const ReviewAndRedactPage = () => {
             fileUrl="http://localhost:3000/test-pdfs/final-with-https.pdf"
             mode={mode}
             onModeChange={setMode}
+            onModification={() => trigger.fire()}
           />
         </TwoCol>
       </div>
