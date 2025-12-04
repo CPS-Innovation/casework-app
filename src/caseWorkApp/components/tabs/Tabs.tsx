@@ -8,7 +8,7 @@ export type TabsProps = CommonTabsProps & {
   activeTabId: string;
   handleTabSelection: (documentId: string) => void;
   handleCloseTab: (v?: string) => void;
-  handleCurentActiveTabId: (x?: string) => void;
+  handleCurrentActiveTabId: (x?: string) => void;
 };
 
 export const Tabs: React.FC<TabsProps> = ({
@@ -19,7 +19,7 @@ export const Tabs: React.FC<TabsProps> = ({
   activeTabId,
   handleTabSelection,
   handleCloseTab,
-  handleCurentActiveTabId,
+  handleCurrentActiveTabId,
   ...attributes
 }) => {
   useLastFocus('#case-details-search');
@@ -30,7 +30,7 @@ export const Tabs: React.FC<TabsProps> = ({
     (item) => item.id === activeTabId || item.id === tabsState?.activeTabId
   );
   const activeTabIndex = activeTabArrayPos === -1 ? 0 : activeTabArrayPos;
-  handleCurentActiveTabId(tabsState?.activeTabId);
+  handleCurrentActiveTabId(tabsState?.activeTabId);
 
   const panels = items.map((item, index) => {
     const { id: itemId, panel } = item;

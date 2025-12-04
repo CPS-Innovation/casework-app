@@ -23,7 +23,7 @@ type DocumentControlAreaProps = {
   isSidebarVisible?: boolean;
   onToggleSidebar?: () => void;
   handleCloseTab: (v?: string) => void;
-  handleCurentActiveTabId: (x?: string) => void;
+  handleCurrentActiveTabId: (x?: string) => void;
   currentActiveTabId?: string;
   children: React.ReactNode;
 };
@@ -34,7 +34,7 @@ const DocumentControlArea = ({
   isSidebarVisible,
   onToggleSidebar,
   handleCloseTab,
-  handleCurentActiveTabId,
+  handleCurrentActiveTabId,
   children
 }: DocumentControlAreaProps) => {
   const { handleTabSelection } = useStoreCWA();
@@ -51,7 +51,7 @@ const DocumentControlArea = ({
             items={items}
             activeTabId={activeTabId}
             handleTabSelection={handleTabSelection}
-            handleCurentActiveTabId={handleCurentActiveTabId}
+            handleCurrentActiveTabId={handleCurrentActiveTabId}
             handleCloseTab={handleCloseTab}
           />
           {children}
