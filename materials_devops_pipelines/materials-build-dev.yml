@@ -1,0 +1,88 @@
+---
+name: '$(majorMinorVersion).$(Year:yy)$(DayOfYear).$(semanticVersion)-ci'
+
+trigger:
+  batch: true
+  branches:
+    include:
+      - development
+      
+  # paths:
+  #   include:
+  #     - materials-ui
+
+variables:
+  - name: buildConfiguration
+    value: "Release"
+  - name: majorMinorVersion
+    value: "1.0"
+  - name: semanticVersion
+    value: "$[counter(variables['majorMinorVersion'], 1)]"
+  - name: nodeVersion
+    value: "24.x"
+  - name: workingDir
+    value: materials-ui
+  - group: materials-global
+
+pool:
+  name: $(dev-build-agent)
+
+stages:
+  - stage: Publish_Artifacts
+    displayName: Publish Pipeline Artifacts
+    jobs:
+
+      - job: Build_Terraform_Artifacts
+        steps:
+          - task: PublishPipelineArtifact@1
+            displayName: "Publish terraform artifact"
+            inputs:
+              targetPath: "$(Pipeline.Workspace)/s/terraform/"
+              artifact: "terraform-config"
+              publishLocation: "pipeline"
+ 
+      - job: Build_UI_Artifacts
+        steps:
+          # Add build version
+          - task: PowerShell@2
+            displayName: "Record build version"
+            inputs:
+              targetType: "inline"
+              #workingDirectory: materials-ui/
+              script: |
+                New-Item build-version.txt -force
+                $currentDate = Get-Date
+                Set-Content build-version.txt "{`"name`":`"ui`",`"buildVersion`":`"$(Build.BuildNumber)`",`"sourceVersion`":`"$(Build.SourceVersion)`",`"lastBuilt`":`"$currentDate`"}"
+
+          # Setup Node.js
+          - task: UseNode@1
+            displayName: "Use Node.js"
+            inputs:
+              version: "$(nodeVersion)"
+            
+          - task: Npm@1
+            inputs:
+              command: "ci"
+             # workingDir: "materials-ui"
+            displayName: 'Install Dependencies'
+
+          - task: Npm@1
+            inputs:
+              command: "custom"
+             # workingDir: "materials-ui"
+              customCommand: "run prettier"
+            displayName: "npm prettier"
+
+          - task: Npm@1
+            inputs:
+              command: "custom"
+             # workingDir: "materials-ui"
+              customCommand: "run build"
+            displayName: "npm build"
+
+          - task: PublishPipelineArtifact@1
+            displayName: "Publish terraform artifact"
+            inputs:
+              targetPath: "build/"
+              artifact: "ui-build"
+              publishLocation: "pipeline"
