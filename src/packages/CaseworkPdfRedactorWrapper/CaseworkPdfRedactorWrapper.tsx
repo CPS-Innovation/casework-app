@@ -1,4 +1,5 @@
 import { ComponentProps, useEffect, useState } from 'react';
+import { useAxiosInstance } from '../DocumentSelectAccordion/getters/getAxiosInstance';
 import { PdfRedactorMiniModal } from '../PdfRedactor/modals/PdfRedactorMiniModal';
 import { DeletionReasonForm } from '../PdfRedactor/PdfDeletionReasonForm';
 import { RedactionDetailsForm } from '../PdfRedactor/PdfRedactionTypeForm';
@@ -8,6 +9,9 @@ import { TIndexedDeletion } from '../PdfRedactor/utils/deletionUtils';
 import { TMode } from '../PdfRedactor/utils/modeUtils';
 import { TIndexedRotation } from '../PdfRedactor/utils/rotationUtils';
 import { useWindowMouseListener } from '../PdfRedactor/utils/useWindowMouseListener';
+import { saveDeletions } from './utils/saveDeletionsUtils';
+import { saveRedactions } from './utils/saveRedactionsUtils';
+import { saveRotations } from './utils/saveRotationsUtils';
 
 export const CaseworkPdfRedactorWrapper = (p: {
   fileUrl: string;
@@ -50,6 +54,7 @@ export const CaseworkPdfRedactorWrapper = (p: {
   > | null>(null);
 
   const mousePos = useWindowMouseListener();
+  const axiosInstance = useAxiosInstance();
 
   return (
     <div>
@@ -148,17 +153,25 @@ export const CaseworkPdfRedactorWrapper = (p: {
         }}
         onRemoveRedactions={() => {}}
         onSaveRedactions={async () => {
-          const redactionsWithDetails = redactions
-            .map((x) => {
-              const thisDetails = redactionDetails.find(
-                (y) => y.redactionId === x.id
-              );
-              if (!thisDetails) return undefined;
-              return { ...x, ...thisDetails };
-            })
-            .filter((x) => !!x);
+          // const redactionsWithDetails = redactions
+          //   .map((x) => {
+          //     const thisDetails = redactionDetails.find(
+          //       (y) => y.redactionId === x.id
+          //     );
+          //     if (!thisDetails) return undefined;
+          //     return { ...x, ...thisDetails };
+          //   })
+          //   .filter((x) => !!x);
 
-          redactionsWithDetails;
+          // redactionsWithDetails;
+          saveRedactions({
+            axiosInstance,
+            urn: '',
+            caseId: 0,
+            versionId: '',
+            documentId: '',
+            redactions
+          });
         }}
         indexedRotation={indexedRotation}
         onRotationsChange={(newRotations) => setIndexedRotation(newRotations)}
@@ -181,20 +194,36 @@ export const CaseworkPdfRedactorWrapper = (p: {
         }}
         onDeletionRemove={() => {}}
         onSaveDeletions={async () => {
-          const deletionsWithDetails = Object.values(indexedDeletion)
-            .map((x) => {
-              const thisDetails = deletionDetails.find(
-                (y) => y.deletionId === x.id
-              );
-              if (!thisDetails) return undefined;
-              return { ...x, ...thisDetails };
-            })
-            .filter((x) => !!x);
+          saveDeletions({
+            axiosInstance,
+            urn: '',
+            caseId: 0,
+            versionId: '',
+            documentId: '',
+            deletions: Object.values(indexedDeletion)
+          });
+          // const deletionsWithDetails = Object.values(indexedDeletion)
+          //   .map((x) => {
+          //     const thisDetails = deletionDetails.find(
+          //       (y) => y.deletionId === x.id
+          //     );
+          //     if (!thisDetails) return undefined;
+          //     return { ...x, ...thisDetails };
+          //   })
+          //   .filter((x) => !!x);
 
-          deletionsWithDetails;
+          // deletionsWithDetails;
         }}
         onSaveRotations={async () => {
           // rotations don't require details
+          saveRotations({
+            axiosInstance,
+            urn: '',
+            caseId: 0,
+            versionId: '',
+            documentId: '',
+            rotations: Object.values(indexedRotation)
+          });
         }}
       />
     </div>
