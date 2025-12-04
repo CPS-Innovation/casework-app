@@ -47,7 +47,7 @@ stages:
             displayName: "Record build version"
             inputs:
               targetType: "inline"
-              workingDirectory: materials-ui/
+              workingDirectory: '$(workingDir)'
               script: |
                 New-Item build-version.txt -force
                 $currentDate = Get-Date
@@ -62,26 +62,26 @@ stages:
           - task: Npm@1
             inputs:
               command: "ci"
-              workingDir: "materials-ui"
+              workingDir: '$(workingDir)'
             displayName: 'Install Dependencies'
 
           - task: Npm@1
             inputs:
               command: "custom"
-              workingDir: "materials-ui"
+              workingDir: '$(workingDir)'
               customCommand: "run prettier"
             displayName: "npm prettier"
 
           - task: Npm@1
             inputs:
               command: "custom"
-              workingDir: "materials-ui"
+              workingDir: '$(workingDir)'
               customCommand: "run build"
             displayName: "npm build"
 
           - task: PublishPipelineArtifact@1
             displayName: "Publish terraform artifact"
             inputs:
-              targetPath: "materials-ui/build/"
+              targetPath: '$(workingDir)/build'
               artifact: "ui-build"
               publishLocation: "pipeline"
