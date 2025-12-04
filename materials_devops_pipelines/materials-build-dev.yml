@@ -5,11 +5,10 @@ trigger:
   batch: true
   branches:
     include:
-      - development
-      
-  # paths:
-  #   include:
-  #     - materials-ui
+      - development 
+  paths:
+    include:
+      - materials-ui
 
 variables:
   - name: buildConfiguration
@@ -48,7 +47,7 @@ stages:
             displayName: "Record build version"
             inputs:
               targetType: "inline"
-              #workingDirectory: materials-ui/
+              workingDirectory: materials-ui/
               script: |
                 New-Item build-version.txt -force
                 $currentDate = Get-Date
@@ -63,26 +62,26 @@ stages:
           - task: Npm@1
             inputs:
               command: "ci"
-             # workingDir: "materials-ui"
+              workingDir: "materials-ui"
             displayName: 'Install Dependencies'
 
           - task: Npm@1
             inputs:
               command: "custom"
-             # workingDir: "materials-ui"
+              workingDir: "materials-ui"
               customCommand: "run prettier"
             displayName: "npm prettier"
 
           - task: Npm@1
             inputs:
               command: "custom"
-             # workingDir: "materials-ui"
+              workingDir: "materials-ui"
               customCommand: "run build"
             displayName: "npm build"
 
           - task: PublishPipelineArtifact@1
             displayName: "Publish terraform artifact"
             inputs:
-              targetPath: "build/"
+              targetPath: "materials-ui/build/"
               artifact: "ui-build"
               publishLocation: "pipeline"
