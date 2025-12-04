@@ -20,7 +20,7 @@ variables:
   - name: nodeVersion
     value: "24.x"
   - name: workingDir
-    value: materials-ui
+    value: "materials-ui"
   - group: materials-global
 
 pool:
@@ -43,15 +43,15 @@ stages:
       - job: Build_UI_Artifacts
         steps:
           # Add build version
-          - task: PowerShell@2
-            displayName: "Record build version"
-            inputs:
-              targetType: "inline"
-              workingDirectory: '$(workingDir)'
-              script: |
-                New-Item build-version.txt -force
-                $currentDate = Get-Date
-                Set-Content build-version.txt "{`"name`":`"ui`",`"buildVersion`":`"$(Build.BuildNumber)`",`"sourceVersion`":`"$(Build.SourceVersion)`",`"lastBuilt`":`"$currentDate`"}"
+          # - task: PowerShell@2
+          #   displayName: "Record build version"
+          #   inputs:
+          #     targetType: "inline"
+          #     workingDirectory: '$(workingDir)'
+          #     script: |
+          #       New-Item build-version.txt -force
+          #       $currentDate = Get-Date
+          #       Set-Content build-version.txt "{`"name`":`"ui`",`"buildVersion`":`"$(Build.BuildNumber)`",`"sourceVersion`":`"$(Build.SourceVersion)`",`"lastBuilt`":`"$currentDate`"}"
 
           # Setup Node.js
           - task: UseNode@1
