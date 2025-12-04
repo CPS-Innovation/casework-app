@@ -40,8 +40,21 @@ stages:
               artifact: "terraform-config"
               publishLocation: "pipeline"
  
+
       - job: Build_UI_Artifacts
         steps:
+
+
+          - bash: |
+              echo "PWD: $(pwd)"
+              echo "System.DefaultWorkingDirectory: '$(System.DefaultWorkingDirectory)'"
+              echo "Build.SourcesDirectory:        '$(Build.SourcesDirectory)'"
+              echo "Build.ArtifactStagingDirectory:'$(Build.ArtifactStagingDirectory)'"
+              echo "=== Top-level of sources directory ==="
+              ls -la "$(Build.SourcesDirectory)"
+              echo "=== Recursive listing (depth 2) ==="
+              find "$(Build.SourcesDirectory)" -maxdepth 2 -print
+
           # Add build version
           # - task: PowerShell@2
           #   displayName: "Record build version"
