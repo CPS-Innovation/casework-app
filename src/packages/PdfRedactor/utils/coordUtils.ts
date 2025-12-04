@@ -6,7 +6,12 @@ export type TXywhPair = {
   width: number;
   height: number;
 };
-export type TRedaction = TCoordPair & { id: string; pageNumber: number };
+export type TRedaction = TCoordPair & {
+  id: string;
+  pageNumber: number;
+  pageHeight: number;
+  pageWidth: number;
+};
 
 export const convertCoordPairToXywh = (p: TCoordPair) => {
   const xLeft = Math.min(p.x1, p.x2);
