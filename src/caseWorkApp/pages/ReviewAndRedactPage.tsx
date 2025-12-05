@@ -266,26 +266,6 @@ export const ReviewAndRedactPage = () => {
     });
   }, []);
 
-  // useEffect(() => {
-  //   getPdfFiles({
-  //     axiosInstance: axiosInstance,
-  //     urn: '54KR7689125',
-  //     caseId: 2160797,
-  //     documentId: 'PCD-141956',
-  //     versionId: '141956',
-  //     isOcrProcessed: true
-  //   }).then((response) => {
-  //     const blob = response.data;
-
-  //     if (blob instanceof Blob) {
-  //       const url = window.URL || window.webkitURL;
-  //       const blobResponse = url.createObjectURL(blob);
-  //       // setPdfFileData(blobResponse);
-  //       pdfFileRef.current = blobResponse;
-  //     }
-  //   });
-  // }, [openDocumentIds]);
-
   useEffect(() => {
     const matchingDocuments = documentsDataList.filter((item) => {
       return openDocumentIds.includes(item.documentId);
@@ -312,14 +292,12 @@ export const ReviewAndRedactPage = () => {
 
     documentsDataList.filter((item) => {
       if (item.documentId === currentActiveTabId) {
-        console.log('el: ', item);
         getPdfFiles({
           axiosInstance: axiosInstance,
-          urn: item.documentId,
+          urn: item?.documentId,
           caseId: '2160797', // TODO - make it dynamic
-          documentId: item.documentId,
-          versionId: item.versionId,
-          isOcrProcessed: true
+          documentId: item?.documentId,
+          versionId: item?.versionId
         }).then((blob) => {
           if (blob instanceof Blob) {
             const url = window.URL || window.webkitURL;

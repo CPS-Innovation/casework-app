@@ -43,7 +43,6 @@ export const getPdfFiles = async (p: {
   caseId: number | string;
   documentId: number | string;
   versionId?: number | string;
-  isOcrProcessed: boolean;
 }) => {
   const response = await p.axiosInstance.get(
     `/api/urns/${p.urn}/cases/${p.caseId}/documents/${p.documentId}/versions/${p.versionId}/pdf`,
