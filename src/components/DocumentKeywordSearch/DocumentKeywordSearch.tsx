@@ -67,6 +67,10 @@ export const DocumentKeywordSearch = () => {
 
   const filteredResults = useMemo(() => {
     const selectedCategories = filters?.filters?.category ?? [];
+    const selectedStatus = filters?.filters?.status ?? [];
+
+    const newStatus = selectedStatus.includes('New');
+
     const searchFn = defaultSearchFn<SearchTermResultType>(
       'documentTitle',
       filters?.search
@@ -76,22 +80,22 @@ export const DocumentKeywordSearch = () => {
       .filter((doc) => {
         const category = categoriseDocument(doc);
 
+        if (newStatus) {
+          return true;
+        }
+
         return (
           selectedCategories.length === 0 ||
           selectedCategories.includes(category)
         );
       })
-      .filter(searchFn)
-      .sort((a, b) => {
-        if (a.status === 'New' && b.status !== 'New') {
-          return 1;
-        }
-        if (a.status !== 'Read' && b.status === 'Read') {
-          return -1;
-        }
-        return 0;
-      });
-  }, [combinedSearchResults, filters?.filters?.category, filters?.search]);
+      .filter(searchFn);
+  }, [
+    combinedSearchResults,
+    filters?.filters?.category,
+    filters?.filters?.status,
+    filters?.search
+  ]);
 
   const highlightExactMatches = (
     text: string,
@@ -255,7 +259,7 @@ export const DocumentKeywordSearch = () => {
             {!loading &&
               trackerComplete &&
               filteredResults?.length === 0 &&
-              searchTerm && <p>No results.</p>}
+              searchTerm && <p className="govuk-body">No results.</p>}
           </TwoCol>
         )}
       </Modal>
