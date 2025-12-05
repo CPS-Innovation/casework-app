@@ -49,9 +49,10 @@ export const getPdfFiles = async (p: {
     `/api/urns/${p.urn}/cases/${p.caseId}/documents/${p.documentId}/versions/${p.versionId}/pdf`,
     { responseType: 'blob' }
   );
-  return response;
+  return response.data;
 };
 
 export const GetDataFromAxios = () => {
   return { useAxiosInstance, getDocuments, getPdfFiles };
 };
+

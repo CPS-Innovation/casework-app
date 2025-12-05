@@ -1,4 +1,4 @@
-import { ComponentProps, useEffect, useRef, useState } from 'react';
+import { ComponentProps, useEffect, useState } from 'react';
 import { Layout, TwoCol } from '../../components';
 import { DocumentSidebar } from '../../packages/DocumentSelectAccordion/DocumentSidebar';
 import { PdfRedactorMiniModal } from '../../packages/PdfRedactor/modals/PdfRedactorMiniModal';
@@ -26,12 +26,14 @@ type TDocumentDataList = {
   versionId: number;
   presentationTitle: string;
   status: string;
+  // items: any;
 };
 
 const CaseworkPdfRedactor = (p: {
   fileUrl: string;
   mode: TMode;
   onModeChange: (x: TMode) => void;
+  // items: { id: string; label: string; title: string; versionId: number }[];
 }) => {
   const [redactions, setRedactions] = useState<TRedaction[]>([]);
   const [indexedRotation, setIndexedRotation] = useState<TIndexedRotation>({});
@@ -44,12 +46,18 @@ const CaseworkPdfRedactor = (p: {
     { deletionId: string; randomId: string }[]
   >([]);
 
+  // useEffect(() => {
+  //   const pdf = p.items.find((item) => item.id === p.currentActiveTabId);
+  //   console.log('currentActiveTabId: ', pdf);
+  // }, [p.currentActiveTabId]);
+
   useEffect(() => {
     const redactionIds = redactions.map((red) => red.id);
     setRedactionDetails((prev) =>
       prev.filter((redDetail) => redactionIds.includes(redDetail.redactionId))
     );
   }, [redactions]);
+
   useEffect(() => {
     const deletionIds = Object.values(indexedDeletion)
       .filter((del) => del.isDeleted)
@@ -229,7 +237,11 @@ export const ReviewAndRedactPage = () => {
   const [currentActiveTabId, setCurrentActiveTabId] = useState<string>('');
   const [mode, setMode] = useState<TMode>('areaRedact');
   const [pdfFileUrl, setPdfFileUrl] = useState<string>('');
-  const pdfFileRef = useRef('');
+  // const pdfFileRef = useRef('');
+
+  // useEffect(() => {
+  //   console.log('currentActiveTabId xxx: ', currentActiveTabId);
+  // }, [currentActiveTabId]);
 
   const handleCloseTab = (v: string | undefined) => {
     setOpenDocumentIds((prev) => prev.filter((el) => el !== v));
@@ -296,29 +308,28 @@ export const ReviewAndRedactPage = () => {
 
     setDocumentIDs(matchingResult);
 
-    matchingDocuments?.map((item) => {
-      console.log('el: ', item);
-      // useCallback(()=>{
-      getPdfFiles({
-        axiosInstance: axiosInstance,
-        urn: item.documentId,
-        caseId: '2160797', // TODO - make it dynamic
-        documentId: item.documentId,
-        versionId: item.versionId,
-        isOcrProcessed: true
-      }).then((response) => {
-        const blob = response.data;
+    // documentsDataList?.map((item) => {
 
-        if (blob instanceof Blob) {
-          const url = window.URL || window.webkitURL;
-          const blobResponse = url.createObjectURL(blob);
-          setPdfFileUrl(blobResponse);
-          // pdfFileRef.current = blobResponse;
-        }
-      });
-      // }, [el.documentId]);
-    }, []);
-  }, [openDocumentIds]);
+    documentsDataList.filter((item) => {
+      if (item.documentId === currentActiveTabId) {
+        console.log('el: ', item);
+        getPdfFiles({
+          axiosInstance: axiosInstance,
+          urn: item.documentId,
+          caseId: '2160797', // TODO - make it dynamic
+          documentId: item.documentId,
+          versionId: item.versionId,
+          isOcrProcessed: true
+        }).then((blob) => {
+          if (blob instanceof Blob) {
+            const url = window.URL || window.webkitURL;
+            const blobResponse = url.createObjectURL(blob);
+            setPdfFileUrl(blobResponse);
+          }
+        });
+      }
+    });
+  }, [openDocumentIds, currentActiveTabId, activeTabId]);
 
   useEffect(() => {
     const lastId =
@@ -343,46 +354,52 @@ export const ReviewAndRedactPage = () => {
             ) : undefined
           }
         >
-          <DocumentControlArea
-            activeTabId={activeTabId}
-            items={documentIDs}
-            isSidebarVisible={isSidebarVisible}
-            onToggleSidebar={() => setIsSidebarVisible((v) => !v)}
-            handleCloseTab={(a) => handleCloseTab(a)}
-            handleCurrentActiveTabId={handleCurrentActiveTabId}
-          >
-            <DocumentViewportArea
-              activeTabId={activeTabId}
-              items={documentIDs}
-              redactAreaState={mode === 'areaRedact'}
-              currentActiveTabId={currentActiveTabId}
-              onRedactAreaStateChange={(x) => {
-                setMode(x ? 'areaRedact' : 'textRedact');
-              }}
-              onRotateModeButtonClick={() => {
-                setMode((prev) =>
-                  prev === 'rotation' ? 'areaRedact' : 'rotation'
-                );
-              }}
-              onDeleteModeButtonClick={() => {
-                setMode((prev) =>
-                  prev === 'deletion' ? 'areaRedact' : 'deletion'
-                );
-              }}
-            ></DocumentViewportArea>
-          </DocumentControlArea>
+          {documentIDs.length > 0 && (
+            <>
+              <DocumentControlArea
+                activeTabId={activeTabId}
+                items={documentIDs}
+                isSidebarVisible={isSidebarVisible}
+                onToggleSidebar={() => setIsSidebarVisible((v) => !v)}
+                handleCloseTab={(a) => handleCloseTab(a)}
+                handleCurrentActiveTabId={handleCurrentActiveTabId}
+              >
+                <DocumentViewportArea
+                  activeTabId={activeTabId}
+                  items={documentIDs}
+                  redactAreaState={mode === 'areaRedact'}
+                  currentActiveTabId={currentActiveTabId}
+                  onRedactAreaStateChange={(x) => {
+                    setMode(x ? 'areaRedact' : 'textRedact');
+                  }}
+                  onRotateModeButtonClick={() => {
+                    setMode((prev) =>
+                      prev === 'rotation' ? 'areaRedact' : 'rotation'
+                    );
+                  }}
+                  onDeleteModeButtonClick={() => {
+                    setMode((prev) =>
+                      prev === 'deletion' ? 'areaRedact' : 'deletion'
+                    );
+                  }}
+                ></DocumentViewportArea>
+              </DocumentControlArea>
 
-          <CaseworkPdfRedactor
-            // fileUrls left purposefully
-            // fileUrl="http://localhost:3000/test-pdfs/may-plus-images.pdf"
-            // fileUrl="http://localhost:3000/test-pdfs/final.pdf"
+              <CaseworkPdfRedactor
+                // fileUrls left purposefully
+                // fileUrl="http://localhost:3000/test-pdfs/may-plus-images.pdf"
+                // fileUrl="http://localhost:3000/test-pdfs/final.pdf"
 
-            // fileUrl="http://localhost:3000/test-pdfs/final-with-https.pdf"
-            // fileUrl={pdfFileRef.current}
-            fileUrl={pdfFileUrl}
-            mode={mode}
-            onModeChange={setMode}
-          />
+                // fileUrl="http://localhost:3000/test-pdfs/final-with-https.pdf"
+                // fileUrl={pdfFileRef.current}
+                fileUrl={pdfFileUrl}
+                mode={mode}
+                onModeChange={setMode}
+                // items={documentIDs}
+                // currentActiveTabId={currentActiveTabId}
+              />
+            </>
+          )}
         </TwoCol>
       </div>
     </Layout>
