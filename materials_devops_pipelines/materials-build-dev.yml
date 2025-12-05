@@ -71,7 +71,7 @@ stages:
             inputs:
               command: "custom"
               workingDir: '$(workingDir)'
-              customCommand: "run prettier"
+              customCommand: "run format"
             displayName: "npm prettier"
 
           - task: Npm@1
