@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useLastFocus } from '../../hooks/useLastFocus';
 import TabButtons from './TabButtons';
 import classes from './Tabs.module.scss';
@@ -9,6 +9,8 @@ export type TabsProps = CommonTabsProps & {
   handleTabSelection: (documentId: string) => void;
   handleCloseTab: (v?: string) => void;
   handleCurrentActiveTabId: (x?: string) => void;
+  handleActiveTabIndex: (index: number) => void;
+  activeTabIndex: number;
 };
 
 export const Tabs: React.FC<TabsProps> = ({
@@ -20,23 +22,17 @@ export const Tabs: React.FC<TabsProps> = ({
   handleTabSelection,
   handleCloseTab,
   handleCurrentActiveTabId,
+  handleActiveTabIndex,
+  activeTabIndex,
   ...attributes
 }) => {
   useLastFocus('#case-details-search');
 
-  // const { tabsState } = useStoreCWA();
-
   const activeTabArrayPos = items.findIndex((item) => item.id === activeTabId);
-  const activeTabIndex = activeTabArrayPos === -1 ? 0 : activeTabArrayPos;
 
-  useEffect(() => {
-    console.log(
-      'activeTabId changed in Tabs:',
-      // tabsState?.activeTabId,
-      activeTabId
-    );
-    handleCurrentActiveTabId(activeTabId);
-  }, [activeTabId]);
+  console.log('activeTabArrayPos:', activeTabArrayPos, activeTabId);
+
+  const activeTabIndexOld = activeTabArrayPos === -1 ? 0 : activeTabArrayPos;
 
   const panels = items.map((item, index) => {
     const { id: itemId, panel } = item;
@@ -89,6 +85,7 @@ export const Tabs: React.FC<TabsProps> = ({
           activeTabIndex={activeTabIndex}
           handleTabSelection={handleTabSelection}
           handleCloseTab={handleCloseTab}
+          handleActiveTabIndex={handleActiveTabIndex}
         />
         {panels}
       </div>

@@ -10,13 +10,15 @@ export type TabButtonProps = {
   activeTabIndex: number;
   handleTabSelection: (documentId: string) => void;
   handleCloseTab: (v?: string) => void;
+  handleActiveTabIndex: (index: number) => void;
 };
 
 const TabButtons: React.FC<TabButtonProps> = ({
   items,
   activeTabIndex,
   handleTabSelection,
-  handleCloseTab
+  handleCloseTab,
+  handleActiveTabIndex
 }) => {
   const activeTabRef = useRef<HTMLButtonElement>(null);
 
@@ -26,7 +28,9 @@ const TabButtons: React.FC<TabButtonProps> = ({
       behavior: 'smooth',
       block: 'nearest'
     });
-  }, [activeTabIndex, items.length]);
+    // handleActiveTabIndex(activeTabIndex);
+    console.log('activeTabIndex changed in in TabButtons:', activeTabIndex);
+  }, [activeTabIndex, items]);
 
   type ArrowKeyCodes = 'ArrowLeft' | 'ArrowRight';
 
@@ -68,13 +72,9 @@ const TabButtons: React.FC<TabButtonProps> = ({
   const tabDropdownItems = useMemo(() => {
     return items.map((item) => ({
       ...item,
-      disabled: item.id === items[activeTabIndex].id
+      disabled: item?.id === items[activeTabIndex]?.id
     }));
   }, [items, activeTabIndex]);
-
-  if (!items.length) {
-    return null;
-  }
   return (
     <div
       role="region"
@@ -142,6 +142,7 @@ const TabButtons: React.FC<TabButtonProps> = ({
                 onClick={() => {
                   if (id !== items[activeTabIndex].id) {
                     handleTabSelection(id);
+                    handleActiveTabIndex(index);
                   }
                 }}
                 onKeyDown={handleKeyPressOnTab}

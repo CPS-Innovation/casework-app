@@ -236,6 +236,7 @@ export const ReviewAndRedactPage = () => {
   const [openDocumentIds, setOpenDocumentIds] = useState<string[]>([]);
   const [currentActiveTabId, setCurrentActiveTabId] = useState<string>('');
   const [mode, setMode] = useState<TMode>('areaRedact');
+  const [activeTabIndex, setActiveTabIndex] = useState<number>(0);
   const [pdfFileUrl, setPdfFileUrl] = useState<string>('');
   // const pdfFileRef = useRef('');
 
@@ -245,6 +246,10 @@ export const ReviewAndRedactPage = () => {
 
   const handleTabSelection = (documentId: string) => {
     setCurrentActiveTabId(documentId);
+  };
+
+  const handleActiveTabIndex = (index: number) => {
+    setActiveTabIndex(index);
   };
 
   const handleCloseTab = (v: string | undefined) => {
@@ -319,8 +324,14 @@ export const ReviewAndRedactPage = () => {
       openDocumentIds.length > 0
         ? openDocumentIds[openDocumentIds.length - 1]
         : '';
+    console.log('lastId: ', openDocumentIds, lastId);
     setActiveTabId(lastId);
   }, [openDocumentIds]);
+
+  useEffect(() => {
+    setActiveTabIndex(activeTabIndex);
+    console.log('activeTabIndex changed to: ', activeTabIndex);
+  }, [activeTabIndex]);
 
   return (
     <Layout title="Review and Redact">
@@ -347,6 +358,8 @@ export const ReviewAndRedactPage = () => {
                 handleCloseTab={(a) => handleCloseTab(a)}
                 handleCurrentActiveTabId={handleCurrentActiveTabId}
                 handleTabSelection={handleTabSelection}
+                handleActiveTabIndex={handleActiveTabIndex}
+                activeTabIndex={activeTabIndex}
               >
                 <DocumentViewportArea
                   activeTabId={activeTabId}
