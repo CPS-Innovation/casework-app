@@ -1,5 +1,4 @@
 import React from 'react';
-import { useStoreCWA } from '../../store';
 import { Button } from '../button';
 import { Tabs } from '../tabs';
 import './styles.scss';
@@ -24,6 +23,7 @@ type DocumentControlAreaProps = {
   onToggleSidebar?: () => void;
   handleCloseTab: (v?: string) => void;
   handleCurrentActiveTabId: (x?: string) => void;
+  handleTabSelection: (documentId: string) => void;
   currentActiveTabId?: string;
   children: React.ReactNode;
 };
@@ -35,9 +35,10 @@ const DocumentControlArea = ({
   onToggleSidebar,
   handleCloseTab,
   handleCurrentActiveTabId,
+  handleTabSelection,
   children
 }: DocumentControlAreaProps) => {
-  const { handleTabSelection } = useStoreCWA();
+  // const { handleTabSelection } = useStoreCWA();
   return (
     <>
       <>

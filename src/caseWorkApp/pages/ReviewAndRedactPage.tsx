@@ -243,10 +243,15 @@ export const ReviewAndRedactPage = () => {
   //   console.log('currentActiveTabId xxx: ', currentActiveTabId);
   // }, [currentActiveTabId]);
 
+  const handleTabSelection = (documentId: string) => {
+    setCurrentActiveTabId(documentId);
+  };
+
   const handleCloseTab = (v: string | undefined) => {
     setOpenDocumentIds((prev) => prev.filter((el) => el !== v));
   };
   const handleCurrentActiveTabId = (x?: string) => {
+    console.log('handleCurrentActiveTabId called with: ', x);
     setCurrentActiveTabId(x ? x : '');
   };
   const [documentsDataList, setDocumentsDataList] = useState<
@@ -341,6 +346,7 @@ export const ReviewAndRedactPage = () => {
                 onToggleSidebar={() => setIsSidebarVisible((v) => !v)}
                 handleCloseTab={(a) => handleCloseTab(a)}
                 handleCurrentActiveTabId={handleCurrentActiveTabId}
+                handleTabSelection={handleTabSelection}
               >
                 <DocumentViewportArea
                   activeTabId={activeTabId}

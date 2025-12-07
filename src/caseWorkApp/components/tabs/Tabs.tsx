@@ -1,5 +1,5 @@
+import React, { useEffect } from 'react';
 import { useLastFocus } from '../../hooks/useLastFocus';
-import { useStoreCWA } from '../../store';
 import TabButtons from './TabButtons';
 import classes from './Tabs.module.scss';
 import { CommonTabsProps } from './types';
@@ -24,13 +24,19 @@ export const Tabs: React.FC<TabsProps> = ({
 }) => {
   useLastFocus('#case-details-search');
 
-  const { tabsState } = useStoreCWA();
+  // const { tabsState } = useStoreCWA();
 
-  const activeTabArrayPos = items.findIndex(
-    (item) => item.id === activeTabId || item.id === tabsState?.activeTabId
-  );
+  const activeTabArrayPos = items.findIndex((item) => item.id === activeTabId);
   const activeTabIndex = activeTabArrayPos === -1 ? 0 : activeTabArrayPos;
-  handleCurrentActiveTabId(tabsState?.activeTabId);
+
+  useEffect(() => {
+    console.log(
+      'activeTabId changed in Tabs:',
+      // tabsState?.activeTabId,
+      activeTabId
+    );
+    handleCurrentActiveTabId(activeTabId);
+  }, [activeTabId]);
 
   const panels = items.map((item, index) => {
     const { id: itemId, panel } = item;

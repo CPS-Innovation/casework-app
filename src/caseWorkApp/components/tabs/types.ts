@@ -14,8 +14,5 @@ type ItemProps = {
 export type CommonTabsProps = React.DetailedHTMLProps<
   React.LabelHTMLAttributes<HTMLDivElement>,
   HTMLDivElement
-> & {
-  idPrefix: string;
-  title: string;
-  items: ItemProps[];
-};
+> & { id?: string; idPrefix: string; title: string; items: ItemProps[] };
+
