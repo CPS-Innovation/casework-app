@@ -16,6 +16,12 @@ pr: none
 #       - materials_ui/*
 #       - tests/*
 
+parameters:
+- name: runTerraform
+  displayName: Run terrform plan checks
+  type: boolean
+  default: true
+
 variables:
   - name: buildConfiguration
     value: "Release"
@@ -30,7 +36,6 @@ variables:
   - name: terraformWorkingDir
     value: "$(System.DefaultWorkingDirectory)/terraform"
   - group: materials-global
-
 
 stages:
   - stage: Wait_For_Running_PRs
@@ -51,7 +56,7 @@ stages:
     dependsOn: Wait_For_Running_PRs
     jobs:
       - job: Validate_Main_Terraform
-        condition: eq(variables.runTerraform, 'true')
+        condition: eq(parameters.runTerraform, 'true')
         displayName: Validate Main Terraform
         pool:
           name: $(dev-build-agent)
