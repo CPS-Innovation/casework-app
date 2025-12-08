@@ -40,21 +40,19 @@ const DocumentControlArea = ({
   const { handleTabSelection } = useStoreCWA();
   return (
     <>
-      <>
-        <Button onClick={() => onToggleSidebar?.()}>
-          {isSidebarVisible ? 'Hide categories' : 'Show categories'}
-        </Button>
-        <Tabs
-          idPrefix="tabs"
-          title="Tabs title"
-          items={items}
-          activeTabId={activeTabId}
-          handleTabSelection={handleTabSelection}
-          handleCurrentActiveTabId={handleCurrentActiveTabId}
-          handleCloseTab={handleCloseTab}
-        />
-        {children}
-      </>
+      <Button onClick={() => onToggleSidebar?.()}>
+        {isSidebarVisible ? 'Hide categories' : 'Show categories'}
+      </Button>
+      <Tabs
+        idPrefix="tabs"
+        title="Tabs title"
+        items={items}
+        activeTabId={activeTabId}
+        handleTabSelection={handleTabSelection}
+        handleCurrentActiveTabId={handleCurrentActiveTabId}
+        handleCloseTab={handleCloseTab}
+      />
+      {children}
     </>
   );
 };
