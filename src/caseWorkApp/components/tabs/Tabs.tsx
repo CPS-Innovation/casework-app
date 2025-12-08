@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useLastFocus } from '../../hooks/useLastFocus';
 import { useStoreCWA } from '../../store';
 import TabButtons from './TabButtons';
@@ -30,7 +31,10 @@ export const Tabs: React.FC<TabsProps> = ({
     (item) => item.id === activeTabId || item.id === tabsState?.activeTabId
   );
   const activeTabIndex = activeTabArrayPos === -1 ? 0 : activeTabArrayPos;
-  handleCurrentActiveTabId(tabsState?.activeTabId);
+
+  useEffect(() => {
+    handleCurrentActiveTabId(tabsState?.activeTabId);
+  }, [tabsState?.activeTabId]);
 
   const panels = items.map((item, index) => {
     const { id: itemId, panel } = item;

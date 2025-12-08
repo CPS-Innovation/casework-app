@@ -239,9 +239,9 @@ export const ReviewAndRedactPage = () => {
   const [pdfFileUrl, setPdfFileUrl] = useState<string>('');
   // const pdfFileRef = useRef('');
 
-  // useEffect(() => {
-  //   console.log('currentActiveTabId xxx: ', currentActiveTabId);
-  // }, [currentActiveTabId]);
+  useEffect(() => {
+    // console.log('currentActiveTabId xxx: ', activeTabId, currentActiveTabId);
+  }, [currentActiveTabId, activeTabId]);
 
   const handleCloseTab = (v: string | undefined) => {
     setOpenDocumentIds((prev) => prev.filter((el) => el !== v));
@@ -288,10 +288,17 @@ export const ReviewAndRedactPage = () => {
 
     setDocumentIDs(matchingResult);
 
-    // documentsDataList?.map((item) => {
+    // item.documentId === (openDocumentIds !== "undefined"  ? openDocumentIds[0] : openDocumentIds[openDocumentIds.length - 1])
 
-    documentsDataList.filter((item) => {
-      if (item.documentId === currentActiveTabId) {
+    let available =
+      currentActiveTabId !== ''
+        ? currentActiveTabId
+        : openDocumentIds[openDocumentIds.length - 1];
+
+    console.log('available: ', available);
+
+    documentsDataList?.filter((item) => {
+      if (item.documentId === available) {
         getPdfFiles({
           axiosInstance: axiosInstance,
           urn: item?.documentId,
@@ -307,7 +314,14 @@ export const ReviewAndRedactPage = () => {
         });
       }
     });
-  }, [openDocumentIds, currentActiveTabId, activeTabId]);
+
+    // console.log(
+    //   'currentActiveTabId yyy: ',
+    //   openDocumentIds,
+    //   currentActiveTabId,
+    //   activeTabId
+    // );
+  }, [openDocumentIds, currentActiveTabId]);
 
   useEffect(() => {
     const lastId =
