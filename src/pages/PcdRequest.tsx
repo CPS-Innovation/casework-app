@@ -12,25 +12,20 @@ import {
 } from '../components';
 import { NavListItem } from '../components/NavList/NavList';
 import { useAppRoute, usePCD, usePCDList } from '../hooks';
-import { useCaseInfoStore } from '../stores';
 import { formatDate } from '../utils/date';
 import { cleanString } from '../utils/string';
 
 export const PcdRequestPage = () => {
   const { pcdId } = useParams<{ pcdId?: string }>();
   const navigate = useNavigate();
-  const { caseInfo } = useCaseInfoStore();
   const { getRoute } = useAppRoute();
-  const { data: pcdListData, isLoading: isPcdListLoading } = usePCDList(
-    caseInfo?.id
-  );
+  const { data: pcdListData, isLoading: isPcdListLoading } = usePCDList();
 
   if (!pcdId && pcdListData?.length) {
     navigate(`${pcdListData[0].id}`);
   }
 
   const { data: pcdDetailsData, isLoading: isPcdDetailsLoading } = usePCD({
-    caseId: caseInfo?.id,
     pcdId: pcdId ? pcdId : pcdListData?.length ? pcdListData[0].id : undefined
   });
 
@@ -81,17 +76,19 @@ export const PcdRequestPage = () => {
   );
 
   return (
-    <Layout>
+    <Layout title="PCD Request">
       {/* converting '\n' to actual line breaks with CSS*/}
       <div className="govuk-main-wrapper" style={{ whiteSpace: 'pre-wrap' }}>
-        {navLinks?.length === 0 && (
-          <p className="govuk-body">There are no PCD Requests to show.</p>
-        )}
-        <TwoCol sidebar={renderSidebar()}>
-          {isPcdDetailsLoading ? (
+        {isPcdDetailsLoading || isPcdListLoading ? (
+          <div>
             <LoadingSpinner />
-          ) : (
-            <>
+          </div>
+        ) : (
+          <>
+            {navLinks?.length === 0 && (
+              <p className="govuk-body">There are no PCD Requests to show.</p>
+            )}
+            <TwoCol sidebar={renderSidebar()}>
               {pcdDetailsData && (
                 <>
                   <h1 className="govuk-heading-l">
@@ -173,7 +170,7 @@ export const PcdRequestPage = () => {
                     Supervising officer's comments
                   </h2>
                   <p className="govuk-body">
-                    {pcdDetailsData?.comments.text || 'None'}
+                    {pcdDetailsData?.comments?.text || 'None'}
                   </p>
 
                   <SectionBreak size="xl" />
@@ -394,9 +391,9 @@ export const PcdRequestPage = () => {
                   )}
                 </>
               )}
-            </>
-          )}
-        </TwoCol>
+            </TwoCol>
+          </>
+        )}
       </div>
     </Layout>
   );

@@ -1,12 +1,13 @@
 import { useEffect } from 'react';
 import { Route, Routes as Router } from 'react-router';
-import { useMatch } from 'react-router-dom';
+import { Navigate, useMatch } from 'react-router-dom';
 
 import { ReviewAndRedactPage } from './caseWorkApp/pages/ReviewAndRedactPage';
 import { useAppRoute, useCaseInfo, useCaseInfoStore } from './hooks';
 import {
   CommunicationsPage,
   DiscardMaterialPage,
+  EditMaterialPage,
   MaterialsPage,
   NotAuthorisedPage,
   NotFoundPage,
@@ -15,6 +16,7 @@ import {
   ReclassifyToUnusedPage,
   ServerErrorPage
 } from './pages';
+import { CaseSearchPage } from './pages/CaseSearch';
 
 export const Routes = () => {
   const { getRoute } = useAppRoute();
@@ -33,12 +35,21 @@ export const Routes = () => {
   return (
     <Router>
       <Route
+        path="/"
+        element={<Navigate to={getRoute('CASE_SEARCH', false)} replace />}
+      />
+
+      <Route
         path={getRoute('UNAUTHORISED', false)}
         element={<NotAuthorisedPage />}
       />
       <Route
         path={getRoute('SERVER_ERROR', false)}
         element={<ServerErrorPage />}
+      />
+      <Route
+        path={getRoute('CASE_SEARCH', false)}
+        element={<CaseSearchPage />}
       />
 
       <Route path={`:urn/:caseId`}>
@@ -69,6 +80,10 @@ export const Routes = () => {
         <Route
           path={getRoute('RECLASSIFICATION', false)}
           element={<ReclassificationPage />}
+        />
+        <Route
+          path={getRoute('UPDATE_MATERIAL', false)}
+          element={<EditMaterialPage />}
         />
       </Route>
 

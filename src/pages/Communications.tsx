@@ -37,6 +37,7 @@ export const CommunicationsPage = () => {
     useSelectedItemsStore();
 
   const {
+    handleEditClick,
     handleReclassifyClick,
     handleRedactClick,
     handleDiscardClick,
@@ -97,6 +98,16 @@ export const CommunicationsPage = () => {
       hide: !row?.isReclassifiable || selectedItems.communications.length > 1
     },
     {
+      label: 'Update',
+      onClick: () =>
+        handleEditClick(row as CaseMaterialsType, getRoute('COMMUNICATIONS')),
+      hide:
+        selectedItems.communications.length > 1 ||
+        !['Exhibit', 'Statement'].includes(
+          selectedItems.communications[0]?.category
+        )
+    },
+    {
       label: 'Redact',
       onClick: () => handleRedactClick(row.materialId),
       hide: selectedItems.communications.length > 1
@@ -131,7 +142,7 @@ export const CommunicationsPage = () => {
   }, []);
 
   return (
-    <Layout>
+    <Layout title="Communications">
       <div className="govuk-main-wrapper">
         <RenameDrawer
           material={selectedMaterial}

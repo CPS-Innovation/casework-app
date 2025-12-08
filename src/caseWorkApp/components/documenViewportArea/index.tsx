@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AreaIcon from '../../assetsCWA/svgs/areaIcon.svg?react';
 import { DropdownButton } from '../dropDownButton/DropdownButton';
 import { LinkButton } from '../LinkButton/LinkButton';
@@ -47,16 +47,42 @@ const dropDownItems: DropdownButtonItem[] = [
   { id: '6', label: 'Rename', ariaLabel: 'rename', disabled: false }
 ];
 
-export const DocumentViewportArea = () => {
-  const [redactAreaState, setRedactAreaState] = useState<boolean>(false);
+type DocumentViewportAreaProps = {
+  items: DropdownButtonItem[];
+  activeTabId: string;
+  redactAreaState: boolean;
+  onRedactAreaStateChange: (x: boolean) => void;
+  currentActiveTabId?: string;
+  onRotateModeButtonClick: () => void;
+  onDeleteModeButtonClick: () => void;
+};
+
+export const DocumentViewportArea = ({
+  items,
+  activeTabId,
+  redactAreaState,
+  onRedactAreaStateChange,
+  currentActiveTabId,
+  onRotateModeButtonClick,
+  onDeleteModeButtonClick
+}: DocumentViewportAreaProps) => {
+  const [name, setName] = useState<string>('');
 
   const handleRedactAreaToolButtonClick = () => {
-    setRedactAreaState(!redactAreaState);
+    onRedactAreaStateChange(!redactAreaState);
   };
+
+  const activeTabLabel = items.findIndex(
+    (item) => item.id === activeTabId || item.id === currentActiveTabId
+  );
+
+  useEffect(() => {
+    setName(items[activeTabLabel]?.label);
+  }, [items, activeTabLabel]);
 
   return (
     <div className={classes.content}>
-      <p>MG1 CARMINE Victim</p>
+      <p>{name}</p>
       <Tooltip
         text={redactAreaState ? 'Redact area tool On' : 'Redact area tool Off'}
       >
@@ -81,7 +107,10 @@ export const DocumentViewportArea = () => {
       <DropdownButton
         name="Document actions"
         dropDownItems={dropDownItems}
-        callBackFn={() => {}}
+        callBackFn={(id) => {
+          if (id === '2') onRotateModeButtonClick();
+          if (id === '3') onDeleteModeButtonClick();
+        }}
         ariaLabel="document actions dropdown"
         dataTestId={`document-actions-dropdown`}
         showLastItemSeparator={true}
@@ -89,4 +118,3 @@ export const DocumentViewportArea = () => {
     </div>
   );
 };
-

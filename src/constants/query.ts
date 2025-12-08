@@ -22,7 +22,12 @@ export const QUERY_KEYS = {
   PCD_REVIEW_CASE_HISTORY: 'pcdReviewHistory',
   CREATE_WITNESS: 'createWitness',
   CREATE_ACTION_PLAN: 'createActionPlan',
-  RECLASSIFY_MATERIAL: 'reclassifyMaterial'
+  RECLASSIFY_MATERIAL: 'reclassifyMaterial',
+  CASE_SEARCH: 'caseSearch',
+  DOCUMENT_SEARCH: 'documentSearch',
+  GET_ALL_DOCUMENTS: 'getAllDocuments',
+  UPDATE_STATEMENT: 'updateStatement',
+  UPDATE_EXHIBIT: 'updateExhibit'
 };
 
 export const DEFAULT_RESULTS_PER_PAGE = 20;

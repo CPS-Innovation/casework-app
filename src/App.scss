@@ -136,15 +136,6 @@ strong {
   margin-right: 0;
 }
 
-.filters-container {
-  background-color: #f3f2f1;
-  padding: 20px;
-
-  button {
-    margin-bottom: 0;
-  }
-}
-
 .search-input-container {
   display: flex;
   flex-direction: column;
@@ -567,3 +558,11 @@ strong {
   display: flex;
   justify-content: flex-end;
 }
+
+.tabButtonFocused {
+  outline: 0;
+  color: #0b0c0c;
+  background-color: transparent;
+  border-bottom: 0.625rem solid #1d70b8;
+}
+

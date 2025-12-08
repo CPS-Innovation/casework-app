@@ -28,7 +28,7 @@ export const DropdownButton: React.FC<DropdownButtonProps> = ({
   name,
   dataTestId = 'dropdown-btn',
   ariaLabel = 'dropdown',
-  disabled = false,
+  disabled = false
 }) => {
   const dropDownBtnRef = useRef<HTMLButtonElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
@@ -93,4 +93,3 @@ export const DropdownButton: React.FC<DropdownButtonProps> = ({
     </div>
   );
 };
-

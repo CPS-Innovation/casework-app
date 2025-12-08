@@ -43,25 +43,14 @@ type StoreCWA = {
     activeTabId?: string;
   };
   handleTabSelection: (documentId: string) => void;
-  handleClosePdf: (documentId: string, versionId: number, pdfId?: string) => void;
 };
-
-
 
 export const useStoreCWA = create<StoreCWA>(
   // @ts-ignore-next-line
   devtools((set) => ({
-    handleTabSelection: (documentId) => set((state) => ({
-      tabsState:
-      {...state.tabsState,activeTabId: documentId}
-    })),
-    handleClosePdf: () => set((state) => ({
-        tabsState: {
-          ...state.tabsState,  
-          items: state.tabsState.items.filter(
-            (item: any) => item.documentId !== item.activeTabId
-          ),
-        },
-    }))
+    handleTabSelection: (documentId) =>
+      set((state) => ({
+        tabsState: { ...state.tabsState, activeTabId: documentId }
+      }))
   }))
 );

@@ -46,6 +46,7 @@ export const MaterialsPage = () => {
     handleRedactClick,
     handleUnusedClick,
     determineReadStatusLabel,
+    handleEditClick,
     isReadStatusUpdating
   } = useTableActions({
     selectedItems: selectedItems.materials,
@@ -109,6 +110,14 @@ export const MaterialsPage = () => {
       hide: selectedItems.materials?.length > 1 || !row?.isReclassifiable
     },
     {
+      label: 'Update',
+      onClick: () =>
+        handleEditClick(row as CaseMaterialsType, getRoute('MATERIALS')),
+      hide:
+        selectedItems.materials.length > 1 ||
+        !['Exhibit', 'Statement'].includes(selectedItems.materials[0]?.category)
+    },
+    {
       label: 'Redact',
       onClick: () => handleRedactClick(row?.materialId),
       hide: selectedItems.materials?.length > 1
@@ -131,7 +140,7 @@ export const MaterialsPage = () => {
   ];
 
   return (
-    <Layout>
+    <Layout title="Case Materials">
       <div className="govuk-main-wrapper">
         <RenameDrawer
           material={selectedMaterial}

@@ -3,7 +3,7 @@ import { Layout } from '../components';
 
 export const NotAuthorisedPage = () => {
   return (
-    <Layout plain>
+    <Layout plain title="Error">
       <>
         <h1 className="govuk-heading-l">Authentication error</h1>
 
