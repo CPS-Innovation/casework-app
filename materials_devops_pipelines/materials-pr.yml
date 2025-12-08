@@ -150,21 +150,43 @@ stages:
             displayName: "npm build"
 
 
-# ---------- UNIT TESTS (Vitest) ----------
+# # ---------- UNIT TESTS (Vitest) ----------
+#           - task: Npm@1
+#             displayName: 'Run UI Unit Tests'
+#             inputs:
+#               command: 'custom'
+#               customCommand: 'run test'
+#               workingDir: '$(workingDir)'
+
+#           - task: PublishTestResults@2
+#             displayName: 'Publish Unit Test Results (JUnit)'
+#             inputs:
+#               testResultsFormat: 'JUnit'
+#               testResultsFiles: '$(workingDir)/unit-test-results.xml'
+#               testRunTitle: "Unit tests"
+#               publishRunAttachments: false
+#               mergeTestResults: true
+#             condition: always()
+              
+# ---------- E2E TESTS (Playwright) ----------
           - task: Npm@1
-            displayName: 'Run UI Unit Tests'
+            displayName: 'Install Playwright'
             inputs:
               command: 'custom'
-              customCommand: 'run test'
+              customCommand: 'exec playwright install -- --with-deps'
               workingDir: '$(workingDir)'
 
-          - task: PublishTestResults@2
-            displayName: 'Publish Unit Test Results (JUnit)'
+          - task: Npm@1
+            displayName: 'Run E2E Tests with Coverage'
             inputs:
-              testResultsFormat: 'JUnit'
-              testResultsFiles: '$(workingDir)/unit-test-results.xml'
-              testRunTitle: "Unit tests"
-              publishRunAttachments: false
-              mergeTestResults: true
-            condition: always()
-              
+              command: 'custom'
+              customCommand: 'run e2e'
+              workingDir: '$(workingDir)'
+
+          # - task: PublishTestResults@2
+          #   displayName: 'Publish E2E Test Results (JUnit)'
+          #   inputs:
+          #     testResultsFormat: 'JUnit'
+          #     testResultsFiles: '$(workingDir)/playwright/e2e-test-results.xml'
+          #     publishRunAttachments: false
+          #   condition: always()
