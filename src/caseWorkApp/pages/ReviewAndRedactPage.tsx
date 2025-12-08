@@ -26,14 +26,12 @@ type TDocumentDataList = {
   versionId: number;
   presentationTitle: string;
   status: string;
-  // items: any;
 };
 
 const CaseworkPdfRedactor = (p: {
   fileUrl: string;
   mode: TMode;
   onModeChange: (x: TMode) => void;
-  // items: { id: string; label: string; title: string; versionId: number }[];
 }) => {
   const [redactions, setRedactions] = useState<TRedaction[]>([]);
   const [indexedRotation, setIndexedRotation] = useState<TIndexedRotation>({});
@@ -45,11 +43,6 @@ const CaseworkPdfRedactor = (p: {
   const [deletionDetails, setDeletionDetails] = useState<
     { deletionId: string; randomId: string }[]
   >([]);
-
-  // useEffect(() => {
-  //   const pdf = p.items.find((item) => item.id === p.currentActiveTabId);
-  //   console.log('currentActiveTabId: ', pdf);
-  // }, [p.currentActiveTabId]);
 
   useEffect(() => {
     const redactionIds = redactions.map((red) => red.id);
@@ -237,7 +230,6 @@ export const ReviewAndRedactPage = () => {
   const [currentActiveTabId, setCurrentActiveTabId] = useState<string>('');
   const [mode, setMode] = useState<TMode>('areaRedact');
   const [pdfFileUrl, setPdfFileUrl] = useState<string>('');
-  // const pdfFileRef = useRef('');
 
   const handleCloseTab = (v: string | undefined) => {
     setOpenDocumentIds((prev) => prev.filter((el) => el !== v));
@@ -368,12 +360,9 @@ export const ReviewAndRedactPage = () => {
                 // fileUrl="http://localhost:3000/test-pdfs/final.pdf"
 
                 // fileUrl="http://localhost:3000/test-pdfs/final-with-https.pdf"
-                // fileUrl={pdfFileRef.current}
                 fileUrl={pdfFileUrl}
                 mode={mode}
                 onModeChange={setMode}
-                // items={documentIDs}
-                // currentActiveTabId={currentActiveTabId}
               />
             </>
           )}
