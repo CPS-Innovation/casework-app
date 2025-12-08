@@ -39,6 +39,11 @@ export const useRequest = () => {
 
       if (error.status === 500) {
         // handle 500 errors locally to the request, not redirect to service down page
+
+        if (error.request.responseURL.includes('query')) {
+          return Promise.reject(error);
+        }
+
         if (!error.request.responseURL.includes('/uma-reclassify')) {
           return navigate(getRoute('SERVER_ERROR', false));
         }

@@ -271,7 +271,13 @@ export const PdfRedactorPage = (p: {
       });
 
       const newRedactions = coordPairs.map((coordPair) => {
-        return { ...coordPair, id: createId(), pageNumber };
+        return {
+          ...coordPair,
+          id: createId(),
+          pageNumber,
+          pageHeight: pdfPageRect.height,
+          pageWidth: pdfPageRect.width
+        };
       });
 
       if (newRedactions.length === 0) return;
@@ -323,19 +329,26 @@ export const PdfRedactorPage = (p: {
               pageNumber={p.pageNumber}
               onClick={() => {
                 if (p.mode !== 'areaRedact') return;
+                const pdfPageWrapperElm = pdfPageWrapperElmRef.current;
+
+                if (!pdfPageWrapperElm) return;
+                const pdfPageRect = pdfPageWrapperElm.getBoundingClientRect();
+
                 if (firstCorner && mousePos) {
-                  const newRect = {
+                  const newRedaction: TRedaction = {
                     id: crypto.randomUUID(),
                     x1: firstCorner.x,
                     y1: firstCorner.y,
                     x2: mousePos.x,
                     y2: mousePos.y,
-                    pageNumber: p.pageNumber
+                    pageNumber: p.pageNumber,
+                    pageHeight: pdfPageRect.height,
+                    pageWidth: pdfPageRect.width
                   };
-                  p.onAddRedactions([newRect]);
+                  p.onAddRedactions([newRedaction]);
                   p.onPageRedactionsChange([
                     ...(redactions ? redactions : []),
-                    newRect
+                    newRedaction
                   ]);
                 }
                 setFirstCorner(firstCorner ? null : mousePos);

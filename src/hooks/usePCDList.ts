@@ -1,27 +1,30 @@
 import useSWR from 'swr';
 import { QUERY_KEYS } from '../constants/query';
-import { API_ENDPOINTS } from '../constants/url';
-import { useRequest } from '../hooks';
+import { useCaseInfoStore, useRequest } from '../hooks';
 import { PCDListingResponseType, PCDListingType } from '../schemas/pcd';
-import { replaceTokens } from '../utils/string';
 
-export const usePCDList = (caseId?: number) => {
+export const usePCDList = () => {
   const request = useRequest();
- 
+  const { caseInfo } = useCaseInfoStore();
+
   const getPCDList = async () =>
     await request
       .get<PCDListingResponseType>(
-        replaceTokens(API_ENDPOINTS.PCD_REQUEST_LIST, { caseId: caseId || '' })
+        `urns/${caseInfo?.urn}/cases/${caseInfo?.id}/pcds/${caseInfo?.id}/pcd-request-core`
       )
       .then((response) => response.data);
 
-  const { data, error, isLoading } = useSWR(
-    caseId ? QUERY_KEYS.PCD_REQUESTS : null,
+  const { data, error, isLoading, isValidating } = useSWR(
+    caseInfo ? QUERY_KEYS.PCD_REQUESTS : null,
     getPCDList
   );
 
   const sortByDate = (a: PCDListingType, b: PCDListingType) =>
     Date.parse(b.decisionRequested) - Date.parse(a.decisionRequested);
 
-  return { data: data?.sort(sortByDate) || undefined, error, isLoading };
+  return {
+    data: data?.sort(sortByDate) || undefined,
+    error,
+    isLoading: isLoading || isValidating
+  };
 };

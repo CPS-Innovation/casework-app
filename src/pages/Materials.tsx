@@ -46,6 +46,7 @@ export const MaterialsPage = () => {
     handleRedactClick,
     handleUnusedClick,
     determineReadStatusLabel,
+    handleEditClick,
     isReadStatusUpdating
   } = useTableActions({
     selectedItems: selectedItems.materials,
@@ -107,6 +108,14 @@ export const MaterialsPage = () => {
       label: 'Reclassify',
       onClick: handleReclassifyClick,
       hide: selectedItems.materials?.length > 1 || !row?.isReclassifiable
+    },
+    {
+      label: 'Update',
+      onClick: () =>
+        handleEditClick(row as CaseMaterialsType, getRoute('MATERIALS')),
+      hide:
+        selectedItems.materials.length > 1 ||
+        !['Exhibit', 'Statement'].includes(selectedItems.materials[0]?.category)
     },
     {
       label: 'Redact',

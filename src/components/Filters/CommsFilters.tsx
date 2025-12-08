@@ -8,6 +8,7 @@ import { READ_STATUS } from '../../constants/readStatus';
 import { useFeatureFlag, useFilters } from '../../hooks';
 import Checkbox from '../Checkbox/Checkbox';
 import { SearchInput } from '../SearchInput/SearchInput';
+import './Filters.scss';
 
 export const CommsFilters = () => {
   const {
