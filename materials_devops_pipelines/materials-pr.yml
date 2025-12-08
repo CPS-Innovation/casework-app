@@ -84,7 +84,7 @@ stages:
             env:
               ARM_CLIENT_ID: $(clientId)
               ARM_CLIENT_SECRET: $(clientSecret)
-              ARM_TENANT_ID: $(clientSecret)
+              ARM_TENANT_ID: $(tenantId)
               ARM_SUBSCRIPTION_ID: $(subscriptionId)
               TF_STATE_ACCOUNT_NAME: $(dev-terraform-storage-account)
               TF_STATE_CONTAINER_NAME: $(materials-terraform-container-name)
