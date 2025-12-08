@@ -44,14 +44,11 @@ stages:
             parameters:
               devOpsPatToken: $(System.AccessToken)
 
-
-
-
       - job: Check_Main_Plan
         pool:
           name: $(dev-build-agent)
-        dependsOn: Validate_Main_Terraform
-        condition: and(succeeded(), eq(variables.runTerraform, 'true'))
+        dependsOn: Wait_For_Running_PRs
+        condition: succeeded()
         displayName: Check Main Terraform
         steps:
           - template: templates/task_get-credentials.yml
