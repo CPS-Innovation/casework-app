@@ -56,7 +56,7 @@ stages:
     dependsOn: Wait_For_Running_PRs
     jobs:
       - job: Validate_Main_Terraform
-        condition: eq(parameters.runTerraform, 'true')
+        condition: eq(${{ parameters.runTerraform }}, true)
         displayName: Validate Main Terraform
         pool:
           name: $(dev-build-agent)
