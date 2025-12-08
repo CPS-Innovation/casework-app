@@ -91,3 +91,15 @@ stages:
               TF_STATE_KEY: $(terraform-key)
               TF_RESOURCE_GROUP_NAME: $(terraform-resource-group)
               TF_LOG: "ERROR"
+
+          # Terraform Plan
+          - bash: |
+              terraform plan -input=false -out=dev.tfplan -var-file="./environments/dev.tfvars"
+            displayName: Terraform > Write Plan
+            workingDirectory: $(terraformWorkingDir)
+            env:
+              ARM_CLIENT_ID: $(clientId)
+              ARM_CLIENT_SECRET: $(clientSecret)
+              ARM_TENANT_ID: $(tenantId)
+              ARM_SUBSCRIPTION_ID: $(subscriptionId)
+              TF_LOG: "ERROR"
