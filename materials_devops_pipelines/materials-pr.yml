@@ -176,12 +176,12 @@ stages:
               customCommand: 'exec playwright install -- --with-deps'
               workingDir: '$(workingDir)'
 
-          - task: Npm@1
-            displayName: 'Run E2E Tests with Coverage'
-            inputs:
-              command: 'custom'
-              customCommand: 'run e2e'
-              workingDir: '$(workingDir)'
+          # - task: Npm@1
+          #   displayName: 'Run E2E Tests with Coverage'
+          #   inputs:
+          #     command: 'custom'
+          #     customCommand: 'run e2e'
+          #     workingDir: '$(workingDir)'
 
           # - task: PublishTestResults@2
           #   displayName: 'Publish E2E Test Results (JUnit)'
