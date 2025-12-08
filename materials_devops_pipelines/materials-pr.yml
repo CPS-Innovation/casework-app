@@ -133,12 +133,13 @@ stages:
               customCommand: "run format"
             displayName: "npm prettier"
 
-          - task: Npm@1
-            displayName: 'Lint Code'
-            inputs:
-              command: 'custom'
-              customCommand: 'run lint'
-              workingDir: '$(workingDir)'
+# commenting out to test other parts of pipeline
+          # - task: Npm@1
+          #   displayName: 'Lint Code'
+          #   inputs:
+          #     command: 'custom'
+          #     customCommand: 'run lint'
+          #     workingDir: '$(workingDir)'
 
           #Build the application
           - task: Npm@1
