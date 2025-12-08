@@ -103,3 +103,67 @@ stages:
               ARM_TENANT_ID: $(tenantId)
               ARM_SUBSCRIPTION_ID: $(subscriptionId)
               TF_LOG: "ERROR"
+
+
+
+  - stage: Build_and_Test_UI
+    displayName: Front End Checks
+    jobs:
+
+      - job: Build_and_Test
+        displayName: 'Build & Test App'
+        steps:
+
+          # Setup Node.js
+          - task: UseNode@1
+            displayName: "Use Node.js"
+            inputs:
+              version: "$(nodeVersion)"
+            
+          - task: Npm@1
+            inputs:
+              command: "ci"
+              workingDir: '$(workingDir)'
+            displayName: 'Install Dependencies'
+
+          - task: Npm@1
+            inputs:
+              command: "custom"
+              workingDir: '$(workingDir)'
+              customCommand: "run format"
+            displayName: "npm prettier"
+
+          - task: Npm@1
+            displayName: 'Lint Code'
+            inputs:
+              command: 'custom'
+              customCommand: 'run lint'
+              workingDir: '$(workingDir)'
+
+          #Build the application
+          - task: Npm@1
+            inputs:
+              command: "custom"
+              workingDir: '$(workingDir)'
+              customCommand: "run build"
+            displayName: "npm build"
+
+
+# ---------- UNIT TESTS (Vitest) ----------
+          - task: Npm@1
+            displayName: 'Run UI Unit Tests'
+            inputs:
+              command: 'custom'
+              customCommand: 'run test'
+              workingDir: '$(workingDir)'
+
+          - task: PublishTestResults@2
+            displayName: 'Publish Unit Test Results (JUnit)'
+            inputs:
+              testResultsFormat: 'JUnit'
+              testResultsFiles: '$(workingDir)/unit-test-results.xml'
+              testRunTitle: "Unit tests"
+              publishRunAttachments: false
+              mergeTestResults: true
+            condition: always()
+              
