@@ -44,17 +44,24 @@ stages:
             parameters:
               devOpsPatToken: $(System.AccessToken)
 
-      - job: Check_Main_Plan
+
+  - stage: Check_Terraform
+    condition: succeeded()
+    displayName: Check Main Terraform
+    dependsOn: Wait_For_Running_PRs
+    jobs:
+      - job: Validate_Main_Terraform
+        condition: eq(variables.runTerraform, 'true')
+        displayName: Validate Main Terraform
         pool:
           name: $(dev-build-agent)
-        dependsOn: Wait_For_Running_PRs
-        condition: succeeded()
-        displayName: Check Main Terraform
+
         steps:
+
           - template: templates/task_get-credentials.yml
             parameters:
               azureSubscription: $(dev-azure-service-connection)
-              
+
           - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@1
             displayName: Terraform > Install
             inputs:
