@@ -1,6 +1,6 @@
 export type SortBy = 'ascending' | 'descending';
 
-export type FilterKeys = 'materials' | 'communications';
+export type FilterKeys = 'materials' | 'communications' | 'documents';
 
 export type FilterItem = {
   filters?: Record<string, string[]>;

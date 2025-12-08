@@ -5,6 +5,7 @@ import {
   DefinitionList,
   Layout,
   LoadingSpinner,
+  SectionBreak,
   StatusTag
 } from '../components';
 import { ErrorSummary } from '../components/ErrorSummary/ErrorSummary';
@@ -136,7 +137,7 @@ export const CaseSearchPage = () => {
 
                 return (
                   <div key={caseItem.id}>
-                    <hr className="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
+                    <SectionBreak />
                     <div>
                       <h2>
                         <Link

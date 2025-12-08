@@ -1,12 +1,13 @@
 import { useEffect } from 'react';
 import { Route, Routes as Router } from 'react-router';
-import { useMatch } from 'react-router-dom';
+import { Navigate, useMatch } from 'react-router-dom';
 
 import { ReviewAndRedactPage } from './caseWorkApp/pages/ReviewAndRedactPage';
 import { useAppRoute, useCaseInfo, useCaseInfoStore } from './hooks';
 import {
   CommunicationsPage,
   DiscardMaterialPage,
+  EditMaterialPage,
   MaterialsPage,
   NotAuthorisedPage,
   NotFoundPage,
@@ -33,6 +34,11 @@ export const Routes = () => {
 
   return (
     <Router>
+      <Route
+        path="/"
+        element={<Navigate to={getRoute('CASE_SEARCH', false)} replace />}
+      />
+
       <Route
         path={getRoute('UNAUTHORISED', false)}
         element={<NotAuthorisedPage />}
@@ -74,6 +80,10 @@ export const Routes = () => {
         <Route
           path={getRoute('RECLASSIFICATION', false)}
           element={<ReclassificationPage />}
+        />
+        <Route
+          path={getRoute('UPDATE_MATERIAL', false)}
+          element={<EditMaterialPage />}
         />
       </Route>
 

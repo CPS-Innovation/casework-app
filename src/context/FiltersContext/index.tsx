@@ -1,9 +1,9 @@
 import { createContext, PropsWithChildren, useState } from 'react';
 
 import type {
-  FiltersContextState,
   FilterItem,
-  FilterKeys
+  FilterKeys,
+  FiltersContextState
 } from './helpers/types';
 import { getDefaultState } from './helpers/utils';
 
@@ -30,7 +30,7 @@ export type FiltersContext = {
 };
 
 export const FilterContext = createContext<FiltersContext>({
-  filters: { materials: {}, communications: {} },
+  filters: { materials: {}, communications: {}, documents: {} },
   createFilterContext: () => null,
   updateFilterContext: () => null,
   resetFilterContext: () => null
