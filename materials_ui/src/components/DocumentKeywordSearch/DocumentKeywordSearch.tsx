@@ -19,7 +19,7 @@ import {
 import { categoriseDocument } from '../../packages/DocumentSelectAccordion/utils/categoriseDocument';
 import { SearchTermResultType } from '../../schemas/documents';
 import { formatDateLong } from '../../utils/date';
-import { defaultSearchFn } from '../../utils/filtering';
+import { defaultSearchFn, defaultSortFn } from '../../utils/filtering';
 import { DocumentKeywordSearchFilters } from '../Filters/DocumentKeywordSearchFilters';
 
 import './DocumentKeywordSearch.scss';
@@ -31,6 +31,7 @@ export const DocumentKeywordSearch = () => {
   const [expandedDocuments, setExpandedDocuments] = useState<
     Record<string, boolean>
   >({});
+  const [selectedSort, setSelectedSort] = useState('date');
 
   const {
     isComplete: trackerComplete,
@@ -67,14 +68,32 @@ export const DocumentKeywordSearch = () => {
 
   const filteredResults = useMemo(() => {
     const selectedCategories = filters?.filters?.category ?? [];
+    const selectedStatus = filters?.filters?.status ?? [];
+
+    const newStatus = selectedStatus.includes('New');
+
     const searchFn = defaultSearchFn<SearchTermResultType>(
       'documentTitle',
       filters?.search
     );
 
+    const sortColumn =
+      selectedSort === 'date'
+        ? 'cmsFileCreatedDate'
+        : 'resultsPerDocumentCount';
+
+    const sortFn = defaultSortFn<SearchTermResultType>({
+      column: sortColumn,
+      direction: 'descending'
+    });
+
     return combinedSearchResults
       .filter((doc) => {
         const category = categoriseDocument(doc);
+
+        if (newStatus) {
+          return true;
+        }
 
         return (
           selectedCategories.length === 0 ||
@@ -82,16 +101,18 @@ export const DocumentKeywordSearch = () => {
         );
       })
       .filter(searchFn)
-      .sort((a, b) => {
-        if (a.status === 'New' && b.status !== 'New') {
-          return 1;
-        }
-        if (a.status !== 'Read' && b.status === 'Read') {
-          return -1;
-        }
-        return 0;
-      });
-  }, [combinedSearchResults, filters?.filters?.category, filters?.search]);
+      .map((item) => ({
+        ...item,
+        [sortColumn]: String(item[sortColumn] ?? '')
+      }))
+      .sort(sortFn);
+  }, [
+    combinedSearchResults,
+    filters?.filters?.category,
+    filters?.filters?.status,
+    filters?.search,
+    selectedSort
+  ]);
 
   const highlightExactMatches = (
     text: string,
@@ -119,8 +140,6 @@ export const DocumentKeywordSearch = () => {
       )
     );
   };
-
-  console.log({ filteredResults });
 
   return (
     <div style={{ marginBottom: '20px' }}>
@@ -166,11 +185,19 @@ export const DocumentKeywordSearch = () => {
                   >
                     Sort by
                   </label>
-                  <select className="govuk-select" id="sort" name="sort">
-                    <option value="date" defaultValue="date" selected>
+                  <select
+                    className="govuk-select"
+                    id="sort"
+                    name="sort"
+                    value={selectedSort}
+                    onChange={(e) => setSelectedSort(e.target.value)}
+                  >
+                    <option value="date" defaultValue="date">
                       Date added
                     </option>
-                    <option value="comments">Results per document</option>
+                    <option value="resultsPerDocument">
+                      Results per document
+                    </option>
                   </select>
                 </div>
               </div>
@@ -255,7 +282,7 @@ export const DocumentKeywordSearch = () => {
             {!loading &&
               trackerComplete &&
               filteredResults?.length === 0 &&
-              searchTerm && <p>No results.</p>}
+              searchTerm && <p className="govuk-body">No results.</p>}
           </TwoCol>
         )}
       </Modal>

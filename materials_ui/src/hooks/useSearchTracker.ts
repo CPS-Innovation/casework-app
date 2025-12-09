@@ -27,7 +27,10 @@ export const useSearchTracker = (trigger: any) => {
     getTracker,
     {
       refreshInterval: (latest) =>
-        latest?.data.status === 'Running' ? 1000 : 0,
+        latest?.data.status === 'Running' ||
+        latest?.data.status === 'NotStarted'
+          ? 1000
+          : 0,
       dedupingInterval: 0,
       revalidateOnFocus: false
     }
