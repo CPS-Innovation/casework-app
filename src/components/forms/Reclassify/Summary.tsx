@@ -29,6 +29,8 @@ export const Summary = ({ data, onChange, onSave }: Props) => {
   const { getDefendantById, formatDefendantName } = useCaseDefendants();
   const { getExhibitProducerById } = useExhibitProducers();
 
+  console.log(data);
+
   const handleChangeClick = (step: FormStep) => {
     if (onChange) {
       onChange(step);
@@ -97,12 +99,16 @@ export const Summary = ({ data, onChange, onSave }: Props) => {
                 key: 'Does the statement have a date?',
                 value: data?.hasStatementDate ? 'Yes' : 'No'
               },
-              {
-                key: 'What is the statement date?',
-                value: data?.statementDate
-                  ? formatDate(data?.statementDate)
-                  : ''
-              },
+              ...(data?.hasStatementDate
+                ? [
+                    {
+                      key: 'What is the statement date?',
+                      value: data?.statementDate
+                        ? formatDate(data?.statementDate)
+                        : ''
+                    }
+                  ]
+                : []),
               {
                 key: 'Statement number',
                 value: data?.statementNumber as number

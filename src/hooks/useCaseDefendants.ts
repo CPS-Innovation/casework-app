@@ -2,7 +2,6 @@ import useSWR from 'swr';
 
 import type { SelectOption } from '../components/SelectList/SelectList';
 import { QUERY_KEYS } from '../constants/query';
-import { API_ENDPOINTS } from '../constants/url';
 import { DefendantsResponseType, DefendantType } from '../schemas/defendants';
 import { useCaseInfoStore } from '../stores';
 import { useRequest } from './';
@@ -13,9 +12,10 @@ export const useCaseDefendants = () => {
 
   const getCaseDefendants = async () =>
     await request
-      .get<DefendantsResponseType>(API_ENDPOINTS.CASE_DEFENDANTS, {
-        params: { caseId: caseInfo?.id }
-      })
+      .get<DefendantsResponseType>(
+        `/urns/${caseInfo?.urn}/cases/${caseInfo?.id}/case-defendants`,
+        { params: { caseId: caseInfo?.id } }
+      )
       .then((response) => response.data);
 
   const { data: caseDefendants, isLoading } = useSWR(

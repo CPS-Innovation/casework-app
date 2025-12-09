@@ -14,9 +14,6 @@ export const useCaseMaterials = ({ dataType }: UseCaseMaterialsProps) => {
   const request = useRequest();
   const { caseInfo } = useCaseInfoStore();
 
-  // TODO: revisit this and add logging
-  // const { log } = useLogger();
-
   const getCaseMaterials = async () => {
     const response = await request.get<CaseMaterialsResponseType>(
       `/urns/${caseInfo?.urn}/cases/${caseInfo?.id}/case-materials`
