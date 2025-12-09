@@ -5,7 +5,7 @@ import { DocumentSidebar } from '../../packages/DocumentSelectAccordion/Document
 import { TMode } from '../../packages/PdfRedactor/utils/modeUtils';
 import { DocumentControlArea } from '../components/documentControlArea';
 import { DocumentViewportArea } from '../components/documenViewportArea';
-import { GetDataFromAxios } from '../components/utils.ts/getData';
+import { GetDataFromAxios } from '../components/utils/getData';
 
 type TDocumentDataList = {
   id: string;
@@ -13,6 +13,7 @@ type TDocumentDataList = {
   documentId: string;
   hasNotes: boolean;
   isUnused: boolean;
+  versionId: number;
   presentationTitle: string;
   status: string;
 };
@@ -25,17 +26,18 @@ export const ReviewAndRedactPage = () => {
   const [openDocumentIds, setOpenDocumentIds] = useState<string[]>([]);
   const [currentActiveTabId, setCurrentActiveTabId] = useState<string>('');
   const [mode, setMode] = useState<TMode>('areaRedact');
+  const [pdfFileUrl, setPdfFileUrl] = useState<string>('');
 
   const handleCloseTab = (v: string | undefined) => {
     setOpenDocumentIds((prev) => prev.filter((el) => el !== v));
   };
-  const handleCurentActiveTabId = (x?: string) => {
+  const handleCurrentActiveTabId = (x?: string) => {
     setCurrentActiveTabId(x ? x : '');
   };
   const [documentsDataList, setDocumentsDataList] = useState<
     TDocumentDataList[]
   >([]);
-  const { useAxiosInstance, getDocuments } = GetDataFromAxios();
+  const { useAxiosInstance, getDocuments, getPdfFiles } = GetDataFromAxios();
 
   const axiosInstance = useAxiosInstance();
 
@@ -48,6 +50,7 @@ export const ReviewAndRedactPage = () => {
       setDocumentsDataList(data);
     });
   }, []);
+
   useEffect(() => {
     const matchingDocuments = documentsDataList.filter((item) => {
       return openDocumentIds.includes(item.documentId);
@@ -63,12 +66,35 @@ export const ReviewAndRedactPage = () => {
       return {
         id: item.documentId,
         label: item.presentationTitle,
-        title: item.presentationTitle
+        title: item.presentationTitle,
+        versionId: item.versionId
       };
     });
 
     setDocumentIDs(matchingResult);
-  }, [openDocumentIds]);
+
+    let targetDocumentId =
+      currentActiveTabId !== ''
+        ? currentActiveTabId
+        : openDocumentIds[openDocumentIds.length - 1];
+
+    documentsDataList?.forEach((item) => {
+      if (item.documentId === targetDocumentId) {
+        getPdfFiles({
+          axiosInstance: axiosInstance,
+          urn: item?.documentId,
+          caseId: '2160797', // TODO - make it dynamic
+          documentId: item?.documentId,
+          versionId: item?.versionId
+        }).then((blob) => {
+          if (blob instanceof Blob) {
+            const blobResponse = window.URL.createObjectURL(blob);
+            setPdfFileUrl(blobResponse);
+          }
+        });
+      }
+    });
+  }, [openDocumentIds, currentActiveTabId]);
 
   useEffect(() => {
     const lastId =
@@ -93,46 +119,52 @@ export const ReviewAndRedactPage = () => {
             ) : undefined
           }
         >
-          <DocumentControlArea
-            activeTabId={activeTabId}
-            items={documentIDs}
-            isSidebarVisible={isSidebarVisible}
-            onToggleSidebar={() => setIsSidebarVisible((v) => !v)}
-            handleCloseTab={(a) => handleCloseTab(a)}
-            handleCurentActiveTabId={handleCurentActiveTabId}
-          >
-            <DocumentViewportArea
-              activeTabId={activeTabId}
-              items={documentIDs}
-              redactAreaState={mode === 'areaRedact'}
-              currentActiveTabId={currentActiveTabId}
-              onRedactAreaStateChange={(x) => {
-                setMode(x ? 'areaRedact' : 'textRedact');
-              }}
-              onRotateModeButtonClick={() => {
-                setMode((prev) =>
-                  prev === 'rotation' ? 'areaRedact' : 'rotation'
-                );
-              }}
-              onDeleteModeButtonClick={() => {
-                setMode((prev) =>
-                  prev === 'deletion' ? 'areaRedact' : 'deletion'
-                );
-              }}
-            ></DocumentViewportArea>
-          </DocumentControlArea>
+          {documentIDs.length > 0 && (
+            <>
+              <DocumentControlArea
+                activeTabId={activeTabId}
+                items={documentIDs}
+                isSidebarVisible={isSidebarVisible}
+                onToggleSidebar={() => setIsSidebarVisible((v) => !v)}
+                handleCloseTab={(a) => handleCloseTab(a)}
+                handleCurrentActiveTabId={handleCurrentActiveTabId}
+              >
+                <DocumentViewportArea
+                  activeTabId={activeTabId}
+                  items={documentIDs}
+                  redactAreaState={mode === 'areaRedact'}
+                  currentActiveTabId={currentActiveTabId}
+                  onRedactAreaStateChange={(x) => {
+                    setMode(x ? 'areaRedact' : 'textRedact');
+                  }}
+                  onRotateModeButtonClick={() => {
+                    setMode((prev) =>
+                      prev === 'rotation' ? 'areaRedact' : 'rotation'
+                    );
+                  }}
+                  onDeleteModeButtonClick={() => {
+                    setMode((prev) =>
+                      prev === 'deletion' ? 'areaRedact' : 'deletion'
+                    );
+                  }}
+                ></DocumentViewportArea>
+              </DocumentControlArea>
 
-          <CaseworkPdfRedactorWrapper
-            // fileUrls left purposefully
-            // fileUrl="http://localhost:3000/test-pdfs/may-plus-images.pdf"
-            // fileUrl="http://localhost:3000/test-pdfs/final.pdf"
+              <CaseworkPdfRedactorWrapper
+                // fileUrls left purposefully
+                // fileUrl="http://localhost:3000/test-pdfs/may-plus-images.pdf"
+                // fileUrl="http://localhost:3000/test-pdfs/final.pdf"
 
-            fileUrl="http://localhost:3000/test-pdfs/final-with-https.pdf"
-            mode={mode}
-            onModeChange={setMode}
-          />
+                // fileUrl="http://localhost:3000/test-pdfs/final-with-https.pdf"
+                fileUrl={pdfFileUrl}
+                mode={mode}
+                onModeChange={setMode}
+              />
+            </>
+          )}
         </TwoCol>
       </div>
     </Layout>
   );
 };
+

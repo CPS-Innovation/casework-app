@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useLastFocus } from '../../hooks/useLastFocus';
 import { useStoreCWA } from '../../store';
 import TabButtons from './TabButtons';
@@ -8,11 +9,10 @@ export type TabsProps = CommonTabsProps & {
   activeTabId: string;
   handleTabSelection: (documentId: string) => void;
   handleCloseTab: (v?: string) => void;
-  handleCurentActiveTabId: (x?: string) => void;
+  handleCurrentActiveTabId: (x?: string) => void;
 };
 
 export const Tabs: React.FC<TabsProps> = ({
-  className,
   id,
   idPrefix,
   items,
@@ -20,7 +20,7 @@ export const Tabs: React.FC<TabsProps> = ({
   activeTabId,
   handleTabSelection,
   handleCloseTab,
-  handleCurentActiveTabId,
+  handleCurrentActiveTabId,
   ...attributes
 }) => {
   useLastFocus('#case-details-search');
@@ -31,7 +31,10 @@ export const Tabs: React.FC<TabsProps> = ({
     (item) => item.id === activeTabId || item.id === tabsState?.activeTabId
   );
   const activeTabIndex = activeTabArrayPos === -1 ? 0 : activeTabArrayPos;
-  handleCurentActiveTabId(tabsState?.activeTabId);
+
+  useEffect(() => {
+    handleCurrentActiveTabId(tabsState?.activeTabId);
+  }, [tabsState?.activeTabId]);
 
   const panels = items.map((item, index) => {
     const { id: itemId, panel } = item;
@@ -76,7 +79,7 @@ export const Tabs: React.FC<TabsProps> = ({
     <>
       <div
         data-testid="tabs"
-        className={`govuk-tabs ${classes.tabs} ${className || ''} `}
+        className={`govuk-tabs ${classes.tabs}`}
         {...attributes}
       >
         <TabButtons

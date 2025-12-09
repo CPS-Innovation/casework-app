@@ -23,7 +23,7 @@ type DocumentControlAreaProps = {
   isSidebarVisible?: boolean;
   onToggleSidebar?: () => void;
   handleCloseTab: (v?: string) => void;
-  handleCurentActiveTabId: (x?: string) => void;
+  handleCurrentActiveTabId: (x?: string) => void;
   currentActiveTabId?: string;
   children: React.ReactNode;
 };
@@ -34,29 +34,25 @@ const DocumentControlArea = ({
   isSidebarVisible,
   onToggleSidebar,
   handleCloseTab,
-  handleCurentActiveTabId,
+  handleCurrentActiveTabId,
   children
 }: DocumentControlAreaProps) => {
   const { handleTabSelection } = useStoreCWA();
   return (
     <>
-      {items.length !== 0 ? (
-        <>
-          <Button onClick={() => onToggleSidebar?.()}>
-            {isSidebarVisible ? 'Hide categories' : 'Show categories'}
-          </Button>
-          <Tabs
-            idPrefix="tabs"
-            title="Tabs title"
-            items={items}
-            activeTabId={activeTabId}
-            handleTabSelection={handleTabSelection}
-            handleCurentActiveTabId={handleCurentActiveTabId}
-            handleCloseTab={handleCloseTab}
-          />
-          {children}
-        </>
-      ) : null}
+      <Button onClick={() => onToggleSidebar?.()}>
+        {isSidebarVisible ? 'Hide categories' : 'Show categories'}
+      </Button>
+      <Tabs
+        idPrefix="tabs"
+        title="Tabs title"
+        items={items}
+        activeTabId={activeTabId}
+        handleTabSelection={handleTabSelection}
+        handleCurrentActiveTabId={handleCurrentActiveTabId}
+        handleCloseTab={handleCloseTab}
+      />
+      {children}
     </>
   );
 };

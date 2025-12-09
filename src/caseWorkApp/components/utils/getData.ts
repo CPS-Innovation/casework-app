@@ -33,7 +33,21 @@ export const getDocuments = async (p: {
   return response.data;
 };
 
+export const getPdfFiles = async (p: {
+  axiosInstance: AxiosInstance;
+  urn: string;
+  caseId: number | string;
+  documentId: number | string;
+  versionId?: number | string;
+}) => {
+  const response = await p.axiosInstance.get(
+    `/api/urns/${p.urn}/cases/${p.caseId}/documents/${p.documentId}/versions/${p.versionId}/pdf`,
+    { responseType: 'blob' }
+  );
+  return response.data;
+};
+
 export const GetDataFromAxios = () => {
-  return { useAxiosInstance, getDocuments };
+  return { useAxiosInstance, getDocuments, getPdfFiles };
 };
 
