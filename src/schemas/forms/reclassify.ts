@@ -31,7 +31,9 @@ const Reclassify_TypeStatementSchema = Reclassification_BaseSchema.extend({
 const Reclassify_TypeExhibitSchema = Reclassification_BaseSchema.extend({
   classification: z.literal(Reclassify_ClassificationEnum.enum.EXHIBIT),
   item: z.string({ message: 'Enter the item' }),
-  referenceNumber: z.string().optional(),
+  referenceNumber: z
+    .string({ message: 'Enter the exhibit reference number' })
+    .min(1, 'Enter the exhibit reference number'),
   producedBy: z.string({ message: 'Enter produced by' }).optional(),
   producerId: z.coerce.number().optional(),
   subject: z.string({ message: 'Enter the exhibit name (subject)' })
@@ -246,6 +248,82 @@ export const Reclassify_Response_Schema = z.object({
   reclassifyCommunication: z.object({ id: z.number() })
 });
 
+export const ActionPlanStepSchema = z.object({
+  code: Reclassify_RequestTypeEnum,
+  description: z.string(),
+  text: z.string(),
+  hidden: z.boolean().default(false),
+  hiddenDraft: z.boolean().default(false)
+});
+
+export const Reclassify_Orchestrated_Request_Schema = z.object({
+  reclassification: z.object({
+    urn: z.string(),
+    classification: Reclassify_ClassificationEnum,
+    documentTypeId: z.number(),
+    subject: z.string(),
+    used: z.boolean(),
+    statement: z
+      .object({ statementNo: z.number(), date: z.string().optional() })
+      .optional(),
+    exhibit: z
+      .object({
+        item: z.string(),
+        reference: z.string().default(''),
+        existingproducerOrWitnessId: z.number().optional(),
+        Producer: z.string().optional(),
+        newProducer: z.string().optional()
+      })
+      .optional()
+  }),
+  actionPlan: z
+    .object({
+      urn: z.string(),
+      fullDefendantName: z.string().nullable(),
+      defendantId: z.number().optional(),
+      date: z.string(),
+      dateExpected: z.string().nullable(),
+      dateTimeCreated: z.string(),
+      type: z.literal('ModifyFileBuild'),
+      actionPointText: z.string(),
+      statusDescription: z.string(),
+      createdByOrganisation: z.literal('CPS'),
+      steps: z.array(ActionPlanStepSchema)
+    })
+    .optional(),
+  witness: z
+    .union([
+      z.object({ witnessId: z.number() }),
+      z.object({ firstName: z.string(), surname: z.string() })
+    ])
+    .optional()
+});
+
+const Reclassify_Orchestrated_Result_Schema = z
+  .object({
+    success: z.boolean(),
+    operationName: z.string(),
+    errorMessage: z.string(),
+    resultData: z
+      .object({ reclassifyCommunication: z.object({ id: z.number() }) })
+      .nullable()
+  })
+  .nullable();
+
+export const Reclassify_Orchestrated_Response_Schema = z.object({
+  overallSuccess: z.boolean(),
+  status: z.enum(['Success', 'PartialSuccess', 'Failed']),
+  materialId: z.number(),
+  transactionId: z.string().uuid(),
+  reclassificationResult: Reclassify_Orchestrated_Result_Schema,
+  renameMaterialResult: Reclassify_Orchestrated_Result_Schema,
+  actionPlanResult: Reclassify_Orchestrated_Result_Schema,
+  witnessResult: Reclassify_Orchestrated_Result_Schema,
+  errors: z.array(z.string()),
+  warnings: z.unknown(),
+  contentType: z.literal('application/json')
+});
+
 export type Reclassify_Request_Other_Type = z.infer<
   typeof Reclassify_Request_Other_Schema
 >;
@@ -281,3 +359,11 @@ export type Reclassify_TypeOtherType = z.infer<
 >;
 
 export type Reclassify_RequestType = z.infer<typeof Reclassify_RequestTypeEnum>;
+
+export type Reclassify_Orchestrated_Request_Type = z.infer<
+  typeof Reclassify_Orchestrated_Request_Schema
+>;
+
+export type Reclassify_Orchestrated_Response_Type = z.infer<
+  typeof Reclassify_Orchestrated_Response_Schema
+>;

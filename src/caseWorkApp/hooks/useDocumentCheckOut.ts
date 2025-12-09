@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios';
 import { useState } from 'react';
 
-import { useAxiosInstance } from '../components/utils.ts/getData';
+import { useAxiosInstance } from '../components/utils/getData';
 
 type UseDocumentCheckoutOptions = { caseId?: number; urn?: string };
 
