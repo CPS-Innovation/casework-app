@@ -78,7 +78,7 @@ export const ReviewAndRedactPage = () => {
         ? currentActiveTabId
         : openDocumentIds[openDocumentIds.length - 1];
 
-    documentsDataList?.filter((item) => {
+    documentsDataList?.forEach((item) => {
       if (item.documentId === targetDocumentId) {
         getPdfFiles({
           axiosInstance: axiosInstance,
@@ -88,8 +88,7 @@ export const ReviewAndRedactPage = () => {
           versionId: item?.versionId
         }).then((blob) => {
           if (blob instanceof Blob) {
-            const url = window.URL || window.webkitURL;
-            const blobResponse = url.createObjectURL(blob);
+            const blobResponse = window.URL.createObjectURL(blob);
             setPdfFileUrl(blobResponse);
           }
         });
