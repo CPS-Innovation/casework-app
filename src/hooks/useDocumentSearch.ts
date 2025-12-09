@@ -47,6 +47,14 @@ export const useDocumentSearchResults = (
       (sr) => sr.documentId === doc.documentId
     );
 
+    const resultsPerDocumentCount = matches.reduce((acc, curr) => {
+      const count = curr.words.filter((w) =>
+        w.matchType?.includes('Exact')
+      ).length;
+
+      return acc + count;
+    }, 0);
+
     if (matches.length > 0) {
       combinedSearchResults.push({
         documentId: doc.documentId,
@@ -63,7 +71,8 @@ export const useDocumentSearchResults = (
           pageIndex: match.pageIndex,
           lineIndex: match.lineIndex,
           words: match.words
-        }))
+        })),
+        resultsPerDocumentCount
       });
     }
   }

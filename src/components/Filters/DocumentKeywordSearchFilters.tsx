@@ -63,8 +63,6 @@ export const DocumentKeywordSearchFilters = () => {
   //     return map;
   //   })();
 
-  console.log({ shallowFilters });
-
   return (
     <div className="filters-container" id="filters">
       <div
