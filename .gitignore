@@ -50,3 +50,5 @@ terraform.tfstate
 *.tfstate.*
 _backend.tf
 *_override.tf
+
+/.vite/
