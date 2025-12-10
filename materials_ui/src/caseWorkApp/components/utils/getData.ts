@@ -1,5 +1,5 @@
 import { useMsal } from '@azure/msal-react';
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosError, AxiosInstance } from 'axios';
 import { getAccessTokenFromMsalInstance } from '../../../packages/DocumentSelectAccordion/getters/getAccessTokenFromMsalInstance';
 
 export const useAxiosInstance = () => {
@@ -26,11 +26,15 @@ export const getDocuments = async (p: {
   urn: string | undefined;
   caseId: number | undefined;
 }) => {
-  const response = await p.axiosInstance.get(
-    `/api/urns/${p.urn}/cases/${p.caseId}/documents`
-  );
-
-  return response.data;
+  try {
+    const response = await p.axiosInstance.get(
+      `/api/urns/${p.urn}/cases/${p.caseId}/documents`
+    );
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError)
+      throw new Error(`Error getting documents: ${error.message}`);
+  }
 };
 
 export const getPdfFiles = async (p: {
@@ -40,11 +44,16 @@ export const getPdfFiles = async (p: {
   documentId: number | string;
   versionId?: number | string;
 }) => {
-  const response = await p.axiosInstance.get(
-    `/api/urns/${p.urn}/cases/${p.caseId}/documents/${p.documentId}/versions/${p.versionId}/pdf`,
-    { responseType: 'blob' }
-  );
-  return response.data;
+  try {
+    const response = await p.axiosInstance.get(
+      `/api/urns/${p.urn}/cases/${p.caseId}/documents/${p.documentId}/versions/${p.versionId}/pdf`,
+      { responseType: 'blob' }
+    );
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError)
+      throw new Error(`Error getting PDF file: ${error.message}`);
+  }
 };
 
 export const GetDataFromAxios = () => {
