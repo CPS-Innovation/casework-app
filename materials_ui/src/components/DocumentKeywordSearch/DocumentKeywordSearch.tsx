@@ -25,6 +25,7 @@ import { defaultSearchFn, defaultSortFn } from '../../utils/filtering';
 import { DocumentKeywordSearchFilters } from '../Filters/DocumentKeywordSearchFilters';
 
 import { DEFAULT_RESULTS_PER_PAGE } from '../../constants/query';
+import { useDebounce } from '../../hooks/useDebounce';
 import './DocumentKeywordSearch.scss';
 
 export const DocumentKeywordSearch = () => {
@@ -36,11 +37,13 @@ export const DocumentKeywordSearch = () => {
   >({});
   const [selectedSort, setSelectedSort] = useState('date');
 
+  const debouncedTerm = useDebounce(inputValue, 400);
+
   const {
     isComplete: trackerComplete,
     trackerData,
     failedToConvert
-  } = useSearchTracker(searchTerm);
+  } = useSearchTracker(debouncedTerm);
 
   const { searchResults, loading } = useDocumentSearch(
     searchTerm,
@@ -65,7 +68,7 @@ export const DocumentKeywordSearch = () => {
   };
 
   const handleSearchSubmit = () => {
-    setSearchTerm(inputValue);
+    setSearchTerm(debouncedTerm);
     setModalOpen(true);
   };
 
