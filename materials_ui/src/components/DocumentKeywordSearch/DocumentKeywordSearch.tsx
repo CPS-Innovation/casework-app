@@ -4,6 +4,7 @@ import {
   useDocumentSearch,
   useDocumentSearchResults,
   useFilters,
+  usePager,
   useSearchTracker
 } from '../../hooks';
 
@@ -11,6 +12,7 @@ import {
   Banner,
   LoadingSpinner,
   Modal,
+  Pagination,
   SearchInput,
   SectionBreak,
   TwoCol
@@ -22,6 +24,7 @@ import { formatDateLong } from '../../utils/date';
 import { defaultSearchFn, defaultSortFn } from '../../utils/filtering';
 import { DocumentKeywordSearchFilters } from '../Filters/DocumentKeywordSearchFilters';
 
+import { DEFAULT_RESULTS_PER_PAGE } from '../../constants/query';
 import './DocumentKeywordSearch.scss';
 
 export const DocumentKeywordSearch = () => {
@@ -141,6 +144,20 @@ export const DocumentKeywordSearch = () => {
     );
   };
 
+  const {
+    currentPage,
+    totalPages,
+    startIndex,
+    endIndex,
+    setNextPage,
+    setPage,
+    setPreviousPage
+  } = usePager({
+    totalItems: filteredResults ? filteredResults.length : 0,
+    initialPageSize: DEFAULT_RESULTS_PER_PAGE,
+    initialPage: 0
+  });
+
   return (
     <div style={{ marginBottom: '20px' }}>
       <SearchInput
@@ -221,7 +238,7 @@ export const DocumentKeywordSearch = () => {
             {!loading &&
               trackerComplete &&
               filteredResults &&
-              filteredResults.map((doc) => {
+              filteredResults.slice(startIndex, endIndex + 1).map((doc) => {
                 const isExpanded = expandedDocuments[doc.documentId] ?? false;
                 const first = doc.matches[0];
                 const remainingCount = doc.matches.length - 1;
@@ -278,6 +295,14 @@ export const DocumentKeywordSearch = () => {
                   </div>
                 );
               })}
+
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              setNextPage={setNextPage}
+              setPreviousPage={setPreviousPage}
+              setPage={setPage}
+            />
 
             {!loading &&
               trackerComplete &&
