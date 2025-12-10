@@ -33,7 +33,7 @@ export const getDocuments = async (p: {
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError)
-      throw new Error(`Error getting documents: ${error.message}`);
+      console.error(`Error getting documents: ${error.message}`);
   }
 };
 
@@ -52,7 +52,7 @@ export const getPdfFiles = async (p: {
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError)
-      throw new Error(`Error getting PDF file: ${error.message}`);
+      console.error(`Error getting PDF file: ${error.message}`);
   }
 };
 
