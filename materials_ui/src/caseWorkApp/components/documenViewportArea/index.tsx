@@ -79,7 +79,7 @@ export const DocumentViewportArea = ({
 
   return (
     <div className={classes.content}>
-      <p>{name}</p>
+      <p style={{ color: '#ffffff' }}>{name}</p>
       <Tooltip
         text={redactAreaState ? 'Redact area tool On' : 'Redact area tool Off'}
       >
