@@ -41,10 +41,7 @@ const dropDownItems: DropdownButtonItem[] = [
     label: true ? 'Hide delete page options' : 'Show dotate page options',
     ariaLabel: true ? 'hide delete page options' : 'show delete page options',
     disabled: false
-  },
-  { id: '4', label: 'Discard', ariaLabel: 'discard', disabled: false },
-  { id: '5', label: 'Reclassify', ariaLabel: 'reclassify', disabled: false },
-  { id: '6', label: 'Rename', ariaLabel: 'rename', disabled: false }
+  }
 ];
 
 type DocumentViewportAreaProps = {
@@ -118,3 +115,4 @@ export const DocumentViewportArea = ({
     </div>
   );
 };
+
