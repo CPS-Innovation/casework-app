@@ -19,8 +19,8 @@ type TDocumentDataList = {
 };
 
 export const ReviewAndRedactPage = () => {
-  const urn = '54KR7689125';
-  const caseId = 2160797;
+  const urn = '54KR7689125'; // TODO - make it dynamic
+  const caseId = 2160797; // TODO - make it dynamic
   const [activeDocumentId, setActiveDocumentId] = useState<string | null>(null);
   const [activeVersionId, setActiveVersionId] = useState<number | null>(null);
 
@@ -93,7 +93,7 @@ export const ReviewAndRedactPage = () => {
         getPdfFiles({
           axiosInstance: axiosInstance,
           urn,
-          caseId, // TODO - make it dynamic
+          caseId,
           documentId: activeDocument?.documentId,
           versionId: activeDocument?.versionId
         }).then((blob) => {
@@ -162,10 +162,6 @@ export const ReviewAndRedactPage = () => {
 
               {activeVersionId && activeDocumentId && (
                 <CaseworkPdfRedactorWrapper
-                  // fileUrls left purposefully
-                  // fileUrl="http://localhost:3000/test-pdfs/may-plus-images.pdf"
-                  // fileUrl="http://localhost:3000/test-pdfs/final.pdf"
-                  // fileUrl="http://localhost:3000/test-pdfs/final-with-https.pdf"
                   fileUrl={pdfFileUrl}
                   mode={mode}
                   onModeChange={setMode}
