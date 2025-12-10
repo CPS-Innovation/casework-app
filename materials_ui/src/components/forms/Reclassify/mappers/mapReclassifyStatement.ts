@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 
-import type { ReclassifyFormData } from '../../../../hooks/useReclassifyForm';
+import type { ReclassifyFormData } from '../../../../hooks';
 import {
   type Reclassify_Orchestrated_Request_Type,
   Reclassify_RequestTypeEnum

@@ -14,6 +14,8 @@ import {
 import { categoryOptions } from '../components/forms/Reclassify/constants/options';
 import { generateMaterialName } from '../components/forms/Reclassify/utils/form';
 import {
+  FormStep,
+  ReclassifyFormData,
   useAppRoute,
   useBanner,
   useCaseLockCheck,
@@ -22,7 +24,6 @@ import {
   useReclassify,
   useReclassifyForm
 } from '../hooks';
-import { FormStep, ReclassifyFormData } from '../hooks/useReclassifyForm';
 import { CaseMaterialsType } from '../schemas';
 import {
   Reclassify_ClassificationEnumType,

@@ -1,0 +1,52 @@
+import useSWR from 'swr';
+import { useRequest } from '../';
+import { SearchTermResultType } from '../../schemas/documents';
+import { useCaseInfoStore } from '../../stores';
+
+export const useSearchTracker = (trigger: any) => {
+  const request = useRequest();
+  const { caseInfo } = useCaseInfoStore();
+
+  const urn = caseInfo?.urn;
+  const caseId = caseInfo?.id.toString();
+
+  const postInit = () => request.post(`/urns/${urn}/cases/${caseId}`);
+
+  const getTracker = () => request.get(`/urns/${urn}/cases/${caseId}/tracker`);
+
+  // Start pipeline when a new trigger comes in
+  const { data: postData } = useSWR(
+    trigger ? ['tracker-init', urn, caseId, trigger] : null,
+    postInit,
+    { revalidateOnFocus: false }
+  );
+
+  // Poll until Completed
+  const { data: trackerData, isLoading: trackerLoading } = useSWR(
+    postData ? ['tracker-status', urn, caseId, trigger] : null,
+    getTracker,
+    {
+      refreshInterval: (latest) =>
+        latest?.data.status === 'Running' ||
+        latest?.data.status === 'NotStarted'
+          ? 1000
+          : 0,
+      dedupingInterval: 0,
+      revalidateOnFocus: false
+    }
+  );
+
+  const failedToConvert =
+    trackerData?.data.documents?.filter(
+      (doc: SearchTermResultType) =>
+        doc.status === 'UnableToConvertToPdf' ||
+        doc.conversionStatus === 'UnexpectedError' ||
+        doc.status === 'OcrAndIndexFailure'
+    ) ?? [];
+
+  const isComplete =
+    trackerData?.data.status === 'Completed' ||
+    trackerData?.data.status === 'DocumentsRetrieved';
+
+  return { trackerData, trackerLoading, isComplete, failedToConvert };
+};

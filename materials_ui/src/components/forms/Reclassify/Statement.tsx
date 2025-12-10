@@ -1,8 +1,8 @@
 import { Control, Controller, FieldErrors } from 'react-hook-form';
 
 import { DateField, Radios, SelectList, TextInput } from '../..';
+import type { ReclassifyFormData } from '../../../hooks';
 import { useCaseWitnesses, useWitnessStatements } from '../../../hooks';
-import type { ReclassifyFormData } from '../../../hooks/useReclassifyForm';
 import { UsedField } from './common/UsedField';
 
 type Props = {

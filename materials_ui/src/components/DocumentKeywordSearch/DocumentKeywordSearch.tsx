@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import {
+  useDebounce,
   useDocuments,
   useDocumentSearch,
   useDocumentSearchResults,
@@ -25,7 +26,6 @@ import { defaultSearchFn, defaultSortFn } from '../../utils/filtering';
 import { DocumentKeywordSearchFilters } from '../Filters/DocumentKeywordSearchFilters';
 
 import { DEFAULT_RESULTS_PER_PAGE } from '../../constants/query';
-import { useDebounce } from '../../hooks/useDebounce';
 import './DocumentKeywordSearch.scss';
 
 export const DocumentKeywordSearch = () => {

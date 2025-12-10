@@ -1,12 +1,7 @@
 import { Control, FieldErrors } from 'react-hook-form';
 
-import {
-  Exhibit,
-  MGForms,
-  Other,
-  Statement
-} from '..';
-import type { ReclassifyFormData } from '../../../../hooks/useReclassifyForm';
+import { Exhibit, MGForms, Other, Statement } from '..';
+import type { ReclassifyFormData } from '../../../../hooks';
 import { CaseMaterialsType } from '../../../../schemas';
 import type { RadioOption } from '../../../Radios/Radios';
 

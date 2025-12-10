@@ -1,4 +1,4 @@
-import { useDocumentPreview } from '../../hooks/useDocumentPreview';
+import { useDocumentPreview } from '../../hooks/';
 import { CaseMaterialsType } from '../../schemas/caseMaterials';
 import { ErrorSummary } from '../ErrorSummary/ErrorSummary';
 import { LoadingSpinner } from '../LoadingSpinner/LoadingSpinner';
