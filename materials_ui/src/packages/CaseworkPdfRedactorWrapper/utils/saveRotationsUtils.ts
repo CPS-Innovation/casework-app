@@ -5,17 +5,19 @@ export const saveRotations = async (p: {
   axiosInstance: AxiosInstance;
   urn: string;
   caseId: number;
-  versionId: string;
+  versionId: number;
   documentId: string;
   rotations: TRotation[];
 }) => {
-  const payload = p.rotations.map((red) => ({
-    pageIndex: red.pageNumber,
-    operation: 'rotate',
-    arg: `${red.rotationDegrees}`
-  }));
+  const payload = {
+    documentModifications: p.rotations.map((red) => ({
+      pageIndex: red.pageNumber,
+      operation: 'rotate',
+      arg: `${red.rotationDegrees}`
+    }))
+  };
 
-  const response = await p.axiosInstance.post(
+  const response = await p.axiosInstance.put(
     `/api/urns/${p.urn}/cases/${p.caseId}/documents/${p.documentId}/versions/${p.versionId}/modify`,
     payload
   );

@@ -23,6 +23,10 @@ export const CaseworkPdfRedactorWrapper = (p: {
   fileUrl: string;
   mode: TMode;
   onModeChange: (x: TMode) => void;
+  urn: string;
+  caseId: number;
+  versionId: number;
+  documentId: string;
 }) => {
   const [redactions, setRedactions] = useState<TRedaction[]>([]);
   const [indexedRotation, setIndexedRotation] = useState<TIndexedRotation>({});
@@ -163,10 +167,10 @@ export const CaseworkPdfRedactorWrapper = (p: {
           });
           saveRedactions({
             axiosInstance,
-            urn: '',
-            caseId: 0,
-            versionId: '',
-            documentId: '',
+            urn: p.urn,
+            caseId: p.caseId,
+            versionId: p.versionId,
+            documentId: p.documentId,
             redactions
           });
         }}
@@ -198,20 +202,20 @@ export const CaseworkPdfRedactorWrapper = (p: {
 
           saveDeletions({
             axiosInstance,
-            urn: '',
-            caseId: 0,
-            versionId: '',
-            documentId: '',
+            urn: p.urn,
+            caseId: p.caseId,
+            versionId: p.versionId,
+            documentId: p.documentId,
             deletions: Object.values(indexedDeletion)
           });
         }}
         onSaveRotations={async () => {
           saveRotations({
             axiosInstance,
-            urn: '',
-            caseId: 0,
-            versionId: '',
-            documentId: '',
+            urn: p.urn,
+            caseId: p.caseId,
+            versionId: p.versionId,
+            documentId: p.documentId,
             rotations: Object.values(indexedRotation)
           });
         }}
