@@ -19,6 +19,11 @@ type TDocumentDataList = {
 };
 
 export const ReviewAndRedactPage = () => {
+  const urn = '54KR7689125';
+  const caseId = 2160797;
+  const [activeDocumentId, setActiveDocumentId] = useState<string | null>(null);
+  const [activeVersionId, setActiveVersionId] = useState<number | null>(null);
+
   const [isSidebarVisible, setIsSidebarVisible] = useState<boolean>(true);
   const [documentIDs, setDocumentIDs] = useState<any[]>([]);
   const [activeTabId, setActiveTabId] = useState<string>('');
@@ -80,10 +85,12 @@ export const ReviewAndRedactPage = () => {
 
     documentsDataList?.forEach((item) => {
       if (item.documentId === targetDocumentId) {
+        setActiveDocumentId(item?.documentId);
+        setActiveVersionId(item?.versionId);
         getPdfFiles({
           axiosInstance: axiosInstance,
-          urn: item?.documentId,
-          caseId: '2160797', // TODO - make it dynamic
+          urn,
+          caseId, // TODO - make it dynamic
           documentId: item?.documentId,
           versionId: item?.versionId
         }).then((blob) => {
@@ -150,16 +157,21 @@ export const ReviewAndRedactPage = () => {
                 ></DocumentViewportArea>
               </DocumentControlArea>
 
-              <CaseworkPdfRedactorWrapper
-                // fileUrls left purposefully
-                // fileUrl="http://localhost:3000/test-pdfs/may-plus-images.pdf"
-                // fileUrl="http://localhost:3000/test-pdfs/final.pdf"
-
-                // fileUrl="http://localhost:3000/test-pdfs/final-with-https.pdf"
-                fileUrl={pdfFileUrl}
-                mode={mode}
-                onModeChange={setMode}
-              />
+              {activeVersionId && activeDocumentId && (
+                <CaseworkPdfRedactorWrapper
+                  // fileUrls left purposefully
+                  // fileUrl="http://localhost:3000/test-pdfs/may-plus-images.pdf"
+                  // fileUrl="http://localhost:3000/test-pdfs/final.pdf"
+                  // fileUrl="http://localhost:3000/test-pdfs/final-with-https.pdf"
+                  fileUrl={pdfFileUrl}
+                  mode={mode}
+                  onModeChange={setMode}
+                  urn={urn}
+                  caseId={caseId}
+                  versionId={activeVersionId}
+                  documentId={activeDocumentId}
+                />
+              )}
             </>
           )}
         </TwoCol>
@@ -167,4 +179,3 @@ export const ReviewAndRedactPage = () => {
     </Layout>
   );
 };
-
