@@ -3,16 +3,13 @@ import { Link } from 'react-router-dom';
 
 import { SummaryCard } from '../..';
 import { URL } from '../../../constants/url';
+import type { FormStep, ReclassifyFormData } from '../../../hooks';
 import {
   useCaseDefendants,
   useCaseWitnesses,
   useDocumentTypes,
   useExhibitProducers
 } from '../../../hooks';
-import type {
-  FormStep,
-  ReclassifyFormData
-} from '../../../hooks/useReclassifyForm';
 import type { Reclassify_ClassificationForm } from '../../../schemas/forms/reclassify';
 import { formatDate } from '../../../utils/date';
 import { mapBEClassificationToFE } from './constants/string';

@@ -7,10 +7,10 @@ import {
   Layout,
   LoadingSpinner,
   NavList,
+  NavListItem,
   SectionBreak,
   TwoCol
 } from '../components';
-import { NavListItem } from '../components/NavList/NavList';
 import { useAppRoute, usePCD, usePCDList } from '../hooks';
 import { formatDate } from '../utils/date';
 import { cleanString } from '../utils/string';

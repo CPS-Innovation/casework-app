@@ -1,13 +1,19 @@
-import { Layout } from '../components/index.ts';
-import { DefinitionList } from '../components/DefinitionList/DefinitionList.tsx';
-import { LoadingSpinner } from '../components/LoadingSpinner/LoadingSpinner.tsx';
-import { NavList, NavListItem } from '../components/NavList/NavList.tsx';
-import { SectionBreak } from '../components/SectionBreak/SectionBreak.tsx';
-import { TwoCol } from '../components/TwoCol/TwoCol.tsx';
+import {
+  DefinitionList,
+  Layout,
+  LoadingSpinner,
+  NavList,
+  NavListItem,
+  SectionBreak,
+  TwoCol
+} from '../components';
+
 import { PcdReviewCaseHistoryType } from '../constants/enum.ts';
-import { usePCDInitialReview } from '../hooks/usePCDInitialReview.ts';
-import { usePCDReview } from '../hooks/usePCDReview.ts';
-import { usePCDReviewCaseHistory } from '../hooks/usePCDReviewCaseHistory.ts';
+import {
+  usePCDInitialReview,
+  usePCDReview,
+  usePCDReviewCaseHistory
+} from '../hooks/';
 
 export const PcdReviewPage = () => {
   const { data: historyData, isLoading: historyDataLoading } =

@@ -3,13 +3,13 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import {
   DefinitionList,
+  ErrorSummary,
   Layout,
   LoadingSpinner,
   SectionBreak,
   StatusTag
 } from '../components';
-import { ErrorSummary } from '../components/ErrorSummary/ErrorSummary';
-import { useCaseSearch } from '../hooks/useCaseSearch';
+import { useCaseSearch } from '../hooks';
 import { formatDateLong } from '../utils/date';
 
 type IFormInput = { urn: string };

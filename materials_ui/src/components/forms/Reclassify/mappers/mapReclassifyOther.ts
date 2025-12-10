@@ -1,4 +1,4 @@
-import type { ReclassifyFormData } from '../../../../hooks/useReclassifyForm';
+import type { ReclassifyFormData } from '../../../../hooks';
 import type { Reclassify_Orchestrated_Request_Type } from '../../../../schemas/forms/reclassify';
 
 export const mapReclassifyOther = (
