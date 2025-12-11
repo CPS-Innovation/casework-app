@@ -10,13 +10,17 @@ export type TabButtonProps = {
   activeTabIndex: number;
   handleTabSelection: (documentId: string) => void;
   handleCloseTab: (v?: string) => void;
+  onDeleteModeButtonClick?: () => void;
+  isTruthyValue: boolean;
 };
 
 const TabButtons: React.FC<TabButtonProps> = ({
   items,
   activeTabIndex,
   handleTabSelection,
-  handleCloseTab
+  handleCloseTab,
+  onDeleteModeButtonClick,
+  isTruthyValue
 }) => {
   const activeTabRef = useRef<HTMLButtonElement>(null);
 
@@ -175,6 +179,8 @@ const TabButtons: React.FC<TabButtonProps> = ({
           ariaLabel="tabs dropdown"
           dataTestId="tabs-dropdown"
           disabled={items.length < 2}
+          onDeleteModeButtonClick={onDeleteModeButtonClick}
+          isTruthyValue={isTruthyValue}
         />
       </div>
     </div>

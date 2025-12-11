@@ -23,6 +23,7 @@ export const CaseworkPdfRedactorWrapper = (p: {
   fileUrl: string;
   mode: TMode;
   onModeChange: (x: TMode) => void;
+  isTruthyValue: boolean;
 }) => {
   const [redactions, setRedactions] = useState<TRedaction[]>([]);
   const [indexedRotation, setIndexedRotation] = useState<TIndexedRotation>({});
@@ -137,6 +138,7 @@ export const CaseworkPdfRedactorWrapper = (p: {
         fileUrl={p.fileUrl}
         mode={p.mode}
         hideToolbar
+        isTruthyValue={p.isTruthyValue}
         onModeChange={p.onModeChange}
         redactions={redactions}
         onRedactionsChange={(newRedactions) => setRedactions(newRedactions)}
@@ -219,3 +221,4 @@ export const CaseworkPdfRedactorWrapper = (p: {
     </div>
   );
 };
+

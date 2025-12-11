@@ -38,7 +38,7 @@ const dropDownItems: DropdownButtonItem[] = [
   },
   {
     id: '3',
-    label: true ? 'Hide delete page options' : 'Show dotate page options',
+    label: true ? 'Hide delete page options' : 'Show delete page options',
     ariaLabel: true ? 'hide delete page options' : 'show delete page options',
     disabled: false
   }

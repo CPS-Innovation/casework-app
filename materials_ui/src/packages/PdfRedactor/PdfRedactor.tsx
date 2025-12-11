@@ -181,6 +181,7 @@ export const PdfRedactor = (p: {
   redactions: TRedaction[];
   hideToolbar: boolean;
   mode: TMode;
+  isTruthyValue: boolean;
   onModeChange: (x: TMode) => void;
   onRedactionsChange: (redactions: TRedaction[]) => void;
   onAddRedactions: (redactions: TRedaction[]) => void;
@@ -383,6 +384,7 @@ export const PdfRedactor = (p: {
                 key={`pdf-redactor-page-${j}`}
                 pageNumber={j + 1}
                 pagesAmount={numPages}
+                isTruthyValue={p.isTruthyValue}
                 scale={scaleHelper.scale}
                 onMouseMove={() => {}}
                 redactHighlightedTextTriggerData={

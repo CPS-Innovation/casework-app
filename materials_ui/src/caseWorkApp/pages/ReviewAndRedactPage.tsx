@@ -22,6 +22,7 @@ export const ReviewAndRedactPage = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useState<boolean>(true);
   const [documentIDs, setDocumentIDs] = useState<any[]>([]);
   const [activeTabId, setActiveTabId] = useState<string>('');
+  const [isTruthyValue, setIsTruthyValue] = useState<boolean>(false);
 
   const [openDocumentIds, setOpenDocumentIds] = useState<string[]>([]);
   const [currentActiveTabId, setCurrentActiveTabId] = useState<string>('');
@@ -37,6 +38,12 @@ export const ReviewAndRedactPage = () => {
   const [documentsDataList, setDocumentsDataList] = useState<
     TDocumentDataList[]
   >([]);
+
+  const onDeleteModeButtonClick = () => {
+    console.log('Delete mode button clicked: ', isTruthyValue);
+    setIsTruthyValue((prev) => !prev);
+  };
+
   const { useAxiosInstance, getDocuments, getPdfFiles } = GetDataFromAxios();
 
   const axiosInstance = useAxiosInstance();
@@ -128,6 +135,7 @@ export const ReviewAndRedactPage = () => {
                 onToggleSidebar={() => setIsSidebarVisible((v) => !v)}
                 handleCloseTab={(a) => handleCloseTab(a)}
                 handleCurrentActiveTabId={handleCurrentActiveTabId}
+                onDeleteModeButtonClick={onDeleteModeButtonClick}
               >
                 <DocumentViewportArea
                   activeTabId={activeTabId}
@@ -142,11 +150,7 @@ export const ReviewAndRedactPage = () => {
                       prev === 'rotation' ? 'areaRedact' : 'rotation'
                     );
                   }}
-                  onDeleteModeButtonClick={() => {
-                    setMode((prev) =>
-                      prev === 'deletion' ? 'areaRedact' : 'deletion'
-                    );
-                  }}
+                  onDeleteModeButtonClick={onDeleteModeButtonClick}
                 ></DocumentViewportArea>
               </DocumentControlArea>
 
@@ -154,11 +158,10 @@ export const ReviewAndRedactPage = () => {
                 // fileUrls left purposefully
                 // fileUrl="http://localhost:3000/test-pdfs/may-plus-images.pdf"
                 // fileUrl="http://localhost:3000/test-pdfs/final.pdf"
-
-                // fileUrl="http://localhost:3000/test-pdfs/final-with-https.pdf"
                 fileUrl={pdfFileUrl}
                 mode={mode}
                 onModeChange={setMode}
+                isTruthyValue={isTruthyValue}
               />
             </>
           )}

@@ -243,6 +243,7 @@ export const PdfRedactorPage = (p: {
   onMouseMove: (p: { x: number; y: number } | null) => void;
   pageNumber: number;
   pagesAmount?: number;
+  isTruthyValue: boolean;
   scale: number;
   mode: TMode;
   redactHighlightedTextTriggerData: TTriggerData;
@@ -318,14 +319,15 @@ export const PdfRedactorPage = (p: {
               onPageRotationChange={p.onPageRotationChange}
             />
           )}
-          {/* {p.mode === 'deletion' && ( */}
-          <PdfRedactorDeletionOverlay
-            pageIsDelete={p.pageIsDelete}
-            onPageIsDeleteChange={p.onPageIsDeleteChange}
-            pageNumber={pageNumber}
-            pagesAmount={p.pagesAmount}
-          />
-          {/* )} */}
+          {p.mode === 'deletion' ||
+            (p?.isTruthyValue && (
+              <PdfRedactorDeletionOverlay
+                pageIsDelete={p.pageIsDelete}
+                onPageIsDeleteChange={p.onPageIsDeleteChange}
+                pageNumber={pageNumber}
+                pagesAmount={p.pagesAmount}
+              />
+            ))}
           <div
             ref={pdfPageWrapperElmRef}
             style={{ position: 'relative' }}
