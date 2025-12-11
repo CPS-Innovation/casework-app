@@ -1,0 +1,36 @@
+﻿---
+parameters:
+  - name: azureSubscription
+    type: string
+  - name: resourceGroupName
+    type: string
+  - name: AppServiceName
+    type: string
+
+jobs:
+  - job: Pause_Pipeline
+    dependsOn: Log_Start
+    condition: succeeded()
+    displayName: Pause for 2 mins
+    steps:
+
+      # introduce a pause to allow background slot tasks to complete before initiating a swap-slot request
+      - powershell: 'Start-Sleep -Seconds 120'
+        displayName: 'Initiate Pause'
+
+
+  - job: Swap_UI_Slots
+    dependsOn: Pause_Pipeline
+    condition: succeeded()
+    displayName: Swap
+    steps:
+      - checkout: none
+      - task: AzureAppServiceManage@0
+        displayName: Swap slot
+        inputs:
+          action: "Swap Slots"
+          sourceSlot: "staging1"
+          azureSubscription: ${{ parameters.azureSubscription }}
+          resourceGroupName: ${{ parameters.resourceGroupName }}
+          webAppName: ${{ parameters.AppServiceName }}
+          PreserveVnet: true
