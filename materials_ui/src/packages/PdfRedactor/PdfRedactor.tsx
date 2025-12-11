@@ -382,6 +382,7 @@ export const PdfRedactor = (p: {
               <PdfRedactorPage
                 key={`pdf-redactor-page-${j}`}
                 pageNumber={j + 1}
+                pagesAmount={numPages}
                 scale={scaleHelper.scale}
                 onMouseMove={() => {}}
                 redactHighlightedTextTriggerData={
@@ -496,3 +497,4 @@ export const PdfRedactor = (p: {
     </div>
   );
 };
+
