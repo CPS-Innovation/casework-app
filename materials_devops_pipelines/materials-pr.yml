@@ -1,0 +1,192 @@
+---
+name: '$(majorMinorVersion).$(Year:yy)$(DayOfYear).$(semanticVersion)-ci'
+
+trigger: none
+pr: none
+
+#trigger: none
+#
+# pr:
+#   branches:
+#     include:
+#       - main
+#   paths:
+#     include:
+#       - terraform/*
+#       - materials_ui/*
+#       - tests/*
+
+parameters:
+- name: runTerraform
+  displayName: Run terrform plan checks
+  type: boolean
+  default: true
+
+variables:
+  - name: buildConfiguration
+    value: "Release"
+  - name: majorMinorVersion
+    value: "1.0"
+  - name: semanticVersion
+    value: "$[counter(variables['majorMinorVersion'], 1)]"
+  - name: nodeVersion
+    value: "24.x"
+  - name: workingDir
+    value: "materials_ui"
+  - name: terraformWorkingDir
+    value: "$(System.DefaultWorkingDirectory)/terraform"
+  - group: materials-global
+
+stages:
+  - stage: Wait_For_Running_PRs
+    displayName: Wait for running PRs
+    jobs:
+      - job:
+        pool:
+          name: $(dev-build-agent)
+        steps:
+          - template: templates\task_wait-for-running-releases.yml
+            parameters:
+              devOpsPatToken: $(System.AccessToken)
+
+
+  - stage: Check_Terraform
+    condition: succeeded()
+    displayName: Check Main Terraform
+    dependsOn: Wait_For_Running_PRs
+    jobs:
+      - job: Validate_Main_Terraform
+        condition: eq(${{ parameters.runTerraform }}, true)
+        displayName: Validate Main Terraform
+        pool:
+          name: $(dev-build-agent)
+
+        steps:
+
+          - template: templates/task_get-credentials.yml
+            parameters:
+              azureSubscription: $(dev-azure-service-connection)
+
+          - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@1
+            displayName: Terraform > Install
+            inputs:
+              terraformVersion: $(terraform-version)
+              
+          # Terraform Init
+          - bash: |
+              terraform init \
+                -backend-config="storage_account_name=$TF_STATE_ACCOUNT_NAME" \
+                -backend-config="container_name=$TF_STATE_CONTAINER_NAME" \
+                -backend-config="key=$TF_STATE_KEY" \
+                -backend-config="resource_group_name=$TF_RESOURCE_GROUP_NAME"
+            displayName: Terraform > Init
+            workingDirectory: $(terraformWorkingDir)
+            env:
+              ARM_CLIENT_ID: $(clientId)
+              ARM_CLIENT_SECRET: $(clientSecret)
+              ARM_TENANT_ID: $(tenantId)
+              ARM_SUBSCRIPTION_ID: $(subscriptionId)
+              TF_STATE_ACCOUNT_NAME: $(dev-terraform-storage-account)
+              TF_STATE_CONTAINER_NAME: $(materials-terraform-container-name)
+              TF_STATE_KEY: $(terraform-key)
+              TF_RESOURCE_GROUP_NAME: $(terraform-resource-group)
+              TF_LOG: "ERROR"
+
+          # Terraform Plan
+          - bash: |
+              terraform plan -input=false -out=dev.tfplan -var-file="./environments/dev.tfvars"
+            displayName: Terraform > Write Plan
+            workingDirectory: $(terraformWorkingDir)
+            env:
+              ARM_CLIENT_ID: $(clientId)
+              ARM_CLIENT_SECRET: $(clientSecret)
+              ARM_TENANT_ID: $(tenantId)
+              ARM_SUBSCRIPTION_ID: $(subscriptionId)
+              TF_LOG: "ERROR"
+
+
+
+  - stage: Build_and_Test_UI
+    displayName: Front End Checks
+    jobs:
+
+      - job: Build_and_Test
+        displayName: 'Build & Test App'
+        steps:
+
+          # Setup Node.js
+          - task: UseNode@1
+            displayName: "Use Node.js"
+            inputs:
+              version: "$(nodeVersion)"
+            
+          - task: Npm@1
+            inputs:
+              command: "ci"
+              workingDir: '$(workingDir)'
+            displayName: 'Install Dependencies'
+
+          - task: Npm@1
+            inputs:
+              command: "custom"
+              workingDir: '$(workingDir)'
+              customCommand: "run format"
+            displayName: "npm prettier"
+
+# commenting out to test other parts of pipeline
+          # - task: Npm@1
+          #   displayName: 'Lint Code'
+          #   inputs:
+          #     command: 'custom'
+          #     customCommand: 'run lint'
+          #     workingDir: '$(workingDir)'
+
+          #Build the application
+          - task: Npm@1
+            inputs:
+              command: "custom"
+              workingDir: '$(workingDir)'
+              customCommand: "run build"
+            displayName: "npm build"
+
+
+# # ---------- UNIT TESTS (Vitest) ----------
+#           - task: Npm@1
+#             displayName: 'Run UI Unit Tests'
+#             inputs:
+#               command: 'custom'
+#               customCommand: 'run test'
+#               workingDir: '$(workingDir)'
+
+#           - task: PublishTestResults@2
+#             displayName: 'Publish Unit Test Results (JUnit)'
+#             inputs:
+#               testResultsFormat: 'JUnit'
+#               testResultsFiles: '$(workingDir)/unit-test-results.xml'
+#               testRunTitle: "Unit tests"
+#               publishRunAttachments: false
+#               mergeTestResults: true
+#             condition: always()
+              
+# ---------- E2E TESTS (Playwright) ----------
+          - task: Npm@1
+            displayName: 'Install Playwright'
+            inputs:
+              command: 'custom'
+              customCommand: 'exec playwright install -- --with-deps'
+              workingDir: '$(workingDir)'
+
+          - task: Npm@1
+            displayName: 'Run E2E Tests with Coverage'
+            inputs:
+              command: 'custom'
+              customCommand: 'run e2e'
+              workingDir: '$(workingDir)'
+
+          # - task: PublishTestResults@2
+          #   displayName: 'Publish E2E Test Results (JUnit)'
+          #   inputs:
+          #     testResultsFormat: 'JUnit'
+          #     testResultsFiles: '$(workingDir)/playwright/e2e-test-results.xml'
+          #     publishRunAttachments: false
+          #   condition: always()
