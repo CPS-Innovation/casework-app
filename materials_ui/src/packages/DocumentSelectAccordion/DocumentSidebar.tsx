@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTriggerListener } from '../PdfRedactor/utils/useTriggger';
 import { DocumentSidebarAccordion } from './DocumentSidebarAccordion';
 import { DocumentSidebarNotes } from './DocumentSidebarNotes';
 import { useGetDocumentList } from './getters/getDocumentList';
@@ -8,11 +9,17 @@ export const DocumentSidebar = (p: {
   caseId: number;
   openDocumentIds: string[];
   onSetDocumentOpenIds: (docIds: string[]) => void;
+  reloadTriggerData: [] | undefined;
 }) => {
   const { caseId, urn } = p;
   const [status, setStatus] = useState<
     { mode: 'accordion' } | { mode: 'notes'; documentId: string }
   >({ mode: 'accordion' });
+
+  useTriggerListener({
+    triggerData: p.reloadTriggerData,
+    fn: () => documentList.reload({ urn, caseId })
+  });
 
   const documentList = useGetDocumentList();
   useEffect(() => {
