@@ -1,0 +1,8 @@
+.redaction-tooltip {
+  display: none;
+}
+
+.redaction-box:hover .redaction-tooltip,
+.redaction-box:focus .redaction-tooltip {
+  display: block;
+}

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Layout, TwoCol } from '../../components';
 import { CaseworkPdfRedactorWrapper } from '../../packages/CaseworkPdfRedactorWrapper/CaseworkPdfRedactorWrapper';
 import { DocumentSidebar } from '../../packages/DocumentSelectAccordion/DocumentSidebar';
+import { RedactionTooltip } from '../../packages/PdfRedactor/PdfRedactorComponents';
 import { TMode } from '../../packages/PdfRedactor/utils/modeUtils';
 import { DocumentControlArea } from '../components/documentControlArea';
 import { DocumentViewportArea } from '../components/documenViewportArea';
@@ -116,6 +117,7 @@ export const ReviewAndRedactPage = () => {
 
   return (
     <Layout title="Review and Redact">
+      <RedactionTooltip />
       <div className="govuk-main-wrapper">
         <TwoCol
           sidebar={
