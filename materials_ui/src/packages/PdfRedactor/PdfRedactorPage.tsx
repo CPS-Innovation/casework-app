@@ -429,6 +429,7 @@ export const PdfRedactorPage = (p: {
                   onRedactionTooltipClick={() =>
                     handleRemoveRedaction({ boxId: box.id })
                   }
+                  initFocusRedactionBox
                 />
               );
             })}

@@ -17,7 +17,7 @@ export const RedactionTooltip = (p: { onClick: () => void }) => {
         <div
           style={{
             position: 'relative',
-            backgroundColor: '#2ecc71',
+            backgroundColor: '#00703c',
             padding: '12px 20px',
             borderRadius: '4px',
             display: 'inline-block',
@@ -34,7 +34,7 @@ export const RedactionTooltip = (p: { onClick: () => void }) => {
             height: '0',
             borderLeft: '15px solid transparent',
             borderRight: '15px solid transparent',
-            borderTop: '15px solid #2ecc71'
+            borderTop: '15px solid #00703c'
           }}
         ></div>
       </div>
@@ -95,6 +95,9 @@ export const RedactionBox = (p: {
         zIndex: '11',
         cursor: 'pointer'
       }}
+      onKeyDown={(e) => {
+        if (e.code === 'Enter') p.onEnterPress?.();
+      }}
     >
       {p.children}
     </div>
@@ -106,6 +109,7 @@ export const PositionedRedactionBox = (
     scale: number;
     onRedactionBoxEnterPress: () => void;
     onRedactionTooltipClick: () => void;
+    initFocusRedactionBox: boolean;
   }
 ) => {
   return (
@@ -120,6 +124,7 @@ export const PositionedRedactionBox = (
         background="#0000004d"
         border="2px solid black"
         onEnterPress={p.onRedactionBoxEnterPress}
+        initFocus
       >
         <span
           style={{

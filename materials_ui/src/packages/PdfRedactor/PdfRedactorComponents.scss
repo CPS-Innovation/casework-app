@@ -6,3 +6,7 @@
 .redaction-box:focus .redaction-tooltip {
   display: block;
 }
+
+.redaction-box:focus {
+  outline: 0.2rem solid #ffdd00;
+}
