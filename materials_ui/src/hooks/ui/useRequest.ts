@@ -44,8 +44,13 @@ export const useRequest = () => {
           return Promise.reject(error);
         }
 
-        if (!error.request.responseURL.includes('/uma-reclassify')) {
-          return navigate(getRoute('SERVER_ERROR', false));
+        if (
+          !error.request.responseURL.includes('/uma-reclassify') &&
+          !/^\/api\/urns\/[^/]+\/cases$/.test(
+            new URL(error.request.responseURL).pathname
+          )
+        ) {
+          return navigate(`/${getRoute('SERVER_ERROR', false)}`);
         }
       }
 
