@@ -21,6 +21,7 @@ export type DropdownButtonProps = {
   showLastItemSeparator?: boolean;
   icon?: React.ReactElement;
   onDeleteModeButtonClick?: () => void;
+  toggleDeleteButton?: boolean;
 };
 
 export const DropdownButton: React.FC<DropdownButtonProps> = ({
@@ -45,8 +46,8 @@ export const DropdownButton: React.FC<DropdownButtonProps> = ({
 
   const handleBtnClick = (id: string) => {
     setButtonOpen(false);
-    if (onDeleteModeButtonClick) onDeleteModeButtonClick();
     callBackFn(id);
+    onDeleteModeButtonClick && id === '3' && onDeleteModeButtonClick();
   };
 
   return (

@@ -23,26 +23,33 @@ export type DropdownButtonProps = {
   icon?: React.ReactElement;
 };
 
-const dropDownItems: DropdownButtonItem[] = [
-  {
-    id: '1',
-    label: 'Log an Under/Over redaction',
-    ariaLabel: 'log an under or over redaction',
-    disabled: false
-  },
-  {
-    id: '2',
-    label: 'Rotate document pages',
-    ariaLabel: 'rotate document pages',
-    disabled: false
-  },
-  {
-    id: '3',
-    label: true ? 'Hide delete page options' : 'Show delete page options',
-    ariaLabel: true ? 'hide delete page options' : 'show delete page options',
-    disabled: false
-  }
-];
+const setDropDownActionItems = (trueOrFalse: boolean) => {
+  const dropDownItems: DropdownButtonItem[] = [
+    {
+      id: '1',
+      label: 'Log an Under/Over redaction',
+      ariaLabel: 'log an under or over redaction',
+      disabled: false
+    },
+    {
+      id: '2',
+      label: 'Rotate document pages',
+      ariaLabel: 'rotate document pages',
+      disabled: false
+    },
+    {
+      id: '3',
+      label: trueOrFalse
+        ? 'Hide delete page options'
+        : 'Show delete page options',
+      ariaLabel: trueOrFalse
+        ? 'hide delete page options'
+        : 'show delete page options',
+      disabled: false
+    }
+  ];
+  return dropDownItems;
+};
 
 type DocumentViewportAreaProps = {
   items: DropdownButtonItem[];
@@ -52,6 +59,7 @@ type DocumentViewportAreaProps = {
   currentActiveTabId?: string;
   onRotateModeButtonClick: () => void;
   onDeleteModeButtonClick: () => void;
+  toggleDeleteButton: boolean;
 };
 
 export const DocumentViewportArea = ({
@@ -61,7 +69,8 @@ export const DocumentViewportArea = ({
   onRedactAreaStateChange,
   currentActiveTabId,
   onRotateModeButtonClick,
-  onDeleteModeButtonClick
+  onDeleteModeButtonClick,
+  toggleDeleteButton
 }: DocumentViewportAreaProps) => {
   const [name, setName] = useState<string>('');
 
@@ -103,7 +112,7 @@ export const DocumentViewportArea = ({
       </Tooltip>
       <DropdownButton
         name="Document actions"
-        dropDownItems={dropDownItems}
+        dropDownItems={setDropDownActionItems(toggleDeleteButton)}
         callBackFn={(id) => {
           if (id === '2') onRotateModeButtonClick();
           if (id === '3') onDeleteModeButtonClick();

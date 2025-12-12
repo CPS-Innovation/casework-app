@@ -243,7 +243,7 @@ export const PdfRedactorPage = (p: {
   onMouseMove: (p: { x: number; y: number } | null) => void;
   pageNumber: number;
   pagesAmount?: number;
-  isTruthyValue: boolean;
+  toggleDeleteButton: boolean;
   scale: number;
   mode: TMode;
   redactHighlightedTextTriggerData: TTriggerData;
@@ -320,7 +320,7 @@ export const PdfRedactorPage = (p: {
             />
           )}
           {p.mode === 'deletion' ||
-            (p?.isTruthyValue && (
+            (p?.toggleDeleteButton && (
               <PdfRedactorDeletionOverlay
                 pageIsDelete={p.pageIsDelete}
                 onPageIsDeleteChange={p.onPageIsDeleteChange}

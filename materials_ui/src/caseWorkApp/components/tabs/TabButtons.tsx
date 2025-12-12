@@ -11,7 +11,7 @@ export type TabButtonProps = {
   handleTabSelection: (documentId: string) => void;
   handleCloseTab: (v?: string) => void;
   onDeleteModeButtonClick?: () => void;
-  isTruthyValue: boolean;
+  toggleDeleteButton: boolean;
 };
 
 const TabButtons: React.FC<TabButtonProps> = ({
@@ -20,7 +20,7 @@ const TabButtons: React.FC<TabButtonProps> = ({
   handleTabSelection,
   handleCloseTab,
   onDeleteModeButtonClick,
-  isTruthyValue
+  toggleDeleteButton
 }) => {
   const activeTabRef = useRef<HTMLButtonElement>(null);
 
@@ -180,7 +180,7 @@ const TabButtons: React.FC<TabButtonProps> = ({
           dataTestId="tabs-dropdown"
           disabled={items.length < 2}
           onDeleteModeButtonClick={onDeleteModeButtonClick}
-          isTruthyValue={isTruthyValue}
+          toggleDeleteButton={toggleDeleteButton}
         />
       </div>
     </div>

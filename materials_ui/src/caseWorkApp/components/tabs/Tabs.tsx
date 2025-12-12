@@ -11,7 +11,7 @@ export type TabsProps = CommonTabsProps & {
   handleCloseTab: (v?: string) => void;
   handleCurrentActiveTabId: (x?: string) => void;
   onDeleteModeButtonClick?: () => void;
-  isTruthyValue: boolean;
+  toggleDeleteButton: boolean;
 };
 
 export const Tabs: React.FC<TabsProps> = ({
@@ -24,7 +24,7 @@ export const Tabs: React.FC<TabsProps> = ({
   handleCloseTab,
   handleCurrentActiveTabId,
   onDeleteModeButtonClick,
-  isTruthyValue,
+  toggleDeleteButton,
   ...attributes
 }) => {
   useLastFocus('#case-details-search');
@@ -92,7 +92,7 @@ export const Tabs: React.FC<TabsProps> = ({
           handleTabSelection={handleTabSelection}
           handleCloseTab={handleCloseTab}
           onDeleteModeButtonClick={onDeleteModeButtonClick}
-          isTruthyValue={isTruthyValue}
+          toggleDeleteButton={toggleDeleteButton}
         />
         {panels}
       </div>

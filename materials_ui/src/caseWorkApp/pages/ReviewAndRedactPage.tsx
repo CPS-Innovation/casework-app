@@ -22,7 +22,7 @@ export const ReviewAndRedactPage = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useState<boolean>(true);
   const [documentIDs, setDocumentIDs] = useState<any[]>([]);
   const [activeTabId, setActiveTabId] = useState<string>('');
-  const [isTruthyValue, setIsTruthyValue] = useState<boolean>(false);
+  const [toggleDeleteButton, setToggleDeleteButton] = useState<boolean>(false);
 
   const [openDocumentIds, setOpenDocumentIds] = useState<string[]>([]);
   const [currentActiveTabId, setCurrentActiveTabId] = useState<string>('');
@@ -40,8 +40,7 @@ export const ReviewAndRedactPage = () => {
   >([]);
 
   const onDeleteModeButtonClick = () => {
-    console.log('Delete mode button clicked: ', isTruthyValue);
-    setIsTruthyValue((prev) => !prev);
+    setToggleDeleteButton((prev) => !prev);
   };
 
   const { useAxiosInstance, getDocuments, getPdfFiles } = GetDataFromAxios();
@@ -151,6 +150,7 @@ export const ReviewAndRedactPage = () => {
                     );
                   }}
                   onDeleteModeButtonClick={onDeleteModeButtonClick}
+                  toggleDeleteButton={toggleDeleteButton}
                 ></DocumentViewportArea>
               </DocumentControlArea>
 
@@ -161,7 +161,7 @@ export const ReviewAndRedactPage = () => {
                 fileUrl={pdfFileUrl}
                 mode={mode}
                 onModeChange={setMode}
-                isTruthyValue={isTruthyValue}
+                toggleDeleteButton={toggleDeleteButton}
               />
             </>
           )}
