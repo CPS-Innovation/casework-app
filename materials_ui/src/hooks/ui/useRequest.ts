@@ -34,7 +34,7 @@ export const useRequest = () => {
       const errorStatusCodes = [400, 401, 403, 422];
 
       if (errorStatusCodes.includes(error.status)) {
-        return navigate(getRoute('UNAUTHORISED', false));
+        return navigate(`/${getRoute('UNAUTHORISED', false)}`);
       }
 
       if (error.status === 500) {
