@@ -3,6 +3,7 @@ import { Layout, TwoCol } from '../../components';
 import { CaseworkPdfRedactorWrapper } from '../../packages/CaseworkPdfRedactorWrapper/CaseworkPdfRedactorWrapper';
 import { DocumentSidebar } from '../../packages/DocumentSelectAccordion/DocumentSidebar';
 import { TMode } from '../../packages/PdfRedactor/utils/modeUtils';
+import { useTrigger } from '../../packages/PdfRedactor/utils/useTriggger';
 import { DocumentControlArea } from '../components/documentControlArea';
 import { DocumentViewportArea } from '../components/documenViewportArea';
 import { GetDataFromAxios } from '../components/utils/getData';
@@ -19,6 +20,13 @@ type TDocumentDataList = {
 };
 
 export const ReviewAndRedactPage = () => {
+  const urn = '54KR7689125'; // TODO - make it dynamic
+  const caseId = 2160797; // TODO - make it dynamic
+  const [activeDocumentId, setActiveDocumentId] = useState<string | null>(null);
+  const [activeVersionId, setActiveVersionId] = useState<number | null>(null);
+
+  const reloadTrigger = useTrigger();
+
   const [isSidebarVisible, setIsSidebarVisible] = useState<boolean>(true);
   const [documentIDs, setDocumentIDs] = useState<any[]>([]);
   const [activeTabId, setActiveTabId] = useState<string>('');
@@ -86,12 +94,17 @@ export const ReviewAndRedactPage = () => {
 
     documentsDataList?.forEach((item) => {
       if (item.documentId === targetDocumentId) {
+        const activeDocument = item;
+
+        setActiveDocumentId(activeDocument?.documentId);
+        setActiveVersionId(activeDocument?.versionId);
+
         getPdfFiles({
           axiosInstance: axiosInstance,
-          urn: item?.documentId,
-          caseId: '2160797', // TODO - make it dynamic
-          documentId: item?.documentId,
-          versionId: item?.versionId
+          urn,
+          caseId,
+          documentId: activeDocument?.documentId,
+          versionId: activeDocument?.versionId
         }).then((blob) => {
           if (blob instanceof Blob) {
             const blobResponse = window.URL.createObjectURL(blob);
@@ -121,6 +134,7 @@ export const ReviewAndRedactPage = () => {
                 caseId={2160797}
                 openDocumentIds={openDocumentIds}
                 onSetDocumentOpenIds={(docIds) => setOpenDocumentIds(docIds)}
+                reloadTriggerData={reloadTrigger.data}
               />
             ) : undefined
           }
@@ -154,15 +168,19 @@ export const ReviewAndRedactPage = () => {
                 ></DocumentViewportArea>
               </DocumentControlArea>
 
-              <CaseworkPdfRedactorWrapper
-                // fileUrls left purposefully
-                // fileUrl="http://localhost:3000/test-pdfs/may-plus-images.pdf"
-                // fileUrl="http://localhost:3000/test-pdfs/final.pdf"
-                fileUrl={pdfFileUrl}
-                mode={mode}
-                onModeChange={setMode}
-                toggleDeleteButton={toggleDeleteButton}
-              />
+              {activeVersionId && activeDocumentId && (
+                <CaseworkPdfRedactorWrapper
+                  fileUrl={pdfFileUrl}
+                  mode={mode}
+                  onModeChange={setMode}
+                  onModification={() => reloadTrigger.fire()}
+                  urn={urn}
+                  caseId={caseId}
+                  versionId={activeVersionId}
+                  documentId={activeDocumentId}
+                  toggleDeleteButton={toggleDeleteButton}
+                />
+              )}
             </>
           )}
         </TwoCol>

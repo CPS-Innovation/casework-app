@@ -24,6 +24,11 @@ export const CaseworkPdfRedactorWrapper = (p: {
   mode: TMode;
   onModeChange: (x: TMode) => void;
   toggleDeleteButton: boolean;
+  urn: string;
+  caseId: number;
+  versionId: number;
+  documentId: string;
+  onModification: () => void;
 }) => {
   const [redactions, setRedactions] = useState<TRedaction[]>([]);
   const [indexedRotation, setIndexedRotation] = useState<TIndexedRotation>({});
@@ -163,14 +168,15 @@ export const CaseworkPdfRedactorWrapper = (p: {
             redactions,
             redactionDetails
           });
-          saveRedactions({
+          await saveRedactions({
             axiosInstance,
-            urn: '',
-            caseId: 0,
-            versionId: '',
-            documentId: '',
+            urn: p.urn,
+            caseId: p.caseId,
+            versionId: p.versionId,
+            documentId: p.documentId,
             redactions
           });
+          p.onModification();
         }}
         indexedRotation={indexedRotation}
         onRotationsChange={(newRotations) => setIndexedRotation(newRotations)}
@@ -198,24 +204,26 @@ export const CaseworkPdfRedactorWrapper = (p: {
             deletionDetails
           });
 
-          saveDeletions({
+          await saveDeletions({
             axiosInstance,
-            urn: '',
-            caseId: 0,
-            versionId: '',
-            documentId: '',
+            urn: p.urn,
+            caseId: p.caseId,
+            versionId: p.versionId,
+            documentId: p.documentId,
             deletions: Object.values(indexedDeletion)
           });
+          p.onModification();
         }}
         onSaveRotations={async () => {
-          saveRotations({
+          await saveRotations({
             axiosInstance,
-            urn: '',
-            caseId: 0,
-            versionId: '',
-            documentId: '',
+            urn: p.urn,
+            caseId: p.caseId,
+            versionId: p.versionId,
+            documentId: p.documentId,
             rotations: Object.values(indexedRotation)
           });
+          p.onModification();
         }}
       />
     </div>

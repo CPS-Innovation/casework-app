@@ -34,8 +34,8 @@ export const CaseSearchPage = () => {
   return (
     <Layout plain title="Case Search">
       <div className="govuk-main-wrapper govuk-main-wrapper--auto-spacing">
-        <div className="govuk-grid-row">
-          <div className="govuk-grid-column-one-half">
+        <div className="govuk-grid-row govuk-grid-row--case-search">
+          <div className="govuk-grid-column-two-thirds">
             {errors.urn &&
               (errors.urn.type === 'required' ||
                 (errors.urn.type === 'pattern' && (
@@ -105,8 +105,8 @@ export const CaseSearchPage = () => {
         )}
 
         {!loading && Array.isArray(caseDetails) && caseDetails && (
-          <div className="govuk-grid-row">
-            <div className="govuk-grid-column-one-half">
+          <div className="govuk-grid-row govuk-grid-row--case-search">
+            <div className="govuk-grid-column-two-thirds">
               <p className="govuk-body">
                 We've found <b>{caseDetails.length}</b> case that matches{' '}
                 <b>{queryUrn}</b>

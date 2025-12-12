@@ -7,6 +7,9 @@ import {
   PositionPdfOverlayBox,
   RedactionBox
 } from './PdfRedactorComponents';
+
+import './PdfRedactorPage.scss';
+
 import { GovUkButton } from './templates/GovUkButton';
 import {
   convertCoordPairToXywh,
@@ -382,7 +385,6 @@ export const PdfRedactorPage = (p: {
                   requestAnimationFrameRef.current = null;
                 });
               }}
-              // onMouseLeave={() => setMousePos(null)}
             />
             {firstCorner &&
               mousePos &&
@@ -415,6 +417,13 @@ export const PdfRedactorPage = (p: {
               const { xLeft, yBottom, width, height } =
                 convertCoordPairToXywh(box);
 
+              const handleRemoveRedaction = (fnProps: { boxId: string }) => {
+                p.onRemoveRedactions([fnProps.boxId]);
+                p.onPageRedactionsChange(
+                  redactions?.filter((x) => x.id !== fnProps.boxId)
+                );
+              };
+
               return (
                 <PositionedRedactionBox
                   key={i}
@@ -423,12 +432,12 @@ export const PdfRedactorPage = (p: {
                   width={width}
                   height={height}
                   scale={p.scale}
-                  onCloseButtonClick={() => {
-                    p.onRemoveRedactions([box.id]);
-                    p.onPageRedactionsChange(
-                      redactions?.filter((x) => x.id !== box.id)
-                    );
-                  }}
+                  onRedactionBoxEnterPress={() =>
+                    handleRemoveRedaction({ boxId: box.id })
+                  }
+                  onRedactionTooltipClick={() =>
+                    handleRemoveRedaction({ boxId: box.id })
+                  }
                 />
               );
             })}
