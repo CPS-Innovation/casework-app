@@ -1,5 +1,46 @@
-import { GovUkButton } from './templates/GovUkButton';
+import { ReactNode } from 'react';
 import type { TXywhPair } from './utils/coordUtils';
+
+import './PdfRedactorComponents.scss';
+
+export const RedactionTooltip = (p: { onClick: () => void }) => {
+  return (
+    <div className="redaction-tooltip" onClick={p.onClick}>
+      <div
+        style={{
+          display: 'inline-flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
+        <div
+          style={{
+            position: 'relative',
+            backgroundColor: '#00703c',
+            padding: '12px 20px',
+            borderRadius: '4px',
+            display: 'inline-block',
+            color: 'white',
+            fontWeight: '500',
+            whiteSpace: 'nowrap'
+          }}
+        >
+          Remove Redaction
+        </div>
+        <div
+          style={{
+            width: '0',
+            height: '0',
+            borderLeft: '15px solid transparent',
+            borderRight: '15px solid transparent',
+            borderTop: '15px solid #00703c'
+          }}
+        ></div>
+      </div>
+    </div>
+  );
+};
 
 export const PositionPdfOverlayBox = (
   p: TXywhPair & { scale: number; children: React.ReactNode }
@@ -33,19 +74,42 @@ export const CloseIcon = () => (
   </div>
 );
 
-export const RedactionBox = (p: { background: string; border: string }) => (
-  <div
-    style={{
-      background: p.background,
-      border: p.border,
-      height: '100%',
-      width: '100%'
-    }}
-  ></div>
-);
+export const RedactionBox = (p: {
+  background: string;
+  border: string;
+  children?: ReactNode;
+  onEnterPress?: () => void;
+}) => {
+  return (
+    <div
+      className="redaction-box"
+      tabIndex={0}
+      style={{
+        pointerEvents: 'auto',
+        position: 'relative',
+        boxSizing: 'border-box',
+        background: p.background,
+        border: p.border,
+        height: '100%',
+        width: '100%',
+        zIndex: '11',
+        cursor: 'pointer'
+      }}
+      onKeyDown={(e) => {
+        if (e.code === 'Enter') p.onEnterPress?.();
+      }}
+    >
+      {p.children}
+    </div>
+  );
+};
 
 export const PositionedRedactionBox = (
-  p: TXywhPair & { scale: number; onCloseButtonClick: () => void }
+  p: TXywhPair & {
+    scale: number;
+    onRedactionBoxEnterPress: () => void;
+    onRedactionTooltipClick: () => void;
+  }
 ) => {
   return (
     <PositionPdfOverlayBox
@@ -55,25 +119,22 @@ export const PositionedRedactionBox = (
       height={p.height}
       scale={p.scale}
     >
-      <RedactionBox background="#0000004d" border="2px solid black" />
-
-      <GovUkButton
-        variant="inverse"
-        style={{
-          padding: 0,
-          borderRadius: '50%',
-          border: 'solid 1px black',
-          overflow: 'hidden',
-          boxShadow: 'none',
-          position: 'absolute',
-          top: '-10px',
-          right: '-10px',
-          zIndex: 10
-        }}
-        onClick={() => p.onCloseButtonClick()}
+      <RedactionBox
+        background="#0000004d"
+        border="2px solid black"
+        onEnterPress={p.onRedactionBoxEnterPress}
       >
-        <CloseIcon />
-      </GovUkButton>
+        <span
+          style={{
+            position: 'absolute',
+            top: '-2px',
+            left: '50%',
+            transform: 'translate(-50%, -100%)'
+          }}
+        >
+          <RedactionTooltip onClick={p.onRedactionTooltipClick} />
+        </span>
+      </RedactionBox>
     </PositionPdfOverlayBox>
   );
 };
