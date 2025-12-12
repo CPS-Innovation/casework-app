@@ -20,6 +20,8 @@ export type DropdownButtonProps = {
   disabled?: boolean;
   showLastItemSeparator?: boolean;
   icon?: React.ReactElement;
+  onDeleteModeButtonClick?: () => void;
+  toggleDeleteButton?: boolean;
 };
 
 export const DropdownButton: React.FC<DropdownButtonProps> = ({
@@ -28,7 +30,8 @@ export const DropdownButton: React.FC<DropdownButtonProps> = ({
   name,
   dataTestId = 'dropdown-btn',
   ariaLabel = 'dropdown',
-  disabled = false
+  disabled = false,
+  onDeleteModeButtonClick
 }) => {
   const dropDownBtnRef = useRef<HTMLButtonElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
@@ -44,6 +47,7 @@ export const DropdownButton: React.FC<DropdownButtonProps> = ({
   const handleBtnClick = (id: string) => {
     setButtonOpen(false);
     callBackFn(id);
+    onDeleteModeButtonClick && id === '3' && onDeleteModeButtonClick();
   };
 
   return (
@@ -93,3 +97,4 @@ export const DropdownButton: React.FC<DropdownButtonProps> = ({
     </div>
   );
 };
+

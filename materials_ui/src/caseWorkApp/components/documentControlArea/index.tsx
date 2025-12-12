@@ -25,6 +25,7 @@ type DocumentControlAreaProps = {
   handleCloseTab: (v?: string) => void;
   handleCurrentActiveTabId: (x?: string) => void;
   currentActiveTabId?: string;
+  onDeleteModeButtonClick: () => void;
   children: React.ReactNode;
 };
 
@@ -35,6 +36,7 @@ const DocumentControlArea = ({
   onToggleSidebar,
   handleCloseTab,
   handleCurrentActiveTabId,
+  onDeleteModeButtonClick,
   children
 }: DocumentControlAreaProps) => {
   const { handleTabSelection } = useStoreCWA();

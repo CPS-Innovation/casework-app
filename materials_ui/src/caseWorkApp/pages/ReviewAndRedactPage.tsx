@@ -30,6 +30,7 @@ export const ReviewAndRedactPage = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useState<boolean>(true);
   const [documentIDs, setDocumentIDs] = useState<any[]>([]);
   const [activeTabId, setActiveTabId] = useState<string>('');
+  const [toggleDeleteButton, setToggleDeleteButton] = useState<boolean>(false);
 
   const [openDocumentIds, setOpenDocumentIds] = useState<string[]>([]);
   const [currentActiveTabId, setCurrentActiveTabId] = useState<string>('');
@@ -45,6 +46,11 @@ export const ReviewAndRedactPage = () => {
   const [documentsDataList, setDocumentsDataList] = useState<
     TDocumentDataList[]
   >([]);
+
+  const onDeleteModeButtonClick = () => {
+    setToggleDeleteButton((prev) => !prev);
+  };
+
   const { useAxiosInstance, getDocuments, getPdfFiles } = GetDataFromAxios();
 
   const axiosInstance = useAxiosInstance();
@@ -142,6 +148,7 @@ export const ReviewAndRedactPage = () => {
                 onToggleSidebar={() => setIsSidebarVisible((v) => !v)}
                 handleCloseTab={(a) => handleCloseTab(a)}
                 handleCurrentActiveTabId={handleCurrentActiveTabId}
+                onDeleteModeButtonClick={onDeleteModeButtonClick}
               >
                 <DocumentViewportArea
                   activeTabId={activeTabId}
@@ -156,11 +163,8 @@ export const ReviewAndRedactPage = () => {
                       prev === 'rotation' ? 'areaRedact' : 'rotation'
                     );
                   }}
-                  onDeleteModeButtonClick={() => {
-                    setMode((prev) =>
-                      prev === 'deletion' ? 'areaRedact' : 'deletion'
-                    );
-                  }}
+                  onDeleteModeButtonClick={onDeleteModeButtonClick}
+                  toggleDeleteButton={toggleDeleteButton}
                 ></DocumentViewportArea>
               </DocumentControlArea>
 
@@ -174,6 +178,7 @@ export const ReviewAndRedactPage = () => {
                   caseId={caseId}
                   versionId={activeVersionId}
                   documentId={activeDocumentId}
+                  toggleDeleteButton={toggleDeleteButton}
                 />
               )}
             </>
@@ -183,3 +188,4 @@ export const ReviewAndRedactPage = () => {
     </Layout>
   );
 };
+

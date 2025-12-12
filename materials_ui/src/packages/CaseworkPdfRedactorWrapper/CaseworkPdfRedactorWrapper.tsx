@@ -23,6 +23,7 @@ export const CaseworkPdfRedactorWrapper = (p: {
   fileUrl: string;
   mode: TMode;
   onModeChange: (x: TMode) => void;
+  toggleDeleteButton: boolean;
   urn: string;
   caseId: number;
   versionId: number;
@@ -142,6 +143,7 @@ export const CaseworkPdfRedactorWrapper = (p: {
         fileUrl={p.fileUrl}
         mode={p.mode}
         hideToolbar
+        toggleDeleteButton={p.toggleDeleteButton}
         onModeChange={p.onModeChange}
         redactions={redactions}
         onRedactionsChange={(newRedactions) => setRedactions(newRedactions)}
@@ -227,3 +229,4 @@ export const CaseworkPdfRedactorWrapper = (p: {
     </div>
   );
 };
+

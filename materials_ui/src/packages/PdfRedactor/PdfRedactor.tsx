@@ -181,6 +181,7 @@ export const PdfRedactor = (p: {
   redactions: TRedaction[];
   hideToolbar: boolean;
   mode: TMode;
+  toggleDeleteButton: boolean;
   onModeChange: (x: TMode) => void;
   onRedactionsChange: (redactions: TRedaction[]) => void;
   onAddRedactions: (redactions: TRedaction[]) => void;
@@ -382,6 +383,8 @@ export const PdfRedactor = (p: {
               <PdfRedactorPage
                 key={`pdf-redactor-page-${j}`}
                 pageNumber={j + 1}
+                pagesAmount={numPages}
+                toggleDeleteButton={p.toggleDeleteButton}
                 scale={scaleHelper.scale}
                 onMouseMove={() => {}}
                 redactHighlightedTextTriggerData={
@@ -496,3 +499,4 @@ export const PdfRedactor = (p: {
     </div>
   );
 };
+
