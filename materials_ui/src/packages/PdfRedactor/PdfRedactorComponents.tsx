@@ -124,7 +124,6 @@ export const PositionedRedactionBox = (
         background="#0000004d"
         border="2px solid black"
         onEnterPress={p.onRedactionBoxEnterPress}
-        initFocus
       >
         <span
           style={{
