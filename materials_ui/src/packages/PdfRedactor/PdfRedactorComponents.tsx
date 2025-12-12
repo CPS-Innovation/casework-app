@@ -109,7 +109,6 @@ export const PositionedRedactionBox = (
     scale: number;
     onRedactionBoxEnterPress: () => void;
     onRedactionTooltipClick: () => void;
-    initFocusRedactionBox: boolean;
   }
 ) => {
   return (
