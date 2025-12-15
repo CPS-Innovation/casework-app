@@ -76,9 +76,15 @@ stages:
                     armClientId: $(clientId)
                     armClientSecret: $(clientSecret)
                     armTenantId: $(tenantId)
-                    armSubscriptionId: $(subscriptionId)
+                    armSubscriptionId: $(subscriptionId)       
                     TF_Apply: ${{ parameters.TF_Apply }}
                     terraformVersion: $(terraform-version)
+
+
+
+stageDependencies.{stageName}.{jobName}.outputs['{stepName}.{variableName}'] 
+
+
 
 ## UI Deployment ##
   - stage: Apply_UI_Dev
@@ -102,7 +108,7 @@ stages:
                   parameters:
                     targetBuild: MaterialsBuild
                     targetLabel: $(targetLabel)
-                    azureSubscription: $(subscriptionId)
+                    azureSubscription: $(dev-azure-subscription)
                     WebAppName: $(dev-spa-resource-name)
                     resourceGroupName: $(dev-spa-resource-group)
                     BuildArtifactName: "ui-build"
