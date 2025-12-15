@@ -89,7 +89,6 @@ stages:
 
       - deployment: CI_Deploy_Materials_UI
         condition: succeeded()
-        dependsOn: Wait_For_Running_Builds
         displayName: Apply Main Terraform
         environment: "Materials_Dev"
         workspace:
