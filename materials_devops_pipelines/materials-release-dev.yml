@@ -113,7 +113,7 @@ stages:
     jobs:
     - job:
       steps:
-        - template: templates/task_get-credentials.yml
+        - template: templates/job_swap-slots.yml
           parameters:
             azureSubscription: $(dev-azure-service-connection)
             resourceGroupName: $(dev-spa-resource-group)
