@@ -45,7 +45,7 @@ stages:
           runOnce:
             deploy:
               steps:
-                - template: stages/jobs/tasks/task_wait-for-running-releases.yml
+                - template: templates\task_wait-for-running-releases.yml
                   parameters:
                     devOpsPatToken: $(System.AccessToken)
 
