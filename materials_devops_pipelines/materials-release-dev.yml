@@ -104,7 +104,7 @@ stages:
                     azureSubscription: $(dev-azure-subscription)
                     WebAppName: $(dev-spa-resource-name)
                     resourceGroupName: $(dev-spa-resource-group)
-                    BuildArtifactName: "ui-build"
+                    BuildArtifactName: $(targetUIArtifact)
                     SlotName: "staging1"
 
   - stage: Swap_Slots
