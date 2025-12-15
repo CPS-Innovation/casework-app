@@ -110,11 +110,11 @@ stages:
 
   - stage: Swap_Slots
     displayName: Swap Slots
+    dependsOn: Apply_UI_Dev
+    condition: succeeded()
     jobs:
-    - job:
-      steps:
-        - template: templates/job_swap-slots.yml
-          parameters:
+      - template: templates/job_swap-slots.yml
+        parameters:
             azureSubscription: $(dev-azure-service-connection)
             resourceGroupName: $(dev-spa-resource-group)
             AppServiceName: $(dev-spa-resource-name)
