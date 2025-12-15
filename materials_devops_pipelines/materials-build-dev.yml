@@ -21,6 +21,10 @@ variables:
     value: "24.x"
   - name: workingDir
     value: "materials_ui"
+  - name: tfBuildFolder
+    value: "tf-materials-main-files"
+  - name: uiBuildFolder
+    value: "ui-materials-build-files"
   - group: materials-global
   - group: materials-ui-spa
 
@@ -38,7 +42,7 @@ stages:
             displayName: "Publish terraform artifact"
             inputs:
               targetPath: "$(Pipeline.Workspace)/s/terraform/"
-              artifact: "terraform-config"
+              artifact: '$(tfBuildFolder)'
               publishLocation: "pipeline"
  
 
@@ -86,5 +90,5 @@ stages:
             displayName: "Publish terraform artifact"
             inputs:
               targetPath: '$(workingDir)/build'
-              artifact: "ui-build"
+              artifact: '$(uiBuildFolder)'
               publishLocation: "pipeline"
