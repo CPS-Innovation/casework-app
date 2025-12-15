@@ -22,6 +22,7 @@ variables:
   - name: workingDir
     value: "materials_ui"
   - group: materials-global
+  - group: materials-ui-spa
 
 pool:
   name: $(dev-build-agent)
@@ -68,11 +69,18 @@ stages:
             displayName: 'Install Dependencies'
 
           - task: Npm@1
+            displayName: "Build UI Package"
             inputs:
               command: "custom"
               workingDir: '$(workingDir)'
               customCommand: "run build"
-            displayName: "npm build"
+            env:
+              VITE_MSAL_CLIENT_ID: $(MSAL_CLIENT_ID)
+              VITE_MSAL_TENANT_ID: $(MSAL_TENANT_ID) 
+              VITE_MSAL_REDIRECT_URI: $(MSAL_REDIRECT_URI) 
+              VITE_POLARIS_GATEWAY_URL: $(POLARIS_GATEWAY_URL)
+              VITE_POLARIS_GATEWAY_SCOPE: $(POLARIS_GATEWAY_SCOPE)
+              VITE_GLOBAL_SCRIPT_URL: $(GLOBAL_SCRIPT_URL)
 
           - task: PublishPipelineArtifact@1
             displayName: "Publish terraform artifact"
