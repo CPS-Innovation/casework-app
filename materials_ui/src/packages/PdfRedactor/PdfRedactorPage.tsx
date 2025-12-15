@@ -140,6 +140,8 @@ export const PdfRedactorRotationOverlay = (p: {
 export const PdfRedactorDeletionOverlay = (p: {
   pageIsDelete: boolean;
   onPageIsDeleteChange: (x: boolean) => void;
+  pageNumber: number;
+  pagesAmount: number;
 }) => {
   return (
     <>
@@ -168,7 +170,9 @@ export const PdfRedactorDeletionOverlay = (p: {
             >
               <RotateIcon color="white" />
             </span>
-            <div>Delete</div>
+            <div>
+              Delete page {p.pageNumber} / {p.pagesAmount}
+            </div>
           </GovUkButton>
         </div>
       )}
@@ -241,6 +245,7 @@ export const PdfRedactorDeletionOverlay = (p: {
 export const PdfRedactorPage = (p: {
   onMouseMove: (p: { x: number; y: number } | null) => void;
   pageNumber: number;
+  pagesAmount: number;
   scale: number;
   mode: TMode;
   redactHighlightedTextTriggerData: TTriggerData;
@@ -320,6 +325,8 @@ export const PdfRedactorPage = (p: {
             <PdfRedactorDeletionOverlay
               pageIsDelete={p.pageIsDelete}
               onPageIsDeleteChange={p.onPageIsDeleteChange}
+              pageNumber={p.pageNumber}
+              pagesAmount={p.pagesAmount}
             />
           )}
           <div
@@ -438,3 +445,4 @@ export const PdfRedactorPage = (p: {
     </div>
   );
 };
+

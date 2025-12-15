@@ -161,6 +161,7 @@ export const ReviewAndRedactPage = () => {
                       prev === 'deletion' ? 'areaRedact' : 'deletion'
                     );
                   }}
+                  mode={mode}
                 ></DocumentViewportArea>
               </DocumentControlArea>
 
@@ -183,3 +184,4 @@ export const ReviewAndRedactPage = () => {
     </Layout>
   );
 };
+
