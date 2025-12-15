@@ -80,12 +80,6 @@ stages:
                     TF_Apply: ${{ parameters.TF_Apply }}
                     terraformVersion: $(terraform-version)
 
-
-
-stageDependencies.{stageName}.{jobName}.outputs['{stepName}.{variableName}'] 
-
-
-
 ## UI Deployment ##
   - stage: Apply_UI_Dev
     displayName: Deploy Materials UI
