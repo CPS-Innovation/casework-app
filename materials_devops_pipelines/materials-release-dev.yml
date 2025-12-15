@@ -98,7 +98,7 @@ stages:
           runOnce:
             deploy:
               steps:
-                - template: jobs/tasks/task_deploy-spa.yml
+                - template: templates\task_deploy-spa.yml
                   parameters:
                     targetBuild: MaterialsBuild
                     targetLabel: $(targetLabel)
