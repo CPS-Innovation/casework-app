@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
+import { CaseworkPdfRedactorWrapper } from '../../../../materials_components/CaseworkPdfRedactorWrapper/CaseworkPdfRedactorWrapper';
+import { DocumentSidebar } from '../../../../materials_components/DocumentSelectAccordion/DocumentSidebar';
+import { TMode } from '../../../../materials_components/PdfRedactor/utils/modeUtils';
+import { useTrigger } from '../../../../materials_components/PdfRedactor/utils/useTriggger';
 import { Layout, TwoCol } from '../../components';
-import { CaseworkPdfRedactorWrapper } from '../../packages/CaseworkPdfRedactorWrapper/CaseworkPdfRedactorWrapper';
-import { DocumentSidebar } from '../../packages/DocumentSelectAccordion/DocumentSidebar';
-import { TMode } from '../../packages/PdfRedactor/utils/modeUtils';
-import { useTrigger } from '../../packages/PdfRedactor/utils/useTriggger';
 import { DocumentControlArea } from '../components/documentControlArea';
 import { DocumentViewportArea } from '../components/documenViewportArea';
 import { GetDataFromAxios } from '../components/utils/getData';
@@ -184,4 +184,3 @@ export const ReviewAndRedactPage = () => {
     </Layout>
   );
 };
-
