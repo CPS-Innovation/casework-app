@@ -89,7 +89,7 @@ stages:
 
       - deployment: CI_Deploy_Materials_UI
         condition: succeeded()
-        displayName: Apply Main Terraform
+        displayName: Apply UI SPA
         environment: "Materials_Dev"
         workspace:
           clean: all
@@ -104,7 +104,7 @@ stages:
                     azureSubscription: $(dev-azure-subscription)
                     WebAppName: $(dev-spa-resource-name)
                     resourceGroupName: $(dev-spa-resource-group)
-                    BuildArtifactName: $(targetUIArtifact)
+                    BuildArtifactName: $(targetUIArtifact) 
                     SlotName: "staging1"
 
   - stage: Swap_Slots
