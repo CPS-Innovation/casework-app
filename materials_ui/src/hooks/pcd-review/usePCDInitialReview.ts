@@ -1,28 +1,25 @@
 import useSWR from 'swr';
-import { QUERY_KEYS } from '../../constants/query.ts';
-import { PCDInitialReviewResponseType } from '../../schemas/pcdReview.ts';
-import { replaceTokens } from '../../utils/string.ts';
-import { useRequest } from '../index.ts';
+
+import { useCaseInfoStore, useRequest } from '../';
+import { QUERY_KEYS } from '../../constants/query';
+import { PCDInitialReviewResponseType } from '../../schemas/pcdReview';
 
 export const usePCDInitialReview = () => {
   const request = useRequest();
+  const { caseInfo } = useCaseInfoStore();
 
   const getPCDInitialReview =
     async (): Promise<PCDInitialReviewResponseType> => {
       return await request
-        .get(
-          replaceTokens(
-            'http://localhost:3000/cases/:caseId/history/initial-review',
-            { caseId: '2147043' }
-          )
-        )
+        .get(`urns/${caseInfo?.urn}/cases/${caseInfo?.id}/initial-review`)
         .then((response) => response.data);
     };
 
-  const { data, error, isLoading } = useSWR<PCDInitialReviewResponseType>(
-    QUERY_KEYS.PCD_REVIEW_INITIAL_REVIEW,
-    getPCDInitialReview
-  );
+  const { data, error, isLoading, isValidating } =
+    useSWR<PCDInitialReviewResponseType>(
+      caseInfo ? QUERY_KEYS.PCD_REVIEW_INITIAL_REVIEW : null,
+      getPCDInitialReview
+    );
 
-  return { data, error, isLoading };
+  return { data, error, isLoading: isLoading || isValidating };
 };

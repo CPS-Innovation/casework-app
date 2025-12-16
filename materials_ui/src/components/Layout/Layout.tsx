@@ -47,6 +47,14 @@ export const Layout = ({
       name: 'Communications',
       href: getRoute('COMMUNICATIONS'),
       active: location.pathname === getRoute('COMMUNICATIONS')
+    },
+    {
+      id: 'pcd-review',
+      name: 'PCD Review',
+      href: getRoute('PCD_REVIEW'),
+      active:
+        location.pathname === '/' ||
+        location.pathname.includes(getRoute('PCD_REVIEW'))
     }
   ];
 
