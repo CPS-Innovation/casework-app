@@ -1,20 +1,17 @@
 import useSWR from 'swr';
-import { useRequest } from '../';
-import { PcdReviewCaseHistoryType } from '../../constants/enum.ts';
-import { QUERY_KEYS } from '../../constants/query.ts';
-import { CaseHistoryResponseType } from '../../schemas/pcdReview.ts';
-import { replaceTokens } from '../../utils/string.ts';
+
+import { useCaseInfoStore, useRequest } from '../';
+import { PcdReviewCaseHistoryType } from '../../constants/enum';
+import { QUERY_KEYS } from '../../constants/query';
+import { CaseHistoryResponseType } from '../../schemas/pcdReview';
 
 export const usePCDReviewCaseHistory = () => {
   const request = useRequest();
+  const { caseInfo } = useCaseInfoStore();
 
   const getPCDReview = async (): Promise<CaseHistoryResponseType[]> => {
     return await request
-      .get(
-        replaceTokens('http://localhost:3000/cases/:caseId/history', {
-          caseId: '2147043'
-        })
-      )
+      .get(`urns/${caseInfo?.urn}/cases/${caseInfo?.id}/history`)
       .then((response) =>
         response.data.filter(
           (str: { type: number }) =>
@@ -24,10 +21,9 @@ export const usePCDReviewCaseHistory = () => {
       );
   };
 
-  const { data, error, isLoading } = useSWR<CaseHistoryResponseType[]>(
-    QUERY_KEYS.PCD_REVIEW_CASE_HISTORY,
-    getPCDReview
-  );
+  const { data, error, isLoading, isValidating } = useSWR<
+    CaseHistoryResponseType[]
+  >(caseInfo ? QUERY_KEYS.PCD_REVIEW_CASE_HISTORY : null, getPCDReview);
 
-  return { data, error, isLoading };
+  return { data, error, isLoading: isLoading || isValidating };
 };

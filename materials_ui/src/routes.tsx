@@ -12,6 +12,7 @@ import {
   NotAuthorisedPage,
   NotFoundPage,
   PcdRequestPage,
+  PcdReviewPage,
   ReclassificationPage,
   ReclassifyToUnusedPage,
   ServerErrorPage
@@ -60,6 +61,10 @@ export const Routes = () => {
         <Route
           path={`${getRoute('PCD_REQUEST', false)}/:pcdId?`}
           element={<PcdRequestPage />}
+        />
+        <Route
+          path={`${getRoute('PCD_REVIEW', false)}`}
+          element={<PcdReviewPage />}
         />
         <Route
           path={getRoute('MATERIALS', false)}
