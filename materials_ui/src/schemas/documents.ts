@@ -6,34 +6,32 @@ export const cmsDocTypeSchema = z.object({
   documentCategory: z.string()
 });
 
-export const DocumentSchema = z
-  .object({
-    documentId: z.string(),
-    status: z.string(),
-    versionId: z.number(),
-    cmsDocType: cmsDocTypeSchema,
-    cmsOriginalFileName: z.string(),
-    presentationTitle: z.string(),
-    cmsFileCreatedDate: z.string(),
-    isOcrProcessed: z.boolean(),
-    categoryListOrder: z.number(),
-    presentationFlags: { read: 'Ok', write: 'Ok' },
-    parentDocumentId: z.string().nullable(),
-    witnessId: z.number().nullable(),
-    hasFailedAttachments: z.boolean(),
-    hasNotes: z.boolean(),
-    conversionStatus: z.string(),
-    piiVersionId: z.number().nullable(),
-    isUnused: z.boolean(),
-    isInbox: z.boolean(),
-    classification: z.string(),
-    isWitnessManagement: z.boolean(),
-    canReclassify: z.boolean(),
-    canRename: z.boolean(),
-    renameStatus: z.string(),
-    reference: z.string().nullable()
-  })
-  .brand<'TDocument'>();
+export const DocumentSchema = z.object({
+  documentId: z.string(),
+  status: z.string(),
+  versionId: z.number(),
+  cmsDocType: cmsDocTypeSchema,
+  cmsOriginalFileName: z.string(),
+  presentationTitle: z.string(),
+  cmsFileCreatedDate: z.string(),
+  isOcrProcessed: z.boolean(),
+  categoryListOrder: z.number(),
+  presentationFlags: { read: 'Ok', write: 'Ok' },
+  parentDocumentId: z.string().nullable(),
+  witnessId: z.number().nullable(),
+  hasFailedAttachments: z.boolean(),
+  hasNotes: z.boolean(),
+  conversionStatus: z.string(),
+  piiVersionId: z.number().nullable(),
+  isUnused: z.boolean(),
+  isInbox: z.boolean(),
+  classification: z.string(),
+  isWitnessManagement: z.boolean(),
+  canReclassify: z.boolean(),
+  canRename: z.boolean(),
+  renameStatus: z.string(),
+  reference: z.string().nullable()
+});
 
 export const SearchResultSchema = z.object({
   id: z.string(),

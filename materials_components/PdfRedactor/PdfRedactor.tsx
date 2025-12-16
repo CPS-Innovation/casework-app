@@ -1,24 +1,22 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { Document, pdfjs } from 'react-pdf';
-import 'react-pdf/dist/Page/AnnotationLayer.css';
-import 'react-pdf/dist/Page/TextLayer.css';
-import { AreaIcon } from './icons/AreaIcon';
-import { EditIcon } from './icons/EditIcon';
-import { TickCircleIcon } from './icons/TickCircleIcon';
-import { PdfRedactorCenteredModal } from './modals/PdfRedactorCenteredModal';
-import { SaveToProceedToRedactionsModal } from './modals/SaveToProceedToRedactionsModal';
-import { SaveToProceedToRotationsModal } from './modals/SaveToProceedToRotationsModal';
-import { PdfRedactorPage } from './PdfRedactorPage';
-import type { TRedaction } from './utils/coordUtils';
-import { TDeletion, TIndexedDeletion } from './utils/deletionUtils';
-import { ModeStyleTag, type TMode } from './utils/modeUtils';
-import { TIndexedRotation, TRotation } from './utils/rotationUtils';
-import { useTrigger } from './utils/useTriggger';
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Document, pdfjs } from "react-pdf";
+import "react-pdf/dist/Page/AnnotationLayer.css";
+import "react-pdf/dist/Page/TextLayer.css";
+import { AreaIcon } from "./icons/AreaIcon";
+import { EditIcon } from "./icons/EditIcon";
+import { TickCircleIcon } from "./icons/TickCircleIcon";
+import { PdfRedactorCenteredModal } from "./modals/PdfRedactorCenteredModal";
+import { SaveToProceedToRedactionsModal } from "./modals/SaveToProceedToRedactionsModal";
+import { SaveToProceedToRotationsModal } from "./modals/SaveToProceedToRotationsModal";
+import { PdfRedactorPage } from "./PdfRedactorPage";
+import type { TRedaction } from "./utils/coordUtils";
+import { TDeletion, TIndexedDeletion } from "./utils/deletionUtils";
+import { ModeStyleTag, type TMode } from "./utils/modeUtils";
+import { TIndexedRotation, TRotation } from "./utils/rotationUtils";
+import { useTrigger } from "./utils/useTriggger";
 
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-  'pdfjs-dist/build/pdf.worker.min.mjs',
-  import.meta.url
-).toString();
+pdfjs.GlobalWorkerOptions.workerSrc =
+  "/node_modules/pdfjs-dist/build/pdf.worker.min.mjs";
 
 const useScaleHelper = (p?: { initScale?: number }) => {
   const [scale, setScale] = useState(p?.initScale ?? 1);
@@ -49,13 +47,13 @@ const RedactionsFooter = (p: {
   return (
     <div
       style={{
-        border: '1px solid black',
-        background: 'white',
-        color: 'black',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '10px'
+        border: "1px solid black",
+        background: "white",
+        color: "black",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding: "10px",
       }}
     >
       <button
@@ -64,7 +62,7 @@ const RedactionsFooter = (p: {
       >
         Remove all redactions
       </button>
-      <span style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+      <span style={{ display: "flex", gap: "8px", alignItems: "center" }}>
         <span>
           {p.redactions.length === 1 && <>There is 1 redaction</>}
           {p.redactions.length > 1 && (
@@ -90,13 +88,13 @@ const RotationsFooter = (p: {
   return (
     <div
       style={{
-        border: '1px solid black',
-        background: 'white',
-        color: 'black',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '10px'
+        border: "1px solid black",
+        background: "white",
+        color: "black",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding: "10px",
       }}
     >
       <button
@@ -105,7 +103,7 @@ const RotationsFooter = (p: {
       >
         Remove all rotations
       </button>
-      <span style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+      <span style={{ display: "flex", gap: "8px", alignItems: "center" }}>
         <span>
           {p.rotations.length === 1 && <>There is 1 rotation</>}
           {p.rotations.length > 1 && (
@@ -131,13 +129,13 @@ const DeletionsFooter = (p: {
   return (
     <div
       style={{
-        border: '1px solid black',
-        background: 'white',
-        color: 'black',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '10px'
+        border: "1px solid black",
+        background: "white",
+        color: "black",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding: "10px",
       }}
     >
       <button
@@ -146,7 +144,7 @@ const DeletionsFooter = (p: {
       >
         Remove all deletions
       </button>
-      <span style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+      <span style={{ display: "flex", gap: "8px", alignItems: "center" }}>
         <span>
           {p.deletions.length === 1 && <>There is 1 deletion</>}
           {p.deletions.length > 1 && (
@@ -234,21 +232,21 @@ export const PdfRedactor = (p: {
 
   useEffect(() => {
     if (
-      p.mode === 'rotation' &&
+      p.mode === "rotation" &&
       (p.redactions.length > 0 || filteredDeletions.length > 0)
     ) {
       p.onModeChange(previousModeRef.current);
       setDisplayToProceedModal(previousModeRef.current);
     }
     if (
-      (p.mode === 'textRedact' || p.mode === 'areaRedact') &&
+      (p.mode === "textRedact" || p.mode === "areaRedact") &&
       (filteredRotations.length > 0 || filteredDeletions.length > 0)
     ) {
       p.onModeChange(previousModeRef.current);
       setDisplayToProceedModal(previousModeRef.current);
     }
     if (
-      p.mode === 'deletion' &&
+      p.mode === "deletion" &&
       (filteredRotations.length > 0 || p.redactions.length > 0)
     ) {
       p.onModeChange(previousModeRef.current);
@@ -258,16 +256,16 @@ export const PdfRedactor = (p: {
 
   const redactHighlightedTextTrigger = useTrigger();
   const redactHighlightedIfTextRedactionMode = () => {
-    if (modeRef.current === 'textRedact') redactHighlightedTextTrigger.fire();
+    if (modeRef.current === "textRedact") redactHighlightedTextTrigger.fire();
   };
 
   useEffect(() => {
     const elm = pdfRedactorWrapperElmRef.current;
     if (!elm) return;
 
-    elm.addEventListener('mouseup', redactHighlightedIfTextRedactionMode);
+    elm.addEventListener("mouseup", redactHighlightedIfTextRedactionMode);
     return () =>
-      elm.removeEventListener('mouseup', redactHighlightedIfTextRedactionMode);
+      elm.removeEventListener("mouseup", redactHighlightedIfTextRedactionMode);
   }, []);
 
   return (
@@ -277,17 +275,17 @@ export const PdfRedactor = (p: {
           onBackgroundClick={() => setDisplayToProceedModal(undefined)}
           onEscPress={() => setDisplayToProceedModal(undefined)}
         >
-          {['areaRedact', 'textRedact'].includes(displayToProceedModal) && (
+          {["areaRedact", "textRedact"].includes(displayToProceedModal) && (
             <SaveToProceedToRedactionsModal
               onClose={() => setDisplayToProceedModal(undefined)}
             />
           )}
-          {displayToProceedModal === 'rotation' && (
+          {displayToProceedModal === "rotation" && (
             <SaveToProceedToRotationsModal
               onClose={() => setDisplayToProceedModal(undefined)}
             />
           )}
-          {displayToProceedModal === 'deletion' && (
+          {displayToProceedModal === "deletion" && (
             <SaveToProceedToRotationsModal
               onClose={() => setDisplayToProceedModal(undefined)}
             />
@@ -298,35 +296,35 @@ export const PdfRedactor = (p: {
       {!p.hideToolbar && (
         <div
           style={{
-            border: '1px solid black',
-            background: 'white',
-            color: 'black',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            padding: '10px'
+            border: "1px solid black",
+            background: "white",
+            color: "black",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: "10px",
           }}
         >
-          <span style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+          <span style={{ display: "flex", gap: "4px", alignItems: "center" }}>
             <span>
               <button
                 className={`govuk-button ${
-                  p.mode === 'areaRedact' ? '' : 'govuk-button--secondary'
+                  p.mode === "areaRedact" ? "" : "govuk-button--secondary"
                 }`}
-                onClick={() => p.onModeChange('areaRedact')}
+                onClick={() => p.onModeChange("areaRedact")}
               >
                 <AreaIcon width={20} height={20} />
               </button>
               <button
                 className={`govuk-button ${
-                  p.mode === 'textRedact' ? '' : 'govuk-button--secondary'
+                  p.mode === "textRedact" ? "" : "govuk-button--secondary"
                 }`}
-                onClick={() => p.onModeChange('textRedact')}
+                onClick={() => p.onModeChange("textRedact")}
               >
                 <EditIcon width={20} height={20} />
               </button>
             </span>
-            {p.mode === 'textRedact' && (
+            {p.mode === "textRedact" && (
               <button
                 className="govuk-button govuk-button--secondary"
                 onClick={() => redactHighlightedTextTrigger.fire()}
@@ -336,7 +334,7 @@ export const PdfRedactor = (p: {
             )}
           </span>
 
-          <span style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+          <span style={{ display: "flex", gap: "4px", alignItems: "center" }}>
             <span>x{scaleHelper.scale.toFixed(2)}</span>
             <button
               className="govuk-button govuk-button--secondary"
@@ -359,16 +357,16 @@ export const PdfRedactor = (p: {
           </span>
         </div>
       )}
-      <div style={{ position: 'relative' }}>
+      <div style={{ position: "relative" }}>
         <div
           style={{
-            position: 'relative',
-            height: '500px',
-            width: '100%',
-            overflowX: 'scroll',
-            overflowY: 'scroll',
-            backgroundColor: '#808080',
-            paddingBottom: '70px'
+            position: "relative",
+            height: "500px",
+            width: "100%",
+            overflowX: "scroll",
+            overflowY: "scroll",
+            backgroundColor: "#808080",
+            paddingBottom: "70px",
           }}
         >
           <Document
@@ -411,8 +409,8 @@ export const PdfRedactor = (p: {
                     [j + 1]: {
                       id: crypto.randomUUID(),
                       pageNumber: j + 1,
-                      rotationDegrees: x
-                    }
+                      rotationDegrees: x,
+                    },
                   });
                 }}
                 pageIsDelete={!!p.indexedDeletion[j + 1]?.isDeleted}
@@ -420,13 +418,13 @@ export const PdfRedactor = (p: {
                   const deletion = {
                     id: crypto.randomUUID(),
                     pageNumber: j + 1,
-                    isDeleted
+                    isDeleted,
                   };
                   const fn = isDeleted ? p.onDeletionAdd : p.onDeletionRemove;
                   fn(deletion);
                   p.onDeletionsChange({
                     ...p.indexedDeletion,
-                    [j + 1]: deletion
+                    [j + 1]: deletion,
                   });
                 }}
               />
@@ -436,11 +434,11 @@ export const PdfRedactor = (p: {
         {p.redactions.length > 0 && (
           <div
             style={{
-              position: 'absolute',
-              bottom: '25px',
+              position: "absolute",
+              bottom: "25px",
               left: 0,
               right: 0,
-              zIndex: 800
+              zIndex: 800,
             }}
           >
             <RedactionsFooter
@@ -456,11 +454,11 @@ export const PdfRedactor = (p: {
         {filteredRotations.length > 0 && (
           <div
             style={{
-              position: 'absolute',
-              bottom: '25px',
+              position: "absolute",
+              bottom: "25px",
               left: 0,
               right: 0,
-              zIndex: 800
+              zIndex: 800,
             }}
           >
             <RotationsFooter
@@ -476,11 +474,11 @@ export const PdfRedactor = (p: {
         {filteredDeletions.length > 0 && (
           <div
             style={{
-              position: 'absolute',
-              bottom: '25px',
+              position: "absolute",
+              bottom: "25px",
               left: 0,
               right: 0,
-              zIndex: 800
+              zIndex: 800,
             }}
           >
             <DeletionsFooter
@@ -497,4 +495,3 @@ export const PdfRedactor = (p: {
     </div>
   );
 };
-

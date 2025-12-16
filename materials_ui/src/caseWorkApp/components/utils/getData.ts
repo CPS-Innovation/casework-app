@@ -1,6 +1,6 @@
 import { useMsal } from '@azure/msal-react';
 import axios, { AxiosError, AxiosInstance } from 'axios';
-import { getAccessTokenFromMsalInstance } from '../../../packages/DocumentSelectAccordion/getters/getAccessTokenFromMsalInstance';
+import { getAccessTokenFromMsalInstance } from '../../../../../materials_components/DocumentSelectAccordion/getters/getAccessTokenFromMsalInstance';
 
 export const useAxiosInstance = () => {
   const { instance: msalInstance } = useMsal();
@@ -59,4 +59,3 @@ export const getPdfFiles = async (p: {
 export const GetDataFromAxios = () => {
   return { useAxiosInstance, getDocuments, getPdfFiles };
 };
-

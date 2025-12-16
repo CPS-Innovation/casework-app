@@ -1,23 +1,21 @@
-import { AxiosInstance } from 'axios';
-import { useState } from 'react';
-import z from 'zod';
-import { useAxiosInstance } from './getAxiosInstance';
+import { AxiosInstance } from "axios";
+import { useState } from "react";
+import z from "zod";
+import { useAxiosInstance } from "./getAxiosInstance";
 
-export const documentSchema = z
-  .object({
-    documentId: z.string(),
-    status: z.string(),
-    cmsDocType: z.object({
-      documentTypeId: z.number(),
-      documentType: z.string().nullish(),
-      documentCategory: z.string()
-    }),
-    cmsOriginalFileName: z.string(),
-    presentationTitle: z.string(),
-    isUnused: z.boolean(),
-    hasNotes: z.boolean()
-  })
-  .brand<'TDocument'>();
+export const documentSchema = z.object({
+  documentId: z.string(),
+  status: z.string(),
+  cmsDocType: z.object({
+    documentTypeId: z.number(),
+    documentType: z.string().nullish(),
+    documentCategory: z.string(),
+  }),
+  cmsOriginalFileName: z.string(),
+  presentationTitle: z.string(),
+  isUnused: z.boolean(),
+  hasNotes: z.boolean(),
+});
 export const documentListSchema = z.array(documentSchema);
 export type TDocument = z.infer<typeof documentSchema>;
 export type TDocumentList = TDocument[];
@@ -43,7 +41,7 @@ export const safeGetDocumentListFromAxiosInstance = async (p: {
     const resp = await getDocumentListFromAxiosInstance({
       urn: p.urn,
       caseId: p.caseId,
-      axiosInstance: p.axiosInstance
+      axiosInstance: p.axiosInstance,
     });
 
     return documentListSchema.safeParse(resp);
@@ -66,7 +64,7 @@ export const useGetDocumentList = () => {
     const resp = await safeGetDocumentListFromAxiosInstance({
       axiosInstance,
       urn: p.urn,
-      caseId: p.caseId
+      caseId: p.caseId,
     });
 
     setDocumentList(resp.success ? resp.data : null);
