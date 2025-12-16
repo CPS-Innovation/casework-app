@@ -36,6 +36,7 @@ variables:
   - name: terraformWorkingDir
     value: "$(System.DefaultWorkingDirectory)/terraform"
   - group: materials-global
+  - group: materials_e2e_tests
 
 stages:
   - stage: Wait_For_Running_PRs
@@ -182,6 +183,14 @@ stages:
               command: 'custom'
               customCommand: 'run e2e'
               workingDir: '$(workingDir)'
+            env:
+              E2E_TEST_MS_USERNAME: $(e2e_username)
+              E2E_TEST_MS_PASSWORD: $(e2e_password) 
+              E2E_CIN3_USERNAME: $(e2e_cin3_username) 
+              E2E_CIN3_PASSWORD: $(e2e_cin3_password)
+              E2E_CMS_COOKIE_URL: $(e2e_cms_cookie_url)
+              E2E_URN: $(e2e_urn)
+              E2E_CASE: $(e2e_case)
 
           # - task: PublishTestResults@2
           #   displayName: 'Publish E2E Test Results (JUnit)'
