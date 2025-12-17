@@ -192,6 +192,15 @@ stages:
               E2E_URN: $(e2e_urn)
               E2E_CASE: $(e2e_case)
 
+          - task: PublishPipelineArtifact@1
+            displayName: 'Publish terraform artifact'
+            inputs:
+              targetPath: '$(Pipeline.Workspace)/s/playwright-report/'
+              artifact: 'playwright-report'
+              publishLocation: 'pipeline'
+            condition: succeededOrFailed() 
+
+
           # - task: PublishTestResults@2
           #   displayName: 'Publish E2E Test Results (JUnit)'
           #   inputs:
