@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { CaseworkPdfRedactorWrapper } from '../../../../materials_components/CaseworkPdfRedactorWrapper/CaseworkPdfRedactorWrapper';
+import { DocumentControlArea } from '../../../../materials_components/documentControlArea';
 import { DocumentSidebar } from '../../../../materials_components/DocumentSelectAccordion/DocumentSidebar';
+import { DocumentViewportArea } from '../../../../materials_components/documenViewportArea';
 import { TMode } from '../../../../materials_components/PdfRedactor/utils/modeUtils';
 import { useTrigger } from '../../../../materials_components/PdfRedactor/utils/useTriggger';
 import { Layout, TwoCol } from '../../components';
-import { DocumentControlArea } from '../components/documentControlArea';
-import { DocumentViewportArea } from '../components/documenViewportArea';
 import { GetDataFromAxios } from '../components/utils/getData';
 
 type TDocumentDataList = {
@@ -184,3 +184,4 @@ export const ReviewAndRedactPage = () => {
     </Layout>
   );
 };
+
