@@ -195,11 +195,10 @@ stages:
           - task: PublishPipelineArtifact@1
             displayName: 'Publish terraform artifact'
             inputs:
-              targetPath: '$(Pipeline.Workspace)/s/playwright-report/'
+              targetPath: '$(workingDir)/playwright-report'
               artifact: 'playwright-report'
               publishLocation: 'pipeline'
             condition: succeededOrFailed() 
-
 
           # - task: PublishTestResults@2
           #   displayName: 'Publish E2E Test Results (JUnit)'
