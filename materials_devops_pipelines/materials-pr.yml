@@ -169,6 +169,9 @@ stages:
 #               mergeTestResults: true
 #             condition: always()
               
+          - bash: |
+              curl -o /dev/null -s -w "%{http_code}\n"  https://polaris-dev-cmsproxy.azurewebsites.net/api/dev-login-full-cookie/
+
 # ---------- E2E TESTS (Playwright) ----------
           - task: Npm@1
             displayName: 'Install Playwright'
