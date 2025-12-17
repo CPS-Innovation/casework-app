@@ -66,8 +66,7 @@ resource "azurerm_linux_web_app_slot" "as_web_materials_staging1" {
 
 }
 
-resource "azurerm_private_endpoint" "pep_as_web_materials_staging1" {
-  count               = var.environment != "dev" ? 1 : 0        
+resource "azurerm_private_endpoint" "pep_as_web_materials_staging1" {     
   name                = "${azurerm_linux_web_app.as_web_materials.name}-staging1-pe"
   location            = azurerm_resource_group.rg_materials.location
   resource_group_name = azurerm_resource_group.rg_materials.name
