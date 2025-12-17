@@ -1,3 +1,4 @@
+
 .redaction-tooltip {
   display: none;
 }
@@ -7,6 +8,11 @@
   display: block;
 }
 
-.redaction-box:focus {
-  outline: 0.2rem solid #ffdd00;
+.redaction-box.interactive {
+  cursor: pointer;
+  pointer-events: auto;
+  z-index: 11;
+  &:focus {
+    outline: 0.2rem solid #ffdd00;
+  }
 }
