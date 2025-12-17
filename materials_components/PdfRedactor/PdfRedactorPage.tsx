@@ -1,26 +1,26 @@
-import { useEffect, useRef, useState } from "react";
-import { Page } from "react-pdf";
-import { DocumentIcon } from "./icons/DocumentIcon";
-import { RotateIcon } from "./icons/RotateIcon";
+import { useEffect, useRef, useState } from 'react';
+import { Page } from 'react-pdf';
+import { DocumentIcon } from './icons/DocumentIcon';
+import { RotateIcon } from './icons/RotateIcon';
 import {
   PositionedRedactionBox,
   PositionPdfOverlayBox,
-  RedactionBox,
-} from "./PdfRedactorComponents";
+  RedactionBox
+} from './PdfRedactorComponents';
 
-import "./PdfRedactorPage.scss";
+import './PdfRedactorPage.scss';
 
-import { GovUkButton } from "./templates/GovUkButton";
+import { GovUkButton } from './templates/GovUkButton';
 import {
   convertCoordPairToXywh,
   getPdfCoords,
   type TCoord,
-  type TRedaction,
-} from "./utils/coordUtils";
-import { createId } from "./utils/generalUtils";
-import { getPdfCoordPairsOfHighlightedText } from "./utils/highlightedTextUtils";
-import type { TMode } from "./utils/modeUtils";
-import { useTriggerListener, type TTriggerData } from "./utils/useTriggger";
+  type TRedaction
+} from './utils/coordUtils';
+import { createId } from './utils/generalUtils';
+import { getPdfCoordPairsOfHighlightedText } from './utils/highlightedTextUtils';
+import type { TMode } from './utils/modeUtils';
+import { useTriggerListener, type TTriggerData } from './utils/useTriggger';
 
 export const PdfRedactorRotationOverlay = (p: {
   pageRotation: number;
@@ -29,32 +29,32 @@ export const PdfRedactorRotationOverlay = (p: {
   return (
     <div
       style={{
-        position: "absolute",
+        position: 'absolute',
         top: 0,
         bottom: 0,
         right: 0,
         left: 0,
-        backgroundColor: "#00000055",
-        zIndex: 500,
+        backgroundColor: '#00000055',
+        zIndex: 500
       }}
     >
       <div
         style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%,-50%)",
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%,-50%)'
         }}
       >
         <div
           style={{
-            display: "flex",
-            flexDirection: "column",
-            color: "#ffffff",
-            gap: "8px",
+            display: 'flex',
+            flexDirection: 'column',
+            color: '#ffffff',
+            gap: '8px'
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
             <GovUkButton
               variant="inverse"
               onClick={() => {
@@ -62,28 +62,28 @@ export const PdfRedactorRotationOverlay = (p: {
                 p.onPageRotationChange(newVal < 0 ? 360 + newVal : newVal);
               }}
               style={{
-                display: "flex",
-                whiteSpace: "nowrap",
+                display: 'flex',
+                whiteSpace: 'nowrap',
                 border: 0,
                 padding: 0,
-                paddingRight: "8px",
-                gap: "8px",
-                alignItems: "center",
+                paddingRight: '8px',
+                gap: '8px',
+                alignItems: 'center'
               }}
             >
               <span
                 style={{
-                  background: "#1d70b8",
-                  height: "25px",
-                  width: "25px",
-                  padding: "5px",
+                  background: '#1d70b8',
+                  height: '25px',
+                  width: '25px',
+                  padding: '5px'
                 }}
               >
                 <RotateIcon color="white" flip />
               </span>
               <div>rotate page left</div>
             </GovUkButton>
-            <span style={{ height: "125px", width: "125px" }}>
+            <span style={{ height: '125px', width: '125px' }}>
               <DocumentIcon color="white" rotateDegrees={p.pageRotation} />
             </span>
             <GovUkButton
@@ -93,40 +93,40 @@ export const PdfRedactorRotationOverlay = (p: {
                 p.onPageRotationChange(newVal >= 360 ? newVal - 360 : newVal);
               }}
               style={{
-                display: "flex",
-                whiteSpace: "nowrap",
+                display: 'flex',
+                whiteSpace: 'nowrap',
                 border: 0,
                 padding: 0,
-                paddingLeft: "8px",
-                gap: "8px",
-                alignItems: "center",
+                paddingLeft: '8px',
+                gap: '8px',
+                alignItems: 'center'
               }}
             >
               <div>rotate page right</div>
               <span
                 style={{
-                  background: "#1d70b8",
-                  height: "25px",
-                  width: "25px",
-                  padding: "5px",
+                  background: '#1d70b8',
+                  height: '25px',
+                  width: '25px',
+                  padding: '5px'
                 }}
               >
                 <RotateIcon color="white" />
               </span>
             </GovUkButton>
           </div>
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            <span style={{ fontSize: "2.5rem" }}>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <span style={{ fontSize: '2.5rem' }}>
               Rotate page {p.pageRotation}&deg;
             </span>
           </div>
-          <div style={{ display: "flex", justifyContent: "center" }}>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
             <span
               onClick={() => p.onPageRotationChange(0)}
               className="govuk-link"
               style={{
-                color: "#ffffff",
-                visibility: p.pageRotation === 0 ? "hidden" : "unset",
+                color: '#ffffff',
+                visibility: p.pageRotation === 0 ? 'hidden' : 'unset'
               }}
             >
               Cancel
@@ -146,26 +146,26 @@ export const PdfRedactorDeletionOverlay = (p: {
   return (
     <>
       {!p.pageIsDelete && (
-        <div style={{ position: "absolute", top: 0, right: 0, zIndex: 500 }}>
+        <div style={{ position: 'absolute', top: 0, right: 0, zIndex: 500 }}>
           <GovUkButton
             variant="inverse"
             onClick={() => p.onPageIsDeleteChange(true)}
             style={{
-              display: "flex",
-              whiteSpace: "nowrap",
+              display: 'flex',
+              whiteSpace: 'nowrap',
               border: 0,
               padding: 0,
-              paddingRight: "8px",
-              gap: "8px",
-              alignItems: "center",
+              paddingRight: '8px',
+              gap: '8px',
+              alignItems: 'center'
             }}
           >
             <span
               style={{
-                background: "#1d70b8",
-                height: "25px",
-                width: "25px",
-                padding: "5px",
+                background: '#1d70b8',
+                height: '25px',
+                width: '25px',
+                padding: '5px'
               }}
             >
               <RotateIcon color="white" />
@@ -179,58 +179,58 @@ export const PdfRedactorDeletionOverlay = (p: {
       {p.pageIsDelete && (
         <div
           style={{
-            position: "absolute",
+            position: 'absolute',
             top: 0,
             bottom: 0,
             right: 0,
             left: 0,
-            backgroundColor: "#00000055",
-            zIndex: 500,
+            backgroundColor: '#00000055',
+            zIndex: 500
           }}
         >
           <div
             style={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%,-50%)",
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%,-50%)'
             }}
           >
             <div
               style={{
-                display: "flex",
-                flexDirection: "column",
-                color: "#ffffff",
-                gap: "8px",
+                display: 'flex',
+                flexDirection: 'column',
+                color: '#ffffff',
+                gap: '8px'
               }}
             >
               <div
                 style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  gap: "20px",
+                  display: 'flex',
+                  justifyContent: 'center',
+                  gap: '20px'
                 }}
               >
-                <span style={{ height: "125px", width: "125px" }}>
+                <span style={{ height: '125px', width: '125px' }}>
                   <DocumentIcon color="white" rotateDegrees={0} />
                 </span>
               </div>
-              <div style={{ display: "flex", justifyContent: "center" }}>
-                <span style={{ fontSize: "2.5rem", textAlign: "center" }}>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <span style={{ fontSize: '2.5rem', textAlign: 'center' }}>
                   Page selected for deletion
                 </span>
               </div>
-              <div style={{ display: "flex", justifyContent: "center" }}>
-                <span style={{ color: "#ffffff", textAlign: "center" }}>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <span style={{ color: '#ffffff', textAlign: 'center' }}>
                   Click "save all deletions" to remove the page from the
                   document
                 </span>
               </div>
-              <div style={{ display: "flex", justifyContent: "center" }}>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <span
                   onClick={() => p.onPageIsDeleteChange(false)}
                   className="govuk-link"
-                  style={{ color: "#ffffff" }}
+                  style={{ color: '#ffffff' }}
                 >
                   Cancel
                 </span>
@@ -251,7 +251,7 @@ export const PdfRedactorPage = (p: {
   redactHighlightedTextTriggerData: TTriggerData;
   onPageRedactionsChange: (p: TRedaction[]) => void;
   onAddRedactions: (p: TRedaction[]) => void;
-  onRemoveRedactions: (p: TRedaction["id"][]) => void;
+  onRemoveRedactions: (p: TRedaction['id'][]) => void;
   redactions: TRedaction[];
   pageRotationDegrees: number;
   onPageRotationChange: (x: number) => void;
@@ -275,7 +275,7 @@ export const PdfRedactorPage = (p: {
 
       const coordPairs = getPdfCoordPairsOfHighlightedText({
         pdfPageRect,
-        scale,
+        scale
       });
 
       const newRedactions = coordPairs.map((coordPair) => {
@@ -284,7 +284,7 @@ export const PdfRedactorPage = (p: {
           id: createId(),
           pageNumber,
           pageHeight: pdfPageRect.height,
-          pageWidth: pdfPageRect.width,
+          pageWidth: pdfPageRect.width
         };
       });
 
@@ -292,7 +292,7 @@ export const PdfRedactorPage = (p: {
 
       p.onAddRedactions(newRedactions);
       p.onPageRedactionsChange([...redactions, ...newRedactions]);
-    },
+    }
   });
 
   const pdfPageWrapperElmRef = useRef<HTMLDivElement | null>(null);
@@ -308,20 +308,20 @@ export const PdfRedactorPage = (p: {
     <div>
       <span
         style={{
-          display: "block",
-          margin: "auto",
-          width: "fit-content",
-          padding: "10px 10px 0px 10px",
+          display: 'block',
+          margin: 'auto',
+          width: 'fit-content',
+          padding: '10px 10px 0px 10px'
         }}
       >
-        <span style={{ position: "relative", display: "inline-flex" }}>
-          {p.mode === "rotation" && (
+        <span style={{ position: 'relative', display: 'inline-flex' }}>
+          {p.mode === 'rotation' && (
             <PdfRedactorRotationOverlay
               pageRotation={p.pageRotationDegrees}
               onPageRotationChange={p.onPageRotationChange}
             />
           )}
-          {p.mode === "deletion" && (
+          {p.mode === 'deletion' && (
             <PdfRedactorDeletionOverlay
               pageIsDelete={p.pageIsDelete}
               onPageIsDeleteChange={p.onPageIsDeleteChange}
@@ -331,14 +331,14 @@ export const PdfRedactorPage = (p: {
           )}
           <div
             ref={pdfPageWrapperElmRef}
-            style={{ position: "relative" }}
+            style={{ position: 'relative' }}
             tabIndex={0}
             className="react-pdf-page-wrapper"
           >
             <Page
               pageNumber={p.pageNumber}
               onClick={() => {
-                if (p.mode !== "areaRedact") return;
+                if (p.mode !== 'areaRedact') return;
                 const pdfPageWrapperElm = pdfPageWrapperElmRef.current;
 
                 if (!pdfPageWrapperElm) return;
@@ -353,12 +353,12 @@ export const PdfRedactorPage = (p: {
                     y2: mousePos.y,
                     pageNumber: p.pageNumber,
                     pageHeight: pdfPageRect.height,
-                    pageWidth: pdfPageRect.width,
+                    pageWidth: pdfPageRect.width
                   };
                   p.onAddRedactions([newRedaction]);
                   p.onPageRedactionsChange([
                     ...(redactions ? redactions : []),
-                    newRedaction,
+                    newRedaction
                   ]);
                 }
                 setFirstCorner(firstCorner ? null : mousePos);
@@ -376,7 +376,7 @@ export const PdfRedactorPage = (p: {
                     screenX: e.clientX,
                     screenY: e.clientY,
                     scale: p.scale,
-                    pdfPageRect: rect,
+                    pdfPageRect: rect
                   });
                   setMousePos(coord);
 
@@ -392,7 +392,7 @@ export const PdfRedactorPage = (p: {
                     x1: firstCorner.x,
                     y1: firstCorner.y,
                     x2: mousePos.x,
-                    y2: mousePos.y,
+                    y2: mousePos.y
                   });
 
                 return (
