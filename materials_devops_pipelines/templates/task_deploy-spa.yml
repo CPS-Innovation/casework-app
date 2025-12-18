@@ -18,10 +18,10 @@ parameters:
 
 steps:
 
-  # download UI build artifact
-  - download: ${{ parameters.targetBuild }}
-    displayName: Deploy > Download SPA Codebase Build
-    artifact: ${{ parameters.BuildArtifactName }}
+  # # download UI build artifact
+  # - download: ${{ parameters.targetBuild }}
+  #   displayName: Deploy > Download SPA Codebase Build
+  #   artifact: ${{ parameters.BuildArtifactName }}
 
   # Deploy Related Codebase to Env
   - task: AzureRmWebAppDeployment@4
