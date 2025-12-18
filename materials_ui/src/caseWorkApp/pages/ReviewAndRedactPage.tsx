@@ -4,6 +4,7 @@ import { DocumentSidebar } from '../../../../materials_components/DocumentSelect
 import { TMode } from '../../../../materials_components/PdfRedactor/utils/modeUtils';
 import { useTrigger } from '../../../../materials_components/PdfRedactor/utils/useTriggger';
 import { Layout, TwoCol } from '../../components';
+import { useCaseInfoStore } from '../../hooks';
 import { DocumentControlArea } from '../components/documentControlArea';
 import { DocumentViewportArea } from '../components/documenViewportArea';
 import { GetDataFromAxios } from '../components/utils/getData';
@@ -20,9 +21,9 @@ type TDocumentDataList = {
 };
 
 export const ReviewAndRedactPage = () => {
-  const urn = '54KR7689125'; // TODO - make it dynamic
-  const caseId = 2160797; // TODO - make it dynamic
-  const [activeDocumentId, setActiveDocumentId] = useState<string | null>(null);
+  const { caseInfo } = useCaseInfoStore();
+  const { id: caseId, urn } = caseInfo || {};
+  const [activeDocumentId, setActiveDocumentId] = useState<string>();
   const [activeVersionId, setActiveVersionId] = useState<number | null>(null);
 
   const reloadTrigger = useTrigger();
@@ -50,14 +51,14 @@ export const ReviewAndRedactPage = () => {
   const axiosInstance = useAxiosInstance();
 
   useEffect(() => {
-    getDocuments({
-      axiosInstance: axiosInstance,
-      urn: '54KR7689125',
-      caseId: 2160797
-    }).then((data) => {
-      setDocumentsDataList(data);
-    });
-  }, []);
+    if (urn && caseId) {
+      getDocuments({ axiosInstance: axiosInstance, urn, caseId }).then(
+        (data) => {
+          setDocumentsDataList(data);
+        }
+      );
+    }
+  }, [caseId, urn]);
 
   useEffect(() => {
     const matchingDocuments = documentsDataList.filter((item) => {
@@ -81,7 +82,7 @@ export const ReviewAndRedactPage = () => {
 
     setDocumentIDs(matchingResult);
 
-    let targetDocumentId =
+    const targetDocumentId =
       currentActiveTabId !== ''
         ? currentActiveTabId
         : openDocumentIds[openDocumentIds.length - 1];
@@ -93,21 +94,23 @@ export const ReviewAndRedactPage = () => {
         setActiveDocumentId(activeDocument?.documentId);
         setActiveVersionId(activeDocument?.versionId);
 
-        getPdfFiles({
-          axiosInstance: axiosInstance,
-          urn,
-          caseId,
-          documentId: activeDocument?.documentId,
-          versionId: activeDocument?.versionId
-        }).then((blob) => {
-          if (blob instanceof Blob) {
-            const blobResponse = window.URL.createObjectURL(blob);
-            setPdfFileUrl(blobResponse);
-          }
-        });
+        if (urn && caseId) {
+          getPdfFiles({
+            axiosInstance: axiosInstance,
+            urn,
+            caseId,
+            documentId: activeDocument?.documentId,
+            versionId: activeDocument?.versionId
+          }).then((blob) => {
+            if (blob instanceof Blob) {
+              const blobResponse = window.URL.createObjectURL(blob);
+              setPdfFileUrl(blobResponse);
+            }
+          });
+        }
       }
     });
-  }, [openDocumentIds, currentActiveTabId]);
+  }, [openDocumentIds, currentActiveTabId, caseId, urn]);
 
   useEffect(() => {
     const lastId =
@@ -122,10 +125,10 @@ export const ReviewAndRedactPage = () => {
       <div className="govuk-main-wrapper">
         <TwoCol
           sidebar={
-            isSidebarVisible ? (
+            isSidebarVisible && caseId && urn ? (
               <DocumentSidebar
-                urn="54KR7689125"
-                caseId={2160797}
+                urn={urn}
+                caseId={caseId}
                 openDocumentIds={openDocumentIds}
                 onSetDocumentOpenIds={(docIds) => setOpenDocumentIds(docIds)}
                 reloadTriggerData={reloadTrigger.data}
@@ -137,7 +140,7 @@ export const ReviewAndRedactPage = () => {
             <>
               <DocumentControlArea
                 activeTabId={activeTabId}
-                items={documentIDs}
+                items={documentIDs || []}
                 isSidebarVisible={isSidebarVisible}
                 onToggleSidebar={() => setIsSidebarVisible((v) => !v)}
                 handleCloseTab={(a) => handleCloseTab(a)}
@@ -165,7 +168,7 @@ export const ReviewAndRedactPage = () => {
                 ></DocumentViewportArea>
               </DocumentControlArea>
 
-              {activeVersionId && activeDocumentId && (
+              {activeVersionId && activeDocumentId && urn && caseId && (
                 <CaseworkPdfRedactorWrapper
                   fileUrl={pdfFileUrl}
                   mode={mode}

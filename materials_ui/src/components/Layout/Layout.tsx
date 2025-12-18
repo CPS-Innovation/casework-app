@@ -17,7 +17,7 @@ export const Layout = ({
   title
 }: PropsWithChildren<Props>) => {
   const { banners } = useBanner();
-  const { caseInfo } = useCaseInfoStore();
+  const { caseInfo, isLoading: caseInfoLoading } = useCaseInfoStore();
   const location = useLocation();
   const { getRoute } = useAppRoute();
 
@@ -74,7 +74,7 @@ export const Layout = ({
 
         {!plain ? (
           <>
-            {caseInfo ? (
+            {!caseInfoLoading && caseInfo ? (
               <>
                 <CaseInfo caseInfo={caseInfo} />
                 <Tabs tabs={tabs} />

@@ -24,14 +24,18 @@ export const Routes = () => {
   const match = useMatch('/:urn/:caseId/*');
   const { caseId, urn } = match?.params || {};
 
-  const { caseInfo } = useCaseInfo({ caseId, urn });
-  const { setCaseInfo } = useCaseInfoStore();
+  const { caseInfo, loading: caseInfoLoading } = useCaseInfo({ caseId, urn });
+  const { setCaseInfo, setIsLoading } = useCaseInfoStore();
 
   useEffect(() => {
     if (caseInfo) {
       setCaseInfo(caseInfo);
     }
   }, [caseInfo]);
+
+  useEffect(() => {
+    setIsLoading(caseInfoLoading);
+  }, [caseInfoLoading]);
 
   return (
     <Router>

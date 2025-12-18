@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
+
 import { AutoReclassifyButton } from '..';
+import { useAppRoute } from '../../hooks';
 import { CaseInfoType } from '../../schemas';
 
 import './CaseInfo.scss';
@@ -7,6 +9,8 @@ import './CaseInfo.scss';
 type Props = { caseInfo: CaseInfoType | null };
 
 export const CaseInfo = ({ caseInfo }: Props) => {
+  const { getRoute } = useAppRoute();
+
   if (!caseInfo) {
     return null;
   }
@@ -39,6 +43,16 @@ export const CaseInfo = ({ caseInfo }: Props) => {
                   {caseInfoName}
                 </h2>
                 <p className="govuk-body caseInfo__urn">{caseInfo?.urn}</p>
+                {caseInfo.numberOfDefendants > 1 && (
+                  <p style={{ marginTop: 0 }}>
+                    <Link
+                      onClick={() => alert('hi')}
+                      to={getRoute('REVIEW_REDACT')}
+                    >
+                      View {caseInfo.numberOfDefendants} defendants and charges
+                    </Link>
+                  </p>
+                )}
               </div>
               <div className="caseInfo__actions">
                 <AutoReclassifyButton />
