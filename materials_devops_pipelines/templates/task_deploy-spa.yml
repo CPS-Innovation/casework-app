@@ -24,7 +24,7 @@ steps:
     artifact: ${{ parameters.BuildArtifactName }}
 
   # Deploy Related Codebase to Env
-  - task: AzureRmWebAppDeployment@5
+  - task: AzureRmWebAppDeployment@4
     displayName: 'Deploy SPA App Service to ${{ parameters.targetLabel }}'
     inputs:
       ConnectionType: 'AzureRM'
