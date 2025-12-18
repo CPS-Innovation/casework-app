@@ -1,5 +1,4 @@
 import { QUERY_KEYS } from '../../constants/query';
-import { API_ENDPOINTS } from '../../constants/url';
 import { SwrPayload } from '../../schemas';
 import {
   CaseMaterialReadStatusRequestType,
@@ -20,13 +19,13 @@ export const useReadStatus = () => {
     { arg: data }: SwrPayload<CaseMaterialReadStatusRequestType>
   ) => {
     return await request.patch<CaseMaterialReadStatusResponseType>(
-      API_ENDPOINTS.CASE_MATERIAL_READ_STATUS,
+      `urns/${caseInfo?.urn}/cases/${caseInfo?.id}/materials/${data?.materialId}/read-status`,
       data
     );
   };
 
   const { trigger, isMutating, error } = useSWRMutation(
-    QUERY_KEYS.READ_STATUS,
+    caseInfo ? QUERY_KEYS.READ_STATUS : null,
     updateReadStatus,
     {
       onSuccess: () => {

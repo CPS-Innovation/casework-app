@@ -51,24 +51,6 @@ export const handlers = [
     }
   ),
 
-  http.patch(
-    `${POLARIS_GATEWAY_URL}/api/material/read-status`,
-    async ({ request }) => {
-      const body = (await request.json()) as {
-        materialId: number;
-        state: string;
-        correspondenceId: string;
-      };
-
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      return HttpResponse.json(
-        { completeCommunicationData: { id: body.materialId } },
-        { status: 200 }
-      );
-    }
-  ),
-
   http.post(
     `${POLARIS_GATEWAY_URL}/api/case-materials/bulk-set-unused`,
     async ({ request }) => {
