@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom';
+import { MouseEvent } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { AutoReclassifyButton } from '..';
 import { useAppRoute } from '../../hooks';
@@ -10,10 +11,22 @@ type Props = { caseInfo: CaseInfoType | null };
 
 export const CaseInfo = ({ caseInfo }: Props) => {
   const { getRoute } = useAppRoute();
+  const navigate = useNavigate();
 
   if (!caseInfo) {
     return null;
   }
+
+  const handleCaseDefendantsLinkClick = (
+    event: MouseEvent<HTMLAnchorElement>
+  ) => {
+    event.preventDefault();
+
+    navigate({
+      pathname: getRoute('REVIEW_REDACT'),
+      search: new URLSearchParams({ docId: '12345' }).toString()
+    });
+  };
 
   const surname = caseInfo?.leadDefendantSurname?.toString()?.toUpperCase();
   const firstNames = caseInfo?.leadDefendantFirstNames
@@ -45,12 +58,9 @@ export const CaseInfo = ({ caseInfo }: Props) => {
                 <p className="govuk-body caseInfo__urn">{caseInfo?.urn}</p>
                 {caseInfo.numberOfDefendants > 1 && (
                   <p style={{ marginTop: 0 }}>
-                    <Link
-                      onClick={() => alert('hi')}
-                      to={getRoute('REVIEW_REDACT')}
-                    >
+                    <a href="#" onClick={handleCaseDefendantsLinkClick}>
                       View {caseInfo.numberOfDefendants} defendants and charges
-                    </Link>
+                    </a>
                   </p>
                 )}
               </div>
