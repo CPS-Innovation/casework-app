@@ -173,7 +173,10 @@ stages:
               curl -o /dev/null -s -w "%{http_code}\n"  https://polaris-dev-cmsproxy.azurewebsites.net/api/dev-login-full-cookie/
 
           - bash: |
-              getent hosts polaris-dev-cmsproxy.azurewebsites.net | awk '{ print $1 }'
+              dig polaris-dev-cmsproxy.azurewebsites.net
+
+          - bash: |
+              cat /etc/resolv.conf
 
 # ---------- E2E TESTS (Playwright) ----------
           - task: Npm@1
