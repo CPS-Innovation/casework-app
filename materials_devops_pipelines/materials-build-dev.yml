@@ -9,6 +9,9 @@ trigger:
   paths:
     include:
       - materials_ui
+      - terraform
+
+pr: none
 
 variables:
   - name: buildConfiguration
