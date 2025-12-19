@@ -182,6 +182,7 @@ stages:
               getent hosts fa-eas-app-ddei-dev.privatelink.azurewebsites.net | awk '{ print $1 }'
               getent hosts as-mock-polaris-ddei-dev.privatelink.azurewebsites.net | awk '{ print $1 }'
               getent hosts as-materials-web-dev-uks.azurewebsites.net | awk '{ print $1 }'
+              getent hosts as-materials-web-dev-uks-staging1.azurewebsites.net | awk '{ print $1 }'
 
           - bash: |
               cat /etc/resolv.conf
