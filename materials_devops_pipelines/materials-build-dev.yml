@@ -46,7 +46,7 @@ stages:
           - task: PublishPipelineArtifact@1
             displayName: "Publish pipeline scripts"
             inputs:
-              targetPath: "$(Pipeline.Workspace)/s/materials-devops-pipelines/scripts"
+              targetPath: "$(Pipeline.Workspace)/s/materials_devops_pipelines/scripts"
               artifact: "materials-script-files"
               publishLocation: "pipeline"
 
