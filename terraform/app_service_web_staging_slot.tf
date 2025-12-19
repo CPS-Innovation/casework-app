@@ -9,7 +9,7 @@ resource "azurerm_linux_web_app_slot" "as_web_materials_staging1" {
   site_config {
     ftps_state              = "FtpsOnly"
     http2_enabled           = true
-    app_command_line        = "" #TBC
+    app_command_line       = "npx serve -s"
     always_on               = true
     vnet_route_all_enabled  = true
     scm_minimum_tls_version = "1.2"
