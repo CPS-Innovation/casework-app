@@ -41,6 +41,14 @@ stages:
               artifact: '$(targetTerraformArtifact)'
               publishLocation: "pipeline"
  
+      - job: Build_Script_Artifacts
+        steps:
+          - task: PublishPipelineArtifact@1
+            displayName: "Publish pipeline scripts"
+            inputs:
+              targetPath: "$(Pipeline.Workspace)/s/materials-devops-pipelines/scripts"
+              artifact: "materials-script-files"
+              publishLocation: "pipeline"
 
       - job: Build_UI_Artifacts
         steps:
@@ -50,7 +58,7 @@ stages:
             displayName: "Record build version"
             inputs:
               targetType: "inline"
-              workingDirectory: '$(workingDir)'
+              workingDirectory: '$(workingDir)/public'
               script: |
                 New-Item build-version.txt -force
                 $currentDate = Get-Date
