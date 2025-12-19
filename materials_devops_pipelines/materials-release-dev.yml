@@ -117,3 +117,23 @@ stages:
             azureSubscription: $(dev-azure-service-connection)
             resourceGroupName: $(dev-spa-resource-group)
             AppServiceName: $(dev-spa-resource-name)
+
+# TBC requires further testing once site is live
+  # - stage: Test_UI
+  #   displayName: Test UI
+  #   jobs:
+  #   - job:
+  #     steps:       
+  #     - task: PowerShell@2
+  #       displayName: 'Checking ${{ parameters.targetLabel }} ${{ parameters.targetAppName }} status'
+  #       inputs:
+  #         failOnStderr: true
+  #         targetType: 'filePath'
+  #         filePath: $(Pipeline.Workspace)/${{ parameters.targetBuild }}/materials-script-files/InvokeRequestWithRetry.ps1
+  #         arguments: > # Use this to avoid newline characters in multi-line string
+  #           -URI "##########"
+  #           -Method "GET"
+  #           -SuccessTextContent $(resources.pipeline.MaterialsBuild.runName)
+  #           -Retries "15"
+  #           -SecondsDelay "30"
+  #           -TimeoutSec "60"
