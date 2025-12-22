@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { CaseworkPdfRedactorWrapper } from '../../../../materials_components/CaseworkPdfRedactorWrapper/CaseworkPdfRedactorWrapper';
 import { DocumentControlArea } from '../../../../materials_components/documentControlArea';
 import { DocumentSidebar } from '../../../../materials_components/DocumentSelectAccordion/DocumentSidebar';
+import { TDocumentList } from '../../../../materials_components/DocumentSelectAccordion/getters/getDocumentList';
 import { DocumentViewportArea } from '../../../../materials_components/documenViewportArea';
 import { TMode } from '../../../../materials_components/PdfRedactor/utils/modeUtils';
 import { useTrigger } from '../../../../materials_components/PdfRedactor/utils/useTriggger';
@@ -9,18 +11,10 @@ import { Layout, TwoCol } from '../../components';
 import { useCaseInfoStore } from '../../hooks';
 import { GetDataFromAxios } from '../components/utils/getData';
 
-type TDocumentDataList = {
-  id: string;
-  cmsOriginalFileName: string;
-  documentId: string;
-  hasNotes: boolean;
-  isUnused: boolean;
-  versionId: number;
-  presentationTitle: string;
-  status: string;
-};
-
 export const ReviewAndRedactPage = () => {
+  const { state } = useLocation();
+  const { docType: docTypeParam } = state as { docType?: string };
+
   const { caseInfo } = useCaseInfoStore();
   const { id: caseId, urn } = caseInfo || {};
   const [activeDocumentId, setActiveDocumentId] = useState<string>();
@@ -43,9 +37,7 @@ export const ReviewAndRedactPage = () => {
   const handleCurrentActiveTabId = (x?: string) => {
     setCurrentActiveTabId(x ? x : '');
   };
-  const [documentsDataList, setDocumentsDataList] = useState<
-    TDocumentDataList[]
-  >([]);
+  const [documentsDataList, setDocumentsDataList] = useState<TDocumentList>([]);
   const { useAxiosInstance, getDocuments, getPdfFiles } = GetDataFromAxios();
 
   const axiosInstance = useAxiosInstance();
@@ -119,6 +111,22 @@ export const ReviewAndRedactPage = () => {
         : '';
     setActiveTabId(lastId);
   }, [openDocumentIds]);
+
+  useEffect(() => {
+    if (docTypeParam) {
+      const filteredDocs = documentsDataList.filter(
+        (doc) => doc.cmsDocType.documentType === docTypeParam
+      );
+
+      if (filteredDocs.length) {
+        setCurrentActiveTabId(filteredDocs[0].documentId);
+        setOpenDocumentIds((prevState) => [
+          ...prevState,
+          ...filteredDocs.map((doc) => doc.documentId)
+        ]);
+      }
+    }
+  }, [state, docTypeParam, documentsDataList]);
 
   return (
     <Layout title="Review and Redact">

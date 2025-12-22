@@ -22,10 +22,7 @@ export const CaseInfo = ({ caseInfo }: Props) => {
   ) => {
     event.preventDefault();
 
-    navigate({
-      pathname: getRoute('REVIEW_REDACT'),
-      search: new URLSearchParams({ docId: '12345' }).toString()
-    });
+    navigate(getRoute('REVIEW_REDACT'), { state: { docType: 'DAC' } });
   };
 
   const surname = caseInfo?.leadDefendantSurname?.toString()?.toUpperCase();
