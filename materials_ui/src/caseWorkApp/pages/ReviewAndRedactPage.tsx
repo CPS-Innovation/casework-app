@@ -126,7 +126,7 @@ export const ReviewAndRedactPage = () => {
         ]);
       }
     }
-  }, [state, docTypeParam, documentsDataList]);
+  }, [locationState, docTypeParam, documentsDataList]);
 
   return (
     <Layout title="Review and Redact">
