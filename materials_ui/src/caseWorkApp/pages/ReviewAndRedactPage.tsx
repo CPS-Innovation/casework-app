@@ -1,28 +1,23 @@
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { CaseworkPdfRedactorWrapper } from '../../../../materials_components/CaseworkPdfRedactorWrapper/CaseworkPdfRedactorWrapper';
 import { DocumentControlArea } from '../../../../materials_components/documentControlArea';
 import { DocumentSidebar } from '../../../../materials_components/DocumentSelectAccordion/DocumentSidebar';
+import { TDocumentList } from '../../../../materials_components/DocumentSelectAccordion/getters/getDocumentList';
 import { DocumentViewportArea } from '../../../../materials_components/documenViewportArea';
 import { TMode } from '../../../../materials_components/PdfRedactor/utils/modeUtils';
 import { useTrigger } from '../../../../materials_components/PdfRedactor/utils/useTriggger';
 import { Layout, TwoCol } from '../../components';
+import { useCaseInfoStore } from '../../hooks';
 import { GetDataFromAxios } from '../components/utils/getData';
 
-type TDocumentDataList = {
-  id: string;
-  cmsOriginalFileName: string;
-  documentId: string;
-  hasNotes: boolean;
-  isUnused: boolean;
-  versionId: number;
-  presentationTitle: string;
-  status: string;
-};
-
 export const ReviewAndRedactPage = () => {
-  const urn = '54KR7689125'; // TODO - make it dynamic
-  const caseId = 2160797; // TODO - make it dynamic
-  const [activeDocumentId, setActiveDocumentId] = useState<string | null>(null);
+  const { state: locationState } = useLocation();
+  const { docType: docTypeParam } = locationState as { docType?: string };
+
+  const { caseInfo } = useCaseInfoStore();
+  const { id: caseId, urn } = caseInfo || {};
+  const [activeDocumentId, setActiveDocumentId] = useState<string>();
   const [activeVersionId, setActiveVersionId] = useState<number | null>(null);
 
   const reloadTrigger = useTrigger();
@@ -42,22 +37,20 @@ export const ReviewAndRedactPage = () => {
   const handleCurrentActiveTabId = (x?: string) => {
     setCurrentActiveTabId(x ? x : '');
   };
-  const [documentsDataList, setDocumentsDataList] = useState<
-    TDocumentDataList[]
-  >([]);
+  const [documentsDataList, setDocumentsDataList] = useState<TDocumentList>([]);
   const { useAxiosInstance, getDocuments, getPdfFiles } = GetDataFromAxios();
 
   const axiosInstance = useAxiosInstance();
 
   useEffect(() => {
-    getDocuments({
-      axiosInstance: axiosInstance,
-      urn: '54KR7689125',
-      caseId: 2160797
-    }).then((data) => {
-      setDocumentsDataList(data);
-    });
-  }, []);
+    if (urn && caseId) {
+      getDocuments({ axiosInstance: axiosInstance, urn, caseId }).then(
+        (data) => {
+          setDocumentsDataList(data);
+        }
+      );
+    }
+  }, [caseId, urn]);
 
   useEffect(() => {
     const matchingDocuments = documentsDataList.filter((item) => {
@@ -81,7 +74,7 @@ export const ReviewAndRedactPage = () => {
 
     setDocumentIDs(matchingResult);
 
-    let targetDocumentId =
+    const targetDocumentId =
       currentActiveTabId !== ''
         ? currentActiveTabId
         : openDocumentIds[openDocumentIds.length - 1];
@@ -93,21 +86,23 @@ export const ReviewAndRedactPage = () => {
         setActiveDocumentId(activeDocument?.documentId);
         setActiveVersionId(activeDocument?.versionId);
 
-        getPdfFiles({
-          axiosInstance: axiosInstance,
-          urn,
-          caseId,
-          documentId: activeDocument?.documentId,
-          versionId: activeDocument?.versionId
-        }).then((blob) => {
-          if (blob instanceof Blob) {
-            const blobResponse = window.URL.createObjectURL(blob);
-            setPdfFileUrl(blobResponse);
-          }
-        });
+        if (urn && caseId) {
+          getPdfFiles({
+            axiosInstance: axiosInstance,
+            urn,
+            caseId,
+            documentId: activeDocument?.documentId,
+            versionId: activeDocument?.versionId
+          }).then((blob) => {
+            if (blob instanceof Blob) {
+              const blobResponse = window.URL.createObjectURL(blob);
+              setPdfFileUrl(blobResponse);
+            }
+          });
+        }
       }
     });
-  }, [openDocumentIds, currentActiveTabId]);
+  }, [openDocumentIds, currentActiveTabId, caseId, urn]);
 
   useEffect(() => {
     const lastId =
@@ -117,15 +112,31 @@ export const ReviewAndRedactPage = () => {
     setActiveTabId(lastId);
   }, [openDocumentIds]);
 
+  useEffect(() => {
+    if (docTypeParam) {
+      const filteredDocs = documentsDataList.filter(
+        (doc) => doc.cmsDocType.documentType === docTypeParam
+      );
+
+      if (filteredDocs.length) {
+        setCurrentActiveTabId(filteredDocs[0].documentId);
+        setOpenDocumentIds((prevState) => [
+          ...prevState,
+          ...filteredDocs.map((doc) => doc.documentId)
+        ]);
+      }
+    }
+  }, [state, docTypeParam, documentsDataList]);
+
   return (
     <Layout title="Review and Redact">
       <div className="govuk-main-wrapper">
         <TwoCol
           sidebar={
-            isSidebarVisible ? (
+            isSidebarVisible && caseId && urn ? (
               <DocumentSidebar
-                urn="54KR7689125"
-                caseId={2160797}
+                urn={urn}
+                caseId={caseId}
                 openDocumentIds={openDocumentIds}
                 onSetDocumentOpenIds={(docIds) => setOpenDocumentIds(docIds)}
                 reloadTriggerData={reloadTrigger.data}
@@ -137,7 +148,7 @@ export const ReviewAndRedactPage = () => {
             <>
               <DocumentControlArea
                 activeTabId={activeTabId}
-                items={documentIDs}
+                items={documentIDs || []}
                 isSidebarVisible={isSidebarVisible}
                 onToggleSidebar={() => setIsSidebarVisible((v) => !v)}
                 handleCloseTab={(a) => handleCloseTab(a)}
@@ -165,7 +176,7 @@ export const ReviewAndRedactPage = () => {
                 ></DocumentViewportArea>
               </DocumentControlArea>
 
-              {activeVersionId && activeDocumentId && (
+              {activeVersionId && activeDocumentId && urn && caseId && (
                 <CaseworkPdfRedactorWrapper
                   fileUrl={pdfFileUrl}
                   mode={mode}
@@ -184,4 +195,3 @@ export const ReviewAndRedactPage = () => {
     </Layout>
   );
 };
-

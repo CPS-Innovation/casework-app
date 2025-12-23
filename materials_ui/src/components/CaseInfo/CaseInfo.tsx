@@ -1,5 +1,8 @@
-import { Link } from 'react-router-dom';
+import { MouseEvent } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+
 import { AutoReclassifyButton } from '..';
+import { useAppRoute } from '../../hooks';
 import { CaseInfoType } from '../../schemas';
 
 import './CaseInfo.scss';
@@ -7,9 +10,20 @@ import './CaseInfo.scss';
 type Props = { caseInfo: CaseInfoType | null };
 
 export const CaseInfo = ({ caseInfo }: Props) => {
+  const { getRoute } = useAppRoute();
+  const navigate = useNavigate();
+
   if (!caseInfo) {
     return null;
   }
+
+  const handleCaseDefendantsLinkClick = (
+    event: MouseEvent<HTMLAnchorElement>
+  ) => {
+    event.preventDefault();
+
+    navigate(getRoute('REVIEW_REDACT'), { state: { docType: 'DAC' } });
+  };
 
   const surname = caseInfo?.leadDefendantSurname?.toString()?.toUpperCase();
   const firstNames = caseInfo?.leadDefendantFirstNames
@@ -39,6 +53,13 @@ export const CaseInfo = ({ caseInfo }: Props) => {
                   {caseInfoName}
                 </h2>
                 <p className="govuk-body caseInfo__urn">{caseInfo?.urn}</p>
+                {caseInfo.numberOfDefendants > 1 && (
+                  <p style={{ marginTop: 0 }}>
+                    <a href="#" onClick={handleCaseDefendantsLinkClick}>
+                      View {caseInfo.numberOfDefendants} defendants and charges
+                    </a>
+                  </p>
+                )}
               </div>
               <div className="caseInfo__actions">
                 <AutoReclassifyButton />

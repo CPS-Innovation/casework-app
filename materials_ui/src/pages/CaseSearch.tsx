@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import {
@@ -9,7 +9,7 @@ import {
   SectionBreak,
   StatusTag
 } from '../components';
-import { useCaseSearch } from '../hooks';
+import { useCaseInfoStore, useCaseSearch } from '../hooks';
 import { formatDateLong } from '../utils/date';
 
 type IFormInput = { urn: string };
@@ -20,6 +20,7 @@ export const CaseSearchPage = () => {
     handleSubmit,
     formState: { errors }
   } = useForm<IFormInput>();
+  const { clearCaseInfo } = useCaseInfoStore();
   const [queryUrn, setQueryUrn] = useState('');
   const [hasSearched, setHasSearched] = useState(false);
 
@@ -30,6 +31,10 @@ export const CaseSearchPage = () => {
   };
 
   const { caseDetails, loading } = useCaseSearch(queryUrn || undefined);
+
+  useEffect(() => {
+    clearCaseInfo();
+  }, []);
 
   return (
     <Layout plain title="Case Search">
