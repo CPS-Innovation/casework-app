@@ -3,8 +3,8 @@ import useSWRMutation from 'swr/mutation';
 
 import { useRequest } from '..';
 import { QUERY_KEYS } from '../../constants/query';
-import { API_ENDPOINTS } from '../../constants/url';
 import { AutoReclassifyResponseType } from '../../schemas/classification';
+import { useCaseInfoStore } from '../../stores';
 
 type UseAutoReclassifyProps = {
   onError: (error: AxiosError) => void;
@@ -13,12 +13,15 @@ type UseAutoReclassifyProps = {
 
 export const useAutoReclassify = (options?: UseAutoReclassifyProps) => {
   const request = useRequest();
+  const { caseInfo } = useCaseInfoStore();
 
   const postAutoReclassify = () =>
-    request.post<AutoReclassifyResponseType>(API_ENDPOINTS.AUTO_RECLASSIFY);
+    request.post<AutoReclassifyResponseType>(
+      `urns/${caseInfo?.urn}/cases/${caseInfo?.id}/uma-reclassify`
+    );
 
   const { trigger, isMutating, error } = useSWRMutation(
-    QUERY_KEYS.AUTO_RECLASSIFY,
+    caseInfo ? QUERY_KEYS.AUTO_RECLASSIFY : null,
     postAutoReclassify,
     {
       onSuccess: async (response) => {
