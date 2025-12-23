@@ -12,8 +12,8 @@ import { useCaseInfoStore } from '../../hooks';
 import { GetDataFromAxios } from '../components/utils/getData';
 
 export const ReviewAndRedactPage = () => {
-  const { state } = useLocation();
-  const { docType: docTypeParam } = state as { docType?: string };
+  const { state: locationState } = useLocation();
+  const { docType: docTypeParam } = locationState as { docType?: string };
 
   const { caseInfo } = useCaseInfoStore();
   const { id: caseId, urn } = caseInfo || {};
