@@ -406,6 +406,7 @@ export const PdfRedactorPage = (p: {
                     <RedactionBox
                       background="#fce8974d"
                       border="1px dashed #333"
+                      interactive={false}
                     />
                   </PositionPdfOverlayBox>
                 );
@@ -436,6 +437,7 @@ export const PdfRedactorPage = (p: {
                   onRedactionTooltipClick={() =>
                     handleRemoveRedaction({ boxId: box.id })
                   }
+                  interactive
                 />
               );
             })}
@@ -445,4 +447,3 @@ export const PdfRedactorPage = (p: {
     </div>
   );
 };
-

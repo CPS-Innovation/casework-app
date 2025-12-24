@@ -78,22 +78,20 @@ export const RedactionBox = (p: {
   background: string;
   border: string;
   children?: ReactNode;
+  interactive: boolean;
   onEnterPress?: () => void;
 }) => {
   return (
     <div
-      className="redaction-box"
+      className={`redaction-box ${p.interactive ? 'interactive' : ''}`}
       tabIndex={0}
       style={{
-        pointerEvents: 'auto',
         position: 'relative',
         boxSizing: 'border-box',
         background: p.background,
         border: p.border,
         height: '100%',
-        width: '100%',
-        zIndex: '11',
-        cursor: 'pointer'
+        width: '100%'
       }}
       onKeyDown={(e) => {
         if (e.code === 'Enter') p.onEnterPress?.();
@@ -109,6 +107,7 @@ export const PositionedRedactionBox = (
     scale: number;
     onRedactionBoxEnterPress: () => void;
     onRedactionTooltipClick: () => void;
+    interactive: boolean;
   }
 ) => {
   return (
@@ -122,6 +121,7 @@ export const PositionedRedactionBox = (
       <RedactionBox
         background="#0000004d"
         border="2px solid black"
+        interactive={p.interactive}
         onEnterPress={p.onRedactionBoxEnterPress}
       >
         <span
