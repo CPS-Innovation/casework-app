@@ -1,14 +1,20 @@
 import { ComponentProps, useEffect, useState } from 'react';
 import { useAxiosInstance } from '../DocumentSelectAccordion/getters/getAxiosInstance';
+import { PdfRedactorCenteredModal } from '../PdfRedactor/modals/PdfRedactorCenteredModal';
 import { PdfRedactorMiniModal } from '../PdfRedactor/modals/PdfRedactorMiniModal';
 import { DeletionReasonForm } from '../PdfRedactor/PdfDeletionReasonForm';
 import { RedactionDetailsForm } from '../PdfRedactor/PdfRedactionTypeForm';
 import { PdfRedactor } from '../PdfRedactor/PdfRedactor';
+import { GovUkButton } from '../PdfRedactor/templates/GovUkButton';
 import { TCoord, TRedaction } from '../PdfRedactor/utils/coordUtils';
 import { TIndexedDeletion } from '../PdfRedactor/utils/deletionUtils';
 import { TMode } from '../PdfRedactor/utils/modeUtils';
-import { TIndexedRotation } from '../PdfRedactor/utils/rotationUtils';
+import {
+  TIndexedRotation,
+  TRotation
+} from '../PdfRedactor/utils/rotationUtils';
 import { useWindowMouseListener } from '../PdfRedactor/utils/useWindowMouseListener';
+import { useDocumentCheckOut } from './hooks/useDocumentCheckOut';
 import {
   combineDeletionsWithDeletionDetails,
   combineRedactionsWithRedactionDetails,
@@ -18,6 +24,11 @@ import {
 import { saveDeletions } from './utils/saveDeletionsUtils';
 import { saveRedactions } from './utils/saveRedactionsUtils';
 import { saveRotations } from './utils/saveRotationsUtils';
+
+const createCheckoutMessageFromCheckoutResponse = (p: { message?: string }) =>
+  p.message
+    ? `It is not possible to redact as the document is already checked out by ${p.message} Please try again later.`
+    : 'Something has gone wrong, please try again later';
 
 export const CaseworkPdfRedactorWrapper = (p: {
   fileUrl: string;
@@ -29,6 +40,12 @@ export const CaseworkPdfRedactorWrapper = (p: {
   documentId: string;
   onModification: () => void;
 }) => {
+  const [isDocumentCheckedOut, setIsDocumentCheckedOut] = useState(false);
+  const documentCheckOut = useDocumentCheckOut({
+    caseId: p.caseId,
+    urn: p.urn
+  });
+
   const [redactions, setRedactions] = useState<TRedaction[]>([]);
   const [indexedRotation, setIndexedRotation] = useState<TIndexedRotation>({});
   const [indexedDeletion, setIndexedDeletion] = useState<TIndexedDeletion>({});
@@ -38,25 +55,32 @@ export const CaseworkPdfRedactorWrapper = (p: {
   );
   const [deletionDetails, setDeletionDetails] = useState<TDeletionDetail[]>([]);
 
-  useEffect(() => {
+  const cleanupRedactionDetails = () => {
     const redactionIds = redactions.map((red) => red.id);
     setRedactionDetails((prev) =>
       prev.filter((redDetail) => redactionIds.includes(redDetail.redactionId))
     );
-  }, [redactions]);
-  useEffect(() => {
+  };
+  const cleanupDeletionDetails = () => {
     const deletionIds = Object.values(indexedDeletion)
       .filter((del) => del.isDeleted)
       .map((del) => del.id);
     setDeletionDetails((prev) =>
       prev.filter((detail) => deletionIds.includes(detail.deletionId))
     );
-  }, [indexedDeletion]);
+  };
+
+  useEffect(() => cleanupRedactionDetails(), [redactions]);
+  useEffect(() => cleanupDeletionDetails(), [indexedDeletion]);
 
   const [redactionPopupProps, setRedactionPopupProps] = useState<Omit<
     ComponentProps<typeof RedactionDetailsForm> & TCoord,
     'onSaveSuccess' | 'onCancelClick'
   > | null>(null);
+
+  const [documentIsCheckedOutPopupProps, setDocumentIsCheckedOutPopupProps] =
+    useState<{ message: string } | null>(null);
+
   const [deleteReasonPopupProps, setDeleteReasonPopupProps] = useState<Omit<
     ComponentProps<typeof DeletionReasonForm> & TCoord,
     'onSaveSuccess' | 'onCancelClick'
@@ -65,16 +89,62 @@ export const CaseworkPdfRedactorWrapper = (p: {
   const mousePos = useWindowMouseListener();
   const axiosInstance = useAxiosInstance();
 
+  const removeRedactions = (redactionIds: string[]) => {
+    setRedactions((prev) => prev.filter((x) => !redactionIds.includes(x.id)));
+  };
+  const undeletePage = (pageNumber: number) => {
+    setIndexedDeletion((prev) => {
+      const { [pageNumber]: _, ...rest } = prev;
+      return rest;
+    });
+  };
+  const unrotatePage = (pageNumber: number) => {
+    setIndexedRotation((prev) => {
+      const noRotation: TRotation = {
+        id: crypto.randomUUID(),
+        pageNumber,
+        rotationDegrees: 0
+      };
+      return { ...prev, [pageNumber]: noRotation };
+    });
+  };
+
+  const checkCheckoutStatus = async () => {
+    if (isDocumentCheckedOut) return { success: true } as const;
+    const checkoutResponse = await documentCheckOut.checkOut({
+      documentId: p.documentId,
+      versionId: p.versionId
+    });
+    setIsDocumentCheckedOut(checkoutResponse.success);
+    return checkoutResponse;
+  };
+
   return (
     <div>
+      {documentIsCheckedOutPopupProps &&
+        (() => {
+          const closeModal = () => setDeleteReasonPopupProps(null);
+
+          return (
+            <PdfRedactorCenteredModal
+              onBackgroundClick={closeModal}
+              onEscPress={closeModal}
+            >
+              <div style={{ background: 'white', padding: '20px' }}>
+                <h1 className="govuk-heading-m">Failed to redact document</h1>
+                <div>{documentIsCheckedOutPopupProps.message}</div>
+                <br />
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <GovUkButton>Ok</GovUkButton>
+                </div>
+              </div>
+            </PdfRedactorCenteredModal>
+          );
+        })()}
       {redactionPopupProps &&
         (() => {
           const handleCloseModal = () => {
-            setRedactions((prev) =>
-              prev.filter(
-                (x) => !redactionPopupProps.redactionIds.includes(x.id)
-              )
-            );
+            removeRedactions(redactionPopupProps.redactionIds);
             setRedactionPopupProps(null);
           };
 
@@ -91,11 +161,7 @@ export const CaseworkPdfRedactorWrapper = (p: {
                 urn={redactionPopupProps.urn}
                 caseId={redactionPopupProps.caseId}
                 onCancelClick={() => {
-                  setRedactions((prev) =>
-                    prev.filter(
-                      (x) => !redactionPopupProps.redactionIds.includes(x.id)
-                    )
-                  );
+                  removeRedactions(redactionPopupProps.redactionIds);
                   setRedactionPopupProps(null);
                 }}
                 onSaveSuccess={() => setRedactionPopupProps(null)}
@@ -106,10 +172,7 @@ export const CaseworkPdfRedactorWrapper = (p: {
       {deleteReasonPopupProps &&
         (() => {
           const handleCloseModal = () => {
-            setIndexedDeletion((prev) => {
-              const { [deleteReasonPopupProps.pageNumber]: _, ...rest } = prev;
-              return rest;
-            });
+            undeletePage(deleteReasonPopupProps.pageNumber);
             setDeleteReasonPopupProps(null);
           };
 
@@ -126,11 +189,7 @@ export const CaseworkPdfRedactorWrapper = (p: {
                 urn={deleteReasonPopupProps.urn}
                 caseId={deleteReasonPopupProps.caseId}
                 onCancelClick={() => {
-                  setIndexedDeletion((prev) => {
-                    const { [deleteReasonPopupProps.pageNumber]: _, ...rest } =
-                      prev;
-                    return rest;
-                  });
+                  undeletePage(deleteReasonPopupProps.pageNumber);
                   setDeleteReasonPopupProps(null);
                 }}
                 onSaveSuccess={() => setDeleteReasonPopupProps(null)}
@@ -145,7 +204,17 @@ export const CaseworkPdfRedactorWrapper = (p: {
         onModeChange={p.onModeChange}
         redactions={redactions}
         onRedactionsChange={(newRedactions) => setRedactions(newRedactions)}
-        onAddRedactions={(add) => {
+        onAddRedactions={async (add) => {
+          const checkoutResponse = await checkCheckoutStatus();
+
+          if (!checkoutResponse.success) {
+            removeRedactions(add.map((x) => x.id));
+            const message = createCheckoutMessageFromCheckoutResponse({
+              message: checkoutResponse.message
+            });
+            setDocumentIsCheckedOutPopupProps({ message });
+            return;
+          }
           const newRedactionDetails = add.map((x) => ({
             redactionId: x.id,
             randomId: `This redaction does ${crypto.randomUUID()}`
@@ -175,12 +244,41 @@ export const CaseworkPdfRedactorWrapper = (p: {
             redactions
           });
           p.onModification();
+          await documentCheckOut.checkIn({
+            documentId: p.documentId,
+            versionId: p.versionId
+          });
         }}
         indexedRotation={indexedRotation}
         onRotationsChange={(newRotations) => setIndexedRotation(newRotations)}
+        onRotationAdd={async (newRotation) => {
+          const checkoutResponse = await checkCheckoutStatus();
+
+          if (checkoutResponse.success) return;
+
+          unrotatePage(newRotation.pageNumber);
+
+          const message = createCheckoutMessageFromCheckoutResponse({
+            message: checkoutResponse.message
+          });
+          setDocumentIsCheckedOutPopupProps({ message });
+        }}
+        onRotationRemove={() => {}}
         indexedDeletion={indexedDeletion}
         onDeletionsChange={(newDeletions) => setIndexedDeletion(newDeletions)}
-        onDeletionAdd={(add) => {
+        onDeletionAdd={async (add) => {
+          const checkoutResponse = await checkCheckoutStatus();
+
+          if (!checkoutResponse.success) {
+            undeletePage(add.pageNumber);
+
+            const message = createCheckoutMessageFromCheckoutResponse({
+              message: checkoutResponse.message
+            });
+            setDocumentIsCheckedOutPopupProps({ message });
+            return;
+          }
+
           const newDeletionDetails = {
             deletionId: add.id,
             randomId: `This deletion does ${crypto.randomUUID()}`
@@ -211,6 +309,10 @@ export const CaseworkPdfRedactorWrapper = (p: {
             deletions: Object.values(indexedDeletion)
           });
           p.onModification();
+          await documentCheckOut.checkIn({
+            documentId: p.documentId,
+            versionId: p.versionId
+          });
         }}
         onSaveRotations={async () => {
           await saveRotations({
@@ -222,6 +324,10 @@ export const CaseworkPdfRedactorWrapper = (p: {
             rotations: Object.values(indexedRotation)
           });
           p.onModification();
+          await documentCheckOut.checkIn({
+            documentId: p.documentId,
+            versionId: p.versionId
+          });
         }}
       />
     </div>

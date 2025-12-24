@@ -1,5 +1,17 @@
 import { useEffect, useRef, type ReactNode } from 'react';
 
+const ModalStyleTag = () => {
+  return (
+    <style>
+      {`
+      html, body {
+        overflow: hidden !important;
+      }
+      `}
+    </style>
+  );
+};
+
 export const PdfRedactorCenteredModal = (p: {
   children: ReactNode;
   onBackgroundClick: () => void;
@@ -17,13 +29,7 @@ export const PdfRedactorCenteredModal = (p: {
 
   return (
     <>
-      <style>
-        {`
-      html, body {
-        overflow: hidden !important;
-      }
-    `}
-      </style>
+      <ModalStyleTag />
       <div
         style={{
           position: 'fixed',
