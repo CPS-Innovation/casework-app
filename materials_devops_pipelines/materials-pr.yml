@@ -105,16 +105,18 @@ stages:
               ARM_SUBSCRIPTION_ID: $(subscriptionId)
               TF_LOG: "ERROR"
 
-
-
   - stage: Build_and_Test_UI
     displayName: Front End Checks
     jobs:
 
       - job: Build_and_Test
         displayName: 'Build & Test App'
+        ##### Temp Entry ##########
+        pool:
+          name: $(dev-build-agent)
+          ###########################
         steps:
-
+        
           # Setup Node.js
           - task: UseNode@1
             displayName: "Use Node.js"
