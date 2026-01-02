@@ -1,5 +1,5 @@
-environment     = "qa"
-environment_tag = "qa"
+environment     = "stg"
+environment_tag = "stg"
 location        = "UK South"
 location_abbr   = "uks"
 project_name    = "materials"
