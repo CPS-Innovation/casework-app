@@ -9,7 +9,7 @@ resource "azurerm_linux_web_app_slot" "as_web_materials_staging1" {
   site_config {
     ftps_state              = "FtpsOnly"
     http2_enabled           = true
-    app_command_line        = "" #TBC
+    app_command_line       = "npx serve -s"
     always_on               = true
     vnet_route_all_enabled  = true
     scm_minimum_tls_version = "1.2"
@@ -66,8 +66,7 @@ resource "azurerm_linux_web_app_slot" "as_web_materials_staging1" {
 
 }
 
-resource "azurerm_private_endpoint" "pep_as_web_materials_staging1" {
-  count               = var.environment != "dev" ? 1 : 0        
+resource "azurerm_private_endpoint" "pep_as_web_materials_staging1" {     
   name                = "${azurerm_linux_web_app.as_web_materials.name}-staging1-pe"
   location            = azurerm_resource_group.rg_materials.location
   resource_group_name = azurerm_resource_group.rg_materials.name

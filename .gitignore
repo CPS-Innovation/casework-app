@@ -17,8 +17,6 @@ coverage
 .env
 cypress.env.json
 
-package-lock.json
-
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
