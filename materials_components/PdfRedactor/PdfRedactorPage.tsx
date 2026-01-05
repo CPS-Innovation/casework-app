@@ -337,7 +337,7 @@ export const PdfRedactorPage = (p: {
           >
             <Page
               pageNumber={p.pageNumber}
-              onClick={() => {
+              onMouseDown={() => {
                 if (p.mode !== 'areaRedact') return;
                 const pdfPageWrapperElm = pdfPageWrapperElmRef.current;
 
