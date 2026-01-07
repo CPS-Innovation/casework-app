@@ -93,6 +93,18 @@ variable "app_reg_owners" {
   default     = []
 }
 
+variable "ui_spa_pe_ip" {
+  type        = string
+  description = "A static private IP address to use for the UI SPA private endpoint."
+  default     = null
+}
+
+variable "ui_spa_pe_ip_staging1" {
+  type        = string
+  description = "A static private IP address to use for the UI SPA private endpoint."
+  default     = null
+}
+
 # Lookups
 variable "fa_polaris_gateway_name" {
   type        = string

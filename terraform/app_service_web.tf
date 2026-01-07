@@ -200,7 +200,6 @@ resource "azurerm_private_endpoint" "pep_as_web_materials" {
     private_dns_zone_ids = [data.azurerm_private_dns_zone.hub_dns_zones["sites"].id]
   }
 
-/*
   dynamic "ip_configuration" {
     for_each = var.as_web_pe_ip == null ? [] : [1]
     content {
@@ -210,6 +209,6 @@ resource "azurerm_private_endpoint" "pep_as_web_materials" {
       member_name        = "sites"
     }
   }
-*/
+
   tags = local.common_tags
 }
