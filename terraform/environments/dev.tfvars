@@ -1,15 +1,16 @@
-environment     = "dev"
-environment_tag = "development"
-location        = "UK South"
-location_abbr   = "uks"
-project_name    = "materials"
+environment          = "dev"
+environment_tag      = "development"
+location             = "UK South"
+location_abbr        = "uks"
+project_name         = "materials"
 
-vnet_name       = "vnet-innovation-development"
-vnet_rg         = "rg-networking"
-app_subnet_name = "polaris-apps-subnet"
-ui_subnet_name  = "polaris-ui-subnet"
-dns_server      = "10.8.0.6"
-as_web_pe_ip    = null # initially set to null, will be changed once IP auto assigned
+vnet_name            = "vnet-innovation-development"
+vnet_rg              = "rg-networking"
+app_subnet_name      = "polaris-apps-subnet"
+ui_subnet_name       = "polaris-ui-subnet"
+dns_server           = "10.8.0.6"
+as_web_pe_ip         = "10.7.196.245"
+as_web_pe_ip_staging = "10.7.196.251"
 as_comp_pe_ip   = null
 
 private_dns_zones = {
@@ -31,8 +32,6 @@ web_asp_materials = {
   autoscale_minimum       = 1
   autoscale_maximum       = 4
 }
-ui_spa_pe_ip              = "10.7.196.245"
-ui_spa_pe_ip_staging1     = "10.7.196.251"
 
 app_reg_owners = ["49a53165-9fa6-4f51-bebe-90ed1cc2e58f", "2cd0a11e-402b-4562-998c-2376d61bbb7f", "2b1e4713-81db-45cb-918c-c3bb5a5b72e5"]
 terraform_service_principal_display_name = "Azure Pipeline: Innovation-Development"

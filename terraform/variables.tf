@@ -69,6 +69,12 @@ variable "as_web_pe_ip" {
   default     = null
 }
 
+variable "as_web_pe_ip_staging" {
+  type        = string
+  description = "A static private IP address to use for the Materials UI private endpoint Staging Slot."
+  default     = null
+}
+
 variable "as_comp_pe_ip" {
   type        = string
   description = "A static private IP address to use for the Materials UI private endpoint."
@@ -91,18 +97,6 @@ variable "app_reg_owners" {
   description = "List of object IDs for users with owner permissions to App Registrations we are creating during this build "
   type        = list(string)
   default     = []
-}
-
-variable "ui_spa_pe_ip" {
-  type        = string
-  description = "A static private IP address to use for the UI SPA private endpoint."
-  default     = null
-}
-
-variable "ui_spa_pe_ip_staging1" {
-  type        = string
-  description = "A static private IP address to use for the UI SPA private endpoint."
-  default     = null
 }
 
 # Lookups
