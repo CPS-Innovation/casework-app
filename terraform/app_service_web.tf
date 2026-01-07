@@ -205,8 +205,8 @@ resource "azurerm_private_endpoint" "pep_as_web_materials" {
     content {
       name               = "ip-${azurerm_linux_web_app.as_web_materials.name}"
       private_ip_address = var.as_web_pe_ip
-      subresource_name   = "sites"
-      member_name        = "sites"
+      subresource_name   = "sites-staging1"
+      member_name        = "sites-staging1"
     }
   }
 
