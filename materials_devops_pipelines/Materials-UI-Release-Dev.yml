@@ -5,7 +5,7 @@ pr: none
 resources:
   pipelines:
     - pipeline: MaterialsBuild
-      source: cps-materials-dev-tf_ui-build
+      source: Cps-Materials-UI-Dev-Build
       trigger:
         branches:
           include:
