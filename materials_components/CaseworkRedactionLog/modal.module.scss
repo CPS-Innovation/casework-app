@@ -1,0 +1,32 @@
+.redactionLogModalOverlay {
+	z-index: 7;
+	position: fixed;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	right: 0;
+	bottom: 0;
+	top: 0;
+	left: 0;
+	background-color: rgba(0, 0, 0, 0.5);
+}
+
+.redactionLogModalContent {
+	z-index: 7;
+	position: inherit;
+	display: flex;
+	background: white;
+	min-width: 85%;
+	min-height: 85%;
+	top: calc(100vh - 90%);
+	left: calc(100vw - 90%);
+	transform: translate(-5%, 0%);
+	overflow-y: hidden;
+	padding: 1rem;
+}
+
+.redactionLogModalContentHeader {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+}
