@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
-import { useTriggerListener } from '../PdfRedactor/utils/useTriggger';
-import { DocumentSidebarAccordion } from './DocumentSidebarAccordion';
-import { DocumentSidebarNotes } from './DocumentSidebarNotes';
-import { useGetDocumentList } from './getters/getDocumentList';
+import { useEffect, useState } from "react";
+import { useTriggerListener } from "../PdfRedactor/utils/useTriggger";
+import { DocumentSidebarAccordion } from "./DocumentSidebarAccordion";
+import { DocumentSidebarNotes } from "./DocumentSidebarNotes";
+import { TDocument, useGetDocumentList } from "./getters/getDocumentList";
 
 export const DocumentSidebar = (p: {
   urn: string;
@@ -10,23 +10,24 @@ export const DocumentSidebar = (p: {
   openDocumentIds: string[];
   onSetDocumentOpenIds: (docIds: string[]) => void;
   reloadTriggerData: [] | undefined;
+  ActionComponent: (p: { document: TDocument }) => React.ReactNode;
 }) => {
   const { caseId, urn } = p;
   const [status, setStatus] = useState<
-    { mode: 'accordion' } | { mode: 'notes'; documentId: string }
-  >({ mode: 'accordion' });
+    { mode: "accordion" } | { mode: "notes"; documentId: string }
+  >({ mode: "accordion" });
 
   useTriggerListener({
     triggerData: p.reloadTriggerData,
-    fn: () => documentList.reload({ urn, caseId })
+    fn: () => documentList.reload({ urn, caseId }),
   });
 
   const documentList = useGetDocumentList();
   useEffect(() => {
-    if (status.mode === 'accordion') documentList.reload({ urn, caseId });
+    if (status.mode === "accordion") documentList.reload({ urn, caseId });
   }, [status]);
 
-  if (status.mode === 'accordion') {
+  if (status.mode === "accordion") {
     if (documentList.data === null) return <div>error</div>;
     if (documentList.data === undefined) return <div>loading</div>;
     return (
@@ -37,13 +38,14 @@ export const DocumentSidebar = (p: {
           activeDocumentIds={p.openDocumentIds}
           onSetActiveDocumentIds={(docIds) => p.onSetDocumentOpenIds(docIds)}
           onNotesClick={(docId: string) =>
-            setStatus({ mode: 'notes', documentId: docId })
+            setStatus({ mode: "notes", documentId: docId })
           }
+          ActionComponent={p.ActionComponent}
         />
       </div>
     );
   }
-  if (status.mode === 'notes') {
+  if (status.mode === "notes") {
     const documentId = status.documentId;
 
     return (
@@ -51,7 +53,7 @@ export const DocumentSidebar = (p: {
         documentId={documentId}
         caseId={caseId}
         urn={urn}
-        onBackButtonClick={() => setStatus({ mode: 'accordion' })}
+        onBackButtonClick={() => setStatus({ mode: "accordion" })}
       />
     );
   }

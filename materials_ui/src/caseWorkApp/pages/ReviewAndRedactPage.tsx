@@ -3,11 +3,19 @@ import { useLocation } from 'react-router-dom';
 import { CaseworkPdfRedactorWrapper } from '../../../../materials_components/CaseworkPdfRedactorWrapper/CaseworkPdfRedactorWrapper';
 import { DocumentControlArea } from '../../../../materials_components/documentControlArea';
 import { DocumentSidebar } from '../../../../materials_components/DocumentSelectAccordion/DocumentSidebar';
-import { TDocumentList } from '../../../../materials_components/DocumentSelectAccordion/getters/getDocumentList';
+import {
+  TDocument,
+  TDocumentList
+} from '../../../../materials_components/DocumentSelectAccordion/getters/getDocumentList';
 import { DocumentViewportArea } from '../../../../materials_components/documenViewportArea';
 import { TMode } from '../../../../materials_components/PdfRedactor/utils/modeUtils';
 import { useTrigger } from '../../../../materials_components/PdfRedactor/utils/useTriggger';
-import { Layout, TwoCol } from '../../components';
+import {
+  ButtonMenuComponent,
+  Layout,
+  RenameDrawer,
+  TwoCol
+} from '../../components';
 import { useCaseInfoStore } from '../../hooks';
 import { GetDataFromAxios } from '../components/utils/getData';
 
@@ -18,6 +26,13 @@ export const ReviewAndRedactPage = () => {
   const { caseInfo } = useCaseInfoStore();
   const { id: caseId, urn } = caseInfo || {};
   const [activeDocumentId, setActiveDocumentId] = useState<string>();
+  const [selectedDocumentForRename, setSelectedDocumentForRename] = useState<
+    (TDocument & { materialId?: number }) | null
+  >(null);
+
+  // Temporary workaround: Helper to extract numeric documentId
+  const getNumericId = (documentId: string) =>
+    documentId.split('-').pop() || documentId;
   const [activeVersionId, setActiveVersionId] = useState<number | null>(null);
 
   const reloadTrigger = useTrigger();
@@ -102,7 +117,7 @@ export const ReviewAndRedactPage = () => {
         }
       }
     });
-  }, [openDocumentIds, currentActiveTabId, caseId, urn]);
+  }, [openDocumentIds, currentActiveTabId, caseId, urn, documentsDataList]);
 
   useEffect(() => {
     const lastId =
@@ -131,6 +146,20 @@ export const ReviewAndRedactPage = () => {
   return (
     <Layout title="Review and Redact">
       <div className="govuk-main-wrapper">
+        {selectedDocumentForRename && (
+          <RenameDrawer
+            material={selectedDocumentForRename}
+            onCancel={() => setSelectedDocumentForRename(null)}
+            onSuccess={async () => {
+              setSelectedDocumentForRename(null);
+              if (urn && caseId) {
+                const data = await getDocuments({ axiosInstance, urn, caseId });
+                setDocumentsDataList(data);
+              }
+            }}
+          />
+        )}
+
         <TwoCol
           sidebar={
             isSidebarVisible && caseId && urn ? (
@@ -140,6 +169,34 @@ export const ReviewAndRedactPage = () => {
                 openDocumentIds={openDocumentIds}
                 onSetDocumentOpenIds={(docIds) => setOpenDocumentIds(docIds)}
                 reloadTriggerData={reloadTrigger.data}
+                ActionComponent={(p: {
+                  document: TDocument & { materialId?: number };
+                }) => (
+                  <ButtonMenuComponent
+                    menuTitle="Actions"
+                    menuItems={[
+                      {
+                        label: 'Rename',
+                        onClick: () => {
+                          const numericId = getNumericId(p.document.documentId);
+                          setSelectedDocumentForRename({
+                            ...p.document,
+                            materialId: Number(numericId)
+                          });
+                        }
+                      },
+                      {
+                        label: 'Discard',
+                        onClick: () => {
+                          console.log(
+                            'Discard clicked: ',
+                            p.document.documentId
+                          );
+                        }
+                      }
+                    ]}
+                  />
+                )}
               />
             ) : undefined
           }

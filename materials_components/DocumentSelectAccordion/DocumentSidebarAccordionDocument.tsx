@@ -1,15 +1,17 @@
-import { DocumentSidebarTag } from './DocumentSidebarTag';
-import './templates/GovUkAccordion.scss';
-import { NotesIcon } from './templates/NotesIcon';
+import { DocumentSidebarTag } from "./DocumentSidebarTag";
+import "./templates/GovUkAccordion.scss";
+import { NotesIcon } from "./templates/NotesIcon";
+// import { ButtonMenuComponent } from '../../materials_ui/src/components';
+import React from "react";
 
 export const DocumentSidebarAccordionNoDocumentsAvailable = () => {
   return (
     <div
       style={{
-        borderTop: 'solid 1px #b1b4b6',
-        background: '#ffffff',
-        height: '60px',
-        padding: '12px'
+        borderTop: "solid 1px #b1b4b6",
+        background: "#ffffff",
+        height: "60px",
+        padding: "12px",
       }}
     >
       There are no documents available.
@@ -24,14 +26,15 @@ export const DocumentSidebarAccordionDocumentTemplate = (p: {
   NewTag?: boolean;
   ReclassifiedTag?: boolean;
   UpdatedTag?: boolean;
-  notesStatus: 'disabled' | 'newNotes' | 'none';
+  notesStatus: "disabled" | "newNotes" | "none";
   showLeftBorder?: boolean;
   onDocumentClick: () => void;
   onNotesClick: () => void;
+  ActionComponent?: React.ReactNode;
 }) => {
   return (
     <div
-      className={`document-select-accordion-document ${p.showLeftBorder ? 'show-left-border' : ''}`}
+      className={`document-select-accordion-document ${p.showLeftBorder ? "show-left-border" : ""}`}
     >
       <div className="document-select-accordion-document--inner-wrapper">
         <div className="document-select-accordion-document--tag-wrapper">
@@ -51,17 +54,18 @@ export const DocumentSidebarAccordionDocumentTemplate = (p: {
         <div>Date: {p.documentDate}</div>
       </div>
       <div
-        style={{ display: 'flex', justifyContent: 'center', alignItems: 'end' }}
+        style={{ display: "flex", justifyContent: "center", alignItems: "end" }}
       >
         <a
-          className={`govuk-link ${p.notesStatus === 'disabled' ? 'disabled' : ''}`}
+          className={`govuk-link ${p.notesStatus === "disabled" ? "disabled" : ""}`}
           onClick={() => {
-            if (p.notesStatus !== 'disabled') p.onNotesClick();
+            if (p.notesStatus !== "disabled") p.onNotesClick();
           }}
         >
           <NotesIcon width={20} notesStatus={p.notesStatus} />
         </a>
       </div>
+      {p.ActionComponent && <div>{p.ActionComponent}</div>}
     </div>
   );
 };
