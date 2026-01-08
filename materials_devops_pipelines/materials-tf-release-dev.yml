@@ -51,7 +51,7 @@ stages:
 
                 - template: templates/task_apply-terraform.yml
                   parameters:
-                    targetBuild: $(targetBuild)
+                    targetBuild: "Materials_TF_Build"
                     targetTerraformArtifact: $(targetTerraformArtifact)
                     targetPlanName: "dev"
                     terraformStorageAccount: $(dev-terraform-storage-account)

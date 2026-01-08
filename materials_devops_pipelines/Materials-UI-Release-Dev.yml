@@ -66,7 +66,7 @@ stages:
 
                 - template: templates/task_apply-terraform.yml
                   parameters:
-                    targetBuild: $(targetBuild)
+                    targetBuild: "MaterialsBuild"
                     targetTerraformArtifact: $(targetTerraformArtifact)
                     targetPlanName: "dev"
                     terraformStorageAccount: $(dev-terraform-storage-account)
@@ -99,7 +99,7 @@ stages:
               steps:
                 - template: templates\task_deploy-spa.yml
                   parameters:
-                    targetBuild: MaterialsBuild
+                    targetBuild: "MaterialsBuild"
                     targetLabel: $(targetLabel)
                     azureSubscription: $(dev-azure-subscription)
                     WebAppName: $(dev-spa-resource-name)
