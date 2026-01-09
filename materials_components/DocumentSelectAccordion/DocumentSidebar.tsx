@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTriggerListener } from '../PdfRedactor/utils/useTriggger';
 import { DocumentSidebarAccordion } from './DocumentSidebarAccordion';
 import { DocumentSidebarNotes } from './DocumentSidebarNotes';
-import { useGetDocumentList } from './getters/getDocumentList';
+import { TDocument, useGetDocumentList } from './getters/getDocumentList';
 
 export const DocumentSidebar = (p: {
   urn: string;
@@ -10,6 +10,7 @@ export const DocumentSidebar = (p: {
   openDocumentIds: string[];
   onSetDocumentOpenIds: (docIds: string[]) => void;
   reloadTriggerData: [] | undefined;
+  ActionComponent?: (p: { document: TDocument }) => React.ReactNode;
 }) => {
   const { caseId, urn } = p;
   const [status, setStatus] = useState<
@@ -39,6 +40,7 @@ export const DocumentSidebar = (p: {
           onNotesClick={(docId: string) =>
             setStatus({ mode: 'notes', documentId: docId })
           }
+          ActionComponent={p.ActionComponent}
         />
       </div>
     );

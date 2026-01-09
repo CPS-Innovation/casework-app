@@ -1,6 +1,7 @@
 import { DocumentSidebarTag } from './DocumentSidebarTag';
 import './templates/GovUkAccordion.scss';
 import { NotesIcon } from './templates/NotesIcon';
+import React from 'react';
 
 export const DocumentSidebarAccordionNoDocumentsAvailable = () => {
   return (
@@ -28,6 +29,7 @@ export const DocumentSidebarAccordionDocumentTemplate = (p: {
   showLeftBorder?: boolean;
   onDocumentClick: () => void;
   onNotesClick: () => void;
+  ActionComponent?: React.ReactNode;
 }) => {
   return (
     <div
@@ -62,6 +64,7 @@ export const DocumentSidebarAccordionDocumentTemplate = (p: {
           <NotesIcon width={20} notesStatus={p.notesStatus} />
         </a>
       </div>
+      {p.ActionComponent && <div>{p.ActionComponent}</div>}
     </div>
   );
 };
