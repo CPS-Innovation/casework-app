@@ -31,7 +31,7 @@ export const ReviewAndRedactPage = () => {
   >(null);
 
   // Temporary workaround: Helper to extract numeric documentId
-  const getNumericId = (documentId: string) =>
+  const getDocumentIdWithoutPrefix = (documentId: string) =>
     documentId.split('-').pop() || documentId;
   const [activeVersionId, setActiveVersionId] = useState<number | null>(null);
 
@@ -117,7 +117,7 @@ export const ReviewAndRedactPage = () => {
         }
       }
     });
-  }, [openDocumentIds, currentActiveTabId, caseId, urn, documentsDataList]);
+  }, [openDocumentIds, currentActiveTabId, caseId, urn]);
 
   useEffect(() => {
     const lastId =
@@ -178,10 +178,11 @@ export const ReviewAndRedactPage = () => {
                       {
                         label: 'Rename',
                         onClick: () => {
-                          const numericId = getNumericId(p.document.documentId);
+                          const documentIdWithoutPrefix =
+                            getDocumentIdWithoutPrefix(p.document.documentId);
                           setSelectedDocumentForRename({
                             ...p.document,
-                            materialId: Number(numericId)
+                            materialId: Number(documentIdWithoutPrefix)
                           });
                         }
                       },

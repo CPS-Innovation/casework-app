@@ -22,8 +22,6 @@ export const useRename = (
   const { caseInfo } = useCaseInfoStore();
   const { log } = useLogger();
 
-  console.log(material);
-
   const renameMaterialRequest = (
     _url: string,
     { arg: newSubject }: SwrPayload<string>

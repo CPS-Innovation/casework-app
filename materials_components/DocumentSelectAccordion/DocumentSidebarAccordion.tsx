@@ -71,8 +71,6 @@ export const DocumentSidebarAccordion = (p: {
     documents: docsOnDocCategoryNames[x.categoryName],
   }));
 
-  console.log("newData:  ", newData);
-
   return (
     <div>
       <GovUkAccordionOpenCloseLinkTemplate
@@ -124,7 +122,11 @@ export const DocumentSidebarAccordion = (p: {
                         setActiveDocumentIds([...docSet]);
                       }}
                       onNotesClick={() => p.onNotesClick(document.documentId)}
-                      ActionComponent={p.ActionComponent ? p.ActionComponent({ document }) : null}
+                      ActionComponent={
+                        p.ActionComponent
+                          ? p.ActionComponent({ document })
+                          : null
+                      }
                     />
                   ))
                 )}

@@ -1,7 +1,6 @@
 import { DocumentSidebarTag } from "./DocumentSidebarTag";
 import "./templates/GovUkAccordion.scss";
 import { NotesIcon } from "./templates/NotesIcon";
-// import { ButtonMenuComponent } from '../../materials_ui/src/components';
 import React from "react";
 
 export const DocumentSidebarAccordionNoDocumentsAvailable = () => {
