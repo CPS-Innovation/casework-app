@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { CaseworkPdfRedactorWrapper } from '../../../../materials_components/CaseworkPdfRedactorWrapper/CaseworkPdfRedactorWrapper';
 import { DocumentControlArea } from '../../../../materials_components/documentControlArea';
 import { DocumentSidebar } from '../../../../materials_components/DocumentSelectAccordion/DocumentSidebar';
@@ -16,12 +16,15 @@ import {
   RenameDrawer,
   TwoCol
 } from '../../components';
-import { useCaseInfoStore } from '../../hooks';
+import { useAppRoute, useCaseInfoStore } from '../../hooks';
 import { GetDataFromAxios } from '../components/utils/getData';
 
 export const ReviewAndRedactPage = () => {
   const { state: locationState } = useLocation();
   const { docType: docTypeParam } = locationState as { docType?: string };
+
+  const { getRoute } = useAppRoute();
+  const navigate = useNavigate();
 
   const { caseInfo } = useCaseInfoStore();
   const { id: caseId, urn } = caseInfo || {};
@@ -189,10 +192,12 @@ export const ReviewAndRedactPage = () => {
                       {
                         label: 'Discard',
                         onClick: () => {
-                          console.log(
-                            'Discard clicked: ',
-                            p.document.documentId
-                          );
+                          navigate(getRoute('DISCARD'), {
+                            state: {
+                              selectedMaterial: p.document,
+                              returnTo: getRoute('REVIEW_REDACT')
+                            }
+                          });
                         }
                       }
                     ]}
