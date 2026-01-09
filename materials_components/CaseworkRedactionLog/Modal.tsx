@@ -1,10 +1,45 @@
 import { useState } from "react";
 import classes from "./modal.module.scss";
-import AreaIcon from "../../materials_ui/src/caseWorkApp/assetsCWA/svgs/areaIcon.svg?react";
+import AreaIcon from "../../materials_ui/src/caseWorkApp/assetsCWA/svgs/areaIcon.svg";
+import CloseIcon from "../../materials_ui/src/caseWorkApp/assetsCWA/svgs/closeIconBold.svg?react";
 
-const redactionLogGuidanceContent = () => {
+const redactionLogGuidanceContent = (arg) => {
 	return (
 		<div className={classes.redactionLogGuidanceWrapper}>
+			<p
+				style={{
+					color: "white",
+					fontWeight: "bold",
+					fontSize: "1.1875rem",
+					margin: "0 0 0.625rem 0",
+					display: "flex",
+					justifyContent: "space-between",
+				}}
+			>
+				Redaction Log Guidance
+				<button
+					data-testid="btn-modal-close"
+					type="button"
+					aria-label="close guidance"
+					onClick={() => {
+						arg(false);
+					}}
+					style={{
+						width: 50,
+						height: 50,
+						cursor: "pointer",
+						background: "black",
+						translate: "29% -32%",
+						borderRadius: "0 .5rem 0 0",
+						alignContent: "center",
+						justifyContent: "center",
+						padding: "0",
+						margin: "0",
+					}}
+				>
+					<CloseIcon width={40} height={40} color="white" />
+				</button>
+			</p>
 			<ul className={classes.redactionLogGuidanceList}>
 				<li>
 					This popup allows the capture of details which will be recorded into
@@ -41,22 +76,40 @@ const Modal: React.FC<{
 	return (
 		<div
 			className={classes.redactionLogModalOverlay}
-			ariaLabel={"Redaction log modal"}
-			ariaDescription={`Fill and submit under or over redaction log form for the document`}
+			aria-label={"Redaction log modal"}
+			aria-description={`Fill and submit under or over redaction log form for the document`}
 		>
 			<div className={classes.redactionLogModalContent}>
 				<div className={classes.redactionLogModalContentHeader}>
 					<h1>{`${redactionModalURN} - Redaction Log`}</h1>
 					<div>
 						<p
-							onMouseEnter={() => handleRedactionLogGuidance(true)}
-							onMouseLeave={() => handleRedactionLogGuidance(false)}
+							onClick={() => handleRedactionLogGuidance(true)}
 							className={classes.redactionLogGuidanceTitle}
+							style={{ cursor: "pointer", textAlign: "right" }}
 						>
-							<img src={AreaIcon} alt="Redaction Log Guidance" />
+							<img
+								src={AreaIcon}
+								width="16"
+								height="16"
+								alt="Redaction Log Guidance"
+							/>{" "}
+							<span
+								style={{
+									fontWeight: "normal",
+									textDecoration: "underline",
+									color: "#1D70C3",
+									cursor: "pointer",
+									textAlign: "right",
+								}}
+							>
+								Redaction Log Guidance
+							</span>
 						</p>
 						{redactionLogGuidanceVisible && (
-							<div>{redactionLogGuidanceContent()}</div>
+							<div>
+								{redactionLogGuidanceContent(handleRedactionLogGuidance)}
+							</div>
 						)}
 					</div>
 				</div>
