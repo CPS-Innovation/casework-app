@@ -17,7 +17,7 @@ export const RenameDrawer = ({ material, onCancel, onSuccess }: Props) => {
   });
   const [error, setError] = useState<string>('');
 
-  const getDefaultInputValue = (
+  const getDefaultMaterialName = (
     material: CaseMaterialsType | TDocument | null
   ) => {
     if (!material) return '';
@@ -34,10 +34,8 @@ export const RenameDrawer = ({ material, onCancel, onSuccess }: Props) => {
   };
 
   const [inputValue, setInputValue] = useState<string>(
-    getDefaultInputValue(material)
+    getDefaultMaterialName(material)
   );
-
-  console.log(material);
 
   if (!material) return null;
 
@@ -109,7 +107,7 @@ export const RenameDrawer = ({ material, onCancel, onSuccess }: Props) => {
                 id="new-material-name"
                 name="newMaterialName"
                 type="text"
-                defaultValue={getDefaultInputValue(material)}
+                defaultValue={getDefaultMaterialName(material)}
                 aria-describedby="event-name-hint event-name-error"
                 onChange={handleInputChange}
                 autoFocus

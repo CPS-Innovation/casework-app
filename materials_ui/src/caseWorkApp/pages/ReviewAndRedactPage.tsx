@@ -35,7 +35,8 @@ export const ReviewAndRedactPage = () => {
 
   // Temporary workaround: Helper to extract numeric documentId
   const getDocumentIdWithoutPrefix = (documentId: string) =>
-    documentId.split('-').pop() || documentId;
+    documentId.startsWith('CMS-') ? documentId.slice(4) : documentId;
+
   const [activeVersionId, setActiveVersionId] = useState<number | null>(null);
 
   const reloadTrigger = useTrigger();
