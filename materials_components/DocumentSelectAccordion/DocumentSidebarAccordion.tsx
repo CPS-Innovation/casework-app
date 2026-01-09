@@ -1,25 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   DocumentSidebarAccordionDocumentTemplate,
-  DocumentSidebarAccordionNoDocumentsAvailable,
-} from "./DocumentSidebarAccordionDocument";
-import { DocumentSidebarWrapper } from "./DocumentSidebarWrapper";
-import { TDocument, TDocumentList } from "./getters/getDocumentList";
+  DocumentSidebarAccordionNoDocumentsAvailable
+} from './DocumentSidebarAccordionDocument';
+import { DocumentSidebarWrapper } from './DocumentSidebarWrapper';
+import { TDocument, TDocumentList } from './getters/getDocumentList';
 import {
   GovUkAccordionOpenCloseLinkTemplate,
   GovUkAccordionSectionTemplate,
-  GovUkAccordionTemplate,
-} from "./templates/GovUkAccordion";
-import { categoriseDocument } from "./utils/categoriseDocument";
+  GovUkAccordionTemplate
+} from './templates/GovUkAccordion';
+import { categoriseDocument } from './utils/categoriseDocument';
 import {
   categoryDetails,
-  initDocsOnDocCategoryNamesMap,
-} from "./utils/categoriseDocumentHelperUtils";
+  initDocsOnDocCategoryNamesMap
+} from './utils/categoriseDocumentHelperUtils';
 import {
   safeGetDocumentSidebarReadDocIdsFromLocalStorage,
-  safeSetDocumentSidebarReadDocIdsFromLocalStorage,
-} from "./utils/DocumentSidebarLocalStorageUtils";
-import { areSetsEqual } from "./utils/generalUtils";
+  safeSetDocumentSidebarReadDocIdsFromLocalStorage
+} from './utils/DocumentSidebarLocalStorageUtils';
+import { areSetsEqual } from './utils/generalUtils';
 
 export const DocumentSidebarAccordion = (p: {
   caseId: number;
@@ -55,7 +55,7 @@ export const DocumentSidebarAccordion = (p: {
 
   useEffect(() => {
     const newReadDocIds = [
-      ...new Set([...readDocumentIds, ...p.activeDocumentIds]),
+      ...new Set([...readDocumentIds, ...p.activeDocumentIds])
     ];
     safeSetDocumentSidebarReadDocIdsFromLocalStorage({ caseId, newReadDocIds });
   }, [readDocumentIds]);
@@ -68,7 +68,7 @@ export const DocumentSidebarAccordion = (p: {
   const newData = categoryDetails.map((x) => ({
     key: x.label,
     label: x.label,
-    documents: docsOnDocCategoryNames[x.categoryName],
+    documents: docsOnDocCategoryNames[x.categoryName]
   }));
 
   return (
@@ -80,7 +80,7 @@ export const DocumentSidebarAccordion = (p: {
       <DocumentSidebarWrapper>
         <GovUkAccordionTemplate>
           {newData.map((item) => {
-            if (item.label === "Communication") return;
+            if (item.label === 'Communication') return;
 
             return (
               <GovUkAccordionSectionTemplate
@@ -105,19 +105,19 @@ export const DocumentSidebarAccordion = (p: {
                       )}
                       notesStatus={(() => {
                         if (
-                          document.cmsDocType.documentType === "PCD" ||
-                          document.cmsDocType.documentCategory === "Review"
+                          document.cmsDocType.documentType === 'PCD' ||
+                          document.cmsDocType.documentCategory === 'Review'
                         )
-                          return "disabled";
-                        return document.hasNotes ? "newNotes" : "none";
+                          return 'disabled';
+                        return document.hasNotes ? 'newNotes' : 'none';
                       })()}
                       onDocumentClick={() => {
                         setReadDocumentIds((docIds) => [
-                          ...new Set([...docIds, document.documentId]),
+                          ...new Set([...docIds, document.documentId])
                         ]);
                         const docSet = new Set([
                           ...activeDocumentIds,
-                          document.documentId,
+                          document.documentId
                         ]);
                         setActiveDocumentIds([...docSet]);
                       }}
