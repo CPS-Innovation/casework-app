@@ -10,7 +10,7 @@ export const DocumentSidebar = (p: {
   openDocumentIds: string[];
   onSetDocumentOpenIds: (docIds: string[]) => void;
   reloadTriggerData: [] | undefined;
-  ActionComponent: (p: { document: TDocument }) => React.ReactNode;
+  ActionComponent?: (p: { document: TDocument }) => React.ReactNode;
 }) => {
   const { caseId, urn } = p;
   const [status, setStatus] = useState<

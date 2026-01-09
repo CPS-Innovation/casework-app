@@ -27,7 +27,7 @@ export const DocumentSidebarAccordion = (p: {
   activeDocumentIds: string[];
   onNotesClick: (docId: string) => void;
   onSetActiveDocumentIds: (docIds: string[]) => void;
-  ActionComponent: (p: { document: TDocument }) => React.ReactNode;
+  ActionComponent?: (p: { document: TDocument }) => React.ReactNode;
 }) => {
   const { caseId } = p;
 
@@ -123,9 +123,9 @@ export const DocumentSidebarAccordion = (p: {
                       }}
                       onNotesClick={() => p.onNotesClick(document.documentId)}
                       ActionComponent={
-                        p.ActionComponent
-                          ? p.ActionComponent({ document })
-                          : null
+                        p.ActionComponent ? (
+                          <p.ActionComponent document={document} />
+                        ) : null
                       }
                     />
                   ))
