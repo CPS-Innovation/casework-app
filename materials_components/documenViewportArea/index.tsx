@@ -30,12 +30,18 @@ const setDropDownActionItems = (mode: string) => {
 			id: "1",
 			label: "Log an Under/Over redaction",
 			ariaLabel: "log an under or over redaction",
-			disabled: false,
+			disabled: true,
 		},
 		{
 			id: "2",
-			label: "Rotate document pages",
-			ariaLabel: "rotate document pages",
+			label:
+				mode === "rotation"
+					? "Hide rotate document pages"
+					: "Rotate document pages",
+			ariaLabel:
+				mode === "rotation"
+					? "hide rotate document pages"
+					: "rotate document pages",
 			disabled: false,
 		},
 		{
@@ -49,6 +55,12 @@ const setDropDownActionItems = (mode: string) => {
 					? "hide delete page options"
 					: "show delete page options",
 			disabled: false,
+		},
+		{
+			id: "4",
+			label: "View in new window",
+			ariaLabel: "view in new window",
+			disabled: true,
 		},
 	];
 	return dropDownItems;

@@ -6,7 +6,7 @@ pr: none
 resources:
   pipelines:
     - pipeline: MaterialsBuild
-      source: materials-infra-tf-qa-build
+      source: cps-materials-infra-tf-stg-build
       trigger:
         branches:
           include:
@@ -33,13 +33,13 @@ variables:
 
 stages:
                  
-  - stage: Apply_QA
-    displayName: Deployment > Materials QA
+  - stage: Apply_Staging
+    displayName: Deployment > Materials Staging
     jobs:      
       - deployment: CI_Deploy_Materials_Terraform
         workspace:
           clean: all 
-        environment: "Materials_QA"   
+        environment: "Materials_Staging"   
         strategy:
           runOnce:
             deploy:
@@ -53,7 +53,7 @@ stages:
                   parameters:
                     targetBuild: $(targetBuild)
                     targetTerraformArtifact: $(targetTerraformArtifact)
-                    targetPlanName: "qa"
+                    targetPlanName: "stg"
                     terraformStorageAccount: $(qa-terraform-storage-account)
                     terraformContainerName: $(materials-terraform-container-name)
                     terraformStateKey: $(terraform-key)
