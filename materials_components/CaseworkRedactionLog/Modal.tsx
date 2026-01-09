@@ -81,7 +81,12 @@ const Modal: React.FC<{
 		>
 			<div className={classes.redactionLogModalContent}>
 				<div className={classes.redactionLogModalContentHeader}>
-					<h1>{`${redactionModalURN} - Redaction Log`}</h1>
+					<h1>
+						{`${redactionModalURN}`} -{" "}
+						<span className={classes.greyColor}>
+							<b>Redaction Log</b>
+						</span>
+					</h1>
 					<div>
 						<p
 							onClick={() => handleRedactionLogGuidance(true)}
