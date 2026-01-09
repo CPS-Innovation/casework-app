@@ -1,11 +1,10 @@
+import { useState } from "react";
 import classes from "./modal.module.scss";
+import AreaIcon from "../../materials_ui/src/caseWorkApp/assetsCWA/svgs/areaIcon.svg?react";
 
 const redactionLogGuidanceContent = () => {
 	return (
 		<div className={classes.redactionLogGuidanceWrapper}>
-			<p className={classes.redactionLogGuidanceTitle}>
-				Redaction Log Guidance
-			</p>
 			<ul className={classes.redactionLogGuidanceList}>
 				<li>
 					This popup allows the capture of details which will be recorded into
@@ -32,6 +31,12 @@ const Modal: React.FC<{
 	if (!isOpen) return null;
 
 	const redactionModalURN = "54KR7689125";
+	const [redactionLogGuidanceVisible, setRedactionLogGuidanceVisible] =
+		useState(false);
+
+	const handleRedactionLogGuidance = (arg) => {
+		setRedactionLogGuidanceVisible(arg);
+	};
 
 	return (
 		<div
@@ -42,11 +47,21 @@ const Modal: React.FC<{
 			<div className={classes.redactionLogModalContent}>
 				<div className={classes.redactionLogModalContentHeader}>
 					<h1>{`${redactionModalURN} - Redaction Log`}</h1>
-					<p onMouseDown={() => {}}>
-						redactionGuidanceLog
-						{/* <div>{redactionLogGuidanceContent()}</div> */}
-					</p>
+					<div>
+						<p
+							onMouseEnter={() => handleRedactionLogGuidance(true)}
+							onMouseLeave={() => handleRedactionLogGuidance(false)}
+							className={classes.redactionLogGuidanceTitle}
+						>
+							<img src={AreaIcon} alt="Redaction Log Guidance" />
+						</p>
+						{redactionLogGuidanceVisible && (
+							<div>{redactionLogGuidanceContent()}</div>
+						)}
+					</div>
 				</div>
+				<div className={classes.redactionLogModalContentBody}></div>
+				<div className={classes.redactionLogModalContentFooter}></div>
 			</div>
 		</div>
 	);

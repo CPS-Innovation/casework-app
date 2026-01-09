@@ -22,11 +22,37 @@
 	left: calc(100vw - 90%);
 	transform: translate(-5%, 0%);
 	overflow-y: hidden;
-	padding: 1rem;
 }
 
 .redactionLogModalContentHeader {
 	width: 100%;
-	display: flex;
+	display: inherit;
 	justify-content: space-between;
+	background-color: #f3f2f1;
+	height: 4rem;
+	padding: 1rem;
+
+	& ul {
+		list-style: none;
+		width: 200px;
+	}
+}
+.redactionLogGuidanceTitle,
+.supportingNotesGuidanceTitle {
+	font-weight: bold;
+	font-size: 1.1875rem;
+	margin-top: 0;
+	margin-bottom: 0.625rem;
+}
+.redactionLogGuidanceList {
+	margin: 0;
+	padding-left: 1rem;
+	background-color: red;
+	& li {
+		color: rgba(255, 255, 255, 0.8);
+	}
+	& li:last-of-type {
+		font-weight: bold;
+		color: #fff;
+	}
 }
