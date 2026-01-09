@@ -1,15 +1,16 @@
-environment     = "dev"
-environment_tag = "development"
-location        = "UK South"
-location_abbr   = "uks"
-project_name    = "materials"
+environment          = "dev"
+environment_tag      = "development"
+location             = "UK South"
+location_abbr        = "uks"
+project_name         = "materials"
 
-vnet_name       = "vnet-innovation-development"
-vnet_rg         = "rg-networking"
-app_subnet_name = "polaris-apps-subnet"
-ui_subnet_name  = "polaris-ui-subnet"
-dns_server      = "10.8.0.6"
-as_web_pe_ip    = null # initially set to null, will be changed once IP auto assigned
+vnet_name            = "vnet-innovation-development"
+vnet_rg              = "rg-networking"
+app_subnet_name      = "polaris-apps-subnet"
+ui_subnet_name       = "polaris-ui-subnet"
+dns_server           = "10.8.0.6"
+as_web_pe_ip         = "10.7.196.245"
+as_web_pe_ip_staging = "10.7.196.251"
 as_comp_pe_ip   = null
 
 private_dns_zones = {

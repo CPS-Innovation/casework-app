@@ -69,6 +69,12 @@ variable "as_web_pe_ip" {
   default     = null
 }
 
+variable "as_web_pe_ip_staging" {
+  type        = string
+  description = "A static private IP address to use for the Materials UI private endpoint Staging Slot."
+  default     = null
+}
+
 variable "as_comp_pe_ip" {
   type        = string
   description = "A static private IP address to use for the Materials UI private endpoint."
