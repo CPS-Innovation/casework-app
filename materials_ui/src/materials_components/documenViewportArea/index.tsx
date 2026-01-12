@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 
 import { DropdownButton } from '../../caseWorkApp/components/dropDownButton/DropdownButton';
-import { LinkButton } from '../../caseWorkApp/components/LinkButton/LinkButton';
 import Tooltip from '../../caseWorkApp/components/tooltip';
-import AreaIcon from '../../materials_ui/src/caseWorkApp/assetsCWA/svgs/areaIcon.svg?react';
+// import AreaIcon from '../../materials_ui/src/caseWorkApp/assetsCWA/svgs/areaIcon.svg?react';
+import { LinkButton } from '../../caseWorkApp/components/LinkButton/LinkButton';
 import classes from './index.module.scss';
 
 export type DropdownButtonItem = {
@@ -122,7 +122,8 @@ export const DocumentViewportArea = ({
           }
           onClick={handleRedactAreaToolButtonClick}
         >
-          <AreaIcon />
+          {/* <AreaIcon /> */}
+          AreaIcon
         </LinkButton>
       </Tooltip>
       <DropdownButton

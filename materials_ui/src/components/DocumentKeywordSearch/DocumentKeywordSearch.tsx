@@ -19,8 +19,7 @@ import {
   TwoCol
 } from '..';
 
-// import { categoriseDocument } from '../..//packages/DocumentSelectAccordion/utils/categoriseDocument';
-import { categoriseDocument } from '../../../../materials_components/DocumentSelectAccordion/utils/categoriseDocument';
+import { categoriseDocument } from '../../materials_components/DocumentSelectAccordion/utils/categoriseDocument';
 import { SearchTermResultType } from '../../schemas/documents';
 import { formatDateLong } from '../../utils/date';
 import { defaultSearchFn, defaultSortFn } from '../../utils/filtering';

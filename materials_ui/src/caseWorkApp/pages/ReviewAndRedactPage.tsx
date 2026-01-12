@@ -1,15 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { CaseworkPdfRedactorWrapper } from '../../../../materials_components/CaseworkPdfRedactorWrapper/CaseworkPdfRedactorWrapper';
-import { DocumentControlArea } from '../../../../materials_components/documentControlArea';
-import { DocumentSidebar } from '../../../../materials_components/DocumentSelectAccordion/DocumentSidebar';
-import {
-  TDocument,
-  TDocumentList
-} from '../../../../materials_components/DocumentSelectAccordion/getters/getDocumentList';
-import { DocumentViewportArea } from '../../../../materials_components/documenViewportArea';
-import { TMode } from '../../../../materials_components/PdfRedactor/utils/modeUtils';
-import { useTrigger } from '../../../../materials_components/PdfRedactor/utils/useTriggger';
 import {
   ButtonMenuComponent,
   Layout,
@@ -17,6 +7,16 @@ import {
   TwoCol
 } from '../../components';
 import { useAppRoute, useCaseInfoStore } from '../../hooks';
+import { CaseworkPdfRedactorWrapper } from '../../materials_components/CaseworkPdfRedactorWrapper/CaseworkPdfRedactorWrapper';
+import { DocumentControlArea } from '../../materials_components/documentControlArea';
+import { DocumentSidebar } from '../../materials_components/DocumentSelectAccordion/DocumentSidebar';
+import {
+  TDocument,
+  TDocumentList
+} from '../../materials_components/DocumentSelectAccordion/getters/getDocumentList';
+import { DocumentViewportArea } from '../../materials_components/documenViewportArea';
+import { TMode } from '../../materials_components/PdfRedactor/utils/modeUtils';
+import { useTrigger } from '../../materials_components/PdfRedactor/utils/useTriggger';
 import { GetDataFromAxios } from '../components/utils/getData';
 
 export const ReviewAndRedactPage = () => {

@@ -19,17 +19,17 @@ export const DocumentSidebar = (p: {
 
   useTriggerListener({
     triggerData: p.reloadTriggerData,
-    fn: () => documentList.reload({ urn, caseId })
+    fn: () => documentList.load()
   });
 
-  const documentList = useGetDocumentList();
+  const documentList = useGetDocumentList({ urn, caseId });
   useEffect(() => {
-    if (status.mode === 'accordion') documentList.reload({ urn, caseId });
+    if (status.mode === 'accordion') documentList.load();
   }, [status]);
 
   if (status.mode === 'accordion') {
     if (documentList.data === null) return <div>error</div>;
-    if (documentList.data === undefined) return <div>loading</div>;
+    if (documentList.data === undefined) return <div>loadiasdasng</div>;
     return (
       <div>
         <DocumentSidebarAccordion
