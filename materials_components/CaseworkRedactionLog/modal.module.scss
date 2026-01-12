@@ -15,12 +15,13 @@
 	z-index: 7;
 	position: inherit;
 	display: flex;
+	flex-direction: column;
 	background: white;
-	min-width: 85%;
-	min-height: 85%;
+	min-width: 90%;
+	min-height: 90%;
 	top: calc(100vh - 90%);
 	left: calc(100vw - 90%);
-	transform: translate(-5%, 0%);
+	transform: translate(-5%, -5%);
 	overflow-y: hidden;
 }
 
@@ -34,7 +35,6 @@
 }
 
 .redactionLogModalContentHeader {
-	width: 100%;
 	display: inherit;
 	justify-content: space-between;
 	background-color: #f3f2f1;
@@ -68,4 +68,10 @@
 
 .greyColor {
 	color: #505a5f;
+}
+
+.redactionLogModalContentBody {
+	display: flex;
+	flex-direction: row;
+	padding: 1rem;
 }

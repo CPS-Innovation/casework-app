@@ -3,7 +3,7 @@ import classes from "./modal.module.scss";
 import AreaIcon from "../../materials_ui/src/caseWorkApp/assetsCWA/svgs/areaIcon.svg";
 import CloseIcon from "../../materials_ui/src/caseWorkApp/assetsCWA/svgs/closeIconBold.svg?react";
 
-const redactionLogGuidanceContent = (arg) => {
+const redactionLogGuidanceContent = (fnPassedAsArgument) => {
 	return (
 		<div className={classes.redactionLogGuidanceWrapper}>
 			<p
@@ -11,7 +11,7 @@ const redactionLogGuidanceContent = (arg) => {
 					color: "white",
 					fontWeight: "bold",
 					fontSize: "1.1875rem",
-					margin: "0 0 0.625rem 0",
+					margin: "0 0 -1rem .625rem",
 					display: "flex",
 					justifyContent: "space-between",
 				}}
@@ -22,7 +22,7 @@ const redactionLogGuidanceContent = (arg) => {
 					type="button"
 					aria-label="close guidance"
 					onClick={() => {
-						arg(false);
+						fnPassedAsArgument(false);
 					}}
 					style={{
 						width: 50,
@@ -118,8 +118,14 @@ const Modal: React.FC<{
 						)}
 					</div>
 				</div>
-				<div className={classes.redactionLogModalContentBody}></div>
-				<div className={classes.redactionLogModalContentFooter}></div>
+				<div className={classes.redactionLogModalContentBody}>
+					<div>1</div>
+					<div>2</div>
+					<div>3</div>
+					<div>4</div>
+					<div>5</div>
+				</div>
+				<div className={classes.redactionLogModalContentFooter}>footer</div>
 			</div>
 		</div>
 	);
