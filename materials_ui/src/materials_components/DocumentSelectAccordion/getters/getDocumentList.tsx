@@ -47,7 +47,6 @@ export const safeGetDocumentListFromAxiosInstance = async (p: {
       caseId: p.caseId,
       axiosInstance: p.axiosInstance
     });
-    console.log({ resp });
 
     return documentListSchema.safeParse(resp);
   } catch (error) {
@@ -100,7 +99,6 @@ export const useGetDocumentList = (p: {
       urn: p.urn,
       caseId: p.caseId
     });
-    console.log({ resp });
 
     setDocumentList(resp.success ? resp.data : null);
   };

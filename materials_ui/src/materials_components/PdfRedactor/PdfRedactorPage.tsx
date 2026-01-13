@@ -289,7 +289,6 @@ export const PdfRedactorPage = (p: {
       });
 
       if (newRedactions.length === 0) return;
-      console.log('asddsasad');
 
       p.onAddRedactions(newRedactions);
       p.onPageRedactionsChange([...redactions, ...newRedactions]);
