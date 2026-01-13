@@ -32,9 +32,9 @@ setup('setup cookie', async ({ browser }) => {
   }
 
   //MSAL will redirect to Microsoft login page.
-  await page.goto('/');
+  await page.goto('http://localhost:3000/polaris-ui');
   await page
-    .getByRole('textbox', { name: 'someone@example.com' })
+    .locator('#i0116')
     .fill(mslUsername);
   await page.getByRole('button', { name: 'Next' }).click();
   await page.locator('#i0118').fill(mslPassword);
