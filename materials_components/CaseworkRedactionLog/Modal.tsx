@@ -1,4 +1,6 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { SubmitHandler, useForm, Controller } from "react-hook-form";
+import { SelectList } from "../../materials_ui/src/components/SelectList/SelectList";
 import classes from "./modal.module.scss";
 import AreaIcon from "../../materials_ui/src/caseWorkApp/assetsCWA/svgs/areaIcon.svg";
 import CloseIcon from "../../materials_ui/src/caseWorkApp/assetsCWA/svgs/closeIconBold.svg?react";
@@ -65,6 +67,15 @@ const Modal: React.FC<{
 }> = ({ isOpen, onClose, children }) => {
 	if (!isOpen) return null;
 
+	const {
+		control,
+		register,
+		handleSubmit,
+		formState: { errors },
+	} = useForm({
+		shouldFocusError: false,
+	});
+
 	const redactionModalURN = "54KR7689125";
 	const [redactionLogGuidanceVisible, setRedactionLogGuidanceVisible] =
 		useState(false);
@@ -88,7 +99,7 @@ const Modal: React.FC<{
 						</span>
 					</h1>
 					<div>
-						<p
+						<div
 							onClick={() => handleRedactionLogGuidance(true)}
 							className={classes.redactionLogGuidanceTitle}
 							style={{ cursor: "pointer", textAlign: "right" }}
@@ -110,7 +121,7 @@ const Modal: React.FC<{
 							>
 								Redaction Log Guidance
 							</span>
-						</p>
+						</div>
 						{redactionLogGuidanceVisible && (
 							<div>
 								{redactionLogGuidanceContent(handleRedactionLogGuidance)}
@@ -119,13 +130,158 @@ const Modal: React.FC<{
 					</div>
 				</div>
 				<div className={classes.redactionLogModalContentBody}>
-					<div>1</div>
-					<div>2</div>
-					<div>3</div>
-					<div>4</div>
-					<div>5</div>
+					<div className={classes.controllersContainer}>
+						<div className={classes.controlItem}>
+							<Controller
+								name="cpsArea"
+								control={control}
+								rules={{
+									required: true,
+								}}
+								render={({ field }) => {
+									return (
+										<SelectList
+											{...field}
+											id="select-cps-area"
+											data-testid="select-cps-area"
+											label="CPS Area or Central Casework Division:"
+											error=""
+											options={[
+												{
+													label: "Select witness",
+													value: "",
+													id: "",
+												},
+											]}
+											// items={"getMappedSelectItems().areaOrDivisions"}
+										/>
+									);
+								}}
+							/>
+						</div>
+						<div className={classes.controlItem}>
+							<Controller
+								name="cpsArea"
+								control={control}
+								rules={{
+									required: true,
+								}}
+								render={({ field }) => {
+									return (
+										<SelectList
+											{...field}
+											id="select-cps-business-unit"
+											data-testid="select-cps-business-unit"
+											label="CPS Business Unit:"
+											error=""
+											options={[
+												{
+													label: "Select unit",
+													value: "",
+													id: "",
+												},
+											]}
+											// items={"getMappedSelectItems().areaOrDivisions"}
+										/>
+									);
+								}}
+							/>
+						</div>
+						<div className={classes.controlItem}>
+							<Controller
+								name="cpsArea"
+								control={control}
+								rules={{
+									required: true,
+								}}
+								render={({ field }) => {
+									return (
+										<SelectList
+											{...field}
+											id="select-cps-investigative-agency"
+											data-testid="select-cps-investigative-agency"
+											label="Investigative Agency:"
+											error=""
+											options={[
+												{
+													label: "Investigative Agency",
+													value: "",
+													id: "",
+												},
+											]}
+											// items={"getMappedSelectItems().areaOrDivisions"}
+										/>
+									);
+								}}
+							/>
+						</div>
+						<div className={classes.controlItem}>
+							<Controller
+								name="cpsArea"
+								control={control}
+								rules={{
+									required: true,
+								}}
+								render={({ field }) => {
+									return (
+										<SelectList
+											{...field}
+											id="select-cps-charge-status"
+											data-testid="select-cps-charge-status"
+											label="Charge Status:"
+											error=""
+											options={[
+												{
+													label: "Charge Status",
+													value: "",
+													id: "",
+												},
+											]}
+											// items={"getMappedSelectItems().areaOrDivisions"}
+										/>
+									);
+								}}
+							/>
+						</div>
+						<div className={classes.controlItem}>
+							<Controller
+								name="cpsArea"
+								control={control}
+								rules={{
+									required: true,
+								}}
+								render={({ field }) => {
+									return (
+										<SelectList
+											{...field}
+											id="select-cps-document-type"
+											data-testid="select-cps-document-type"
+											label="Document Type:"
+											error=""
+											options={[
+												{
+													label: "Select document type",
+													value: "",
+													id: "",
+												},
+											]}
+											// items={"getMappedSelectItems().areaOrDivisions"}
+										/>
+									);
+								}}
+							/>
+						</div>
+					</div>
 				</div>
-				<div className={classes.redactionLogModalContentFooter}>footer</div>
+				<div className={classes.redactionLogModalContentFooter}>
+					<button
+						className="govuk-button"
+						data-module="govuk-button"
+						type="submit"
+					>
+						Save and Close
+					</button>
+				</div>
 			</div>
 		</div>
 	);

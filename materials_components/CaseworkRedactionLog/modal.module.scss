@@ -16,13 +16,13 @@
 	position: inherit;
 	display: flex;
 	flex-direction: column;
-	background: white;
+	background: #f3f2f1;
 	min-width: 90%;
 	min-height: 90%;
 	top: calc(100vh - 90%);
 	left: calc(100vw - 90%);
 	transform: translate(-5%, -5%);
-	overflow-y: hidden;
+	overflow: hidden;
 }
 
 .redactionLogGuidanceWrapper {
@@ -63,6 +63,7 @@
 .redactionLogGuidanceTitle {
 	font-weight: bold;
 	font-size: 1.1875rem;
+	margin-top: 1rem;
 	margin-bottom: 0.625rem;
 }
 
@@ -72,6 +73,31 @@
 
 .redactionLogModalContentBody {
 	display: flex;
+	padding: 1rem 1rem 0 1rem;
+	border-bottom: 1px solid #d1d1d1;
+}
+
+.controllersContainer {
+	display: inherit;
 	flex-direction: row;
+	align-items: flex-end;
+
+	label {
+		font-weight: 300 !important;
+		font-size: 1em;
+	}
+}
+.controlItem {
+	padding-left: 1rem;
+	width: 15rem;
+}
+
+.redactionLogModalContentFooter {
+	background-color: #f3f2f1;
+	border-top: 2px dashed #d1d1d1;
+	position: absolute;
+	bottom: 0;
+	width: 100%;
 	padding: 1rem;
+	align-items: center;
 }
