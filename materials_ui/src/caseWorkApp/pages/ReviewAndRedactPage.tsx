@@ -38,6 +38,7 @@ export const ReviewAndRedactPage = () => {
     documentId.startsWith('CMS-') ? documentId.slice(4) : documentId;
 
   const [activeVersionId, setActiveVersionId] = useState<number | null>(null);
+  const [activeDocument, setActiveDocument] = useState<TDocument | null>(null);
 
   const reloadTrigger = useTrigger();
 
@@ -100,18 +101,17 @@ export const ReviewAndRedactPage = () => {
 
     documentsDataList?.forEach((item) => {
       if (item.documentId === targetDocumentId) {
-        const activeDocument = item;
-
-        setActiveDocumentId(activeDocument?.documentId);
-        setActiveVersionId(activeDocument?.versionId);
+        setActiveDocument(item);
+        setActiveDocumentId(item?.documentId);
+        setActiveVersionId(item?.versionId);
 
         if (urn && caseId) {
           getPdfFiles({
             axiosInstance: axiosInstance,
             urn,
             caseId,
-            documentId: activeDocument?.documentId,
-            versionId: activeDocument?.versionId
+            documentId: item?.documentId,
+            versionId: item?.versionId
           }).then((blob) => {
             if (blob instanceof Blob) {
               const blobResponse = window.URL.createObjectURL(blob);
@@ -250,6 +250,7 @@ export const ReviewAndRedactPage = () => {
                   caseId={caseId}
                   versionId={activeVersionId}
                   documentId={activeDocumentId}
+                  document={activeDocument}
                 />
               )}
             </>

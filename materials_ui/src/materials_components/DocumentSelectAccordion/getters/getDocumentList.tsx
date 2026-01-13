@@ -15,7 +15,10 @@ export const documentSchema = z.object({
   presentationTitle: z.string(),
   isUnused: z.boolean(),
   hasNotes: z.boolean(),
-  versionId: z.number()
+  versionId: z.number(),
+  presentationFlags: z
+    .object({ write: z.union([z.string(), z.boolean()]).nullish() })
+    .nullish()
 });
 export const documentListSchema = z.array(documentSchema);
 export type TDocument = z.infer<typeof documentSchema>;
@@ -44,6 +47,7 @@ export const safeGetDocumentListFromAxiosInstance = async (p: {
       caseId: p.caseId,
       axiosInstance: p.axiosInstance
     });
+    console.log({ resp });
 
     return documentListSchema.safeParse(resp);
   } catch (error) {
@@ -96,6 +100,7 @@ export const useGetDocumentList = (p: {
       urn: p.urn,
       caseId: p.caseId
     });
+    console.log({ resp });
 
     setDocumentList(resp.success ? resp.data : null);
   };
@@ -103,7 +108,6 @@ export const useGetDocumentList = (p: {
   const clear = () => setDocumentList(undefined);
 
   const load = async () => {
-    console.log('asd');
     loadFromLocalStorage();
     await loadFromAxiosInstance();
   };
