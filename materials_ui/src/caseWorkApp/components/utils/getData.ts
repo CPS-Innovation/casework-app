@@ -61,12 +61,14 @@ export const getRedactionLogData = async (p: {
   urn: string;
 }) => {
   try {
-    const response = await p.axiosInstance.get(
-      `https://fa-redaction-log-dev-reporting.azurewebsites.net/api/lookUps`
-    );
+    const _URL = new URL(
+      '/api/lookUps',
+      import.meta.env.VITE_REDACTION_LOG_BASE_URL
+    ).toString();
+    const response = await p.axiosInstance.get(_URL);
     return response.data;
-  } catch (err) {
-    console.error(`Error getting redaction log: ${err.message}`);
+  } catch (error) {
+    console.error(`Error getting redaction log: ${error.message}`);
   }
 };
 

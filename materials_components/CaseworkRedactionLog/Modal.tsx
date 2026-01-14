@@ -68,18 +68,34 @@ const Modal: React.FC<{
 }> = ({ isOpen, onClose, children }) => {
 	if (!isOpen) return null;
 
+	const [documentTypes, setDocumentTypes] = useState([]);
+
 	const { useAxiosInstance, getDocuments, getPdfFiles, getRedactionLogData } =
 		GetDataFromAxios();
 
 	const axiosInstance = useAxiosInstance();
 
 	useEffect(() => {
+		const defaultOption = {
+			id: "-- Please select --",
+			label: "-- Please select --",
+			items: [],
+		};
+
 		const fetchData = async () => {
 			const data = await getRedactionLogData({
 				axiosInstance: axiosInstance,
 				urn: redactionModalURN,
 			});
-			console.log(data);
+			const mappedocumentTypes = data.documentTypes.map((item) => {
+				return {
+					id: item.name.replace(/\s+/g, "-"),
+					label: item.name,
+					items: [item.value],
+				};
+			});
+
+			setDocumentTypes([defaultOption, ...mappedocumentTypes]);
 		};
 		fetchData();
 	}, []);
@@ -275,14 +291,7 @@ const Modal: React.FC<{
 											data-testid="select-cps-document-type"
 											label="Document Type:"
 											error=""
-											options={[
-												{
-													label: "Select document type",
-													value: "",
-													id: "",
-												},
-											]}
-											// items={"getMappedSelectItems().areaOrDivisions"}
+											options={documentTypes}
 										/>
 									);
 								}}
