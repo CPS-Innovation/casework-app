@@ -22,6 +22,7 @@ import { useMaterialTags, useSelectedItemsStore } from '../stores';
 
 import { useNavigate } from 'react-router-dom';
 import { URL } from '../constants/url';
+import { useOpenDocumentInNewWindow } from '../hooks/ui/useOpenDocumentInNewWindow';
 import { CaseMaterialsType } from '../schemas';
 
 export const MaterialsPage = () => {
@@ -39,6 +40,7 @@ export const MaterialsPage = () => {
   const { items: selectedItems, clear: clearSelectedItems } =
     useSelectedItemsStore();
   const { setTags } = useMaterialTags();
+  const { openPreview } = useOpenDocumentInNewWindow();
 
   const {
     handleReclassifyClick,
@@ -96,6 +98,16 @@ export const MaterialsPage = () => {
 
   const row = selectedItems.materials?.[0];
 
+  const handleViewInNewWindowClick = async () => {
+    if (!row) return;
+
+    try {
+      await openPreview(row.materialId);
+    } catch (error) {
+      console.error('Error opening document preview:', error);
+    }
+  };
+
   const menuItems = [
     {
       label: 'Rename',
@@ -136,6 +148,11 @@ export const MaterialsPage = () => {
       label: 'Mark as unused',
       onClick: () => handleUnusedClick(selectedItems.materials, URL.MATERIALS),
       hide: selectedItems.materials?.some((item) => item.status === 'Unused')
+    },
+    {
+      label: 'View in new window',
+      onClick: handleViewInNewWindowClick,
+      hide: selectedItems.materials?.length !== 1
     }
   ];
 
