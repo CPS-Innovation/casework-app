@@ -211,6 +211,8 @@ export const PdfRedactor = (p: {
 		TMode | undefined
 	>(undefined);
 
+	const [redactionLogVisible, setRedactionLogVisible] = useState(false);
+
 	const [numPages, setNumPages] = useState<number>();
 	const scaleHelper = useScaleHelper();
 	const pdfRedactorWrapperElmRef = useRef<HTMLDivElement>(null);
@@ -296,7 +298,7 @@ export const PdfRedactor = (p: {
 				</PdfRedactorCenteredModal>
 			)}
 			<RedactionLogModal
-				isOpen={true}
+				isOpen={redactionLogVisible}
 				onClose={() => {
 					alert("closed");
 				}}
@@ -455,6 +457,7 @@ export const PdfRedactor = (p: {
 							redactions={p.redactions}
 							onRemoveAllRedactionsClick={() => p.onRedactionsChange([])}
 							onSaveRedactionsClick={async () => {
+								setRedactionLogVisible(!redactionLogVisible);
 								// await p.onSaveRedactions();
 								// p.onRedactionsChange([]);
 							}}

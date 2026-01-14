@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { GetDataFromAxios } from "../../materials_ui/src/caseWorkApp/components/utils/getData";
 import { SubmitHandler, useForm, Controller } from "react-hook-form";
 import { SelectList } from "../../materials_ui/src/components/SelectList/SelectList";
 import classes from "./modal.module.scss";
@@ -67,6 +68,22 @@ const Modal: React.FC<{
 }> = ({ isOpen, onClose, children }) => {
 	if (!isOpen) return null;
 
+	const { useAxiosInstance, getDocuments, getPdfFiles, getRedactionLogData } =
+		GetDataFromAxios();
+
+	const axiosInstance = useAxiosInstance();
+
+	useEffect(() => {
+		const fetchData = async () => {
+			const data = await getRedactionLogData({
+				axiosInstance: axiosInstance,
+				urn: redactionModalURN,
+			});
+			console.log(data);
+		};
+		fetchData();
+	}, []);
+
 	const {
 		control,
 		register,
@@ -99,7 +116,7 @@ const Modal: React.FC<{
 						</span>
 					</h1>
 					<div>
-						<div
+						<p
 							onClick={() => handleRedactionLogGuidance(true)}
 							className={classes.redactionLogGuidanceTitle}
 							style={{ cursor: "pointer", textAlign: "right" }}
@@ -121,7 +138,7 @@ const Modal: React.FC<{
 							>
 								Redaction Log Guidance
 							</span>
-						</div>
+						</p>
 						{redactionLogGuidanceVisible && (
 							<div>
 								{redactionLogGuidanceContent(handleRedactionLogGuidance)}

@@ -56,6 +56,21 @@ export const getPdfFiles = async (p: {
   }
 };
 
-export const GetDataFromAxios = () => {
-  return { useAxiosInstance, getDocuments, getPdfFiles };
+export const getRedactionLogData = async (p: {
+  axiosInstance: AxiosInstance;
+  urn: string;
+}) => {
+  try {
+    const response = await p.axiosInstance.get(
+      `https://fa-redaction-log-dev-reporting.azurewebsites.net/api/lookUps`
+    );
+    return response.data;
+  } catch (err) {
+    console.error(`Error getting redaction log: ${err.message}`);
+  }
 };
+
+export const GetDataFromAxios = () => {
+  return { useAxiosInstance, getDocuments, getPdfFiles, getRedactionLogData };
+};
+

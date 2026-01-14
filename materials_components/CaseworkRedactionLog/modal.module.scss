@@ -19,9 +19,7 @@
 	background: #f3f2f1;
 	min-width: 90%;
 	min-height: 90%;
-	top: calc(100vh - 90%);
-	left: calc(100vw - 90%);
-	transform: translate(-5%, -5%);
+	/* transform: translate(0%, 0%); */
 	overflow: hidden;
 }
 
@@ -98,6 +96,6 @@
 	position: absolute;
 	bottom: 0;
 	width: 100%;
-	padding: 1rem;
+	padding: 1.626rem;
 	align-items: center;
 }
