@@ -32,8 +32,9 @@ setup('setup cookie', async ({ browser }) => {
   }
 
   //MSAL will redirect to Microsoft login page.
-  await page.goto('/', { timeout: 10000 });
-  await page.waitForLoadState();
+  await page.goto('/', { timeout: 30000 });
+  const signHeader = page.getByRole('heading', { name: 'Sign in' });
+  await signHeader.waitFor({ timeout: 10000 });
   await page
     .locator('#i0116')
     .fill(mslUsername);
