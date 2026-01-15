@@ -37,6 +37,7 @@ variables:
     value: "$(System.DefaultWorkingDirectory)/terraform"
   - group: materials-global
   - group: materials_e2e_tests
+  - group: materials-ui-spa
 
 stages:
   - stage: Wait_For_Running_PRs
@@ -153,6 +154,21 @@ stages:
             displayName: "npm build"
 
 
+          - task: Npm@1
+            displayName: "Build UI Package"
+            inputs:
+              command: "custom"
+              workingDir: '$(workingDir)'
+              customCommand: "run build"
+            env:
+              VITE_MSAL_CLIENT_ID: $(MSAL_CLIENT_ID)
+              VITE_MSAL_TENANT_ID: $(MSAL_TENANT_ID) 
+              VITE_MSAL_REDIRECT_URI: $(MSAL_REDIRECT_URI) 
+              VITE_POLARIS_GATEWAY_URL: $(POLARIS_GATEWAY_URL)
+              VITE_POLARIS_GATEWAY_SCOPE: $(POLARIS_GATEWAY_SCOPE)
+              VITE_GLOBAL_SCRIPT_URL: $(GLOBAL_SCRIPT_URL)
+              VITE_E2E: True
+
 # # ---------- UNIT TESTS (Vitest) ----------
 #           - task: Npm@1
 #             displayName: 'Run UI Unit Tests'
@@ -227,3 +243,10 @@ stages:
           #     testResultsFiles: '$(workingDir)/playwright/e2e-test-results.xml'
           #     publishRunAttachments: false
           #   condition: always()
+
+# Publish Code Coverage Results publishes code coverage results to Azure Pipelines, which were produced by a build in Cobertura or JaCoCo format.
+# - task: PublishCodeCoverageResults@2
+#   inputs:
+#     summaryFileLocation: # string. Required. Path to summary files. 
+#     #pathToSources: # string. Path to Source files. 
+#     #failIfCoverageEmpty: false # boolean. Fail if code coverage results are missing. Default: false.
