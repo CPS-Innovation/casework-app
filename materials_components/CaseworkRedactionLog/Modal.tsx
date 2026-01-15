@@ -137,11 +137,26 @@ const Modal: React.FC<{
 				};
 			});
 
-			setDocumentTypes([defaultOption, ...mappedocumentTypes]);
-			setInvestigatingAgencies([defaultOption, ...mappedInvestigatingAgencies]);
-			setCpsAreaDivision([defaultOption, ...mappedCPSAreas]);
-			setBusinessUnits([defaultOption, ...mappedBusinessUnits]);
-			setChargingType([defaultOption, ...mappedChargingType]);
+			setDocumentTypes<{
+				defaultOption: typeof defaultOption;
+				items: typeof mappedocumentTypes;
+			}>([defaultOption, ...mappedocumentTypes]);
+			setInvestigatingAgencies<{
+				defaultOption: typeof defaultOption;
+				items: typeof mappedInvestigatingAgencies;
+			}>([defaultOption, ...mappedInvestigatingAgencies]);
+			setCpsAreaDivision<{
+				defaultOption: typeof defaultOption;
+				items: typeof mappedCPSAreas;
+			}>([defaultOption, ...mappedCPSAreas]);
+			setBusinessUnits<{
+				defaultOption: typeof defaultOption;
+				items: typeof mappedBusinessUnits;
+			}>([defaultOption, ...mappedBusinessUnits]);
+			setChargingType<{
+				defaultOption: typeof defaultOption;
+				items: typeof mappedChargingType;
+			}>([defaultOption, ...mappedChargingType]);
 		};
 		fetchData();
 	}, []);
