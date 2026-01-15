@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { GetDataFromAxios } from "../../materials_ui/src/caseWorkApp/components/utils/getData";
 import { SubmitHandler, useForm, Controller } from "react-hook-form";
 import { SelectList } from "../../materials_ui/src/components/SelectList/SelectList";
+import { ChargingType } from "./utils/";
 import classes from "./modal.module.scss";
 import AreaIcon from "../../materials_ui/src/caseWorkApp/assetsCWA/svgs/areaIcon.svg";
 import CloseIcon from "../../materials_ui/src/caseWorkApp/assetsCWA/svgs/closeIconBold.svg?react";
@@ -69,6 +70,10 @@ const Modal: React.FC<{
 	if (!isOpen) return null;
 
 	const [documentTypes, setDocumentTypes] = useState([]);
+	const [investigatingAgencies, setInvestigatingAgencies] = useState([]);
+	const [cpsAreaDivision, setCpsAreaDivision] = useState([]);
+	const [businessUnits, setBusinessUnits] = useState([]);
+	const [chargingType, setChargingType] = useState([]);
 
 	const { useAxiosInstance, getDocuments, getPdfFiles, getRedactionLogData } =
 		GetDataFromAxios();
@@ -87,6 +92,7 @@ const Modal: React.FC<{
 				axiosInstance: axiosInstance,
 				urn: redactionModalURN,
 			});
+
 			const mappedocumentTypes = data.documentTypes.map((item) => {
 				return {
 					id: item.name.replace(/\s+/g, "-"),
@@ -95,7 +101,47 @@ const Modal: React.FC<{
 				};
 			});
 
+			const mappedInvestigatingAgencies = data.investigatingAgencies.map(
+				(item) => {
+					return {
+						id: item.name.replace(/\s+/g, "-"),
+						label: item.name,
+						items: [item.value],
+					};
+				}
+			);
+
+			const mappedCPSAreas = data.areas.map((item) => {
+				return {
+					id: item.name.replace(/\s+/g, "-"),
+					label: item.name,
+					items: [item.value],
+				};
+			});
+
+			const mappedBusinessUnits = data.areas.map((item) => {
+				return item.children.map((i) => {
+					return {
+						id: item.name.replace(/\s+/g, "-"),
+						label: item.name,
+						items: [item.value],
+					};
+				});
+			});
+
+			const mappedChargingType = ChargingType.map((item) => {
+				return {
+					id: item.key.replace(/\s+/g, "-"),
+					label: item.key,
+					items: [item.value],
+				};
+			});
+
 			setDocumentTypes([defaultOption, ...mappedocumentTypes]);
+			setInvestigatingAgencies([defaultOption, ...mappedInvestigatingAgencies]);
+			setCpsAreaDivision([defaultOption, ...mappedCPSAreas]);
+			setBusinessUnits([defaultOption, ...mappedBusinessUnits]);
+			setChargingType([defaultOption, ...mappedChargingType]);
 		};
 		fetchData();
 	}, []);
@@ -179,14 +225,7 @@ const Modal: React.FC<{
 											data-testid="select-cps-area"
 											label="CPS Area or Central Casework Division:"
 											error=""
-											options={[
-												{
-													label: "Select witness",
-													value: "",
-													id: "",
-												},
-											]}
-											// items={"getMappedSelectItems().areaOrDivisions"}
+											options={cpsAreaDivision}
 										/>
 									);
 								}}
@@ -207,13 +246,7 @@ const Modal: React.FC<{
 											data-testid="select-cps-business-unit"
 											label="CPS Business Unit:"
 											error=""
-											options={[
-												{
-													label: "Select unit",
-													value: "",
-													id: "",
-												},
-											]}
+											options={businessUnits}
 											// items={"getMappedSelectItems().areaOrDivisions"}
 										/>
 									);
@@ -235,14 +268,7 @@ const Modal: React.FC<{
 											data-testid="select-cps-investigative-agency"
 											label="Investigative Agency:"
 											error=""
-											options={[
-												{
-													label: "Investigative Agency",
-													value: "",
-													id: "",
-												},
-											]}
-											// items={"getMappedSelectItems().areaOrDivisions"}
+											options={investigatingAgencies}
 										/>
 									);
 								}}
@@ -263,14 +289,7 @@ const Modal: React.FC<{
 											data-testid="select-cps-charge-status"
 											label="Charge Status:"
 											error=""
-											options={[
-												{
-													label: "Charge Status",
-													value: "",
-													id: "",
-												},
-											]}
-											// items={"getMappedSelectItems().areaOrDivisions"}
+											options={chargingType}
 										/>
 									);
 								}}
