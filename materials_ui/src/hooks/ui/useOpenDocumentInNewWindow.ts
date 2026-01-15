@@ -5,18 +5,22 @@ export const useOpenDocumentInNewWindow = () => {
   const request = useRequest();
   const { caseInfo } = useCaseInfoStore();
 
-  const openPreview = async (materialId: number) => {
-    if (!caseInfo) return;
+  const windowWidth = 1200;
+  const windowHeight = 800;
 
-    const windowWidth = 1200;
-    const windowHeight = 800;
-
+  const getCenteredWindowPosition = () => {
     const left = (window.screen.width - windowWidth) / 2;
     const top = (window.screen.height - windowHeight) / 2;
 
-    const windowFeatures = `width=${windowWidth},height=${windowHeight},top=${top},left=${left},scrollbars=yes,resizable=yes`;
+    return `width=${windowWidth},height=${windowHeight},top=${top},left=${left},scrollbars=yes,resizable=yes`;
+  };
 
-    const win = window.open('', '_blank', windowFeatures);
+  const openSinglePreview = async (materialId: number) => {
+    if (!caseInfo) return;
+
+    console.log('openSinglePreview materialId', materialId);
+
+    const win = window.open('', '_blank', getCenteredWindowPosition());
 
     if (!win) return;
 
@@ -39,7 +43,24 @@ export const useOpenDocumentInNewWindow = () => {
         URL.revokeObjectURL(pdfUrl);
       });
     } catch (error) {
+      win.document.body.innerHTML =
+        '<p style="font-family: Arial; color: red; text-align: center;">Failed to load preview</p>';
+
       console.error('Error opening document preview:', error);
+    }
+  };
+
+  const openPreview = async (materialId: number | number[]) => {
+    console.log('openPreview materialId', materialId);
+    if (!caseInfo) return;
+
+    if (Array.isArray(materialId)) {
+      console.log('materialId is array', materialId);
+      materialId.forEach((id) => {
+        openSinglePreview(id);
+      });
+    } else {
+      await openSinglePreview(materialId);
     }
   };
 

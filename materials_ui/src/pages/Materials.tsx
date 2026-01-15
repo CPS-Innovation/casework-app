@@ -98,11 +98,16 @@ export const MaterialsPage = () => {
 
   const row = selectedItems.materials?.[0];
 
+  console.log(
+    'selectedItems.materials',
+    selectedItems.materials.map((item) => item.materialId)
+  );
+
   const handleViewInNewWindowClick = async () => {
-    if (!row) return;
+    if (!selectedItems.materials) return;
 
     try {
-      await openPreview(row.materialId);
+      await openPreview(selectedItems.materials.map((item) => item.materialId));
     } catch (error) {
       console.error('Error opening document preview:', error);
     }
@@ -149,11 +154,7 @@ export const MaterialsPage = () => {
       onClick: () => handleUnusedClick(selectedItems.materials, URL.MATERIALS),
       hide: selectedItems.materials?.some((item) => item.status === 'Unused')
     },
-    {
-      label: 'View in new window',
-      onClick: handleViewInNewWindowClick,
-      hide: selectedItems.materials?.length !== 1
-    }
+    { label: 'View in new window', onClick: handleViewInNewWindowClick }
   ];
 
   return (
