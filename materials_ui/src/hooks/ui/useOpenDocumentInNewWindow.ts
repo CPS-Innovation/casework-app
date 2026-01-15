@@ -18,8 +18,6 @@ export const useOpenDocumentInNewWindow = () => {
   const openSinglePreview = async (materialId: number) => {
     if (!caseInfo) return;
 
-    console.log('openSinglePreview materialId', materialId);
-
     const win = window.open('', '_blank', getCenteredWindowPosition());
 
     if (!win) return;
@@ -51,11 +49,9 @@ export const useOpenDocumentInNewWindow = () => {
   };
 
   const openPreview = async (materialId: number | number[]) => {
-    console.log('openPreview materialId', materialId);
     if (!caseInfo) return;
 
     if (Array.isArray(materialId)) {
-      console.log('materialId is array', materialId);
       materialId.forEach((id) => {
         openSinglePreview(id);
       });
