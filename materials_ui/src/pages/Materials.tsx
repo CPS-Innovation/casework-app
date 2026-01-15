@@ -98,11 +98,6 @@ export const MaterialsPage = () => {
 
   const row = selectedItems.materials?.[0];
 
-  console.log(
-    'selectedItems.materials',
-    selectedItems.materials.map((item) => item.materialId)
-  );
-
   const handleViewInNewWindowClick = async () => {
     if (!selectedItems.materials) return;
 
