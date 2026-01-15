@@ -1,10 +1,10 @@
 import { ChangeEvent } from 'react';
-import { categoriseDocument } from '../../../../materials_components/DocumentSelectAccordion/utils/categoriseDocument';
+import { useDocuments, useFilters } from '../../hooks';
+import { categoriseDocument } from '../../materials_components/DocumentSelectAccordion/utils/categoriseDocument';
 import {
   categoryDetails,
   initDocsOnDocCategoryNamesMap
-} from '../../../../materials_components/DocumentSelectAccordion/utils/categoriseDocumentHelperUtils';
-import { useDocuments, useFilters } from '../../hooks';
+} from '../../materials_components/DocumentSelectAccordion/utils/categoriseDocumentHelperUtils';
 import Checkbox from '../Checkbox/Checkbox';
 import { SearchInput } from '../SearchInput/SearchInput';
 import './Filters.scss';

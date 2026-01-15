@@ -5,8 +5,8 @@ pr: none
 
 resources:
   pipelines:
-    - pipeline: MaterialsBuild
-      source: cps-materials-infra-tf-stg-build
+    - pipeline: Materials_TF_Build
+      source: Cps-Materials-Infra-TF-Stg-Build
       trigger:
         branches:
           include:
@@ -51,7 +51,7 @@ stages:
 
                 - template: templates/task_apply-terraform.yml
                   parameters:
-                    targetBuild: $(targetBuild)
+                    targetBuild: "Materials_TF_Build"
                     targetTerraformArtifact: $(targetTerraformArtifact)
                     targetPlanName: "stg"
                     terraformStorageAccount: $(qa-terraform-storage-account)

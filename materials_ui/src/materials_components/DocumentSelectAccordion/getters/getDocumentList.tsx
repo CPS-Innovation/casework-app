@@ -1,5 +1,5 @@
 import { AxiosInstance } from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import z from 'zod';
 import { useAxiosInstance } from './getAxiosInstance';
 
@@ -51,17 +51,46 @@ export const safeGetDocumentListFromAxiosInstance = async (p: {
   }
 };
 
-export const useGetDocumentList = () => {
+export const safeGetDocumentListFromLocalStorage = (p: {
+  urn: string | undefined;
+  caseId: number | undefined;
+}) => {
+  try {
+    const key = `documentList-${p.urn}-${p.caseId}`;
+    const initResp = localStorage.getItem(key);
+    const resp = JSON.parse(initResp!); // assert with !, any errors caught
+
+    return documentListSchema.safeParse(resp);
+  } catch (error) {
+    return { success: false } as const;
+  }
+};
+
+export const useGetDocumentList = (p: {
+  urn: string | undefined;
+  caseId: number | undefined;
+}) => {
   const axiosInstance = useAxiosInstance();
 
   const [data, setDocumentList] = useState<TDocumentList | null | undefined>(
     undefined
   );
+  useEffect(() => {
+    const key = `documentList-${p.urn}-${p.caseId}`;
+    if (data) localStorage.setItem(key, JSON.stringify(data));
+    if (data === null) localStorage.removeItem(key);
+  }, [data]);
 
-  const load = async (p: {
-    urn: string | undefined;
-    caseId: number | undefined;
-  }) => {
+  const loadFromLocalStorage = () => {
+    const resp = safeGetDocumentListFromLocalStorage({
+      urn: p.urn,
+      caseId: p.caseId
+    });
+
+    if (resp.success) setDocumentList(resp.data);
+  };
+
+  const loadFromAxiosInstance = async () => {
     const resp = await safeGetDocumentListFromAxiosInstance({
       axiosInstance,
       urn: p.urn,
@@ -73,5 +102,11 @@ export const useGetDocumentList = () => {
 
   const clear = () => setDocumentList(undefined);
 
-  return { data, reload: load, clear };
+  const load = async () => {
+    console.log('asd');
+    loadFromLocalStorage();
+    await loadFromAxiosInstance();
+  };
+
+  return { data, load, clear };
 };
