@@ -12,3 +12,11 @@ export const replaceTokens = (
 };
 
 export const cleanString = (str: string) => str.replace(/\s+/g, ' ');
+
+// Temporary workaround: Helper to extract numeric documentId
+export const getDocumentIdWithoutPrefix = (documentId: string | string[]) =>
+  Array.isArray(documentId)
+    ? documentId.map((id) => (id.startsWith('CMS-') ? id.slice(4) : id))
+    : documentId.startsWith('CMS-')
+      ? documentId.slice(4)
+      : documentId;

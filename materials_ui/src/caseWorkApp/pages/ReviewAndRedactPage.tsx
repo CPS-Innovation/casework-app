@@ -18,6 +18,7 @@ import {
 import { DocumentViewportArea } from '../../materials_components/documenViewportArea';
 import { TMode } from '../../materials_components/PdfRedactor/utils/modeUtils';
 import { useTrigger } from '../../materials_components/PdfRedactor/utils/useTriggger';
+import { getDocumentIdWithoutPrefix } from '../../utils/string';
 import { GetDataFromAxios } from '../components/utils/getData';
 
 export const ReviewAndRedactPage = () => {
@@ -33,14 +34,6 @@ export const ReviewAndRedactPage = () => {
   const [selectedDocumentForRename, setSelectedDocumentForRename] = useState<
     (TDocument & { materialId?: number }) | null
   >(null);
-
-  // Temporary workaround: Helper to extract numeric documentId
-  const getDocumentIdWithoutPrefix = (documentId: string | string[]) =>
-    Array.isArray(documentId)
-      ? documentId.map((id) => (id.startsWith('CMS-') ? id.slice(4) : id))
-      : documentId.startsWith('CMS-')
-        ? documentId.slice(4)
-        : documentId;
 
   const [activeVersionId, setActiveVersionId] = useState<number | null>(null);
 
