@@ -24,6 +24,8 @@
 }
 
 .redactionLogGuidanceWrapper {
+	position: relative;
+	z-index: 1004;
 	margin: 0;
 	padding: 1rem;
 	background-color: #1d70b8;
