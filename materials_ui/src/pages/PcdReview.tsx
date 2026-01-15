@@ -18,11 +18,16 @@ import {
 
 export const PcdReviewPage = () => {
   const { caseInfo } = useCaseInfoStore();
+
   const { data: historyData, isLoading: historyDataLoading } =
     usePCDReviewCaseHistory();
 
+  const initialReviewEntry = historyData?.find(
+    (item) => item.type === PcdReviewCaseHistoryType.InitialReview
+  );
+
   const { data: initialReviewData, isLoading: initialReviewDataLoading } =
-    usePCDInitialReview();
+    usePCDInitialReview(initialReviewEntry?.id);
 
   const pcdEntry = historyData?.find(
     (item) => item.type === PcdReviewCaseHistoryType.PreChargeDecision
@@ -75,7 +80,7 @@ export const PcdReviewPage = () => {
   const decisions = data?.defendantDecisions.map((decision) => {
     const [chargingCode, advice] =
       decision?.decisionDescription?.split('-') ?? [];
-    const reason = decision?.reason.split('-')[1]?.trim() ?? [];
+    const reason = decision?.reason?.split('-')[1]?.trim() ?? [];
 
     return {
       defendantName: decision?.defendantName,
