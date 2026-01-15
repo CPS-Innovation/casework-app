@@ -1,23 +1,42 @@
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import { CaseworkPdfRedactorWrapper } from '../../../../materials_components/CaseworkPdfRedactorWrapper/CaseworkPdfRedactorWrapper';
-import { DocumentControlArea } from '../../../../materials_components/documentControlArea';
-import { DocumentSidebar } from '../../../../materials_components/DocumentSelectAccordion/DocumentSidebar';
-import { TDocumentList } from '../../../../materials_components/DocumentSelectAccordion/getters/getDocumentList';
-import { DocumentViewportArea } from '../../../../materials_components/documenViewportArea';
-import { TMode } from '../../../../materials_components/PdfRedactor/utils/modeUtils';
-import { useTrigger } from '../../../../materials_components/PdfRedactor/utils/useTriggger';
-import { Layout, TwoCol } from '../../components';
-import { useCaseInfoStore } from '../../hooks';
+import { useLocation, useNavigate } from 'react-router-dom';
+import {
+  ButtonMenuComponent,
+  Layout,
+  RenameDrawer,
+  TwoCol
+} from '../../components';
+import { useAppRoute, useCaseInfoStore } from '../../hooks';
+import { CaseworkPdfRedactorWrapper } from '../../materials_components/CaseworkPdfRedactorWrapper/CaseworkPdfRedactorWrapper';
+import { DocumentControlArea } from '../../materials_components/documentControlArea';
+import { DocumentSidebar } from '../../materials_components/DocumentSelectAccordion/DocumentSidebar';
+import {
+  TDocument,
+  TDocumentList
+} from '../../materials_components/DocumentSelectAccordion/getters/getDocumentList';
+import { DocumentViewportArea } from '../../materials_components/documenViewportArea';
+import { TMode } from '../../materials_components/PdfRedactor/utils/modeUtils';
+import { useTrigger } from '../../materials_components/PdfRedactor/utils/useTriggger';
 import { GetDataFromAxios } from '../components/utils/getData';
 
 export const ReviewAndRedactPage = () => {
   const { state: locationState } = useLocation();
   const { docType: docTypeParam } = locationState as { docType?: string };
 
+  const { getRoute } = useAppRoute();
+  const navigate = useNavigate();
+
   const { caseInfo } = useCaseInfoStore();
   const { id: caseId, urn } = caseInfo || {};
   const [activeDocumentId, setActiveDocumentId] = useState<string>();
+  const [selectedDocumentForRename, setSelectedDocumentForRename] = useState<
+    (TDocument & { materialId?: number }) | null
+  >(null);
+
+  // Temporary workaround: Helper to extract numeric documentId
+  const getDocumentIdWithoutPrefix = (documentId: string) =>
+    documentId.startsWith('CMS-') ? documentId.slice(4) : documentId;
+
   const [activeVersionId, setActiveVersionId] = useState<number | null>(null);
 
   const reloadTrigger = useTrigger();
@@ -131,6 +150,20 @@ export const ReviewAndRedactPage = () => {
   return (
     <Layout title="Review and Redact">
       <div className="govuk-main-wrapper">
+        {selectedDocumentForRename && (
+          <RenameDrawer
+            material={selectedDocumentForRename}
+            onCancel={() => setSelectedDocumentForRename(null)}
+            onSuccess={async () => {
+              setSelectedDocumentForRename(null);
+              if (urn && caseId) {
+                const data = await getDocuments({ axiosInstance, urn, caseId });
+                setDocumentsDataList(data);
+              }
+            }}
+          />
+        )}
+
         <TwoCol
           sidebar={
             isSidebarVisible && caseId && urn ? (
@@ -140,6 +173,37 @@ export const ReviewAndRedactPage = () => {
                 openDocumentIds={openDocumentIds}
                 onSetDocumentOpenIds={(docIds) => setOpenDocumentIds(docIds)}
                 reloadTriggerData={reloadTrigger.data}
+                ActionComponent={(p: {
+                  document: TDocument & { materialId?: number };
+                }) => (
+                  <ButtonMenuComponent
+                    menuTitle="Actions"
+                    menuItems={[
+                      {
+                        label: 'Rename',
+                        onClick: () => {
+                          const documentIdWithoutPrefix =
+                            getDocumentIdWithoutPrefix(p.document.documentId);
+                          setSelectedDocumentForRename({
+                            ...p.document,
+                            materialId: Number(documentIdWithoutPrefix)
+                          });
+                        }
+                      },
+                      {
+                        label: 'Discard',
+                        onClick: () => {
+                          navigate(getRoute('DISCARD'), {
+                            state: {
+                              selectedMaterial: p.document,
+                              returnTo: getRoute('REVIEW_REDACT')
+                            }
+                          });
+                        }
+                      }
+                    ]}
+                  />
+                )}
               />
             ) : undefined
           }

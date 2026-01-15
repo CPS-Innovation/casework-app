@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTriggerListener } from '../PdfRedactor/utils/useTriggger';
 import { DocumentSidebarAccordion } from './DocumentSidebarAccordion';
 import { DocumentSidebarNotes } from './DocumentSidebarNotes';
-import { useGetDocumentList } from './getters/getDocumentList';
+import { TDocument, useGetDocumentList } from './getters/getDocumentList';
 
 export const DocumentSidebar = (p: {
   urn: string;
@@ -10,6 +10,7 @@ export const DocumentSidebar = (p: {
   openDocumentIds: string[];
   onSetDocumentOpenIds: (docIds: string[]) => void;
   reloadTriggerData: [] | undefined;
+  ActionComponent?: (p: { document: TDocument }) => React.ReactNode;
 }) => {
   const { caseId, urn } = p;
   const [status, setStatus] = useState<
@@ -18,17 +19,17 @@ export const DocumentSidebar = (p: {
 
   useTriggerListener({
     triggerData: p.reloadTriggerData,
-    fn: () => documentList.reload({ urn, caseId })
+    fn: () => documentList.load()
   });
 
-  const documentList = useGetDocumentList();
+  const documentList = useGetDocumentList({ urn, caseId });
   useEffect(() => {
-    if (status.mode === 'accordion') documentList.reload({ urn, caseId });
+    if (status.mode === 'accordion') documentList.load();
   }, [status]);
 
   if (status.mode === 'accordion') {
     if (documentList.data === null) return <div>error</div>;
-    if (documentList.data === undefined) return <div>loading</div>;
+    if (documentList.data === undefined) return <div>loadiasdasng</div>;
     return (
       <div>
         <DocumentSidebarAccordion
@@ -39,6 +40,7 @@ export const DocumentSidebar = (p: {
           onNotesClick={(docId: string) =>
             setStatus({ mode: 'notes', documentId: docId })
           }
+          ActionComponent={p.ActionComponent}
         />
       </div>
     );

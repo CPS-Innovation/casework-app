@@ -1,6 +1,6 @@
 import { useMsal } from '@azure/msal-react';
 import axios, { AxiosError, AxiosInstance } from 'axios';
-import { getAccessTokenFromMsalInstance } from '../../../../../materials_components/DocumentSelectAccordion/getters/getAccessTokenFromMsalInstance';
+import { getAccessTokenFromMsalInstance } from '../../../materials_components/DocumentSelectAccordion/getters/getAccessTokenFromMsalInstance';
 
 export const useAxiosInstance = () => {
   const { instance: msalInstance } = useMsal();

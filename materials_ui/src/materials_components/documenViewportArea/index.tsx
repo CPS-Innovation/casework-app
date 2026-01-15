@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 
-import AreaIcon from '../../materials_ui/src/caseWorkApp/assetsCWA/svgs/areaIcon.svg?react';
-import { DropdownButton } from '../../materials_ui/src/caseWorkApp/components/dropDownButton/DropdownButton';
-import { LinkButton } from '../../materials_ui/src/caseWorkApp/components/LinkButton/LinkButton';
-import Tooltip from '../../materials_ui/src/caseWorkApp/components/tooltip';
+import { DropdownButton } from '../../caseWorkApp/components/dropDownButton/DropdownButton';
+import Tooltip from '../../caseWorkApp/components/tooltip';
+// import AreaIcon from '../../materials_ui/src/caseWorkApp/assetsCWA/svgs/areaIcon.svg?react';
+import { LinkButton } from '../../caseWorkApp/components/LinkButton/LinkButton';
 import classes from './index.module.scss';
 
 export type DropdownButtonItem = {
@@ -34,8 +34,14 @@ const setDropDownActionItems = (mode: string) => {
     },
     {
       id: '2',
-      label: 'Rotate document pages',
-      ariaLabel: 'rotate document pages',
+      label:
+        mode === 'rotation'
+          ? 'Hide rotate document pages'
+          : 'Rotate document pages',
+      ariaLabel:
+        mode === 'rotation'
+          ? 'hide rotate document pages'
+          : 'rotate document pages',
       disabled: false
     },
     {
@@ -116,7 +122,8 @@ export const DocumentViewportArea = ({
           }
           onClick={handleRedactAreaToolButtonClick}
         >
-          <AreaIcon />
+          {/* <AreaIcon /> */}
+          AreaIcon
         </LinkButton>
       </Tooltip>
       <DropdownButton

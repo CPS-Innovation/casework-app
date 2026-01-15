@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   DocumentSidebarAccordionDocumentTemplate,
   DocumentSidebarAccordionNoDocumentsAvailable
 } from './DocumentSidebarAccordionDocument';
 import { DocumentSidebarWrapper } from './DocumentSidebarWrapper';
-import { TDocumentList } from './getters/getDocumentList';
+import { TDocument, TDocumentList } from './getters/getDocumentList';
 import {
   GovUkAccordionOpenCloseLinkTemplate,
   GovUkAccordionSectionTemplate,
@@ -27,6 +27,7 @@ export const DocumentSidebarAccordion = (p: {
   activeDocumentIds: string[];
   onNotesClick: (docId: string) => void;
   onSetActiveDocumentIds: (docIds: string[]) => void;
+  ActionComponent?: (p: { document: TDocument }) => React.ReactNode;
 }) => {
   const { caseId } = p;
 
@@ -121,6 +122,11 @@ export const DocumentSidebarAccordion = (p: {
                         setActiveDocumentIds([...docSet]);
                       }}
                       onNotesClick={() => p.onNotesClick(document.documentId)}
+                      ActionComponent={
+                        p.ActionComponent ? (
+                          <p.ActionComponent document={document} />
+                        ) : null
+                      }
                     />
                   ))
                 )}

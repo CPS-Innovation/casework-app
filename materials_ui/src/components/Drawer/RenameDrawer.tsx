@@ -1,11 +1,12 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
+import { TDocument } from '../../../../materials_components/DocumentSelectAccordion/getters/getDocumentList';
 import { useRename } from '../../hooks';
 import { CaseMaterialsType } from '../../schemas';
 import { LoadingSpinner } from '../LoadingSpinner/LoadingSpinner';
 import Drawer from './Drawer';
 
 type Props = {
-  material: CaseMaterialsType | null;
+  material: CaseMaterialsType | (TDocument & { materialId?: number }) | null;
   onCancel: () => void;
   onSuccess: () => void;
 };
@@ -15,7 +16,26 @@ export const RenameDrawer = ({ material, onCancel, onSuccess }: Props) => {
     onSuccess
   });
   const [error, setError] = useState<string>('');
-  const [inputValue, setInputValue] = useState<string>(material?.subject || '');
+
+  const getDefaultMaterialName = (
+    material: CaseMaterialsType | TDocument | null
+  ) => {
+    if (!material) return '';
+    if ('subject' in material && typeof material.subject === 'string') {
+      return material.subject;
+    }
+    if (
+      'presentationTitle' in material &&
+      typeof material.presentationTitle === 'string'
+    ) {
+      return material.presentationTitle;
+    }
+    return '';
+  };
+
+  const [inputValue, setInputValue] = useState<string>(
+    getDefaultMaterialName(material)
+  );
 
   if (!material) return null;
 
@@ -87,7 +107,7 @@ export const RenameDrawer = ({ material, onCancel, onSuccess }: Props) => {
                 id="new-material-name"
                 name="newMaterialName"
                 type="text"
-                defaultValue={material?.subject}
+                defaultValue={getDefaultMaterialName(material)}
                 aria-describedby="event-name-hint event-name-error"
                 onChange={handleInputChange}
                 autoFocus

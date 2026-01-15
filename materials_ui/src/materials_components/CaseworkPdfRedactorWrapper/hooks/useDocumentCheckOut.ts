@@ -2,7 +2,7 @@ import { AxiosError } from 'axios';
 import { useState } from 'react';
 
 import z from 'zod';
-import { useAxiosInstance } from '../../../materials_ui/src/caseWorkApp/components/utils/getData';
+import { useAxiosInstance } from '../../../caseWorkApp/components/utils/getData';
 
 type UseDocumentCheckoutOptions = { caseId?: number; urn?: string };
 
