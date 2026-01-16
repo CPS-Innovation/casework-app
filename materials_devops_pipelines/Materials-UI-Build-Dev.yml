@@ -44,14 +44,14 @@ stages:
               artifact: '$(targetTerraformArtifact)'
               publishLocation: "pipeline"
  
-      - job: Build_Script_Artifacts
-        steps:
-          - task: PublishPipelineArtifact@1
-            displayName: "Publish pipeline scripts"
-            inputs:
-              targetPath: "$(Pipeline.Workspace)/s/materials_devops_pipelines/scripts"
-              artifact: "materials-script-files"
-              publishLocation: "pipeline"
+      # - job: Build_Script_Artifacts
+      #   steps:
+      #     - task: PublishPipelineArtifact@1
+      #       displayName: "Publish pipeline scripts"
+      #       inputs:
+      #         targetPath: "$(Pipeline.Workspace)/s/materials_devops_pipelines/scripts"
+      #         artifact: "materials-script-files"
+      #         publishLocation: "pipeline"
 
       - job: Build_UI_Artifacts
         steps:
