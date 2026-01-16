@@ -9,19 +9,24 @@ import { useCaseInfoStore } from '../../stores';
 
 import './Layout.scss';
 
-type Props = { plain?: boolean; title?: string };
+type Props = {
+  plain?: boolean;
+  title?: string;
+  shouldBlockNavigationCheck: (tab: Tab) => boolean;
+};
 
 export const Layout = ({
   children,
   plain = false,
-  title
+  title,
+  shouldBlockNavigationCheck
 }: PropsWithChildren<Props>) => {
   const { banners } = useBanner();
   const { caseInfo, isLoading: caseInfoLoading } = useCaseInfoStore();
   const location = useLocation();
   const { getRoute } = useAppRoute();
 
-  const tabs: Tab[] = [
+  const initTabs: Tab[] = [
     {
       id: 'pcd-request',
       name: 'PCD Request',
@@ -57,6 +62,8 @@ export const Layout = ({
         location.pathname.includes(getRoute('PCD_REVIEW'))
     }
   ];
+
+  const tabs = initTabs.map((tab) => ({ ...tab, shouldBlockNavigationCheck }));
 
   useEffect(() => {
     if (title) {

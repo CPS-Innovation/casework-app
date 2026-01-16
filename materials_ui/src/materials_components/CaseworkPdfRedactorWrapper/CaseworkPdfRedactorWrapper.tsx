@@ -66,6 +66,8 @@ export const CaseworkPdfRedactorWrapper = (p: {
   documentId: string;
   onModification: () => void;
   document: null | undefined | TDocument;
+  onRedactionsChange: (x: TRedaction[]) => void;
+  initRedactions: TRedaction[];
 }) => {
   const [isDocumentCheckedOut, setIsDocumentCheckedOut] = useState(false);
   const documentCheckOut = useDocumentCheckOut({
@@ -99,6 +101,7 @@ export const CaseworkPdfRedactorWrapper = (p: {
 
   useEffect(() => cleanupRedactionDetails(), [redactions]);
   useEffect(() => cleanupDeletionDetails(), [indexedDeletion]);
+  useEffect(() => p.onRedactionsChange(redactions), [redactions]);
 
   const [redactionPopupProps, setRedactionPopupProps] = useState<Omit<
     ComponentProps<typeof RedactionDetailsForm> & TCoord,
@@ -393,6 +396,7 @@ export const CaseworkPdfRedactorWrapper = (p: {
             versionId: p.versionId
           });
         }}
+        initRedactions={p.initRedactions}
       />
     </div>
   );
