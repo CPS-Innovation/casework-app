@@ -1,0 +1,103 @@
+.redactionLogModalOverlay {
+	z-index: 7;
+	position: fixed;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	right: 0;
+	bottom: 0;
+	top: 0;
+	left: 0;
+	background-color: rgba(0, 0, 0, 0.5);
+}
+
+.redactionLogModalContent {
+	z-index: 7;
+	position: inherit;
+	display: flex;
+	flex-direction: column;
+	background: #f3f2f1;
+	min-width: 90%;
+	min-height: 90%;
+	/* transform: translate(0%, 0%); */
+	overflow: hidden;
+}
+
+.redactionLogGuidanceWrapper {
+	position: relative;
+	z-index: 1004;
+	margin: 0;
+	padding: 1rem;
+	background-color: #1d70b8;
+	border-radius: 0.5rem;
+	width: 30rem;
+	box-shadow: 0px 0px 20px -2px grey;
+}
+
+.redactionLogModalContentHeader {
+	display: inherit;
+	justify-content: space-between;
+	background-color: #f3f2f1;
+	height: 4rem;
+	padding: 1rem 1rem 0.5rem 1rem;
+	border-bottom: 2px dashed #d1d1d1;
+
+	& ul {
+		font-size: 1em;
+		list-style: disc;
+		padding-left: 1rem;
+		margin-top: -0.5rem;
+
+		li {
+			padding: 0.4rem 0;
+			color: rgba(255, 255, 255, 0.8);
+		}
+
+		& li:last-of-type {
+			font-weight: bold;
+			color: #fff;
+		}
+	}
+}
+
+.redactionLogGuidanceTitle {
+	font-weight: bold;
+	font-size: 1.1875rem;
+	margin-top: 1rem;
+	margin-bottom: 0.625rem;
+}
+
+.greyColor {
+	color: #505a5f;
+}
+
+.redactionLogModalContentBody {
+	display: flex;
+	padding: 1rem 1rem 0 1rem;
+	border-bottom: 1px solid #d1d1d1;
+}
+
+.controllersContainer {
+	display: inherit;
+	flex-direction: row;
+	align-items: flex-end;
+
+	label {
+		font-weight: 300 !important;
+		font-size: 1em;
+	}
+}
+.controlItem {
+	padding-left: 1rem;
+	width: 15rem;
+}
+
+.redactionLogModalContentFooter {
+	background-color: #f3f2f1;
+	border-top: 2px dashed #d1d1d1;
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	padding: 1.626rem;
+	align-items: center;
+}
