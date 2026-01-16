@@ -60,7 +60,7 @@ const setDropDownActionItems = (mode: string) => {
       id: '4',
       label: 'View in new window',
       ariaLabel: 'view in new window',
-      disabled: true
+      disabled: false
     }
   ];
   return dropDownItems;
@@ -74,6 +74,7 @@ type DocumentViewportAreaProps = {
   currentActiveTabId?: string;
   onRotateModeButtonClick: () => void;
   onDeleteModeButtonClick: () => void;
+  onViewInNewWindowButtonClick: () => void;
   mode: string;
 };
 
@@ -85,6 +86,7 @@ export const DocumentViewportArea = ({
   currentActiveTabId,
   onRotateModeButtonClick,
   onDeleteModeButtonClick,
+  onViewInNewWindowButtonClick,
   mode
 }: DocumentViewportAreaProps) => {
   const [name, setName] = useState<string>('');
@@ -132,6 +134,7 @@ export const DocumentViewportArea = ({
         callBackFn={(id) => {
           if (id === '2') onRotateModeButtonClick();
           if (id === '3') onDeleteModeButtonClick();
+          if (id === '4') onViewInNewWindowButtonClick();
         }}
         ariaLabel="document actions dropdown"
         dataTestId={`document-actions-dropdown`}

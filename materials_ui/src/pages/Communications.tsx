@@ -19,6 +19,7 @@ import {
   useCaseMaterials,
   useTableActions
 } from '../hooks';
+import { useOpenDocumentInNewWindow } from '../hooks/ui/useOpenDocumentInNewWindow';
 import { CaseMaterialsType } from '../schemas';
 import { useMaterialTags, useSelectedItemsStore } from '../stores';
 
@@ -35,6 +36,8 @@ export const CommunicationsPage = () => {
   const [showFilter, setShowFilter] = useState(true);
   const { items: selectedItems, clear: clearSelectedItems } =
     useSelectedItemsStore();
+
+  const { openPreview } = useOpenDocumentInNewWindow();
 
   const {
     handleEditClick,
@@ -84,6 +87,16 @@ export const CommunicationsPage = () => {
 
   const row = selectedItems.communications?.[0];
 
+  const handleViewInNewWindowClick = async () => {
+    if (!row) return;
+
+    try {
+      await openPreview(row.materialId);
+    } catch (error) {
+      console.error('Error opening document preview:', error);
+    }
+  };
+
   const menuItems = [
     {
       label: 'Rename',
@@ -128,6 +141,11 @@ export const CommunicationsPage = () => {
           selectedItems.communications,
           getRoute('COMMUNICATIONS')
         )
+    },
+    {
+      label: 'View in new window',
+      onClick: handleViewInNewWindowClick,
+      hide: selectedItems.communications?.length !== 1
     }
   ];
 
