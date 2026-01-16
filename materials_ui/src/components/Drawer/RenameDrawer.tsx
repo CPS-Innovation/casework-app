@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
-import { TDocument } from '../../../../materials_components/DocumentSelectAccordion/getters/getDocumentList';
 import { useRename } from '../../hooks';
+import { TDocument } from '../../materials_components/DocumentSelectAccordion/getters/getDocumentList';
 import { CaseMaterialsType } from '../../schemas';
 import { LoadingSpinner } from '../LoadingSpinner/LoadingSpinner';
 import Drawer from './Drawer';
