@@ -1,6 +1,6 @@
 import useSWRMutation from 'swr/mutation';
-import { TDocument } from '../../../../materials_components/DocumentSelectAccordion/getters/getDocumentList.tsx';
 import { QUERY_KEYS } from '../../constants/query.ts';
+import { TDocument } from '../../materials_components/DocumentSelectAccordion/getters/getDocumentList.tsx';
 import {
   CaseMaterialRenameResponseType,
   CaseMaterialsType
