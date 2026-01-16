@@ -232,6 +232,7 @@ const Modal: React.FC<{
 								rules={{
 									required: true,
 								}}
+                {...register('cpsArea')}
 								render={({ field }) => {
 									return (
 										<SelectList
@@ -248,11 +249,12 @@ const Modal: React.FC<{
 						</div>
 						<div className={classes.controlItem}>
 							<Controller
-								name="cpsArea"
+                name="cpsBusinessUnit"
 								control={control}
 								rules={{
 									required: true,
 								}}
+                {...register('cpsBusinessUnit')}
 								render={({ field }) => {
 									return (
 										<SelectList
@@ -270,11 +272,12 @@ const Modal: React.FC<{
 						</div>
 						<div className={classes.controlItem}>
 							<Controller
-								name="cpsArea"
+                name="cpsInvestigativeAgency"
 								control={control}
 								rules={{
 									required: true,
 								}}
+                {...register('cpsInvestigativeAgency')}
 								render={({ field }) => {
 									return (
 										<SelectList
@@ -291,11 +294,12 @@ const Modal: React.FC<{
 						</div>
 						<div className={classes.controlItem}>
 							<Controller
-								name="cpsArea"
+                name="cpsChargeStatus"
 								control={control}
 								rules={{
 									required: true,
 								}}
+                {...register('cpsChargeStatus')}
 								render={({ field }) => {
 									return (
 										<SelectList
@@ -312,11 +316,12 @@ const Modal: React.FC<{
 						</div>
 						<div className={classes.controlItem}>
 							<Controller
-								name="cpsArea"
+                name="cpsDocumentType"
 								control={control}
 								rules={{
 									required: true,
 								}}
+                {...register('cpsDocumentType')}
 								render={({ field }) => {
 									return (
 										<SelectList
