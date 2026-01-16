@@ -15,7 +15,10 @@ export const documentSchema = z.object({
   presentationTitle: z.string(),
   isUnused: z.boolean(),
   hasNotes: z.boolean(),
-  versionId: z.number()
+  versionId: z.number(),
+  presentationFlags: z
+    .object({ write: z.union([z.string(), z.boolean()]).nullish() })
+    .nullish()
 });
 export const documentListSchema = z.array(documentSchema);
 export type TDocument = z.infer<typeof documentSchema>;
@@ -103,7 +106,6 @@ export const useGetDocumentList = (p: {
   const clear = () => setDocumentList(undefined);
 
   const load = async () => {
-    console.log('asd');
     loadFromLocalStorage();
     await loadFromAxiosInstance();
   };

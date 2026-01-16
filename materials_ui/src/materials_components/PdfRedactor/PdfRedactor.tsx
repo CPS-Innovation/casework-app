@@ -194,6 +194,7 @@ export const PdfRedactor = (p: {
   onDeletionsChange: (x: TIndexedDeletion) => void;
   onDeletionAdd: (x: TDeletion) => void;
   onDeletionRemove: (x: TDeletion) => void;
+  initRedactions: TRedaction[];
 }) => {
   const { previousModeRef } = usePreviousModeRef(p.mode);
 
@@ -374,7 +375,7 @@ export const PdfRedactor = (p: {
           <Document
             file={p.fileUrl}
             onLoadSuccess={(x) => {
-              p.onRedactionsChange([]);
+              p.onRedactionsChange(p.initRedactions ?? []);
               setNumPages(x.numPages);
             }}
           >

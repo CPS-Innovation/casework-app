@@ -3,7 +3,13 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { isPathCurrentUrl } from '../../utils/url';
 import './Tabs.scss';
 
-export type Tab = { id: string; name: string; href: string; active?: boolean };
+export type Tab = {
+  id: string;
+  name: string;
+  href: string;
+  active?: boolean;
+  shouldBlockNavigationCheck?: (tab: Tab) => boolean;
+};
 
 type Props = { tabs: Tab[] };
 
@@ -47,6 +53,7 @@ export const Tabs = ({ tabs }: Props) => {
       <h2 className="govuk-tabs__title">Contents</h2>
       <div className="govuk-tabs__list" role="tablist">
         {tabs.map((tab: Tab, index: number) => {
+          const { shouldBlockNavigationCheck = () => false } = tab;
           const isCurrentPage = isPathCurrentUrl(pathname, tab.href);
           const isActiveAndCurrent = tab.active || isCurrentPage;
 
@@ -59,8 +66,14 @@ export const Tabs = ({ tabs }: Props) => {
                   ? `govuk-tabs__list-item govuk-tabs__list-item--selected`
                   : `govuk-tabs__list-item`
               }
-              onClick={(event) => handleTabClick(event, tab)}
-              onKeyDown={(event) => handleKeyboardPress(event, index)}
+              onClick={(event) => {
+                const blockNavResponse = shouldBlockNavigationCheck(tab);
+                if (blockNavResponse === true) return;
+                handleTabClick(event, tab);
+              }}
+              onKeyDown={(event) => {
+                handleKeyboardPress(event, index);
+              }}
               role="tab"
               id={`tab-${index}`}
             >
