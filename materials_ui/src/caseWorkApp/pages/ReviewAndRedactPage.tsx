@@ -147,7 +147,7 @@ export const ReviewAndRedactPage = () => {
     }
   }, [locationState, docTypeParam, documentsDataList]);
 
-  const docIds = getDocumentIdWithoutPrefix(documentIDs.map((doc) => doc.id));
+  const docIds = documentIDs.map((doc) => getDocumentIdWithoutPrefix(doc.id));
 
   return (
     <Layout title="Review and Redact">
