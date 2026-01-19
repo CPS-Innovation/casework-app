@@ -89,21 +89,32 @@ const UnsavedRedactionsModal = (p: {
   documents: TDocument[];
   onReturnClick: () => void;
   onIgnoreClick: () => void;
+  onDocumentClick: (documentId: string) => void;
 }) => {
-  const documentIds = Object.keys(p.redactionsIndexedOnDocumentId);
-  const documentsWithRedactions = documentIds.map((docId) =>
-    p.documents.find()
+  const redactionDocumentIds = Object.keys(p.redactionsIndexedOnDocumentId);
+  const documentsThatHaveRedactions = p.documents.filter((doc) =>
+    redactionDocumentIds.includes(doc.documentId)
   );
 
   return (
     <Modal onBackgroundClick={p.onIgnoreClick} onEscPress={p.onIgnoreClick}>
       <div style={{ padding: '20px', background: 'white' }}>
-        <div>You have {p.redactions.length} with unsaved redactions</div>
+        <div>
+          You have {documentsThatHaveRedactions.length} with unsaved redactions
+        </div>
         <br />
-        {p.redactions.map((redaction) => (
-          <div key={redaction.id}>{redaction.id}</div>
-        ))}
-        <br />
+        <div style={{ display: 'flex', flexDirection: 'row' }}>
+          {documentsThatHaveRedactions.map((doc) => (
+            <a
+              className="govuk-link"
+              key={doc.documentId}
+              onClick={() => p.onDocumentClick(doc.documentId)}
+            >
+              {doc.presentationTitle}
+            </a>
+          ))}
+          <br />
+        </div>
         <div>
           If you do not save the redactions the file will not be changed.
         </div>
@@ -142,7 +153,7 @@ export const ReviewAndRedactPage = () => {
   const [activeVersionId, setActiveVersionId] = useState<number | null>(null);
   const [activeDocument, setActiveDocument] = useState<TDocument | null>(null);
 
-  const [redactions, setRedactions] = useState<TRedaction[]>([]);
+  // const [redactions, setRedactions] = useState<TRedaction[]>([]);
   const [redactionsIndexedOnDocId, setRedactionsIndexedOnDocId] = useState<{
     [k: string]: TRedaction[];
   }>({});
@@ -259,6 +270,8 @@ export const ReviewAndRedactPage = () => {
   const [attemptedNavigationHref, setAttemptedNavigationHref] =
     useState<string>();
 
+  const [documents, setDocuments] = useState<TDocument[] | null | undefined>();
+
   return (
     <Layout
       title="Review and Redact"
@@ -275,11 +288,16 @@ export const ReviewAndRedactPage = () => {
     >
       {showBlockNavigationModal && (
         <UnsavedRedactionsModal
-          redactions={redactions}
+          redactionsIndexedOnDocumentId={redactionsIndexedOnDocId}
           onIgnoreClick={() => {
             if (attemptedNavigationHref) navigate(attemptedNavigationHref);
           }}
           onReturnClick={() => setShowBlockNavigationModal(false)}
+          documents={documents ?? []}
+          onDocumentClick={(documentId) => {
+            setActiveDocumentId(documentId);
+            setShowBlockNavigationModal(false);
+          }}
         />
       )}
       <div className="govuk-main-wrapper">
@@ -337,6 +355,7 @@ export const ReviewAndRedactPage = () => {
                     ]}
                   />
                 )}
+                onDocumentsChange={(documents) => setDocuments(documents)}
               />
             ) : undefined
           }
@@ -389,7 +408,6 @@ export const ReviewAndRedactPage = () => {
                     documentId={activeDocumentId}
                     document={activeDocument}
                     onRedactionsChange={(redactions) => {
-                      setRedactions(redactions);
                       setRedactionsIndexedOnDocId((prev) => ({
                         ...prev,
                         [activeDocument.documentId]: redactions
