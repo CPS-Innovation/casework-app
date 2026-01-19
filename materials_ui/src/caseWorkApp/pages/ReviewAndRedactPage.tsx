@@ -7,6 +7,7 @@ import {
   TwoCol
 } from '../../components';
 import { useAppRoute, useCaseInfoStore } from '../../hooks';
+import { useOpenDocumentInNewWindow } from '../../hooks/ui/useOpenDocumentInNewWindow';
 import { CaseworkPdfRedactorWrapper } from '../../materials_components/CaseworkPdfRedactorWrapper/CaseworkPdfRedactorWrapper';
 import { DocumentControlArea } from '../../materials_components/documentControlArea';
 import { DocumentSidebar } from '../../materials_components/DocumentSelectAccordion/DocumentSidebar';
@@ -19,6 +20,7 @@ import { TRedaction } from '../../materials_components/PdfRedactor/utils/coordUt
 import { TMode } from '../../materials_components/PdfRedactor/utils/modeUtils';
 import { useTrigger } from '../../materials_components/PdfRedactor/utils/useTriggger';
 import { Button } from '../components/button';
+import { getDocumentIdWithoutPrefix } from '../../utils/string';
 import { GetDataFromAxios } from '../components/utils/getData';
 
 const ModalStyleTag = () => {
@@ -146,10 +148,6 @@ export const ReviewAndRedactPage = () => {
     (TDocument & { materialId?: number }) | null
   >(null);
 
-  // Temporary workaround: Helper to extract numeric documentId
-  const getDocumentIdWithoutPrefix = (documentId: string) =>
-    documentId.startsWith('CMS-') ? documentId.slice(4) : documentId;
-
   const [activeVersionId, setActiveVersionId] = useState<number | null>(null);
   const [activeDocument, setActiveDocument] = useState<TDocument | null>(null);
 
@@ -177,6 +175,8 @@ export const ReviewAndRedactPage = () => {
   };
   const [documentsDataList, setDocumentsDataList] = useState<TDocumentList>([]);
   const { useAxiosInstance, getDocuments, getPdfFiles } = GetDataFromAxios();
+
+  const { openPreview } = useOpenDocumentInNewWindow();
 
   const axiosInstance = useAxiosInstance();
 
@@ -271,6 +271,7 @@ export const ReviewAndRedactPage = () => {
     useState<string>();
 
   const [documents, setDocuments] = useState<TDocument[] | null | undefined>();
+  const docIds = documentIDs.map((doc) => getDocumentIdWithoutPrefix(doc.id));
 
   return (
     <Layout
@@ -387,6 +388,9 @@ export const ReviewAndRedactPage = () => {
                     setMode((prev) =>
                       prev === 'deletion' ? 'areaRedact' : 'deletion'
                     );
+                  }}
+                  onViewInNewWindowButtonClick={async () => {
+                    openPreview(Number(docIds));
                   }}
                   mode={mode}
                 ></DocumentViewportArea>
