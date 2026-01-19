@@ -49,7 +49,6 @@ export const PdfRedactorCenteredModal = (p: {
           ref={popupRef}
           style={{
             position: 'relative',
-            border: '1px solid #ddd',
             borderRadius: '8px',
             boxShadow: '0 0 5px 5px #0003',
             zIndex: 1000,

@@ -1,5 +1,6 @@
 import { ComponentProps, useEffect, useState } from 'react';
 import { useAxiosInstance } from '../DocumentSelectAccordion/getters/getAxiosInstance';
+import { TDocument } from '../DocumentSelectAccordion/getters/getDocumentList';
 import { PdfRedactorCenteredModal } from '../PdfRedactor/modals/PdfRedactorCenteredModal';
 import { PdfRedactorMiniModal } from '../PdfRedactor/modals/PdfRedactorMiniModal';
 import { DeletionReasonForm } from '../PdfRedactor/PdfDeletionReasonForm';
@@ -25,6 +26,31 @@ import { saveDeletions } from './utils/saveDeletionsUtils';
 import { saveRedactions } from './utils/saveRedactionsUtils';
 import { saveRotations } from './utils/saveRotationsUtils';
 
+const presentationWriteFlagToRedactionDisabledMessageMap: {
+  [k: string]: string;
+} = {
+  IsRedactionServiceOffline:
+    'Redaction is currently unavailable and undergoing maintenance.',
+  OnlyAvailableInCms: 'This document can only be redacted in CMS.',
+  DocTypeNotAllowed: 'Redaction is not supported for this document type.',
+  OriginalFileTypeNotAllowed: 'Redaction is not supported for this file type.',
+  IsDispatched: 'This is a dispatched document.',
+  IsPageRotationModeOn:
+    'Redaction is unavailable in page rotation mode, please turn off page rotation to continue with redaction.'
+};
+const getDocumentRedactionDisabledMessage = (
+  doc: TDocument | null | undefined
+) => {
+  const writePresentationFlag = doc?.presentationFlags?.write;
+  if (!writePresentationFlag) return null;
+
+  const value =
+    presentationWriteFlagToRedactionDisabledMessageMap[
+      `${writePresentationFlag}`
+    ];
+  return value ? value : null;
+};
+
 const createCheckoutMessageFromCheckoutResponse = (p: { message?: string }) =>
   p.message
     ? `It is not possible to redact as the document is already checked out by ${p.message} Please try again later.`
@@ -39,6 +65,9 @@ export const CaseworkPdfRedactorWrapper = (p: {
   versionId: number;
   documentId: string;
   onModification: () => void;
+  document: null | undefined | TDocument;
+  onRedactionsChange: (x: TRedaction[]) => void;
+  initRedactions: TRedaction[];
 }) => {
   const [isDocumentCheckedOut, setIsDocumentCheckedOut] = useState(false);
   const documentCheckOut = useDocumentCheckOut({
@@ -72,6 +101,7 @@ export const CaseworkPdfRedactorWrapper = (p: {
 
   useEffect(() => cleanupRedactionDetails(), [redactions]);
   useEffect(() => cleanupDeletionDetails(), [indexedDeletion]);
+  useEffect(() => p.onRedactionsChange(redactions), [redactions]);
 
   const [redactionPopupProps, setRedactionPopupProps] = useState<Omit<
     ComponentProps<typeof RedactionDetailsForm> & TCoord,
@@ -79,6 +109,8 @@ export const CaseworkPdfRedactorWrapper = (p: {
   > | null>(null);
 
   const [documentIsCheckedOutPopupProps, setDocumentIsCheckedOutPopupProps] =
+    useState<{ message: string } | null>(null);
+  const [redactionDisabledModalProps, setRedactionDisabledModalProps] =
     useState<{ message: string } | null>(null);
 
   const [deleteReasonPopupProps, setDeleteReasonPopupProps] = useState<Omit<
@@ -121,6 +153,30 @@ export const CaseworkPdfRedactorWrapper = (p: {
 
   return (
     <div>
+      {redactionDisabledModalProps &&
+        (() => {
+          const closeModal = () => setRedactionDisabledModalProps(null);
+
+          return (
+            <PdfRedactorCenteredModal
+              onBackgroundClick={closeModal}
+              onEscPress={closeModal}
+            >
+              <div
+                style={{
+                  background: '#d4351c',
+                  padding: '20px',
+                  color: 'white'
+                }}
+              >
+                <h1 className="govuk-heading-m" style={{ color: '#fff' }}>
+                  Unable to redact
+                </h1>
+                <div>{redactionDisabledModalProps.message}</div>
+              </div>
+            </PdfRedactorCenteredModal>
+          );
+        })()}
       {documentIsCheckedOutPopupProps &&
         (() => {
           const closeModal = () => setDeleteReasonPopupProps(null);
@@ -205,8 +261,19 @@ export const CaseworkPdfRedactorWrapper = (p: {
         redactions={redactions}
         onRedactionsChange={(newRedactions) => setRedactions(newRedactions)}
         onAddRedactions={async (add) => {
-          const checkoutResponse = await checkCheckoutStatus();
+          const checkoutResponsePromise = checkCheckoutStatus();
+          const redactionDisabledMessage = getDocumentRedactionDisabledMessage(
+            p.document
+          );
 
+          if (redactionDisabledMessage) {
+            removeRedactions(add.map((x) => x.id));
+            setRedactionDisabledModalProps({
+              message: redactionDisabledMessage
+            });
+            return;
+          }
+          const checkoutResponse = await checkoutResponsePromise;
           if (!checkoutResponse.success) {
             removeRedactions(add.map((x) => x.id));
             const message = createCheckoutMessageFromCheckoutResponse({
@@ -329,6 +396,7 @@ export const CaseworkPdfRedactorWrapper = (p: {
             versionId: p.versionId
           });
         }}
+        initRedactions={p.initRedactions}
       />
     </div>
   );

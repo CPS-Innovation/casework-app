@@ -8,6 +8,7 @@ export const DocumentSidebar = (p: {
   urn: string;
   caseId: number;
   openDocumentIds: string[];
+  onDocumentsChange: (doc: TDocument[] | null | undefined) => void;
   onSetDocumentOpenIds: (docIds: string[]) => void;
   reloadTriggerData: [] | undefined;
   ActionComponent?: (p: { document: TDocument }) => React.ReactNode;
@@ -24,12 +25,16 @@ export const DocumentSidebar = (p: {
 
   const documentList = useGetDocumentList({ urn, caseId });
   useEffect(() => {
+    p.onDocumentsChange(documentList.data);
+  }, [documentList.data]);
+
+  useEffect(() => {
     if (status.mode === 'accordion') documentList.load();
   }, [status]);
 
   if (status.mode === 'accordion') {
     if (documentList.data === null) return <div>error</div>;
-    if (documentList.data === undefined) return <div>loadiasdasng</div>;
+    if (documentList.data === undefined) return <div>loading</div>;
     return (
       <div>
         <DocumentSidebarAccordion
