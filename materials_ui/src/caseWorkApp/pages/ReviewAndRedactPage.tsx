@@ -19,8 +19,8 @@ import { DocumentViewportArea } from '../../materials_components/documenViewport
 import { TRedaction } from '../../materials_components/PdfRedactor/utils/coordUtils';
 import { TMode } from '../../materials_components/PdfRedactor/utils/modeUtils';
 import { useTrigger } from '../../materials_components/PdfRedactor/utils/useTriggger';
-import { Button } from '../components/button';
 import { getDocumentIdWithoutPrefix } from '../../utils/string';
+import { Button } from '../components/button';
 import { GetDataFromAxios } from '../components/utils/getData';
 
 const ModalStyleTag = () => {
@@ -105,7 +105,7 @@ const UnsavedRedactionsModal = (p: {
           You have {documentsThatHaveRedactions.length} with unsaved redactions
         </div>
         <br />
-        <div style={{ display: 'flex', flexDirection: 'row' }}>
+        <div style={{ display: 'flex', gap: '4px', flexDirection: 'column' }}>
           {documentsThatHaveRedactions.map((doc) => (
             <a
               className="govuk-link"
@@ -115,8 +115,8 @@ const UnsavedRedactionsModal = (p: {
               {doc.presentationTitle}
             </a>
           ))}
-          <br />
         </div>
+        <br />
         <div>
           If you do not save the redactions the file will not be changed.
         </div>
