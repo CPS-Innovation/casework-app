@@ -105,7 +105,6 @@ export const useGetDocumentNotes = (p: {
   revalidateOnMount?: boolean;
 }) => {
   const { revalidateOnMount = true } = p;
-  console.log({ revalidateOnMount });
   const axiosInstance = useAxiosInstance();
   const key = createGetDocumentNotesKey(p);
 
