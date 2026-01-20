@@ -102,7 +102,10 @@ export const useGetDocumentNotes = (p: {
   urn: string | undefined;
   caseId: number | undefined;
   documentId: string | undefined;
+  revalidateOnMount?: boolean;
 }) => {
+  const { revalidateOnMount = true } = p;
+  console.log({ revalidateOnMount });
   const axiosInstance = useAxiosInstance();
   const key = createGetDocumentNotesKey(p);
 
@@ -120,7 +123,7 @@ export const useGetDocumentNotes = (p: {
       });
       return resp.success ? resp.data : null;
     },
-    { fallbackData }
+    { fallbackData, revalidateOnMount }
   );
 
   useEffect(() => {

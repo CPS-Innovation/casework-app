@@ -39,6 +39,7 @@ export const DocumentSidebar = (p: {
       <div>
         <DocumentSidebarAccordion
           caseId={caseId}
+          urn={urn}
           documentList={documentList.data}
           activeDocumentIds={p.openDocumentIds}
           onSetActiveDocumentIds={(docIds) => p.onSetDocumentOpenIds(docIds)}
