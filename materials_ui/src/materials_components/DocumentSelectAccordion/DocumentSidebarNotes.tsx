@@ -20,7 +20,7 @@ export const DocumentSidebarNotes = (p: {
   const [text, setText] = useState('');
 
   const axiosInstance = useAxiosInstance();
-  const documentNotesSwr = useGetDocumentNotes({
+  const documentNotes = useGetDocumentNotes({
     urn: p.urn,
     caseId: p.caseId,
     documentId: p.documentId
@@ -74,7 +74,7 @@ export const DocumentSidebarNotes = (p: {
                   caseId: p.caseId,
                   text
                 });
-                documentNotesSwr.mutate();
+                documentNotes.mutate();
 
                 p.onBackButtonClick();
               }}
@@ -86,18 +86,16 @@ export const DocumentSidebarNotes = (p: {
         </div>
         <br />
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          {documentNotesSwr.data === undefined && <div>loading</div>}
-          {documentNotesSwr.data === null && <div>error</div>}
-          {documentNotesSwr.data?.map((note) => (
+          {documentNotes.data === undefined && <div>loading</div>}
+          {documentNotes.data === null && <div>error</div>}
+          {documentNotes.data?.map((note) => (
             <div key={`${note.date}-${note.text}`}>
               <div style={{ fontWeight: 700 }}>{note.createdByName}</div>
               <div>{formatDate(note.date)}</div>
               <div>{note.text}</div>
             </div>
           ))}
-          {documentNotesSwr.data?.length === 0 && (
-            <div>No notes to display</div>
-          )}
+          {documentNotes.data?.length === 0 && <div>No notes to display</div>}
         </div>
       </div>
     </DocumentSidebarWrapper>
