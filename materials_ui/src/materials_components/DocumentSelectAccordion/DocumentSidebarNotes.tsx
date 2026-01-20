@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { DocumentSidebarWrapper } from './DocumentSidebarWrapper';
 import { useAxiosInstance } from './getters/getAxiosInstance';
 import {
@@ -17,15 +17,14 @@ export const DocumentSidebarNotes = (p: {
   documentId: string;
   onBackButtonClick: () => void;
 }) => {
-  const { urn, caseId, documentId } = p;
   const [text, setText] = useState('');
 
   const axiosInstance = useAxiosInstance();
-  const documentNotes = useGetDocumentNotes();
-
-  useEffect(() => {
-    documentNotes.reload({ urn, caseId, documentId });
-  }, []);
+  const documentNotesSwr = useGetDocumentNotes({
+    urn: p.urn,
+    caseId: p.caseId,
+    documentId: p.documentId
+  });
 
   return (
     <DocumentSidebarWrapper>
@@ -75,6 +74,8 @@ export const DocumentSidebarNotes = (p: {
                   caseId: p.caseId,
                   text
                 });
+                documentNotesSwr.mutate();
+
                 p.onBackButtonClick();
               }}
             >
@@ -85,16 +86,18 @@ export const DocumentSidebarNotes = (p: {
         </div>
         <br />
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          {documentNotes.data === undefined && <div>loading</div>}
-          {documentNotes.data === null && <div>error</div>}
-          {documentNotes.data?.map((note) => (
-            <div>
+          {documentNotesSwr.data === undefined && <div>loading</div>}
+          {documentNotesSwr.data === null && <div>error</div>}
+          {documentNotesSwr.data?.map((note) => (
+            <div key={`${note.date}-${note.text}`}>
               <div style={{ fontWeight: 700 }}>{note.createdByName}</div>
               <div>{formatDate(note.date)}</div>
               <div>{note.text}</div>
             </div>
           ))}
-          {documentNotes.data?.length === 0 && <div>No notes to display</div>}
+          {documentNotesSwr.data?.length === 0 && (
+            <div>No notes to display</div>
+          )}
         </div>
       </div>
     </DocumentSidebarWrapper>
