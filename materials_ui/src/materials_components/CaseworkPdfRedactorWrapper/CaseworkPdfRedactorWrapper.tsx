@@ -191,7 +191,7 @@ export const CaseworkPdfRedactorWrapper = (p: {
                 <div>{documentIsCheckedOutPopupProps.message}</div>
                 <br />
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <GovUkButton>Ok</GovUkButton>
+                  <GovUkButton onClick={closeModal}>Ok</GovUkButton>
                 </div>
               </div>
             </PdfRedactorCenteredModal>
