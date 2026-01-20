@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { DocumentSidebarWrapper } from './DocumentSidebarWrapper';
 import { useAxiosInstance } from './getters/getAxiosInstance';
 import {
@@ -17,15 +17,14 @@ export const DocumentSidebarNotes = (p: {
   documentId: string;
   onBackButtonClick: () => void;
 }) => {
-  const { urn, caseId, documentId } = p;
   const [text, setText] = useState('');
 
   const axiosInstance = useAxiosInstance();
-  const documentNotes = useGetDocumentNotes();
-
-  useEffect(() => {
-    documentNotes.reload({ urn, caseId, documentId });
-  }, []);
+  const documentNotes = useGetDocumentNotes({
+    urn: p.urn,
+    caseId: p.caseId,
+    documentId: p.documentId
+  });
 
   return (
     <DocumentSidebarWrapper>
@@ -75,6 +74,8 @@ export const DocumentSidebarNotes = (p: {
                   caseId: p.caseId,
                   text
                 });
+                documentNotes.mutate();
+
                 p.onBackButtonClick();
               }}
             >
@@ -88,7 +89,7 @@ export const DocumentSidebarNotes = (p: {
           {documentNotes.data === undefined && <div>loading</div>}
           {documentNotes.data === null && <div>error</div>}
           {documentNotes.data?.map((note) => (
-            <div>
+            <div key={`${note.date}-${note.text}`}>
               <div style={{ fontWeight: 700 }}>{note.createdByName}</div>
               <div>{formatDate(note.date)}</div>
               <div>{note.text}</div>
