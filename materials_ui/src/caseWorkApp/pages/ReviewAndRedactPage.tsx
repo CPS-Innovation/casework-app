@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Layout, RenameDrawer, TwoCol } from '../../components';
-import { useAppRoute, useCaseInfoStore } from '../../hooks';
+import { useCaseInfoStore } from '../../hooks';
 import { useOpenDocumentInNewWindow } from '../../hooks/ui/useOpenDocumentInNewWindow';
 import { CaseworkPdfRedactorWrapper } from '../../materials_components/CaseworkPdfRedactorWrapper/CaseworkPdfRedactorWrapper';
 import { DocumentControlArea } from '../../materials_components/documentControlArea';
@@ -134,7 +134,6 @@ export const ReviewAndRedactPage = () => {
   const { state: locationState } = useLocation();
   const { docType: docTypeParam } = locationState as { docType?: string };
 
-  const { getRoute } = useAppRoute();
   const navigate = useNavigate();
 
   const { caseInfo } = useCaseInfoStore();
