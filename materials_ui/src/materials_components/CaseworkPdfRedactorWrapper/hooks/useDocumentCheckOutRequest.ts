@@ -6,7 +6,7 @@ import { useAxiosInstance } from '../../../caseWorkApp/components/utils/getData'
 
 type UseDocumentCheckoutOptions = { caseId?: number; urn?: string };
 
-export const useDocumentCheckOut = ({
+export const useDocumentCheckOutRequest = ({
   caseId,
   urn
 }: UseDocumentCheckoutOptions) => {
