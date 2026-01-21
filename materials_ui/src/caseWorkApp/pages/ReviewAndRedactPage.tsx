@@ -1,11 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import {
-  ButtonMenuComponent,
-  Layout,
-  RenameDrawer,
-  TwoCol
-} from '../../components';
+import { Layout, RenameDrawer, TwoCol } from '../../components';
 import { useAppRoute, useCaseInfoStore } from '../../hooks';
 import { useOpenDocumentInNewWindow } from '../../hooks/ui/useOpenDocumentInNewWindow';
 import { CaseworkPdfRedactorWrapper } from '../../materials_components/CaseworkPdfRedactorWrapper/CaseworkPdfRedactorWrapper';
@@ -325,37 +320,37 @@ export const ReviewAndRedactPage = () => {
                 openDocumentIds={openDocumentIds}
                 onSetDocumentOpenIds={(docIds) => setOpenDocumentIds(docIds)}
                 reloadTriggerData={reloadSidebarTrigger.data}
-                ActionComponent={(p: {
-                  document: TDocument & { materialId?: number };
-                }) => (
-                  <ButtonMenuComponent
-                    menuTitle="Actions"
-                    menuItems={[
-                      {
-                        label: 'Rename',
-                        onClick: () => {
-                          const documentIdWithoutPrefix =
-                            getDocumentIdWithoutPrefix(p.document.documentId);
-                          setSelectedDocumentForRename({
-                            ...p.document,
-                            materialId: Number(documentIdWithoutPrefix)
-                          });
-                        }
-                      },
-                      {
-                        label: 'Discard',
-                        onClick: () => {
-                          navigate(getRoute('DISCARD'), {
-                            state: {
-                              selectedMaterial: p.document,
-                              returnTo: getRoute('REVIEW_REDACT')
-                            }
-                          });
-                        }
-                      }
-                    ]}
-                  />
-                )}
+                // ActionComponent={(p: {
+                //   document: TDocument & { materialId?: number };
+                // }) => (
+                //   <ButtonMenuComponent
+                //     menuTitle="Actions"
+                //     menuItems={[
+                //       {
+                //         label: 'Rename',
+                //         onClick: () => {
+                //           const documentIdWithoutPrefix =
+                //             getDocumentIdWithoutPrefix(p.document.documentId);
+                //           setSelectedDocumentForRename({
+                //             ...p.document,
+                //             materialId: Number(documentIdWithoutPrefix)
+                //           });
+                //         }
+                //       },
+                //       {
+                //         label: 'Discard',
+                //         onClick: () => {
+                //           navigate(getRoute('DISCARD'), {
+                //             state: {
+                //               selectedMaterial: p.document,
+                //               returnTo: getRoute('REVIEW_REDACT')
+                //             }
+                //           });
+                //         }
+                //       }
+                //     ]}
+                //   />
+                // )}
                 onDocumentsChange={(documents) => setDocuments(documents)}
               />
             ) : undefined
