@@ -102,7 +102,8 @@ const UnsavedRedactionsModal = (p: {
     <Modal onBackgroundClick={p.onIgnoreClick} onEscPress={p.onIgnoreClick}>
       <div style={{ padding: '20px', background: 'white' }}>
         <div>
-          You have {documentsThatHaveRedactions.length} with unsaved redactions
+          You have {documentsThatHaveRedactions.length} documents with unsaved
+          redactions
         </div>
         <br />
         <div style={{ display: 'flex', gap: '4px', flexDirection: 'column' }}>

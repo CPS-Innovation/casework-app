@@ -264,6 +264,13 @@ export const PdfRedactorPage = (p: {
   const [mousePos, setMousePos] = useState<{ x: number; y: number } | null>(
     null
   );
+  useEffect(() => {
+    const fn = (e: KeyboardEvent) => {
+      if (e.code === 'Escape') setFirstCorner(null);
+    };
+    window.addEventListener('keydown', fn);
+    return () => window.removeEventListener('keydown', fn);
+  }, []);
   useEffect(() => setFirstCorner(null), [p.mode]);
   useEffect(() => p.onMouseMove(mousePos), [mousePos]);
 
