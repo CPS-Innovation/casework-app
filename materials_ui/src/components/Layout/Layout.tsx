@@ -12,7 +12,7 @@ import './Layout.scss';
 type Props = {
   plain?: boolean;
   title?: string;
-  shouldBlockNavigationCheck: (tab: Tab) => boolean;
+  shouldBlockNavigationCheck?: (tab: Tab) => boolean;
 };
 
 export const Layout = ({

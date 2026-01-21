@@ -16,7 +16,10 @@ export const DocumentSchema = z.object({
   cmsFileCreatedDate: z.string(),
   isOcrProcessed: z.boolean(),
   categoryListOrder: z.number(),
-  presentationFlags: { read: 'Ok', write: 'Ok' },
+  presentationFlags: z.object({
+    read: z.literal('Ok'),
+    write: z.literal('Ok')
+  }),
   parentDocumentId: z.string().nullable(),
   witnessId: z.number().nullable(),
   hasFailedAttachments: z.boolean(),

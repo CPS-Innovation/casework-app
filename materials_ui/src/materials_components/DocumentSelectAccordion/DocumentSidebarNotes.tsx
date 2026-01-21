@@ -13,24 +13,6 @@ import { GovUkLink } from './templates/GovUkLink';
 import { GovUkTextarea } from './templates/GovUkTextarea';
 import { formatDate } from './utils/dateUtils';
 
-const StatusBar = () => {
-  return (
-    <div
-      style={{
-        backgroundColor: '#0d6e4f',
-        color: 'white',
-        padding: '16px',
-        position: 'relative'
-      }}
-    >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <TickCircleIcon height={28} width={28} color="white" />
-        Document note successfully saved to CMS
-      </div>
-    </div>
-  );
-};
-
 export const DocumentSidebarNotes = (p: {
   urn: string;
   caseId: number;
