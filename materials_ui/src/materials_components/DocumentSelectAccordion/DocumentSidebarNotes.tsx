@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { LoadingSpinner } from '../../components';
+import { TickCircleIcon } from '../PdfRedactor/icons/TickCircleIcon';
 import { DocumentSidebarWrapper } from './DocumentSidebarWrapper';
 import { useAxiosInstance } from './getters/getAxiosInstance';
 import {
@@ -11,6 +13,24 @@ import { GovUkLink } from './templates/GovUkLink';
 import { GovUkTextarea } from './templates/GovUkTextarea';
 import { formatDate } from './utils/dateUtils';
 
+const StatusBar = () => {
+  return (
+    <div
+      style={{
+        backgroundColor: '#0d6e4f',
+        color: 'white',
+        padding: '16px',
+        position: 'relative'
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <TickCircleIcon height={28} width={28} color="white" />
+        Document note successfully saved to CMS
+      </div>
+    </div>
+  );
+};
+
 export const DocumentSidebarNotes = (p: {
   urn: string;
   caseId: number;
@@ -18,6 +38,7 @@ export const DocumentSidebarNotes = (p: {
   onBackButtonClick: () => void;
 }) => {
   const [text, setText] = useState('');
+  const [savedSuccessfully, setSavedSuccessfully] = useState(false);
 
   const axiosInstance = useAxiosInstance();
   const documentNotes = useGetDocumentNotes({
@@ -40,6 +61,21 @@ export const DocumentSidebarNotes = (p: {
         </div>
         <CloseIconButton onClick={() => p.onBackButtonClick()} />
       </div>
+      {savedSuccessfully && (
+        <div
+          style={{
+            backgroundColor: '#0d6e4f',
+            color: 'white',
+            padding: '16px',
+            position: 'relative'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <TickCircleIcon height={28} width={28} color="white" />
+            Document note successfully saved to CMS
+          </div>
+        </div>
+      )}
       <div style={{ padding: '10px' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
           <label
@@ -74,7 +110,8 @@ export const DocumentSidebarNotes = (p: {
                   caseId: p.caseId,
                   text
                 });
-                documentNotes.mutate();
+                setSavedSuccessfully(true);
+                await documentNotes.mutate();
 
                 p.onBackButtonClick();
               }}
@@ -85,16 +122,43 @@ export const DocumentSidebarNotes = (p: {
           </div>
         </div>
         <br />
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          {documentNotes.data === undefined && <div>loading</div>}
-          {documentNotes.data === null && <div>error</div>}
-          {documentNotes.data?.map((note) => (
-            <div key={`${note.date}-${note.text}`}>
-              <div style={{ fontWeight: 700 }}>{note.createdByName}</div>
-              <div>{formatDate(note.date)}</div>
-              <div>{note.text}</div>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          {documentNotes.data === undefined && (
+            <div>
+              <LoadingSpinner />
             </div>
-          ))}
+          )}
+          {documentNotes.data === null && <div>error</div>}
+          {documentNotes.data && (
+            <div
+              style={{
+                borderLeft: 'solid 4px #0066cc',
+                display: 'flex',
+                gap: '10px',
+                flexDirection: 'column'
+              }}
+            >
+              {documentNotes.data.map((note) => (
+                <div
+                  style={{ display: 'flex', gap: '10px' }}
+                  key={`${note.date}-${note.text}`}
+                >
+                  <div
+                    style={{
+                      width: '10px',
+                      height: '6px',
+                      borderBottom: 'solid 4px #0066cc'
+                    }}
+                  />
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: 700 }}>{note.createdByName}</div>
+                    <div>{formatDate(note.date)}</div>
+                    <div>{note.text}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
           {documentNotes.data?.length === 0 && <div>No notes to display</div>}
         </div>
       </div>

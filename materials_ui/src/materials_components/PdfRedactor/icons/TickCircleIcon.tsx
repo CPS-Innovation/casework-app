@@ -1,4 +1,8 @@
-export const TickCircleIcon = (p: { height: number; width: number }) => {
+export const TickCircleIcon = (p: {
+  height: number;
+  width: number;
+  color?: string;
+}) => {
   return (
     <div style={{ width: `${p.width}px`, height: `${p.height}px` }}>
       <svg
@@ -7,6 +11,7 @@ export const TickCircleIcon = (p: { height: number; width: number }) => {
         x="0px"
         y="0px"
         viewBox="0 0 512 512"
+        fill={p.color}
       >
         <path
           className="st0"
