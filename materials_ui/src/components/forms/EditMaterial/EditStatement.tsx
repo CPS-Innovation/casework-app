@@ -93,9 +93,9 @@ export const EditStatementForm = ({
 
     if (witnessStatements?.length > 1) {
       return `Already in use: ${statementLabel}. Current statement number: ${defaultStatementNumber}`;
-    } else {
-      return `Already in use: ${statementLabel}.`;
     }
+
+    return `Already in use: ${statementLabel}.`;
   };
 
   return (

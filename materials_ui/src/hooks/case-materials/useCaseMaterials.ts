@@ -29,17 +29,14 @@ export const useCaseMaterials = ({ dataType }: UseCaseMaterialsProps) => {
 
   const { data, error, isLoading, isValidating, mutate } = useSWR(
     materialsKey,
-    getCaseMaterials,
-    { keepPreviousData: true }
+    getCaseMaterials
   );
 
-  const filteredData = data
-    ? data.filter((material) =>
-        dataType === 'communications'
-          ? material.category === 'Communication'
-          : material.category !== 'Communication'
-      )
-    : [];
+  const filteredData = (data ?? []).filter((material) =>
+    dataType === 'communications'
+      ? material.category === 'Communication'
+      : material.category !== 'Communication'
+  );
 
   return {
     data,
