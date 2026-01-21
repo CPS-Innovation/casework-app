@@ -75,7 +75,7 @@ export const CaseworkPdfRedactorWrapper = (p: {
     urn: p.urn
   });
 
-  const [redactions, setRedactions] = useState<TRedaction[]>([]);
+  const [redactions, setRedactions] = useState<TRedaction[]>(p.initRedactions);
   const [indexedRotation, setIndexedRotation] = useState<TIndexedRotation>({});
   const [indexedDeletion, setIndexedDeletion] = useState<TIndexedDeletion>({});
 
