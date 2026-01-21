@@ -8,10 +8,10 @@ type TProps = Omit<TTextareaProps, 'onInput'> & {
 };
 
 export const GovUkTextarea = (p: TProps) => {
-  const { className, onInput, ...otherProps } = p;
+  const { className, onInput, initFocus, ...otherProps } = p;
   const textareaElmRef = useRef<HTMLTextAreaElement>(null);
   useEffect(() => {
-    if (textareaElmRef.current && p.initFocus) textareaElmRef.current.focus();
+    if (textareaElmRef.current && initFocus) textareaElmRef.current.focus();
   }, []);
 
   return (

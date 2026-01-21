@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  DocumentSidebarAccordionDocumentTemplate,
+  DocumentSidebarAccordionDocument,
   DocumentSidebarAccordionNoDocumentsAvailable
 } from './DocumentSidebarAccordionDocument';
 import { DocumentSidebarWrapper } from './DocumentSidebarWrapper';
@@ -23,6 +23,7 @@ import { areSetsEqual } from './utils/generalUtils';
 
 export const DocumentSidebarAccordion = (p: {
   caseId: number;
+  urn: string;
   documentList: TDocumentList;
   activeDocumentIds: string[];
   onNotesClick: (docId: string) => void;
@@ -92,25 +93,11 @@ export const DocumentSidebarAccordion = (p: {
                   <DocumentSidebarAccordionNoDocumentsAvailable />
                 ) : (
                   item.documents.map((document) => (
-                    <DocumentSidebarAccordionDocumentTemplate
+                    <DocumentSidebarAccordionDocument
                       key={`${item.key}-${document.documentId}`}
-                      documentName={document.presentationTitle}
-                      documentDate={document.documentId}
-                      ActiveDocumentTag={activeDocumentIds.includes(
-                        document.documentId
-                      )}
-                      NewTag={!readDocumentIds.includes(document.documentId)}
-                      showLeftBorder={activeDocumentIds.includes(
-                        document.documentId
-                      )}
-                      notesStatus={(() => {
-                        if (
-                          document.cmsDocType.documentType === 'PCD' ||
-                          document.cmsDocType.documentCategory === 'Review'
-                        )
-                          return 'disabled';
-                        return document.hasNotes ? 'newNotes' : 'none';
-                      })()}
+                      document={document}
+                      activeDocumentIds={activeDocumentIds}
+                      readDocumentIds={readDocumentIds}
                       onDocumentClick={() => {
                         setReadDocumentIds((docIds) => [
                           ...new Set([...docIds, document.documentId])
@@ -127,6 +114,8 @@ export const DocumentSidebarAccordion = (p: {
                           <p.ActionComponent document={document} />
                         ) : null
                       }
+                      urn={p.urn}
+                      caseId={p.caseId}
                     />
                   ))
                 )}
