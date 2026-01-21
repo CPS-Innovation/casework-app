@@ -152,7 +152,6 @@ export const ReviewAndRedactPage = () => {
   const [activeVersionId, setActiveVersionId] = useState<number | null>(null);
   const [activeDocument, setActiveDocument] = useState<TDocument | null>(null);
 
-  // const [redactions, setRedactions] = useState<TRedaction[]>([]);
   const [redactionsIndexedOnDocId, setRedactionsIndexedOnDocId] = useState<{
     [k: string]: TRedaction[];
   }>({});
@@ -403,6 +402,7 @@ export const ReviewAndRedactPage = () => {
                 urn &&
                 caseId && (
                   <CaseworkPdfRedactorWrapper
+                    key={`${pdfFileUrl}-${activeDocumentId}-${activeVersionId}`}
                     fileUrl={pdfFileUrl}
                     mode={mode}
                     onModeChange={setMode}
@@ -419,7 +419,7 @@ export const ReviewAndRedactPage = () => {
                       }));
                     }}
                     initRedactions={
-                      redactionsIndexedOnDocId[activeDocument.documentId]
+                      redactionsIndexedOnDocId[activeDocument.documentId] ?? []
                     }
                   />
                 )}
