@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   ButtonMenuComponent,
@@ -8,32 +8,27 @@ import {
 } from '../../components';
 import { useAppRoute, useCaseInfoStore } from '../../hooks';
 import { useOpenDocumentInNewWindow } from '../../hooks/ui/useOpenDocumentInNewWindow';
-import { CaseworkPdfRedactorWrapper } from '../../materials_components/CaseworkPdfRedactorWrapper/CaseworkPdfRedactorWrapper';
-import { DocumentControlArea } from '../../materials_components/documentControlArea';
 import { DocumentSidebar } from '../../materials_components/DocumentSelectAccordion/DocumentSidebar';
-import {
-  TDocument,
-  TDocumentList
-} from '../../materials_components/DocumentSelectAccordion/getters/getDocumentList';
-import { DocumentViewportArea } from '../../materials_components/documenViewportArea';
+import { TDocument } from '../../materials_components/DocumentSelectAccordion/getters/getDocumentList';
+import { DocumentTabPanel } from '../../materials_components/DocumentTabPanel/DocumentTabPanel';
 import { TRedaction } from '../../materials_components/PdfRedactor/utils/coordUtils';
 import { TMode } from '../../materials_components/PdfRedactor/utils/modeUtils';
 import { useTrigger } from '../../materials_components/PdfRedactor/utils/useTriggger';
 import { getDocumentIdWithoutPrefix } from '../../utils/string';
 import { Button } from '../components/button';
-import { GetDataFromAxios } from '../components/utils/getData';
+import { Tabs } from '../components/tabs';
+import { useStoreCWA } from '../store';
 
-const ModalStyleTag = () => {
-  return (
-    <style>
-      {`
-      html, body {
-        overflow: hidden !important;
-      }
-      `}
-    </style>
-  );
-};
+const ModalStyleTag = () => (
+  <style>
+    {`
+    html, body {
+      overflow: hidden !important;
+    }
+    `}
+  </style>
+);
+
 export const Modal = (p: {
   children: React.ReactNode;
   onBackgroundClick: () => void;
@@ -47,7 +42,7 @@ export const Modal = (p: {
     };
     window.addEventListener('keydown', fn);
     return () => window.removeEventListener('keydown', fn);
-  }, []);
+  }, [p]);
 
   return (
     <>
@@ -143,135 +138,115 @@ export const ReviewAndRedactPage = () => {
 
   const { caseInfo } = useCaseInfoStore();
   const { id: caseId, urn } = caseInfo || {};
-  const [activeDocumentId, setActiveDocumentId] = useState<string>();
+  const { handleTabSelection } = useStoreCWA();
+
   const [selectedDocumentForRename, setSelectedDocumentForRename] = useState<
     (TDocument & { materialId?: number }) | null
   >(null);
 
-  const [activeVersionId, setActiveVersionId] = useState<number | null>(null);
-  const [activeDocument, setActiveDocument] = useState<TDocument | null>(null);
-
-  // const [redactions, setRedactions] = useState<TRedaction[]>([]);
   const [redactionsIndexedOnDocId, setRedactionsIndexedOnDocId] = useState<{
     [k: string]: TRedaction[];
   }>({});
 
   const reloadSidebarTrigger = useTrigger();
 
-  const [isSidebarVisible, setIsSidebarVisible] = useState<boolean>(true);
-  const [documentIDs, setDocumentIDs] = useState<any[]>([]);
-  const [activeTabId, setActiveTabId] = useState<string>('');
-
+  const [isSidebarVisible, setIsSidebarVisible] = useState(true);
   const [openDocumentIds, setOpenDocumentIds] = useState<string[]>([]);
-  const [currentActiveTabId, setCurrentActiveTabId] = useState<string>('');
+  const [currentActiveTabId, setCurrentActiveTabId] = useState('');
   const [mode, setMode] = useState<TMode>('areaRedact');
-  const [pdfFileUrl, setPdfFileUrl] = useState<string>('');
-
-  const handleCloseTab = (v: string | undefined) => {
-    setOpenDocumentIds((prev) => prev.filter((el) => el !== v));
-  };
-  const handleCurrentActiveTabId = (x?: string) => {
-    setCurrentActiveTabId(x ? x : '');
-  };
-  const [documentsDataList, setDocumentsDataList] = useState<TDocumentList>([]);
-  const { useAxiosInstance, getDocuments, getPdfFiles } = GetDataFromAxios();
 
   const { openPreview } = useOpenDocumentInNewWindow();
-
-  const axiosInstance = useAxiosInstance();
-
-  useEffect(() => {
-    if (urn && caseId) {
-      getDocuments({ axiosInstance: axiosInstance, urn, caseId }).then(
-        (data) => {
-          setDocumentsDataList(data);
-        }
-      );
-    }
-  }, [caseId, urn]);
-
-  useEffect(() => {
-    const matchingDocuments = documentsDataList.filter((item) => {
-      return openDocumentIds.includes(item.documentId);
-    });
-
-    const sortedMatchingDocuments = matchingDocuments.sort(
-      (a, b) =>
-        openDocumentIds.indexOf(a.documentId) -
-        openDocumentIds.indexOf(b.documentId)
-    );
-
-    const matchingResult = sortedMatchingDocuments?.map((item) => {
-      return {
-        id: item.documentId,
-        label: item.presentationTitle,
-        title: item.presentationTitle,
-        versionId: item.versionId
-      };
-    });
-
-    setDocumentIDs(matchingResult);
-
-    const targetDocumentId =
-      currentActiveTabId !== ''
-        ? currentActiveTabId
-        : openDocumentIds[openDocumentIds.length - 1];
-
-    documentsDataList?.forEach((item) => {
-      if (item.documentId === targetDocumentId) {
-        setActiveDocument(item);
-        setActiveDocumentId(item?.documentId);
-        setActiveVersionId(item?.versionId);
-
-        if (urn && caseId) {
-          getPdfFiles({
-            axiosInstance: axiosInstance,
-            urn,
-            caseId,
-            documentId: item?.documentId,
-            versionId: item?.versionId
-          }).then((blob) => {
-            if (blob instanceof Blob) {
-              const blobResponse = window.URL.createObjectURL(blob);
-              setPdfFileUrl(blobResponse);
-            }
-          });
-        }
-      }
-    });
-  }, [openDocumentIds, currentActiveTabId, caseId, urn]);
-
-  useEffect(() => {
-    const lastId =
-      openDocumentIds.length > 0
-        ? openDocumentIds[openDocumentIds.length - 1]
-        : '';
-    setActiveTabId(lastId);
-  }, [openDocumentIds]);
-
-  useEffect(() => {
-    if (docTypeParam) {
-      const filteredDocs = documentsDataList.filter(
-        (doc) => doc.cmsDocType.documentType === docTypeParam
-      );
-
-      if (filteredDocs.length) {
-        setCurrentActiveTabId(filteredDocs[0].documentId);
-        setOpenDocumentIds((prevState) => [
-          ...prevState,
-          ...filteredDocs.map((doc) => doc.documentId)
-        ]);
-      }
-    }
-  }, [locationState, docTypeParam, documentsDataList]);
 
   const [showBlockNavigationModal, setShowBlockNavigationModal] =
     useState(false);
   const [attemptedNavigationHref, setAttemptedNavigationHref] =
     useState<string>();
-
   const [documents, setDocuments] = useState<TDocument[] | null | undefined>();
-  const docIds = documentIDs.map((doc) => getDocumentIdWithoutPrefix(doc.id));
+
+  // Handle docType param to open filtered documents
+  useEffect(() => {
+    if (docTypeParam && documents && documents.length > 0) {
+      const filteredDocs = documents.filter(
+        (doc) => doc.cmsDocType.documentType === docTypeParam
+      );
+
+      if (filteredDocs.length) {
+        setCurrentActiveTabId(filteredDocs[0].documentId);
+        setOpenDocumentIds((prev) => [
+          ...prev,
+          ...filteredDocs.map((doc) => doc.documentId)
+        ]);
+      }
+    }
+  }, [docTypeParam, documents]);
+
+  const activeTabId =
+    currentActiveTabId || openDocumentIds[openDocumentIds.length - 1] || '';
+
+  const tabItems = useMemo(() => {
+    if (!urn || !caseId) return [];
+
+    return openDocumentIds
+      .map((docId) => {
+        const doc = documents?.find((d) => d.documentId === docId);
+        if (!doc) return null;
+
+        return {
+          id: doc.documentId,
+          label: doc.presentationTitle,
+          versionId: doc.versionId,
+          isDirty: (redactionsIndexedOnDocId[doc.documentId]?.length ?? 0) > 0,
+          panel: {
+            children: (
+              <DocumentTabPanel
+                key={doc.documentId}
+                documentId={doc.documentId}
+                versionId={doc.versionId}
+                document={doc}
+                urn={urn}
+                caseId={caseId}
+                mode={mode}
+                onModeChange={setMode}
+                onRedactionsChange={(redactions) => {
+                  setRedactionsIndexedOnDocId((prev) => ({
+                    ...prev,
+                    [doc.documentId]: redactions
+                  }));
+                }}
+                onModification={() => reloadSidebarTrigger.fire()}
+                initRedactions={redactionsIndexedOnDocId[doc.documentId]}
+                onViewInNewWindowClick={() => {
+                  openPreview(
+                    Number(getDocumentIdWithoutPrefix(doc.documentId))
+                  );
+                }}
+              />
+            )
+          }
+        };
+      })
+      .filter((item): item is NonNullable<typeof item> => item !== null);
+  }, [
+    openDocumentIds,
+    documents,
+    urn,
+    caseId,
+    mode,
+    redactionsIndexedOnDocId,
+    reloadSidebarTrigger,
+    openPreview
+  ]);
+
+  const handleCloseTab = (id: string | undefined) => {
+    setOpenDocumentIds((prev) => prev.filter((el) => el !== id));
+    if (id === currentActiveTabId) {
+      setCurrentActiveTabId('');
+    }
+  };
+
+  const handleCurrentActiveTabId = (id?: string) => {
+    setCurrentActiveTabId(id ?? '');
+  };
 
   return (
     <Layout
@@ -296,7 +271,7 @@ export const ReviewAndRedactPage = () => {
           onReturnClick={() => setShowBlockNavigationModal(false)}
           documents={documents ?? []}
           onDocumentClick={(documentId) => {
-            setActiveDocumentId(documentId);
+            setCurrentActiveTabId(documentId);
             setShowBlockNavigationModal(false);
           }}
         />
@@ -306,12 +281,9 @@ export const ReviewAndRedactPage = () => {
           <RenameDrawer
             material={selectedDocumentForRename}
             onCancel={() => setSelectedDocumentForRename(null)}
-            onSuccess={async () => {
+            onSuccess={() => {
               setSelectedDocumentForRename(null);
-              if (urn && caseId) {
-                const data = await getDocuments({ axiosInstance, urn, caseId });
-                setDocumentsDataList(data);
-              }
+              reloadSidebarTrigger.fire();
             }}
           />
         )}
@@ -323,7 +295,15 @@ export const ReviewAndRedactPage = () => {
                 urn={urn}
                 caseId={caseId}
                 openDocumentIds={openDocumentIds}
-                onSetDocumentOpenIds={(docIds) => setOpenDocumentIds(docIds)}
+                onSetDocumentOpenIds={(docIds) => {
+                  const newDocId = docIds.find(
+                    (id) => !openDocumentIds.includes(id)
+                  );
+                  setOpenDocumentIds(docIds);
+                  if (newDocId) {
+                    handleTabSelection(newDocId);
+                  }
+                }}
                 reloadTriggerData={reloadSidebarTrigger.data}
                 ActionComponent={(p: {
                   document: TDocument & { materialId?: number };
@@ -334,11 +314,11 @@ export const ReviewAndRedactPage = () => {
                       {
                         label: 'Rename',
                         onClick: () => {
-                          const documentIdWithoutPrefix =
-                            getDocumentIdWithoutPrefix(p.document.documentId);
                           setSelectedDocumentForRename({
                             ...p.document,
-                            materialId: Number(documentIdWithoutPrefix)
+                            materialId: Number(
+                              getDocumentIdWithoutPrefix(p.document.documentId)
+                            )
                           });
                         }
                       },
@@ -356,72 +336,26 @@ export const ReviewAndRedactPage = () => {
                     ]}
                   />
                 )}
-                onDocumentsChange={(documents) => setDocuments(documents)}
+                onDocumentsChange={setDocuments}
               />
             ) : undefined
           }
         >
-          {documentIDs.length > 0 && (
+          {tabItems.length > 0 && (
             <>
-              <DocumentControlArea
+              <Button onClick={() => setIsSidebarVisible((v) => !v)}>
+                {isSidebarVisible ? 'Hide categories' : 'Show categories'}
+              </Button>
+              <Tabs
+                idPrefix="tabs"
+                title="Tabs title"
+                items={tabItems}
                 activeTabId={activeTabId}
-                items={documentIDs || []}
-                isSidebarVisible={isSidebarVisible}
-                onToggleSidebar={() => setIsSidebarVisible((v) => !v)}
-                handleCloseTab={(a) => handleCloseTab(a)}
+                handleTabSelection={handleTabSelection}
                 handleCurrentActiveTabId={handleCurrentActiveTabId}
-              >
-                <DocumentViewportArea
-                  activeTabId={activeTabId}
-                  items={documentIDs}
-                  redactAreaState={mode === 'areaRedact'}
-                  currentActiveTabId={currentActiveTabId}
-                  onRedactAreaStateChange={(x) => {
-                    setMode(x ? 'areaRedact' : 'textRedact');
-                  }}
-                  onRotateModeButtonClick={() => {
-                    setMode((prev) =>
-                      prev === 'rotation' ? 'areaRedact' : 'rotation'
-                    );
-                  }}
-                  onDeleteModeButtonClick={() => {
-                    setMode((prev) =>
-                      prev === 'deletion' ? 'areaRedact' : 'deletion'
-                    );
-                  }}
-                  onViewInNewWindowButtonClick={async () => {
-                    openPreview(Number(docIds));
-                  }}
-                  mode={mode}
-                ></DocumentViewportArea>
-              </DocumentControlArea>
-
-              {activeDocument &&
-                activeVersionId &&
-                activeDocumentId &&
-                urn &&
-                caseId && (
-                  <CaseworkPdfRedactorWrapper
-                    fileUrl={pdfFileUrl}
-                    mode={mode}
-                    onModeChange={setMode}
-                    onModification={() => reloadSidebarTrigger.fire()}
-                    urn={urn}
-                    caseId={caseId}
-                    versionId={activeVersionId}
-                    documentId={activeDocumentId}
-                    document={activeDocument}
-                    onRedactionsChange={(redactions) => {
-                      setRedactionsIndexedOnDocId((prev) => ({
-                        ...prev,
-                        [activeDocument.documentId]: redactions
-                      }));
-                    }}
-                    initRedactions={
-                      redactionsIndexedOnDocId[activeDocument.documentId]
-                    }
-                  />
-                )}
+                handleCloseTab={handleCloseTab}
+                noMargin
+              />
             </>
           )}
         </TwoCol>
