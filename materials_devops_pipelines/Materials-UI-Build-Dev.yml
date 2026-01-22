@@ -75,14 +75,10 @@ stages:
               workingDir: '$(workingDir)'
               customCommand: "run build"
 
-          # - task: PublishPipelineArtifact@1
-          #   displayName: "Publish UI artifact"
-          #   inputs:
-          #     targetPath: '$(workingDir)/build'
-          #     artifact: '$(targetUIArtifact)'
-          #     publishLocation: "pipeline"
+          - task: PublishPipelineArtifact@1
+            displayName: "Publish UI artifact"
+            inputs: 
+              targetPath: '$(workingDir)/materials_ui/dist'
+              artifact: '$(targetUIArtifact)'
+              publishLocation: "pipeline"
 
-          - bash: |
-                echo "Listing build output"
-                ls -R $(System.DefaultWorkingDirectory)
-            displayName: "Check folders"
