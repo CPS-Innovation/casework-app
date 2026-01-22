@@ -78,7 +78,7 @@ stages:
           - task: PublishPipelineArtifact@1
             displayName: "Publish UI artifact"
             inputs: 
-              targetPath: '$(workingDir)/materials_ui/dist'
+              targetPath: '$(workingDir)/dist'
               artifact: '$(targetUIArtifact)'
               publishLocation: "pipeline"
 
