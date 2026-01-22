@@ -14,11 +14,6 @@ variable "location" {
   type        = string
 }
 
-variable "resource_name_prefix" {
-  type    = string
-  default = "polaris"
-}
-
 variable "location_abbr" {
   description = "The abbreviated located of this resource"
   type        = string
