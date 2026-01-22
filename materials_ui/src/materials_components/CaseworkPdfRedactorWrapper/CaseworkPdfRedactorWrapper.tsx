@@ -15,7 +15,7 @@ import {
   TRotation
 } from '../PdfRedactor/utils/rotationUtils';
 import { useWindowMouseListener } from '../PdfRedactor/utils/useWindowMouseListener';
-import { useDocumentCheckOut } from './hooks/useDocumentCheckOut';
+import { useDocumentCheckOutRequest } from './hooks/useDocumentCheckOutRequest';
 import {
   combineDeletionsWithDeletionDetails,
   combineRedactionsWithRedactionDetails,
@@ -70,12 +70,12 @@ export const CaseworkPdfRedactorWrapper = (p: {
   initRedactions: TRedaction[];
 }) => {
   const [isDocumentCheckedOut, setIsDocumentCheckedOut] = useState(false);
-  const documentCheckOut = useDocumentCheckOut({
+  const documentCheckOutRequest = useDocumentCheckOutRequest({
     caseId: p.caseId,
     urn: p.urn
   });
 
-  const [redactions, setRedactions] = useState<TRedaction[]>([]);
+  const [redactions, setRedactions] = useState<TRedaction[]>(p.initRedactions);
   const [indexedRotation, setIndexedRotation] = useState<TIndexedRotation>({});
   const [indexedDeletion, setIndexedDeletion] = useState<TIndexedDeletion>({});
 
@@ -143,7 +143,7 @@ export const CaseworkPdfRedactorWrapper = (p: {
 
   const checkCheckoutStatus = async () => {
     if (isDocumentCheckedOut) return { success: true } as const;
-    const checkoutResponse = await documentCheckOut.checkOut({
+    const checkoutResponse = await documentCheckOutRequest.checkOut({
       documentId: p.documentId,
       versionId: p.versionId
     });
@@ -179,7 +179,7 @@ export const CaseworkPdfRedactorWrapper = (p: {
         })()}
       {documentIsCheckedOutPopupProps &&
         (() => {
-          const closeModal = () => setDeleteReasonPopupProps(null);
+          const closeModal = () => setDocumentIsCheckedOutPopupProps(null);
 
           return (
             <PdfRedactorCenteredModal
@@ -191,7 +191,7 @@ export const CaseworkPdfRedactorWrapper = (p: {
                 <div>{documentIsCheckedOutPopupProps.message}</div>
                 <br />
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <GovUkButton>Ok</GovUkButton>
+                  <GovUkButton onClick={closeModal}>Ok</GovUkButton>
                 </div>
               </div>
             </PdfRedactorCenteredModal>
@@ -311,7 +311,7 @@ export const CaseworkPdfRedactorWrapper = (p: {
             redactions
           });
           p.onModification();
-          await documentCheckOut.checkIn({
+          await documentCheckOutRequest.checkIn({
             documentId: p.documentId,
             versionId: p.versionId
           });
@@ -376,7 +376,7 @@ export const CaseworkPdfRedactorWrapper = (p: {
             deletions: Object.values(indexedDeletion)
           });
           p.onModification();
-          await documentCheckOut.checkIn({
+          await documentCheckOutRequest.checkIn({
             documentId: p.documentId,
             versionId: p.versionId
           });
@@ -391,7 +391,7 @@ export const CaseworkPdfRedactorWrapper = (p: {
             rotations: Object.values(indexedRotation)
           });
           p.onModification();
-          await documentCheckOut.checkIn({
+          await documentCheckOutRequest.checkIn({
             documentId: p.documentId,
             versionId: p.versionId
           });

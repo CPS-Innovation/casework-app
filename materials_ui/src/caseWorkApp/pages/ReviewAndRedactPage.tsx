@@ -1,12 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import {
-  ButtonMenuComponent,
-  Layout,
-  RenameDrawer,
-  TwoCol
-} from '../../components';
-import { useAppRoute, useCaseInfoStore } from '../../hooks';
+import { Layout, RenameDrawer, TwoCol } from '../../components';
+import { useCaseInfoStore } from '../../hooks';
 import { useOpenDocumentInNewWindow } from '../../hooks/ui/useOpenDocumentInNewWindow';
 import { DocumentSidebar } from '../../materials_components/DocumentSelectAccordion/DocumentSidebar';
 import { TDocument } from '../../materials_components/DocumentSelectAccordion/getters/getDocumentList';
@@ -97,7 +92,8 @@ const UnsavedRedactionsModal = (p: {
     <Modal onBackgroundClick={p.onIgnoreClick} onEscPress={p.onIgnoreClick}>
       <div style={{ padding: '20px', background: 'white' }}>
         <div>
-          You have {documentsThatHaveRedactions.length} with unsaved redactions
+          You have {documentsThatHaveRedactions.length} documents with unsaved
+          redactions
         </div>
         <br />
         <div style={{ display: 'flex', gap: '4px', flexDirection: 'column' }}>
@@ -133,7 +129,6 @@ export const ReviewAndRedactPage = () => {
   const { state: locationState } = useLocation();
   const { docType: docTypeParam } = locationState as { docType?: string };
 
-  const { getRoute } = useAppRoute();
   const navigate = useNavigate();
 
   const { caseInfo } = useCaseInfoStore();
@@ -305,37 +300,37 @@ export const ReviewAndRedactPage = () => {
                   }
                 }}
                 reloadTriggerData={reloadSidebarTrigger.data}
-                ActionComponent={(p: {
-                  document: TDocument & { materialId?: number };
-                }) => (
-                  <ButtonMenuComponent
-                    menuTitle="Actions"
-                    menuItems={[
-                      {
-                        label: 'Rename',
-                        onClick: () => {
-                          setSelectedDocumentForRename({
-                            ...p.document,
-                            materialId: Number(
-                              getDocumentIdWithoutPrefix(p.document.documentId)
-                            )
-                          });
-                        }
-                      },
-                      {
-                        label: 'Discard',
-                        onClick: () => {
-                          navigate(getRoute('DISCARD'), {
-                            state: {
-                              selectedMaterial: p.document,
-                              returnTo: getRoute('REVIEW_REDACT')
-                            }
-                          });
-                        }
-                      }
-                    ]}
-                  />
-                )}
+                // ActionComponent={(p: {
+                //   document: TDocument & { materialId?: number };
+                // }) => (
+                //   <ButtonMenuComponent
+                //     menuTitle="Actions"
+                //     menuItems={[
+                //       {
+                //         label: 'Rename',
+                //         onClick: () => {
+                //           const documentIdWithoutPrefix =
+                //             getDocumentIdWithoutPrefix(p.document.documentId);
+                //           setSelectedDocumentForRename({
+                //             ...p.document,
+                //             materialId: Number(documentIdWithoutPrefix)
+                //           });
+                //         }
+                //       },
+                //       {
+                //         label: 'Discard',
+                //         onClick: () => {
+                //           navigate(getRoute('DISCARD'), {
+                //             state: {
+                //               selectedMaterial: p.document,
+                //               returnTo: getRoute('REVIEW_REDACT')
+                //             }
+                //           });
+                //         }
+                //       }
+                //     ]}
+                //   />
+                // )}
                 onDocumentsChange={setDocuments}
               />
             ) : undefined

@@ -72,10 +72,7 @@
     flex-direction: column;
     gap: 8px;
   }
-  .document-select-accordion-document--tag-wrapper {
-    display: flex; 
-    gap: 8px;
-  }
+  
 
   .govuk-link {
     cursor: pointer;
@@ -91,16 +88,4 @@
   }
 }
 
-.document-select-notes-icon {
-  position: relative;
 
-  .document-select-notes-icon--unread-indicator {
-    position: absolute;
-    top: -3px;
-    right: -3px;
-    height: 10px;
-    width: 10px;
-    background: #1d70b8;
-    border-radius: 5px;
-  }
-}

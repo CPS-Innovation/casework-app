@@ -3,10 +3,7 @@ export const NotesIcon = (p: {
   notesStatus: 'disabled' | 'newNotes' | 'none';
 }) => {
   return (
-    <div className="document-select-notes-icon">
-      {p.notesStatus === 'newNotes' && (
-        <span className="document-select-notes-icon--unread-indicator" />
-      )}
+    <div style={{ display: 'flex' }}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 511.072 511.072"
@@ -21,6 +18,17 @@ export const NotesIcon = (p: {
           </g>
         </g>
       </svg>
+      {p.notesStatus === 'newNotes' && (
+        <span
+          style={{
+            marginLeft: '-5px',
+            height: '10px',
+            width: '10px',
+            background: '#1d70b8',
+            borderRadius: '5px'
+          }}
+        />
+      )}
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import { AxiosInstance } from 'axios';
-import { useState } from 'react';
+import { useEffect, useMemo } from 'react';
+import useSWR from 'swr';
 import z from 'zod';
 import { useAxiosInstance } from './getAxiosInstance';
 
@@ -41,6 +42,28 @@ export const getDocumentNotesFromAxiosInstance = async (p: {
   return response.data;
 };
 
+export const safeGetDocumentNotesFromLocalStorage = (p: {
+  urn: string | undefined;
+  caseId: number | undefined;
+  documentId: string | undefined;
+}) => {
+  try {
+    const key = createGetDocumentNotesKey(p);
+    const initResp = localStorage.getItem(key);
+    const resp = JSON.parse(initResp!); // assert with !, any errors caught
+
+    return documentNotesSchema.safeParse(resp);
+  } catch (error) {
+    return { success: false } as const;
+  }
+};
+
+const createGetDocumentNotesKey = (p: {
+  urn: string | undefined;
+  documentId: string | undefined;
+  caseId: number | undefined;
+}) => `getDocumentNotes-${p.urn}-${p.caseId}-${p.documentId}`;
+
 export const safeGetDocumentNotesFromAxiosInstance = async (p: {
   axiosInstance: AxiosInstance;
   urn: string | undefined;
@@ -61,28 +84,49 @@ export const safeGetDocumentNotesFromAxiosInstance = async (p: {
   }
 };
 
-export const useGetDocumentNotes = () => {
+export const safeSetDocumentNotesFromLocalStorage = (p: {
+  urn: string | undefined;
+  documentId: string | undefined;
+  caseId: number | undefined;
+  data: TDocumentNotes | null | undefined;
+}) => {
+  const localStorageKey = createGetDocumentNotesKey({
+    urn: p.urn,
+    documentId: p.documentId,
+    caseId: p.caseId
+  });
+  window.localStorage.setItem(localStorageKey, JSON.stringify(p.data));
+};
+
+export const useGetDocumentNotes = (p: {
+  urn: string | undefined;
+  caseId: number | undefined;
+  documentId: string | undefined;
+  revalidateOnMount?: boolean;
+}) => {
+  const { revalidateOnMount = true } = p;
   const axiosInstance = useAxiosInstance();
-  const [data, setDocumentNotes] = useState<TDocumentNotes | null | undefined>(
-    undefined
+  const key = createGetDocumentNotesKey(p);
+
+  const fallbackData = useMemo(() => {
+    const resp = safeGetDocumentNotesFromLocalStorage(p);
+    return resp.success ? resp.data : undefined;
+  }, [p.urn, p.caseId, p.documentId]);
+
+  const rtn = useSWR(
+    key,
+    async () => {
+      const resp = await safeGetDocumentNotesFromAxiosInstance({
+        ...p,
+        axiosInstance
+      });
+      return resp.success ? resp.data : null;
+    },
+    { fallbackData, revalidateOnMount }
   );
 
-  const load = async (p: {
-    urn: string | undefined;
-    caseId: number | undefined;
-    documentId: string | undefined;
-  }) => {
-    const resp = await safeGetDocumentNotesFromAxiosInstance({
-      axiosInstance,
-      urn: p.urn,
-      caseId: p.caseId,
-      documentId: p.documentId
-    });
-
-    setDocumentNotes(resp.success ? resp.data : null);
-  };
-
-  const clear = () => setDocumentNotes(undefined);
-
-  return { data, reload: load, clear };
+  useEffect(() => {
+    safeSetDocumentNotesFromLocalStorage({ ...p, data: rtn.data });
+  }, [rtn.data]);
+  return rtn;
 };

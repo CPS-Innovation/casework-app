@@ -3,11 +3,7 @@ import { Fragment, memo, ReactNode } from 'react';
 import { Checkbox, DocumentActions, LoadingSpinner } from '..';
 import { FilterItem } from '../../context/FiltersContext/helpers/types';
 import { useAutoReclassify, useCaseMaterial, useFilters } from '../../hooks';
-import {
-  CaseMaterialDataType,
-  CaseMaterialsResponseType,
-  CaseMaterialsType
-} from '../../schemas';
+import { CaseMaterialDataType, CaseMaterialsType } from '../../schemas';
 import { useSelectedItemsStore } from '../../stores';
 import './SortableTable.scss';
 
@@ -108,8 +104,8 @@ const SortableTable = memo(
                   />
                 </th>
               )}
-              {columns?.length &&
-                columns?.map(({ key, heading, isSortable }) => (
+              {columns.length &&
+                columns.map(({ key, heading, isSortable }) => (
                   <th
                     key={key}
                     scope="col"
@@ -141,8 +137,8 @@ const SortableTable = memo(
           </thead>
 
           <tbody className="govuk-table__body">
-            {data?.length > 0 ? (
-              data?.map((row: CaseMaterialsResponseType, index) => {
+            {data.length > 0 ? (
+              data.map((row, index) => {
                 const isCurrentMaterial =
                   +selectedMaterialId === row.materialId;
 
