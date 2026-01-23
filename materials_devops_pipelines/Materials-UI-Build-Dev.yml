@@ -25,7 +25,7 @@ variables:
   - name: workingDir
     value: "materials_ui"
   - group: materials-global
-  - group: materials-ui-spa
+  - group: materials-ui-spa-dev
 
 pool:
   name: $(dev-build-agent)
