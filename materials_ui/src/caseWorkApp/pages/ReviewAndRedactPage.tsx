@@ -282,8 +282,6 @@ export const ReviewAndRedactPage = () => {
     }
   }, [showRedactionLogModal]);
 
-  console.log('lookups', lookups);
-
   return (
     <Layout
       title="Review and Redact"
