@@ -14,9 +14,11 @@ import { DocumentViewportArea } from '../../materials_components/documenViewport
 import { TRedaction } from '../../materials_components/PdfRedactor/utils/coordUtils';
 import { TMode } from '../../materials_components/PdfRedactor/utils/modeUtils';
 import { useTrigger } from '../../materials_components/PdfRedactor/utils/useTriggger';
+import { RedactionLogModal } from '../../materials_components/RedactionLog/RedactionLogModal';
 import { getDocumentIdWithoutPrefix } from '../../utils/string';
 import { Button } from '../components/button';
 import { GetDataFromAxios } from '../components/utils/getData';
+import { TLookupsResponse } from '../types/redaction';
 
 const ModalStyleTag = () => {
   return (
@@ -161,6 +163,10 @@ export const ReviewAndRedactPage = () => {
   const [mode, setMode] = useState<TMode>('areaRedact');
   const [pdfFileUrl, setPdfFileUrl] = useState<string>('');
 
+  const [showRedactionLogModal, setShowRedactionLogModal] =
+    useState<boolean>(false);
+  const [lookups, setLookups] = useState<TLookupsResponse>({});
+
   const handleCloseTab = (v: string | undefined) => {
     setOpenDocumentIds((prev) => prev.filter((el) => el !== v));
   };
@@ -168,7 +174,8 @@ export const ReviewAndRedactPage = () => {
     setCurrentActiveTabId(x ? x : '');
   };
   const [documentsDataList, setDocumentsDataList] = useState<TDocumentList>([]);
-  const { useAxiosInstance, getDocuments, getPdfFiles } = GetDataFromAxios();
+  const { useAxiosInstance, getDocuments, getPdfFiles, getLookups } =
+    GetDataFromAxios();
 
   const { openPreview } = useOpenDocumentInNewWindow();
 
@@ -267,6 +274,16 @@ export const ReviewAndRedactPage = () => {
   const [documents, setDocuments] = useState<TDocument[] | null | undefined>();
   const docIds = documentIDs.map((doc) => getDocumentIdWithoutPrefix(doc.id));
 
+  useEffect(() => {
+    if (showRedactionLogModal) {
+      getLookups({ axiosInstance: axiosInstance }).then((data) => {
+        setLookups(data);
+      });
+    }
+  }, [showRedactionLogModal]);
+
+  console.log('lookups', lookups);
+
   return (
     <Layout
       title="Review and Redact"
@@ -310,6 +327,17 @@ export const ReviewAndRedactPage = () => {
           />
         )}
 
+        {showRedactionLogModal && (
+          <RedactionLogModal
+            urn={urn!}
+            caseId={caseId!}
+            activeDocument={activeDocument!}
+            isOpen={showRedactionLogModal}
+            onClose={() => setShowRedactionLogModal(false)}
+            lookups={lookups}
+          />
+        )}
+
         <TwoCol
           sidebar={
             isSidebarVisible && caseId && urn ? (
@@ -319,37 +347,6 @@ export const ReviewAndRedactPage = () => {
                 openDocumentIds={openDocumentIds}
                 onSetDocumentOpenIds={(docIds) => setOpenDocumentIds(docIds)}
                 reloadTriggerData={reloadSidebarTrigger.data}
-                // ActionComponent={(p: {
-                //   document: TDocument & { materialId?: number };
-                // }) => (
-                //   <ButtonMenuComponent
-                //     menuTitle="Actions"
-                //     menuItems={[
-                //       {
-                //         label: 'Rename',
-                //         onClick: () => {
-                //           const documentIdWithoutPrefix =
-                //             getDocumentIdWithoutPrefix(p.document.documentId);
-                //           setSelectedDocumentForRename({
-                //             ...p.document,
-                //             materialId: Number(documentIdWithoutPrefix)
-                //           });
-                //         }
-                //       },
-                //       {
-                //         label: 'Discard',
-                //         onClick: () => {
-                //           navigate(getRoute('DISCARD'), {
-                //             state: {
-                //               selectedMaterial: p.document,
-                //               returnTo: getRoute('REVIEW_REDACT')
-                //             }
-                //           });
-                //         }
-                //       }
-                //     ]}
-                //   />
-                // )}
                 onDocumentsChange={(documents) => setDocuments(documents)}
               />
             ) : undefined
@@ -365,29 +362,32 @@ export const ReviewAndRedactPage = () => {
                 handleCloseTab={(a) => handleCloseTab(a)}
                 handleCurrentActiveTabId={handleCurrentActiveTabId}
               >
-                <DocumentViewportArea
-                  activeTabId={activeTabId}
-                  items={documentIDs}
-                  redactAreaState={mode === 'areaRedact'}
-                  currentActiveTabId={currentActiveTabId}
-                  onRedactAreaStateChange={(x) => {
-                    setMode(x ? 'areaRedact' : 'textRedact');
-                  }}
-                  onRotateModeButtonClick={() => {
-                    setMode((prev) =>
-                      prev === 'rotation' ? 'areaRedact' : 'rotation'
-                    );
-                  }}
-                  onDeleteModeButtonClick={() => {
-                    setMode((prev) =>
-                      prev === 'deletion' ? 'areaRedact' : 'deletion'
-                    );
-                  }}
-                  onViewInNewWindowButtonClick={async () => {
-                    openPreview(Number(docIds));
-                  }}
-                  mode={mode}
-                ></DocumentViewportArea>
+                <>
+                  <DocumentViewportArea
+                    activeTabId={activeTabId}
+                    items={documentIDs}
+                    redactAreaState={mode === 'areaRedact'}
+                    currentActiveTabId={currentActiveTabId}
+                    onRedactAreaStateChange={(x) => {
+                      setMode(x ? 'areaRedact' : 'textRedact');
+                    }}
+                    onRotateModeButtonClick={() => {
+                      setMode((prev) =>
+                        prev === 'rotation' ? 'areaRedact' : 'rotation'
+                      );
+                    }}
+                    onDeleteModeButtonClick={() => {
+                      setMode((prev) =>
+                        prev === 'deletion' ? 'areaRedact' : 'deletion'
+                      );
+                    }}
+                    onViewInNewWindowButtonClick={async () => {
+                      openPreview(Number(docIds));
+                    }}
+                    onRedactionLogClick={() => setShowRedactionLogModal(true)}
+                    mode={mode}
+                  />
+                </>
               </DocumentControlArea>
 
               {activeDocument &&

@@ -30,7 +30,7 @@ const setDropDownActionItems = (mode: string) => {
       id: '1',
       label: 'Log an Under/Over redaction',
       ariaLabel: 'log an under or over redaction',
-      disabled: true
+      disabled: false
     },
     {
       id: '2',
@@ -75,6 +75,7 @@ type DocumentViewportAreaProps = {
   onRotateModeButtonClick: () => void;
   onDeleteModeButtonClick: () => void;
   onViewInNewWindowButtonClick: () => void;
+  onRedactionLogClick: () => void;
   mode: string;
 };
 
@@ -87,6 +88,7 @@ export const DocumentViewportArea = ({
   onRotateModeButtonClick,
   onDeleteModeButtonClick,
   onViewInNewWindowButtonClick,
+  onRedactionLogClick,
   mode
 }: DocumentViewportAreaProps) => {
   const [name, setName] = useState<string>('');
@@ -132,6 +134,7 @@ export const DocumentViewportArea = ({
         name="Document actions"
         dropDownItems={setDropDownActionItems(mode)}
         callBackFn={(id) => {
+          if (id === '1') onRedactionLogClick();
           if (id === '2') onRotateModeButtonClick();
           if (id === '3') onDeleteModeButtonClick();
           if (id === '4') onViewInNewWindowButtonClick();

@@ -56,6 +56,18 @@ export const getPdfFiles = async (p: {
   }
 };
 
+export const getLookups = async (p: { axiosInstance: AxiosInstance }) => {
+  try {
+    const response = await p.axiosInstance.get(
+      `https://fa-redaction-log-dev-reporting.azurewebsites.net/api/lookUps`
+    );
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError)
+      console.error(`Error getting lookups: ${error.message}`);
+  }
+};
+
 export const GetDataFromAxios = () => {
-  return { useAxiosInstance, getDocuments, getPdfFiles };
+  return { useAxiosInstance, getDocuments, getPdfFiles, getLookups };
 };

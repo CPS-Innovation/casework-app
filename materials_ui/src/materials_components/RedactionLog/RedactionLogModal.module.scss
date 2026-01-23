@@ -1,0 +1,43 @@
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.modalContent {
+    background: white;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.35);
+    min-width: 25rem;
+    max-width: 1300px;
+    width: 90%;
+    min-height: 9.375rem;
+    transform: translate(-50%, -40%);
+    left: 50%;
+    top: 40%;
+    position: fixed;
+}
+
+.modalHeader {
+    margin-top: 0;
+    font-size: 1.4rem;
+    border-bottom: 1px solid #ddd;
+    background: #f3f2f1;
+    padding: 20px;
+}
+
+.modalBody {
+    padding: 20px;
+    margin-top: 1rem;
+
+}
+
+.modalFooter {
+    padding: 20px;
+    margin-top: 1rem;
+}
