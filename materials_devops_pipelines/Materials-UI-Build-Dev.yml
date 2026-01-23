@@ -94,7 +94,7 @@ stages:
               VITE_GLOBAL_SCRIPT_URL: $(GLOBAL_SCRIPT_URL)
 
           - task: PublishPipelineArtifact@1
-            displayName: "Publish terraform artifact"
+            displayName: "Publish Web UI artifact"
             inputs:
               targetPath: '$(workingDir)/build'
               artifact: '$(targetUIArtifact)'
