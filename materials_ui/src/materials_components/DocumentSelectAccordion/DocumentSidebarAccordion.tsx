@@ -28,6 +28,7 @@ export const DocumentSidebarAccordion = (p: {
   activeDocumentIds: string[];
   onNotesClick: (docId: string) => void;
   onSetActiveDocumentIds: (docIds: string[]) => void;
+  onDocumentClick?: (docId: string) => void;
   ActionComponent?: (p: { document: TDocument }) => React.ReactNode;
 }) => {
   const { caseId } = p;
@@ -99,6 +100,7 @@ export const DocumentSidebarAccordion = (p: {
                       activeDocumentIds={activeDocumentIds}
                       readDocumentIds={readDocumentIds}
                       onDocumentClick={() => {
+                        p.onDocumentClick?.(document.documentId);
                         setReadDocumentIds((docIds) => [
                           ...new Set([...docIds, document.documentId])
                         ]);

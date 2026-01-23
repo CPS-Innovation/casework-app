@@ -11,6 +11,7 @@ export const DocumentSidebar = (p: {
   onDocumentsChange: (doc: TDocument[] | null | undefined) => void;
   onSetDocumentOpenIds: (docIds: string[]) => void;
   reloadTriggerData: [] | undefined;
+  onDocumentClick?: (docId: string) => void;
   ActionComponent?: (p: { document: TDocument }) => React.ReactNode;
 }) => {
   const { caseId, urn } = p;
@@ -43,6 +44,7 @@ export const DocumentSidebar = (p: {
           documentList={documentList.data}
           activeDocumentIds={p.openDocumentIds}
           onSetActiveDocumentIds={(docIds) => p.onSetDocumentOpenIds(docIds)}
+          onDocumentClick={p.onDocumentClick}
           onNotesClick={(docId: string) =>
             setStatus({ mode: 'notes', documentId: docId })
           }
