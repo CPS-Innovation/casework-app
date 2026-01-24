@@ -56,6 +56,23 @@ export const getPdfFiles = async (p: {
   }
 };
 
-export const GetDataFromAxios = () => {
-  return { useAxiosInstance, getDocuments, getPdfFiles };
+export const getRedactionLogData = async (p: {
+  axiosInstance: AxiosInstance;
+  urn: string;
+}) => {
+  try {
+    const _URL = new URL(
+      '/api/lookUps',
+      import.meta.env.VITE_REDACTION_LOG_BASE_URL
+    ).toString();
+    const response = await p.axiosInstance.get(_URL);
+    return response.data;
+  } catch (error) {
+    console.error(`Error getting redaction log: ${error.message}`);
+  }
 };
+
+export const GetDataFromAxios = () => {
+  return { useAxiosInstance, getDocuments, getPdfFiles, getRedactionLogData };
+};
+

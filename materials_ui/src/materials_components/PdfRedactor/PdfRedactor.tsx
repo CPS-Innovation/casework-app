@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Document, pdfjs } from 'react-pdf';
+import { RedactionLogModal } from '../../../../materials_components/CaseworkRedactionLog/';
 import { AreaIcon } from './icons/AreaIcon';
 import { EditIcon } from './icons/EditIcon';
 import { TickCircleIcon } from './icons/TickCircleIcon';
@@ -211,6 +212,8 @@ export const PdfRedactor = (p: {
     TMode | undefined
   >(undefined);
 
+  const [redactionLogVisible, setRedactionLogVisible] = useState(false);
+
   const [numPages, setNumPages] = useState<number>();
   const scaleHelper = useScaleHelper();
   const pdfRedactorWrapperElmRef = useRef<HTMLDivElement>(null);
@@ -295,6 +298,13 @@ export const PdfRedactor = (p: {
           )}
         </PdfRedactorCenteredModal>
       )}
+      <RedactionLogModal
+        isOpen={redactionLogVisible}
+        onClose={() => {
+          alert('closed');
+        }}
+      />
+
       <ModeStyleTag mode={p.mode} />
       {!p.hideToolbar && (
         <div
@@ -448,8 +458,9 @@ export const PdfRedactor = (p: {
               redactions={p.redactions}
               onRemoveAllRedactionsClick={() => p.onRedactionsChange([])}
               onSaveRedactionsClick={async () => {
-                await p.onSaveRedactions();
-                p.onRedactionsChange([]);
+                setRedactionLogVisible(!redactionLogVisible);
+                // await p.onSaveRedactions();
+                // p.onRedactionsChange([]);
               }}
             />
           </div>
@@ -498,3 +509,4 @@ export const PdfRedactor = (p: {
     </div>
   );
 };
+
