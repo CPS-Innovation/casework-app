@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react';
-
 import { DropdownButton } from '../../caseWorkApp/components/dropDownButton/DropdownButton';
-import Tooltip from '../../caseWorkApp/components/tooltip';
-// import AreaIcon from '../../materials_ui/src/caseWorkApp/assetsCWA/svgs/areaIcon.svg?react';
 import { LinkButton } from '../../caseWorkApp/components/LinkButton/LinkButton';
+import Tooltip from '../../caseWorkApp/components/tooltip';
+import { AreaIcon } from '../PdfRedactor/icons/AreaIcon';
+import { TMode } from '../PdfRedactor/utils/modeUtils';
 import classes from './index.module.scss';
 
 export type DropdownButtonItem = {
@@ -13,131 +12,112 @@ export type DropdownButtonItem = {
   disabled: boolean;
 };
 
-export type DropdownButtonProps = {
-  name?: string;
-  dropDownItems: DropdownButtonItem[];
-  callBackFn: (id: string) => void;
-  ariaLabel?: string;
-  dataTestId?: string;
-  disabled?: boolean;
-  showLastItemSeparator?: boolean;
-  icon?: React.ReactElement;
-};
-
-const setDropDownActionItems = (mode: string) => {
-  const dropDownItems: DropdownButtonItem[] = [
-    {
-      id: '1',
-      label: 'Log an Under/Over redaction',
-      ariaLabel: 'log an under or over redaction',
-      disabled: true
-    },
-    {
-      id: '2',
-      label:
-        mode === 'rotation'
-          ? 'Hide rotate document pages'
-          : 'Rotate document pages',
-      ariaLabel:
-        mode === 'rotation'
-          ? 'hide rotate document pages'
-          : 'rotate document pages',
-      disabled: false
-    },
-    {
-      id: '3',
-      label:
-        mode === 'deletion'
-          ? 'Hide delete page options'
-          : 'Show delete page options',
-      ariaLabel:
-        mode === 'deletion'
-          ? 'hide delete page options'
-          : 'show delete page options',
-      disabled: false
-    },
-    {
-      id: '4',
-      label: 'View in new window',
-      ariaLabel: 'view in new window',
-      disabled: false
-    }
-  ];
-  return dropDownItems;
-};
+const DROPDOWN_ACTIONS = {
+  LOG_REDACTION: 'log-redaction',
+  ROTATE: 'rotate',
+  DELETE: 'delete',
+  VIEW_NEW_WINDOW: 'view-new-window'
+} as const;
 
 type DocumentViewportAreaProps = {
-  items: DropdownButtonItem[];
-  activeTabId: string;
-  redactAreaState: boolean;
-  onRedactAreaStateChange: (x: boolean) => void;
-  currentActiveTabId?: string;
-  onRotateModeButtonClick: () => void;
-  onDeleteModeButtonClick: () => void;
+  documentName: string;
+  mode: TMode;
+  onModeChange: (mode: TMode) => void;
   onViewInNewWindowButtonClick: () => void;
-  mode: string;
 };
 
 export const DocumentViewportArea = ({
-  items,
-  activeTabId,
-  redactAreaState,
-  onRedactAreaStateChange,
-  currentActiveTabId,
-  onRotateModeButtonClick,
-  onDeleteModeButtonClick,
-  onViewInNewWindowButtonClick,
-  mode
+  documentName,
+  mode,
+  onModeChange,
+  onViewInNewWindowButtonClick
 }: DocumentViewportAreaProps) => {
-  const [name, setName] = useState<string>('');
+  const isAreaRedactMode = mode === 'areaRedact';
 
-  const handleRedactAreaToolButtonClick = () => {
-    onRedactAreaStateChange(!redactAreaState);
+  const handleAreaToolClick = () => {
+    onModeChange(mode === 'areaRedact' ? 'textRedact' : 'areaRedact');
   };
 
-  const activeTabLabel = items.findIndex(
-    (item) => item.id === activeTabId || item.id === currentActiveTabId
-  );
-
-  useEffect(() => {
-    setName(items[activeTabLabel]?.label);
-  }, [items, activeTabLabel]);
+  const handleDropdownAction = (id: string) => {
+    switch (id) {
+      case DROPDOWN_ACTIONS.ROTATE:
+        onModeChange(mode === 'rotation' ? 'areaRedact' : 'rotation');
+        break;
+      case DROPDOWN_ACTIONS.DELETE:
+        onModeChange(mode === 'deletion' ? 'areaRedact' : 'deletion');
+        break;
+      case DROPDOWN_ACTIONS.VIEW_NEW_WINDOW:
+        onViewInNewWindowButtonClick();
+        break;
+    }
+  };
 
   return (
     <div className={classes.content}>
-      <p style={{ color: '#ffffff' }}>{name}</p>
+      <p style={{ color: '#ffffff' }}>{documentName}</p>
       <Tooltip
-        text={redactAreaState ? 'Redact area tool On' : 'Redact area tool Off'}
+        text={isAreaRedactMode ? 'Redact area tool On' : 'Redact area tool Off'}
       >
         <LinkButton
           className={
-            redactAreaState
+            isAreaRedactMode
               ? `${classes.areaToolBtn} ${classes.areaToolBtnEnabled}`
-              : `${classes.areaToolBtn}`
+              : classes.areaToolBtn
           }
-          dataTestId={'btn-area-tool'}
-          id={'btn-area-tool'}
+          dataTestId="btn-area-tool"
+          id="btn-area-tool"
           ariaLabel={
-            redactAreaState
+            isAreaRedactMode
               ? 'disable area redaction mode'
               : 'enable area redaction mode'
           }
-          onClick={handleRedactAreaToolButtonClick}
+          onClick={handleAreaToolClick}
         >
-          {/* <AreaIcon /> */}
-          AreaIcon
+          <AreaIcon height={20} width={20} />
         </LinkButton>
       </Tooltip>
       <DropdownButton
         name="Document actions"
-        dropDownItems={setDropDownActionItems(mode)}
-        callBackFn={(id) => {
-          if (id === '2') onRotateModeButtonClick();
-          if (id === '3') onDeleteModeButtonClick();
-          if (id === '4') onViewInNewWindowButtonClick();
-        }}
+        dropDownItems={[
+          {
+            id: DROPDOWN_ACTIONS.LOG_REDACTION,
+            label: 'Log an Under/Over redaction',
+            ariaLabel: 'log an under or over redaction',
+            disabled: true
+          },
+          {
+            id: DROPDOWN_ACTIONS.ROTATE,
+            label:
+              mode === 'rotation'
+                ? 'Hide rotate document pages'
+                : 'Rotate document pages',
+            ariaLabel:
+              mode === 'rotation'
+                ? 'hide rotate document pages'
+                : 'rotate document pages',
+            disabled: false
+          },
+          {
+            id: DROPDOWN_ACTIONS.DELETE,
+            label:
+              mode === 'deletion'
+                ? 'Hide delete page options'
+                : 'Show delete page options',
+            ariaLabel:
+              mode === 'deletion'
+                ? 'hide delete page options'
+                : 'show delete page options',
+            disabled: false
+          },
+          {
+            id: DROPDOWN_ACTIONS.VIEW_NEW_WINDOW,
+            label: 'View in new window',
+            ariaLabel: 'view in new window',
+            disabled: false
+          }
+        ]}
+        callBackFn={handleDropdownAction}
         ariaLabel="document actions dropdown"
-        dataTestId={`document-actions-dropdown`}
         showLastItemSeparator={true}
       />
     </div>
