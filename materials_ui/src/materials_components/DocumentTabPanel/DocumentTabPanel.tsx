@@ -38,29 +38,23 @@ export const DocumentTabPanel = ({
   onViewInNewWindowClick
 }: DocumentTabPanelProps) => {
   const axiosInstance = useAxiosInstance();
-  const axiosInstanceRef = useRef(axiosInstance);
-  axiosInstanceRef.current = axiosInstance;
 
   const [pdfFileUrl, setPdfFileUrl] = useState<string>('');
   const [status, setStatus] = useState<LoadStatus>('loading');
   const blobUrlRef = useRef<string | null>(null);
 
   useEffect(() => {
-    let isMounted = true;
-
     const loadPdf = async () => {
       setStatus('loading');
 
       try {
         const blob = await getPdfFiles({
-          axiosInstance: axiosInstanceRef.current,
+          axiosInstance,
           urn,
           caseId,
           documentId,
           versionId
         });
-
-        if (!isMounted) return;
 
         if (blob instanceof Blob) {
           const url = URL.createObjectURL(blob);
@@ -71,16 +65,13 @@ export const DocumentTabPanel = ({
           setStatus('error');
         }
       } catch {
-        if (isMounted) {
-          setStatus('error');
-        }
+        setStatus('error');
       }
     };
 
     loadPdf();
 
     return () => {
-      isMounted = false;
       if (blobUrlRef.current) {
         URL.revokeObjectURL(blobUrlRef.current);
       }
