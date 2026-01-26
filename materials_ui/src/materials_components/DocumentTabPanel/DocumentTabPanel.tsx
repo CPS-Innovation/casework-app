@@ -44,12 +44,8 @@ export const DocumentTabPanel = ({
   const [pdfFileUrl, setPdfFileUrl] = useState<string>('');
   const [status, setStatus] = useState<LoadStatus>('loading');
   const blobUrlRef = useRef<string | null>(null);
-  const hasFetchedRef = useRef(false);
 
   useEffect(() => {
-    if (hasFetchedRef.current) return;
-    hasFetchedRef.current = true;
-
     let isMounted = true;
 
     const loadPdf = async () => {
