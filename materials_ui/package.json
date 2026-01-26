@@ -11,13 +11,16 @@
     "prepare": "husky",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
+    "tsc": "tsc --noemit --watch --project tsconfig.app.json",
     "test": "vitest run",
     "test:watch": "vitest",
     "e2e": "playwright test",
     "e2e:ui": "playwright test --ui",
     "e2e:headed": "playwright test --headed",
     "e2e:debug": "playwright test --debug",
-    "e2e:report": "playwright show-report"
+    "e2e:report": "playwright show-report",
+    "dev1": "npm run dev",
+    "dev2": "npm run tsc"
   },
   "keywords": [],
   "author": "",
