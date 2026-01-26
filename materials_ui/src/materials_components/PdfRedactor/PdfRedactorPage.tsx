@@ -29,158 +29,151 @@ export const PdfRedactorRotationOverlay = (p: {
   pagesAmount: number;
 }) => {
   const [rotationOn, setRotationOn] = useState(p.pageRotation !== 0);
-
-  return (
-    <>
-      {!rotationOn && (
-        <div style={{ position: 'absolute', top: 0, right: 0, zIndex: 500 }}>
-          <GovUkButton
-            variant="inverse"
-            onClick={() => setRotationOn(true)}
-            style={{
-              display: 'flex',
-              whiteSpace: 'nowrap',
-              border: 0,
-              padding: 0,
-              paddingRight: '8px',
-              gap: '8px',
-              alignItems: 'center'
-            }}
-          >
-            <span
-              style={{
-                background: '#1d70b8',
-                height: '25px',
-                width: '25px',
-                padding: '5px'
-              }}
-            >
-              <RotateIcon color="white" />
-            </span>
-            <div>
-              Rotate page {p.pageNumber} / {p.pagesAmount}
-            </div>
-          </GovUkButton>
-        </div>
-      )}
-      {rotationOn && (
-        <div
+  if (!rotationOn)
+    return (
+      <div style={{ position: 'absolute', top: 0, right: 0, zIndex: 500 }}>
+        <GovUkButton
+          variant="inverse"
+          onClick={() => setRotationOn(true)}
           style={{
-            position: 'absolute',
-            top: 0,
-            bottom: 0,
-            right: 0,
-            left: 0,
-            backgroundColor: '#00000055',
-            zIndex: 500
+            display: 'flex',
+            whiteSpace: 'nowrap',
+            border: 0,
+            padding: 0,
+            paddingRight: '8px',
+            gap: '8px',
+            alignItems: 'center'
           }}
         >
-          <div
+          <span
             style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%,-50%)'
+              background: '#1d70b8',
+              height: '25px',
+              width: '25px',
+              padding: '5px'
             }}
           >
-            <div
+            <RotateIcon color="white" />
+          </span>
+          <div>
+            Rotate page {p.pageNumber} / {p.pagesAmount}
+          </div>
+        </GovUkButton>
+      </div>
+    );
+
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        right: 0,
+        left: 0,
+        backgroundColor: '#00000055',
+        zIndex: 500
+      }}
+    >
+      <div
+        style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%,-50%)'
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            color: '#ffffff',
+            gap: '8px'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+            <GovUkButton
+              variant="inverse"
+              onClick={() => {
+                const newVal = p.pageRotation - 90;
+                p.onPageRotationChange(newVal < 0 ? 360 + newVal : newVal);
+              }}
               style={{
                 display: 'flex',
-                flexDirection: 'column',
-                color: '#ffffff',
-                gap: '8px'
+                whiteSpace: 'nowrap',
+                border: 0,
+                padding: 0,
+                paddingRight: '8px',
+                gap: '8px',
+                alignItems: 'center'
               }}
             >
-              <div
-                style={{ display: 'flex', alignItems: 'center', gap: '20px' }}
+              <span
+                style={{
+                  background: '#1d70b8',
+                  height: '25px',
+                  width: '25px',
+                  padding: '5px'
+                }}
               >
-                <GovUkButton
-                  variant="inverse"
-                  onClick={() => {
-                    const newVal = p.pageRotation - 90;
-                    p.onPageRotationChange(newVal < 0 ? 360 + newVal : newVal);
-                  }}
-                  style={{
-                    display: 'flex',
-                    whiteSpace: 'nowrap',
-                    border: 0,
-                    padding: 0,
-                    paddingRight: '8px',
-                    gap: '8px',
-                    alignItems: 'center'
-                  }}
-                >
-                  <span
-                    style={{
-                      background: '#1d70b8',
-                      height: '25px',
-                      width: '25px',
-                      padding: '5px'
-                    }}
-                  >
-                    <RotateIcon color="white" flip />
-                  </span>
-                  <div>rotate page left</div>
-                </GovUkButton>
-                <span style={{ height: '125px', width: '125px' }}>
-                  <DocumentIcon color="white" rotateDegrees={p.pageRotation} />
-                </span>
-                <GovUkButton
-                  variant="inverse"
-                  onClick={() => {
-                    const newVal = p.pageRotation + 90;
-                    p.onPageRotationChange(
-                      newVal >= 360 ? newVal - 360 : newVal
-                    );
-                  }}
-                  style={{
-                    display: 'flex',
-                    whiteSpace: 'nowrap',
-                    border: 0,
-                    padding: 0,
-                    paddingLeft: '8px',
-                    gap: '8px',
-                    alignItems: 'center'
-                  }}
-                >
-                  <div>rotate page right</div>
-                  <span
-                    style={{
-                      background: '#1d70b8',
-                      height: '25px',
-                      width: '25px',
-                      padding: '5px'
-                    }}
-                  >
-                    <RotateIcon color="white" />
-                  </span>
-                </GovUkButton>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <span style={{ fontSize: '2.5rem' }}>
-                  Rotate page {p.pageRotation}&deg;
-                </span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <span
-                  onClick={() => {
-                    p.onPageRotationChange(0);
-                    setRotationOn(false);
-                  }}
-                  className="govuk-link"
-                  style={{
-                    color: '#ffffff'
-                    // visibility: p.pageRotation === 0 ? 'hidden' : 'unset'
-                  }}
-                >
-                  Cancel
-                </span>
-              </div>
-            </div>
+                <RotateIcon color="white" flip />
+              </span>
+              <div>rotate page left</div>
+            </GovUkButton>
+            <span style={{ height: '125px', width: '125px' }}>
+              <DocumentIcon color="white" rotateDegrees={p.pageRotation} />
+            </span>
+            <GovUkButton
+              variant="inverse"
+              onClick={() => {
+                const newVal = p.pageRotation + 90;
+                p.onPageRotationChange(newVal >= 360 ? newVal - 360 : newVal);
+              }}
+              style={{
+                display: 'flex',
+                whiteSpace: 'nowrap',
+                border: 0,
+                padding: 0,
+                paddingLeft: '8px',
+                gap: '8px',
+                alignItems: 'center'
+              }}
+            >
+              <div>rotate page right</div>
+              <span
+                style={{
+                  background: '#1d70b8',
+                  height: '25px',
+                  width: '25px',
+                  padding: '5px'
+                }}
+              >
+                <RotateIcon color="white" />
+              </span>
+            </GovUkButton>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <span style={{ fontSize: '2.5rem' }}>
+              Rotate page {p.pageRotation}&deg;
+            </span>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <span
+              onClick={() => {
+                p.onPageRotationChange(0);
+                setRotationOn(false);
+              }}
+              className="govuk-link"
+              style={{
+                color: '#ffffff'
+                // visibility: p.pageRotation === 0 ? 'hidden' : 'unset'
+              }}
+            >
+              Cancel
+            </span>
           </div>
         </div>
-      )}
-    </>
+      </div>
+    </div>
   );
 };
 export const PdfRedactorDeletionOverlay = (p: {
