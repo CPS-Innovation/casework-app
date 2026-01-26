@@ -15,20 +15,20 @@ export default defineConfig(({ mode }) => {
     plugins: [
       svgr(),
       react(),
-      viteCompression({ algorithm: 'brotliCompress' }),
-      {
-        name: 'inject-external-script',
-        transformIndexHtml(html) {
-          if (env.VITE_GLOBAL_SCRIPT_URL) {
-            console.log(env.VITE_GLOBAL_SCRIPT_URL);
-            return html.replace(
-              '</head>',
-              `<script src="${env.VITE_GLOBAL_SCRIPT_URL}" type="module"></script>\n</head>`
-            );
-          }
-          return html;
-        }
-      }
+      viteCompression({ algorithm: 'brotliCompress' })
+      // {
+      //   name: 'inject-external-script',
+      //   transformIndexHtml(html) {
+      //     if (env.VITE_GLOBAL_SCRIPT_URL) {
+      //       console.log(env.VITE_GLOBAL_SCRIPT_URL);
+      //       return html.replace(
+      //         '</head>',
+      //         `<script src="${env.VITE_GLOBAL_SCRIPT_URL}" type="module"></script>\n</head>`
+      //       );
+      //     }
+      //     return html;
+      //   }
+      // }
     ],
     resolve: {
       alias: [{ find: 'node_modules', replacement: '/node_modules' }],
