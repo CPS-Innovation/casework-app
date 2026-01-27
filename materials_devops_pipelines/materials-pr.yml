@@ -37,7 +37,7 @@ variables:
     value: "$(System.DefaultWorkingDirectory)/terraform"
   - group: materials-global
   - group: materials_e2e_tests
-  - group: materials-ui-spa
+  - group: materials-ui-spa-dev
 
 stages:
   - stage: Wait_For_Running_PRs
