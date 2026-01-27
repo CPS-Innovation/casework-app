@@ -20,7 +20,7 @@ $govuk-assets-path: "~govuk-frontend/govuk/assets/";
 
 $govuk-font-family: "NewTransport", "Arial", sans-serif;
 
-@import "govuk-frontend/dist/govuk/all";
+@import "govuk-frontend/dist/govuk/index";
 
 body {
   margin: 0;

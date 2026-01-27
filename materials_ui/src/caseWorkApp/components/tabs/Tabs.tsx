@@ -10,6 +10,7 @@ export type TabsProps = CommonTabsProps & {
   handleTabSelection: (documentId: string) => void;
   handleCloseTab: (v?: string) => void;
   handleCurrentActiveTabId: (x?: string) => void;
+  noMargin?: boolean;
 };
 
 export const Tabs: React.FC<TabsProps> = ({
@@ -21,6 +22,7 @@ export const Tabs: React.FC<TabsProps> = ({
   handleTabSelection,
   handleCloseTab,
   handleCurrentActiveTabId,
+  noMargin,
   ...attributes
 }) => {
   useLastFocus('#case-details-search');
@@ -79,7 +81,7 @@ export const Tabs: React.FC<TabsProps> = ({
     <>
       <div
         data-testid="tabs"
-        className={`govuk-tabs ${classes.tabs}`}
+        className={`govuk-tabs ${classes.tabs}${noMargin ? ` ${classes.noMargin}` : ''}`}
         {...attributes}
       >
         <TabButtons
