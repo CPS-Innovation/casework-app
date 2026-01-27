@@ -1,17 +1,21 @@
 import { TLookupsResponse } from '../../caseWorkApp/types/redaction';
 import { TDocument } from '../DocumentSelectAccordion/getters/getDocumentList';
+import { TRedaction } from '../PdfRedactor/utils/coordUtils';
 import { Modal } from './Modal';
 import styles from './RedactionLogModal.module.scss';
+import { RedactionLogModalBody } from './RedactionLogModalBody';
 import { RedactionLogModalHeader } from './RedactionLogModalHeader';
 
 type RedactionLogModalProps = {
   urn: string;
   caseId?: number;
-  activeDocument: TDocument | null;
+  activeDocument?: TDocument | null;
   isOpen: boolean;
   onClose: () => void;
   children?: React.ReactNode;
   lookups?: TLookupsResponse;
+  mode?: 'over-under' | 'list';
+  redactions?: TRedaction[];
 };
 
 export const RedactionLogModal = ({
@@ -19,16 +23,20 @@ export const RedactionLogModal = ({
   activeDocument,
   isOpen,
   onClose,
-  lookups
+  lookups,
+  mode,
+  redactions
 }: RedactionLogModalProps) => {
   if (!isOpen) return null;
+
   return (
     <Modal onClose={onClose}>
       <RedactionLogModalHeader urn={urn} lookups={lookups} />
-
-      <div className={styles.modalBody}>
-        <h2>Redaction details for: {activeDocument?.presentationTitle}</h2>
-      </div>
+      <RedactionLogModalBody
+        activeDocument={activeDocument}
+        mode={mode}
+        redactions={redactions}
+      />
 
       <div className={styles.modalFooter}>
         <div className="govuk-button-group">

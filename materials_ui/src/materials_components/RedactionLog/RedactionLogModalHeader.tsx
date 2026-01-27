@@ -1,44 +1,7 @@
 import { useState } from 'react';
 import { TLookupsResponse } from '../../caseWorkApp/types/redaction';
 import styles from './RedactionLogModal.module.scss';
-type Option = { id: string; name: string };
-
-type SelectDropdownProps = {
-  label: string;
-  id: string;
-  name: string;
-  options: Option[];
-  value?: string;
-  onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-};
-
-const SelectDropdown = ({
-  label,
-  id,
-  name,
-  options,
-  value,
-  onChange
-}: SelectDropdownProps) => (
-  <div className={styles.selectWrapper}>
-    <label className="govuk-label" htmlFor={id}>
-      {label}
-    </label>
-    <select
-      className="govuk-select"
-      id={id}
-      name={name}
-      value={value}
-      onChange={onChange}
-    >
-      {options.map((option) => (
-        <option key={option.id} value={option.id}>
-          {option.name}
-        </option>
-      ))}
-    </select>
-  </div>
-);
+import { SelectDropdown } from './templates/Select';
 
 type RedactionLogModalHeaderProps = { urn: string; lookups?: TLookupsResponse };
 
@@ -50,17 +13,31 @@ export const RedactionLogModalHeader = ({
   const divisions = lookups?.divisions || [];
   const investigatingAgencies = lookups?.investigatingAgencies || [];
 
+  // Temp data for charge statuses
+  const chargeStatuses = [
+    { id: 'Pre-charge', name: 'Pre-charge' },
+    { id: 'Post-charge', name: 'Post-charge' }
+  ];
+
   const unified = [...areas, ...divisions];
   const [selectedId, setSelectedId] = useState<string>(unified[0]?.id || '');
   const selectedItem = unified.find((item) => item.id === selectedId);
 
   return (
     <div className={styles.modalHeader}>
-      <h1>{urn} - Redaction Log</h1>
+      <h1 className="govuk-heading-l">{urn} - Redaction Log</h1>
 
       <div
         className="govuk-form-group"
-        style={{ display: 'flex', gap: '20px', maxWidth: 'fit-content' }}
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'flex-start',
+          alignItems: 'flex-end',
+          gap: '20px',
+          width: '100%',
+          maxWidth: '100%'
+        }}
       >
         <SelectDropdown
           label="CPS Area or Central Casework Division: "
@@ -81,6 +58,12 @@ export const RedactionLogModalHeader = ({
           id="investigating-agency-select"
           name="investigating-agency-select"
           options={investigatingAgencies}
+        />
+        <SelectDropdown
+          label="Charge Status: "
+          id="charge-status-select"
+          name="charge-status-select"
+          options={chargeStatuses}
         />
         <SelectDropdown
           label="Document Type: "

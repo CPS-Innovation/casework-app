@@ -282,6 +282,8 @@ export const ReviewAndRedactPage = () => {
     }
   }, [showRedactionLogModal]);
 
+  // console.log('active document', activeDocument);
+
   return (
     <Layout
       title="Review and Redact"

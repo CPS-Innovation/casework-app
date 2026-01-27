@@ -43,6 +43,7 @@ const RedactionsFooter = (p: {
   redactions: TRedaction[];
   onRemoveAllRedactionsClick: () => void;
   onSaveRedactionsClick: (x: TRedaction[]) => void;
+  onShowRedactionLogModal?: (redactions: TRedaction[]) => void;
 }) => {
   return (
     <div
@@ -71,7 +72,12 @@ const RedactionsFooter = (p: {
         </span>
         <button
           className="govuk-button"
-          onClick={() => p.onSaveRedactionsClick(p.redactions)}
+          onClick={() => {
+            p.onSaveRedactionsClick(p.redactions);
+            if (p.onShowRedactionLogModal) {
+              p.onShowRedactionLogModal(p.redactions);
+            }
+          }}
         >
           Save all redactions
         </button>
@@ -195,6 +201,7 @@ export const PdfRedactor = (p: {
   onDeletionAdd: (x: TDeletion) => void;
   onDeletionRemove: (x: TDeletion) => void;
   initRedactions: TRedaction[];
+  onShowRedactionLogModal?: (redactions: TRedaction[]) => void;
 }) => {
   const { previousModeRef } = usePreviousModeRef(p.mode);
 
@@ -451,6 +458,7 @@ export const PdfRedactor = (p: {
                 await p.onSaveRedactions();
                 p.onRedactionsChange([]);
               }}
+              onShowRedactionLogModal={p.onShowRedactionLogModal}
             />
           </div>
         )}

@@ -15,6 +15,7 @@ import {
   TRotation
 } from '../PdfRedactor/utils/rotationUtils';
 import { useWindowMouseListener } from '../PdfRedactor/utils/useWindowMouseListener';
+import { RedactionLogModal } from '../RedactionLog/RedactionLogModal';
 import { useDocumentCheckOutRequest } from './hooks/useDocumentCheckOutRequest';
 import {
   combineDeletionsWithDeletionDetails,
@@ -83,6 +84,13 @@ export const CaseworkPdfRedactorWrapper = (p: {
     []
   );
   const [deletionDetails, setDeletionDetails] = useState<TDeletionDetail[]>([]);
+
+  const [showRedactionLogModal, setShowRedactionLogModal] = useState(false);
+  const [redactionLogModalMode, setRedactionLogModalMode] = useState<
+    'list' | 'over-under'
+  >('list');
+  const [redactionLogModalRedactions, setRedactionLogModalRedactions] =
+    useState<TRedaction[]>([]);
 
   const cleanupRedactionDetails = () => {
     const redactionIds = redactions.map((red) => red.id);
@@ -253,6 +261,17 @@ export const CaseworkPdfRedactorWrapper = (p: {
             </PdfRedactorMiniModal>
           );
         })()}
+
+      {showRedactionLogModal && (
+        <RedactionLogModal
+          urn={p.urn}
+          isOpen={showRedactionLogModal}
+          onClose={() => setShowRedactionLogModal(false)}
+          mode={redactionLogModalMode}
+          redactions={redactionLogModalRedactions}
+        />
+      )}
+
       <PdfRedactor
         fileUrl={p.fileUrl}
         mode={p.mode}
@@ -265,7 +284,6 @@ export const CaseworkPdfRedactorWrapper = (p: {
           const redactionDisabledMessage = getDocumentRedactionDisabledMessage(
             p.document
           );
-
           if (redactionDisabledMessage) {
             removeRedactions(add.map((x) => x.id));
             setRedactionDisabledModalProps({
@@ -315,6 +333,11 @@ export const CaseworkPdfRedactorWrapper = (p: {
             documentId: p.documentId,
             versionId: p.versionId
           });
+        }}
+        onShowRedactionLogModal={(redactions) => {
+          setRedactionLogModalMode('list');
+          setRedactionLogModalRedactions(redactions);
+          setShowRedactionLogModal(true);
         }}
         indexedRotation={indexedRotation}
         onRotationsChange={(newRotations) => setIndexedRotation(newRotations)}
