@@ -1,3 +1,4 @@
+import { FormProvider, useForm } from 'react-hook-form';
 import { TLookupsResponse } from '../../caseWorkApp/types/redaction';
 import { TDocument } from '../DocumentSelectAccordion/getters/getDocumentList';
 import { TRedaction } from '../PdfRedactor/utils/coordUtils';
@@ -5,6 +6,19 @@ import { Modal } from './Modal';
 import styles from './RedactionLogModal.module.scss';
 import { RedactionLogModalBody } from './RedactionLogModalBody';
 import { RedactionLogModalHeader } from './RedactionLogModalHeader';
+
+export type RedactionLogFormInputs = {
+  unifiedId: string;
+  businessUnitId: string;
+  investigatingAgencyId: string;
+  chargeStatus: 'Pre-charge' | 'Post-charge';
+  documentTypeId: string | number;
+
+  category: 'under' | 'over' | null;
+  overReason: 'investigative-agency' | 'cps-colleague' | null;
+  redactionTypes: number[];
+  supportingNotes: string;
+};
 
 type RedactionLogModalProps = {
   urn: string;
@@ -27,37 +41,59 @@ export const RedactionLogModal = ({
   mode,
   redactions
 }: RedactionLogModalProps) => {
+  const unified = [...(lookups?.areas ?? []), ...(lookups?.divisions ?? [])];
+
+  const form = useForm<RedactionLogFormInputs>({
+    defaultValues: {
+      unifiedId: unified[0]?.id || '',
+      businessUnitId: '',
+      investigatingAgencyId: '',
+      chargeStatus: 'Pre-charge',
+      documentTypeId: activeDocument?.cmsDocType.documentTypeId || '',
+      supportingNotes: ''
+    }
+  });
+
+  // const onSubmit = (values: RedactionLogFormInputs) => {
+  //   console.log('Form submitted with values:', values);
+  //   onClose();
+  // };
+
   if (!isOpen) return null;
 
   return (
     <Modal onClose={onClose}>
-      <RedactionLogModalHeader urn={urn} lookups={lookups} />
-      <RedactionLogModalBody
-        activeDocument={activeDocument}
-        mode={mode}
-        redactions={redactions}
-      />
+      <FormProvider {...form}>
+        <form onSubmit={form.handleSubmit(() => null)} noValidate>
+          <RedactionLogModalHeader urn={urn} lookups={lookups} />
+          <RedactionLogModalBody
+            activeDocument={activeDocument}
+            mode={mode}
+            redactions={redactions}
+          />
 
-      <div className={styles.modalFooter}>
-        <div className="govuk-button-group">
-          <button
-            type="submit"
-            className="govuk-button"
-            data-module="govuk-button"
-            onClick={() => null}
-            data-testid="saveChangesButton"
-          >
-            Save and close
-          </button>
-          <button
-            onClick={onClose}
-            type="submit"
-            className="govuk-button govuk-button--secondary"
-          >
-            Cancel
-          </button>
-        </div>
-      </div>
+          <div className={styles.modalFooter}>
+            <div className="govuk-button-group">
+              <button
+                type="submit"
+                className="govuk-button"
+                data-module="govuk-button"
+                data-testid="saveChangesButton"
+                disabled={form.formState.isSubmitting}
+              >
+                Save and close
+              </button>
+              <button
+                onClick={onClose}
+                type="button"
+                className="govuk-button govuk-button--secondary"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </form>
+      </FormProvider>
     </Modal>
   );
 };

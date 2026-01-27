@@ -22,10 +22,46 @@ const redactionTypes = [
   { id: 15, name: 'Other' }
 ];
 
+type Mode = 'over-under' | 'list';
+type Category = 'under' | 'over' | null;
+type OverReason = 'investigative-agency' | 'cps-colleague' | null;
+
 type RedactionLogModalBodyProps = {
   activeDocument?: TDocument | null;
-  mode?: 'over-under' | 'list';
+  mode?: Mode;
   redactions?: TRedaction[];
+};
+
+const RedactionTypesGrid = ({
+  selected,
+  onToggle
+}: {
+  selected: Set<number>;
+  onToggle: (id: number) => void;
+}) => {
+  return (
+    <div
+      className="govuk-checkboxes__conditional"
+      id="conditional-contact"
+      style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(4, 1fr)',
+        gap: '8px',
+        marginTop: '8px'
+      }}
+    >
+      {redactionTypes.map((type) => (
+        <Checkbox
+          key={`${type.id}-${type.name}`}
+          id={`redaction-type-${type.id}-${type.name}`}
+          label={type.name}
+          checked={selected.has(type.id)}
+          onChange={() => onToggle(type.id)}
+          isSmall={true}
+        />
+      ))}
+    </div>
+  );
 };
 
 export const RedactionLogModalBody = ({
@@ -33,8 +69,20 @@ export const RedactionLogModalBody = ({
   mode,
   redactions
 }: RedactionLogModalBodyProps) => {
-  const [underRedactionSelected, setUnderRedactionSelected] = useState(false);
-  const [overRedactionSelected, setOverRedactionSelected] = useState(false);
+  const [category, setCategory] = useState<Category>(null);
+  const [selectedTypes, setSelectedTypes] = useState<Set<number>>(new Set());
+
+  const toggleType = (id: number) => {
+    setSelectedTypes((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
 
   return (
     <div className={styles.modalBody}>
@@ -51,43 +99,28 @@ export const RedactionLogModalBody = ({
               id="under-redaction"
               label="Under Redaction"
               hint="Returned to Investigative Agency for correction"
-              checked={underRedactionSelected}
-              onChange={setUnderRedactionSelected}
+              checked={category === 'under'}
+              onChange={() =>
+                setCategory(category === 'under' ? null : 'under')
+              }
             />
 
-            {underRedactionSelected && (
-              <div
-                className="govuk-checkboxes__conditional"
-                id="conditional-contact"
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(4, 1fr)',
-                  gap: '8px',
-                  marginTop: '8px'
-                }}
-              >
-                {redactionTypes.map((type) => (
-                  <Checkbox
-                    key={`${type.id}-${type.name}`}
-                    id={`redaction-type-${type.id}-${type.name}`}
-                    label={type.name}
-                    checked={false}
-                    onChange={() => {}}
-                    isSmall={true}
-                  />
-                ))}
-              </div>
+            {category === 'under' && (
+              <RedactionTypesGrid
+                selected={selectedTypes}
+                onToggle={toggleType}
+              />
             )}
 
             <Checkbox
               id="over-redaction"
               label="Over Redaction"
-              checked={overRedactionSelected}
-              onChange={setOverRedactionSelected}
+              checked={category === 'over'}
+              onChange={() => setCategory(category === 'over' ? null : 'over')}
             />
 
-            {overRedactionSelected && (
-              <div className="govuk-form-group">
+            {category === 'over' && (
+              <div className="govuk-form-group" style={{ marginTop: '8px' }}>
                 <div
                   className="govuk-radios__conditional"
                   data-module="govuk-radios"
@@ -95,14 +128,14 @@ export const RedactionLogModalBody = ({
                   <div className="govuk-radios__item">
                     <input
                       className="govuk-radios__input"
-                      id="whereDoYouLive"
-                      name="whereDoYouLive"
+                      id="over-reason-ia"
+                      name="over-reason"
                       type="radio"
-                      value="england"
+                      value="investigative-agency"
                     />
                     <label
                       className="govuk-label govuk-radios__label"
-                      htmlFor="whereDoYouLive"
+                      htmlFor="over-reason-ia"
                     >
                       Returned to Investigative Agency for correction
                     </label>
@@ -110,41 +143,24 @@ export const RedactionLogModalBody = ({
                   <div className="govuk-radios__item">
                     <input
                       className="govuk-radios__input"
-                      id="whereDoYouLive-2"
-                      name="whereDoYouLive"
+                      id="over-reason-colleague"
+                      name="over-reason"
                       type="radio"
-                      value="scotland"
+                      value="colleague"
                     />
                     <label
                       className="govuk-label govuk-radios__label"
-                      htmlFor="whereDoYouLive-2"
+                      htmlFor="over-reason-colleague"
                     >
                       Returned to CPS colleague for correction
                     </label>
                   </div>
                 </div>
 
-                <div
-                  className="govuk-checkboxes__conditional"
-                  id="conditional-contact"
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(4, 1fr)',
-                    gap: '8px',
-                    marginTop: '8px'
-                  }}
-                >
-                  {redactionTypes.map((type) => (
-                    <Checkbox
-                      key={`${type.id}-${type.name}`}
-                      id={`redaction-type-${type.id}-${type.name}`}
-                      label={type.name}
-                      checked={false}
-                      onChange={() => {}}
-                      isSmall={true}
-                    />
-                  ))}
-                </div>
+                <RedactionTypesGrid
+                  selected={selectedTypes}
+                  onToggle={toggleType}
+                />
               </div>
             )}
           </div>
