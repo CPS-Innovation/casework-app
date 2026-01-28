@@ -23,5 +23,7 @@ export const saveRedactions = async (p: {
     payload
   );
 
+  console.log(response);
+
   return response.data;
 };

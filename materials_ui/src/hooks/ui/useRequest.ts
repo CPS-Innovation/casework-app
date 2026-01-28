@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 
 import { useAppRoute } from '..';
 import { POLARIS_GATEWAY_URL } from '../../constants/url';
-import { loginRequest } from '../../msalInstance';
+// import { loginRequest } from '../../msalInstance';
+import { getAccessTokenFromMsalInstance } from '../../materials_components/DocumentSelectAccordion/getters/getAccessTokenFromMsalInstance';
 
 export const useRequest = () => {
   const { instance: msalInstance } = useMsal();
@@ -16,17 +17,31 @@ export const useRequest = () => {
     withCredentials: true
   });
 
+  console.log('we are not yet here');
   axiosInstance.interceptors.request.use(async (config) => {
-    const tokenResponse = await msalInstance.acquireTokenSilent({
-      ...loginRequest,
-      account: msalInstance.getActiveAccount()!
-    });
+    console.log('we are here');
+    const accessToken = await getAccessTokenFromMsalInstance(msalInstance);
+    const Authorization = `Bearer ${accessToken}`;
+    const CorrelationId = crypto.randomUUID();
 
-    config.headers['Authorization'] = `Bearer ${tokenResponse.accessToken}`;
-    config.headers['Correlation-Id'] = crypto.randomUUID();
+    console.log({ Authorization, CorrelationId });
+
+    config.headers.Authorization = Authorization;
+    config.headers['Correlation-Id'] = CorrelationId;
 
     return config;
   });
+  // axiosInstance.interceptors.request.use(async (config) => {
+  //   const tokenResponse = await msalInstance.acquireTokenSilent({
+  //     ...loginRequest,
+  //     account: msalInstance.getActiveAccount()!
+  //   });
+
+  //   config.headers['Authorization'] = `Bearer ${tokenResponse.accessToken}`;
+  //   config.headers['Correlation-Id'] = crypto.randomUUID();
+
+  //   return config;
+  // });
 
   axiosInstance.interceptors.response.use(
     (response) => response,
