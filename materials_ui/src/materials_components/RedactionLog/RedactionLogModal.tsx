@@ -8,6 +8,12 @@ import { RedactionLogModalBody } from './RedactionLogModalBody';
 import { RedactionLogModalHeader } from './RedactionLogModalHeader';
 
 export type RedactionLogFormInputs = {
+  underRedactionSelected: boolean;
+  overRedactionSelected: boolean;
+
+  underRedactionTypeIds: number[];
+  overRedactionTypeIds: number[];
+
   unifiedId: string;
   businessUnitId: string;
   investigatingAgencyId: string;
@@ -45,6 +51,12 @@ export const RedactionLogModal = ({
 
   const form = useForm<RedactionLogFormInputs>({
     defaultValues: {
+      underRedactionSelected: false,
+      overRedactionSelected: false,
+      underRedactionTypeIds: [],
+      overRedactionTypeIds: [],
+
+      overReason: null,
       unifiedId: unified[0]?.id || '',
       businessUnitId: '',
       investigatingAgencyId: '',
@@ -54,17 +66,20 @@ export const RedactionLogModal = ({
     }
   });
 
-  // const onSubmit = (values: RedactionLogFormInputs) => {
-  //   console.log('Form submitted with values:', values);
-  //   onClose();
-  // };
+  const onSubmit = (values: RedactionLogFormInputs) => {
+    console.log('Form submitted with values:', values);
+    onClose();
+  };
 
   if (!isOpen) return null;
 
   return (
     <Modal onClose={onClose}>
       <FormProvider {...form}>
-        <form onSubmit={form.handleSubmit(() => null)} noValidate>
+        <form
+          onSubmit={form.handleSubmit(() => onSubmit(form.getValues()))}
+          noValidate
+        >
           <RedactionLogModalHeader urn={urn} lookups={lookups} />
           <RedactionLogModalBody
             activeDocument={activeDocument}

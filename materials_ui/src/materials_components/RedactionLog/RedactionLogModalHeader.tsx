@@ -35,7 +35,7 @@ export const RedactionLogModalHeader = ({
   const unifiedId = watch('unifiedId');
   const businessUnits = selectedItem?.children || [];
 
-  console.log(watch());
+  // console.log(watch());
 
   return (
     <div className={styles.modalHeader}>
