@@ -93,9 +93,16 @@ stages:
               VITE_POLARIS_GATEWAY_SCOPE: $(POLARIS_GATEWAY_SCOPE)
               VITE_GLOBAL_SCRIPT_URL: $(GLOBAL_SCRIPT_URL)
 
+          # Create wrapper folder and copy build files
+          - script: |
+              mkdir $(workingDir)/publish
+              mkdir $(workingDir)/publish/materials-ui
+              cp -R $(workingDir)/build/* $(workingDir)/publish/materials-ui
+            displayName: "Wrap UI build into root folder named materials-ui"
+
           - task: PublishPipelineArtifact@1
             displayName: "Publish Web UI artifact"
             inputs:
-              targetPath: '$(workingDir)/build'
+              targetPath: '$(workingDir)/publish'
               artifact: '$(targetUIArtifact)'
               publishLocation: "pipeline"
