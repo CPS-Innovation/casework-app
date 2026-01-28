@@ -302,7 +302,7 @@ export const CaseworkPdfRedactorWrapper = (p: {
             redactions,
             redactionDetails
           });
-          await saveRedactions({
+          const saveResponse = await saveRedactions({
             axiosInstance,
             urn: p.urn,
             caseId: p.caseId,
@@ -310,6 +310,8 @@ export const CaseworkPdfRedactorWrapper = (p: {
             documentId: p.documentId,
             redactions
           });
+          console.log({ saveResponse });
+          setRedactions([]);
           p.onModification();
           await documentCheckOutRequest.checkIn({
             documentId: p.documentId,
