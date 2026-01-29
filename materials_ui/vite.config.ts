@@ -1,4 +1,6 @@
 /// <reference types="vitest" />
+import fs from 'fs';
+import path from 'path';
 import react from '@vitejs/plugin-react';
 import { defineConfig, loadEnv } from 'vite';
 import viteCompression from 'vite-plugin-compression';
@@ -9,7 +11,7 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
 
   return {
-    base: '/materials-ui',
+    base: '/materials-ui/',
     define: {
       __MAINTENANCE_MODE__: JSON.stringify(env.VITE_MAINTENANCE_MODE === 'true')
     },
@@ -29,6 +31,14 @@ export default defineConfig(({ mode }) => {
           }
           return html;
         }
+      },
+      {
+        name: 'copy-index-to-root',
+        closeBundle() {
+          const src = path.resolve(import.meta.dirname, 'build/materials-ui/index.html');
+          const dest = path.resolve(import.meta.dirname, 'build/index.html');
+          fs.copyFileSync(src, dest);
+        }
       }
     ],
     resolve: {
@@ -37,7 +47,7 @@ export default defineConfig(({ mode }) => {
     },
     server: { port: 3000 },
     build: {
-      outDir: 'build',
+      outDir: 'build/materials-ui',
       target: 'esnext',
       rollupOptions: {
         output: {

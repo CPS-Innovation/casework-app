@@ -16,7 +16,7 @@ if (import.meta.env.DEV && !import.meta.env.VITE_E2E) {
   const { worker } = await import('./mocks/browser');
   await worker.start({
     onUnhandledRequest: 'bypass',
-    serviceWorker: { url: `${import.meta.env.BASE_URL}/mockServiceWorker.js` }
+    serviceWorker: { url: `${import.meta.env.BASE_URL}mockServiceWorker.js` }
   });
 }
 
@@ -33,7 +33,7 @@ pca.initialize().then(() => {
         }}
       >
         <BrowserRouter
-          basename={import.meta.env.BASE_URL}
+          basename={import.meta.env.BASE_URL.replace(/\/$/, '')}
           future={{ v7_startTransition: false, v7_relativeSplatPath: false }}
         >
           <AppContextProvider>
