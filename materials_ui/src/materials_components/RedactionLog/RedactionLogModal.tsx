@@ -14,7 +14,7 @@ export type RedactionLogFormInputs = {
   underRedactionTypeIds: number[];
   overRedactionTypeIds: number[];
 
-  unifiedId: string;
+  areasAndDivisionsId: string;
   businessUnitId: string;
   investigatingAgencyId: string;
   chargeStatus: 'Pre-charge' | 'Post-charge';
@@ -47,8 +47,6 @@ export const RedactionLogModal = ({
   mode,
   redactions
 }: RedactionLogModalProps) => {
-  const unified = [...(lookups?.areas ?? []), ...(lookups?.divisions ?? [])];
-
   const form = useForm<RedactionLogFormInputs>({
     defaultValues: {
       underRedactionSelected: false,
@@ -57,7 +55,7 @@ export const RedactionLogModal = ({
       overRedactionTypeIds: [],
 
       overReason: null,
-      unifiedId: unified[0]?.id || '',
+      areasAndDivisionsId: '',
       businessUnitId: '',
       investigatingAgencyId: '',
       chargeStatus: 'Pre-charge',

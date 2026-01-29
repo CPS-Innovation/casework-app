@@ -21,21 +21,23 @@ export const RedactionLogModalHeader = ({
     { id: 'Post-charge', name: 'Post-charge' }
   ];
 
-  const unified = [...areas, ...divisions];
-  const [selectedId, setSelectedId] = useState<string>(unified[0]?.id || '');
-  const selectedItem = unified.find((item) => item.id === selectedId);
+  const areasAndDivisions = [...areas, ...divisions];
+  const [selectedId, setSelectedId] = useState<string>('');
+  const selectedItem = areasAndDivisions.find((item) => item.id === selectedId);
 
   const {
     control,
-    watch,
     setValue,
     formState: { errors }
   } = useFormContext<RedactionLogFormInputs>();
 
-  const unifiedId = watch('unifiedId');
-  const businessUnits = selectedItem?.children || [];
-
-  // console.log(watch());
+  if (errors.areasAndDivisionsId) {
+    errors.areasAndDivisionsId.message =
+      'Please enter valid CPS Area or Central Casework Division';
+  }
+  if (errors.businessUnitId) {
+    errors.businessUnitId.message = 'Please enter valid CPS Business Unit';
+  }
 
   return (
     <div className={styles.modalHeader}>
@@ -50,25 +52,35 @@ export const RedactionLogModalHeader = ({
           alignItems: 'flex-end',
           gap: '20px',
           width: '100%',
-          maxWidth: '100%'
+          maxWidth: '100%',
+          marginBottom: '0'
         }}
       >
         <Controller
-          name="unifiedId"
+          name="areasAndDivisionsId"
           control={control}
-          rules={{ required: true }}
+          rules={{
+            required: true,
+            validate: (v) =>
+              v !== '' || 'Select a CPS Area or Central Casework Division'
+          }}
           render={({ field }) => (
             <SelectDropdown
               label="CPS Area or Central Casework Division: "
-              id="unified-select"
+              id="areasAndDivisions-select"
               name={field.name}
-              options={unified}
+              options={areasAndDivisions}
               value={field.value}
               onChange={(e) => {
                 field.onChange(e.target.value);
                 setSelectedId(e.target.value);
                 setValue('businessUnitId', '');
               }}
+              error={
+                errors.areasAndDivisionsId
+                  ? 'Select an Area or Division'
+                  : undefined
+              }
             />
           )}
         />
@@ -77,11 +89,8 @@ export const RedactionLogModalHeader = ({
           name="businessUnitId"
           control={control}
           rules={{
-            validate: (value) => {
-              if (!unifiedId) return true;
-              if (businessUnits.length === 0) return true;
-              return value ? true : 'Select a CPS Business Unit';
-            }
+            required: true,
+            validate: (v) => v !== '' || 'Select a CPS Business Unit'
           }}
           render={({ field }) => (
             <SelectDropdown
@@ -91,6 +100,9 @@ export const RedactionLogModalHeader = ({
               options={selectedItem?.children || []}
               value={field.value}
               onChange={(e) => field.onChange(e.target.value)}
+              error={
+                errors.businessUnitId ? 'Select a Business Unit' : undefined
+              }
             />
           )}
         />

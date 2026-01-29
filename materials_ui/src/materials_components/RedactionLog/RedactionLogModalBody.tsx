@@ -3,6 +3,7 @@ import { TDocument } from '../DocumentSelectAccordion/getters/getDocumentList';
 import { TRedaction } from '../PdfRedactor/utils/coordUtils';
 import styles from './RedactionLogModal.module.scss';
 import { Checkbox } from './templates/Checkbox';
+import { ErrorSummary } from './templates/ErrorSummary';
 
 const redactionTypes = [
   { id: 1, name: 'Named individual ' },
@@ -58,7 +59,7 @@ const RedactionTypesGrid = ({
 
   return (
     <div
-      className="govuk-checkboxes__conditional"
+      className="govuk-checkboxes"
       id="conditional-contact"
       style={{
         display: 'grid',
@@ -90,27 +91,45 @@ export const RedactionLogModalBody = ({
     control,
     register,
     watch,
-    setValue,
     formState: { errors }
   } = useFormContext<RedactionLogFormValues>();
 
   const underRedactionSelected = watch('underRedactionSelected');
   const overRedactionSelected = watch('overRedactionSelected');
 
+  console.log(errors);
+
   return (
     <div className={styles.modalBody}>
+      <ErrorSummary errors={errors} />
+
       <h2>Redaction details for: {activeDocument?.presentationTitle}</h2>
 
       {mode === 'over-under' && (
-        <div className={`govuk-form-group`}>
+        <div
+          className={
+            `govuk-form-group` +
+            (!underRedactionSelected && !overRedactionSelected
+              ? ' govuk-form-group--error'
+              : '')
+          }
+        >
           <fieldset className="govuk-fieldset">
             <legend className="govuk-fieldset__legend">
               Confirm the redaction type
             </legend>
 
-            {errors.underRedactionSelected && (
+            {!underRedactionSelected && !overRedactionSelected && (
+              <p className="govuk-error-message">Select a redaction category</p>
+            )}
+            {underRedactionSelected && errors.underRedactionSelected && (
               <p className="govuk-error-message">
                 {errors.underRedactionSelected.message}
+              </p>
+            )}
+            {overRedactionSelected && errors.overRedactionSelected && (
+              <p className="govuk-error-message">
+                {errors.overRedactionSelected.message}
               </p>
             )}
 
@@ -131,32 +150,42 @@ export const RedactionLogModalBody = ({
 
             {underRedactionSelected && (
               <div
-                className={`govuk-form-group ${errors.underRedactionTypeIds ? 'govuk-form-group--error' : ''}`}
+                className="govuk-checkboxes__conditional"
+                id="conditional-under-redaction"
+                style={{ marginTop: 8 }}
               >
-                <Controller
-                  name="underRedactionTypeIds"
-                  control={control}
-                  rules={{
-                    validate: (arr) => {
-                      !underRedactionSelected ||
-                        (arr && arr.length > 0) ||
-                        'Select at least one redaction type';
-                    }
-                  }}
-                  render={({ field }) => (
-                    <>
-                      {errors.underRedactionTypeIds && (
-                        <p className="govuk-error-message">
-                          {errors.underRedactionTypeIds.message}
-                        </p>
-                      )}
-                      <RedactionTypesGrid
-                        value={field.value ?? []}
-                        onChange={field.onChange}
-                      />
-                    </>
-                  )}
-                />
+                <div
+                  className={`govuk-form-group ${errors.underRedactionTypeIds ? 'govuk-form-group--error' : ''}`}
+                >
+                  <Controller
+                    name="underRedactionTypeIds"
+                    control={control}
+                    rules={{
+                      validate: (arr) => {
+                        !underRedactionSelected ||
+                          (arr && arr.length > 0) ||
+                          'Select at least one redaction type';
+                      }
+                    }}
+                    render={({ field }) => (
+                      <>
+                        {errors.underRedactionTypeIds && (
+                          <p className="govuk-error-message">
+                            {errors.underRedactionTypeIds.message}
+                          </p>
+                        )}
+
+                        <legend className="govuk-fieldset__legend">
+                          Types of redaction
+                        </legend>
+                        <RedactionTypesGrid
+                          value={field.value ?? []}
+                          onChange={field.onChange}
+                        />
+                      </>
+                    )}
+                  />
+                </div>
               </div>
             )}
 
@@ -175,68 +204,71 @@ export const RedactionLogModalBody = ({
 
             {overRedactionSelected && (
               <div
-                className={`govuk-form-group ${errors.overReason?.message ? 'govuk-form-group--error' : ''}`}
+                className="govuk-checkboxes__conditional"
+                id="conditional-over-redaction"
                 style={{ marginTop: 8 }}
               >
-                {errors.overReason?.message && (
-                  <p className="govuk-error-message">
-                    {errors.overReason?.message}
-                  </p>
-                )}
-
-                <Controller
-                  name="overReason"
-                  control={control}
-                  rules={{
-                    validate: (value) => {
-                      overRedactionSelected ||
-                        value ||
-                        'Select a reason for over redaction';
-                    }
-                  }}
-                  render={({ field }) => (
-                    <div
-                      className="govuk-radios__conditional"
-                      data-module="govuk-radios"
-                    >
-                      <div className="govuk-radios__item">
-                        <input
-                          className="govuk-radios__input"
-                          id="over-reason-ia"
-                          name={field.name}
-                          type="radio"
-                          value="investigative-agency"
-                          checked={field.value === 'investigative-agency'}
-                          onChange={(e) => field.onChange(e.target.value)}
-                        />
-                        <label
-                          className="govuk-label govuk-radios__label"
-                          htmlFor="over-reason-ia"
-                        >
-                          Returned to Investigative Agency for correction
-                        </label>
-                      </div>
-                      <div className="govuk-radios__item">
-                        <input
-                          className="govuk-radios__input"
-                          id="over-reason-colleague"
-                          name={field.name}
-                          type="radio"
-                          value="cps-colleague"
-                          checked={field.value === 'cps-colleague'}
-                          onChange={(e) => field.onChange(e.target.value)}
-                        />
-                        <label
-                          className="govuk-label govuk-radios__label"
-                          htmlFor="over-reason-colleague"
-                        >
-                          Returned to CPS colleague for correction
-                        </label>
-                      </div>
-                    </div>
+                <div
+                  className={`govuk-form-group ${errors.overReason?.message ? 'govuk-form-group--error' : ''}`}
+                >
+                  {errors.overReason?.message && (
+                    <p className="govuk-error-message">
+                      {errors.overReason?.message}
+                    </p>
                   )}
-                />
-
+                  <Controller
+                    name="overReason"
+                    control={control}
+                    rules={{
+                      validate: (value) => {
+                        overRedactionSelected ||
+                          value ||
+                          'Select a reason for over redaction';
+                      }
+                    }}
+                    render={({ field }) => (
+                      <div
+                        className="govuk-radios govuk-radios--small"
+                        data-module="govuk-radios"
+                      >
+                        <div className="govuk-radios__item">
+                          <input
+                            className="govuk-radios__input"
+                            id="over-reason-ia"
+                            name={field.name}
+                            type="radio"
+                            value="investigative-agency"
+                            checked={field.value === 'investigative-agency'}
+                            onChange={(e) => field.onChange(e.target.value)}
+                          />
+                          <label
+                            className="govuk-label govuk-radios__label"
+                            htmlFor="over-reason-ia"
+                          >
+                            Returned to Investigative Agency for correction
+                          </label>
+                        </div>
+                        <div className="govuk-radios__item">
+                          <input
+                            className="govuk-radios__input"
+                            id="over-reason-colleague"
+                            name={field.name}
+                            type="radio"
+                            value="cps-colleague"
+                            checked={field.value === 'cps-colleague'}
+                            onChange={(e) => field.onChange(e.target.value)}
+                          />
+                          <label
+                            className="govuk-label govuk-radios__label"
+                            htmlFor="over-reason-colleague"
+                          >
+                            Returned to CPS colleague for correction
+                          </label>
+                        </div>
+                      </div>
+                    )}
+                  />
+                </div>
                 <div
                   className={`govuk-form-group ${errors.overRedactionTypeIds ? 'govuk-form-group--error' : ''}`}
                 >
@@ -251,10 +283,15 @@ export const RedactionLogModalBody = ({
                       }
                     }}
                     render={({ field }) => (
-                      <RedactionTypesGrid
-                        value={field.value ?? []}
-                        onChange={field.onChange}
-                      />
+                      <>
+                        <legend className="govuk-fieldset__legend">
+                          Types of redaction
+                        </legend>
+                        <RedactionTypesGrid
+                          value={field.value ?? []}
+                          onChange={field.onChange}
+                        />
+                      </>
                     )}
                   />
                 </div>
@@ -278,7 +315,7 @@ export const RedactionLogModalBody = ({
       )}
 
       <div
-        className={`govuk-form-group ${errors.supportingNotes ? 'govuk-form-group--error' : ''}`}
+        className={`govuk-form-group ${errors.supportingNotes ? 'govuk-form-group--error' : ''} govuk-!-margin-bottom-0`}
       >
         <label className="govuk-label" htmlFor="supportingNotes">
           Supporting notes (optional)
@@ -302,6 +339,8 @@ export const RedactionLogModalBody = ({
             }
           })}
         />
+
+        <p className="govuk-body">You have 400 characters remaining</p>
       </div>
     </div>
   );

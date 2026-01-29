@@ -20,7 +20,7 @@ export const Checkbox = ({
       className={`govuk-checkboxes ${isSmall ? 'govuk-checkboxes--small' : ''}`}
       data-module="govuk-checkboxes"
     >
-      <div className="govuk-checkboxes__item">
+      <div className="govuk-checkboxes__item" style={{ flexWrap: 'wrap' }}>
         <input
           className={`govuk-checkboxes__input`}
           id={id}
