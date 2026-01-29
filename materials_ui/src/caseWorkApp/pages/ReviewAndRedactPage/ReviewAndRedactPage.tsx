@@ -166,6 +166,7 @@ export const ReviewAndRedactPage = () => {
               <DocumentSidebar
                 urn={urn}
                 caseId={caseId}
+                activeDocumentId={activeTabId}
                 openDocumentIds={openDocumentIds}
                 onSetDocumentOpenIds={setOpenDocumentIds}
                 onDocumentClick={handleTabSelection}
@@ -197,4 +198,3 @@ export const ReviewAndRedactPage = () => {
     </Layout>
   );
 };
-
