@@ -33,7 +33,7 @@ pca.initialize().then(() => {
         }}
       >
         <BrowserRouter
-          basename={import.meta.env.BASE_URL.replace(/\/$/, '')}
+          basename={import.meta.env.BASE_URL}
           future={{ v7_startTransition: false, v7_relativeSplatPath: false }}
         >
           <AppContextProvider>
