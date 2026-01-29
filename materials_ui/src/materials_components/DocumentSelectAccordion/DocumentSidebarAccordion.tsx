@@ -25,7 +25,8 @@ export const DocumentSidebarAccordion = (p: {
   caseId: number;
   urn: string;
   documentList: TDocumentList;
-  activeDocumentIds: string[];
+  openDocumentIds: string[];
+  activeDocumentId: string | undefined | null;
   onNotesClick: (docId: string) => void;
   onSetActiveDocumentIds: (docIds: string[]) => void;
   onDocumentClick?: (docId: string) => void;
@@ -33,22 +34,21 @@ export const DocumentSidebarAccordion = (p: {
 }) => {
   const { caseId } = p;
 
-  const [activeDocumentIds, setActiveDocumentIds] = useState<string[]>(
-    p.activeDocumentIds
+  const [openDocumentIds, setOpenDocumentIds] = useState<string[]>(
+    p.openDocumentIds
   );
 
   const isNoChangeInActiveDocIds = () =>
-    areSetsEqual(new Set(activeDocumentIds), new Set(p.activeDocumentIds));
+    areSetsEqual(new Set(openDocumentIds), new Set(p.openDocumentIds));
 
   //handle two-way binding: parent to child
   useEffect(() => {
-    if (!isNoChangeInActiveDocIds()) setActiveDocumentIds(p.activeDocumentIds);
-  }, [p.activeDocumentIds]);
+    if (!isNoChangeInActiveDocIds()) setOpenDocumentIds(p.openDocumentIds);
+  }, [p.openDocumentIds]);
   //handle two-way binding: child to parent
   useEffect(() => {
-    if (!isNoChangeInActiveDocIds())
-      p.onSetActiveDocumentIds(activeDocumentIds);
-  }, [activeDocumentIds]);
+    if (!isNoChangeInActiveDocIds()) p.onSetActiveDocumentIds(openDocumentIds);
+  }, [openDocumentIds]);
 
   const [isExpandedController, setIsExpandedController] = useState(false);
   const [readDocumentIds, setReadDocumentIds] = useState<string[]>(
@@ -57,7 +57,7 @@ export const DocumentSidebarAccordion = (p: {
 
   useEffect(() => {
     const newReadDocIds = [
-      ...new Set([...readDocumentIds, ...p.activeDocumentIds])
+      ...new Set([...readDocumentIds, ...p.openDocumentIds])
     ];
     safeSetDocumentSidebarReadDocIdsFromLocalStorage({ caseId, newReadDocIds });
   }, [readDocumentIds]);
@@ -97,7 +97,8 @@ export const DocumentSidebarAccordion = (p: {
                     <DocumentSidebarAccordionDocument
                       key={`${item.key}-${document.documentId}`}
                       document={document}
-                      activeDocumentIds={activeDocumentIds}
+                      activeDocumentId={p.activeDocumentId}
+                      openDocumentIds={openDocumentIds}
                       readDocumentIds={readDocumentIds}
                       onDocumentClick={() => {
                         p.onDocumentClick?.(document.documentId);
@@ -105,10 +106,10 @@ export const DocumentSidebarAccordion = (p: {
                           ...new Set([...docIds, document.documentId])
                         ]);
                         const docSet = new Set([
-                          ...activeDocumentIds,
+                          ...openDocumentIds,
                           document.documentId
                         ]);
-                        setActiveDocumentIds([...docSet]);
+                        setOpenDocumentIds([...docSet]);
                       }}
                       onNotesClick={() => p.onNotesClick(document.documentId)}
                       ActionComponent={
