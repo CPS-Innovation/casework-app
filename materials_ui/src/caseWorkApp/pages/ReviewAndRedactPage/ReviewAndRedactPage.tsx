@@ -157,7 +157,7 @@ export const ReviewAndRedactPage = () => {
               <DocumentSidebar
                 urn={urn}
                 caseId={caseId}
-                activeDocumentId={activeTabId}
+                activeDocumentId={activeDocumentId}
                 openDocumentIds={openDocumentIds}
                 onSetDocumentOpenIds={setOpenDocumentIds}
                 onDocumentClick={setActiveDocumentId}
