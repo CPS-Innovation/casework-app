@@ -1,7 +1,7 @@
 /// <reference types="vitest" />
+import react from '@vitejs/plugin-react';
 import fs from 'fs';
 import path from 'path';
-import react from '@vitejs/plugin-react';
 import { defineConfig, loadEnv } from 'vite';
 import viteCompression from 'vite-plugin-compression';
 import svgr from 'vite-plugin-svgr';
@@ -35,9 +35,25 @@ export default defineConfig(({ mode }) => {
       {
         name: 'copy-index-to-root',
         closeBundle() {
-          const src = path.resolve(import.meta.dirname, 'build/materials-ui/index.html');
+          const src = path.resolve(
+            import.meta.dirname,
+            'build/materials-ui/index.html'
+          );
           const dest = path.resolve(import.meta.dirname, 'build/index.html');
           fs.copyFileSync(src, dest);
+        }
+      },
+      {
+        name: 'redirect-trailing-slash',
+        configureServer(server) {
+          server.middlewares.use((req, res, next) => {
+            if (req.url === '/materials-ui') {
+              res.writeHead(302, { Location: '/materials-ui/' });
+              res.end();
+              return;
+            }
+            next();
+          });
         }
       }
     ],
@@ -46,6 +62,7 @@ export default defineConfig(({ mode }) => {
       dedupe: ['react', 'react-dom']
     },
     server: { port: 3000 },
+    preview: { port: 3000 },
     build: {
       outDir: 'build/materials-ui',
       target: 'esnext',
