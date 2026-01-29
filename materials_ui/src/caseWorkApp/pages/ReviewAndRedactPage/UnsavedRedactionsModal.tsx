@@ -18,7 +18,7 @@ export const UnsavedRedactionsModal = ({
   onIgnoreClick,
   onDocumentClick
 }: UnsavedRedactionsModalProps) => {
-  const redactionDocumentIds = Object.keys(
+  const documentIdsWithRedactions = Object.keys(
     redactionsIndexedOnDocumentId
   ).filter(
     (docId) =>
@@ -26,20 +26,20 @@ export const UnsavedRedactionsModal = ({
       redactionsIndexedOnDocumentId[docId].length > 0
   );
 
-  const documentsThatHaveRedactions = documents.filter((doc) =>
-    redactionDocumentIds.includes(doc.documentId)
+  const documentsWithRedactions = documents.filter((doc) =>
+    documentIdsWithRedactions.includes(doc.documentId)
   );
 
   return (
     <Modal onBackgroundClick={onIgnoreClick} onEscPress={onIgnoreClick}>
       <div style={{ padding: '20px', background: 'white' }}>
         <div>
-          You have {documentsThatHaveRedactions.length} documents with unsaved
+          You have {documentsWithRedactions.length} documents with unsaved
           redactions
         </div>
         <br />
         <div style={{ display: 'flex', gap: '4px', flexDirection: 'column' }}>
-          {documentsThatHaveRedactions.map((doc) => (
+          {documentsWithRedactions.map((doc) => (
             <a
               className="govuk-link"
               key={doc.documentId}
