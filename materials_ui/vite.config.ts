@@ -2,7 +2,6 @@
 import react from '@vitejs/plugin-react';
 import { defineConfig, loadEnv } from 'vite';
 import viteCompression from 'vite-plugin-compression';
-import svgr from 'vite-plugin-svgr';
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
@@ -13,7 +12,6 @@ export default defineConfig(({ mode }) => {
       __MAINTENANCE_MODE__: JSON.stringify(env.VITE_MAINTENANCE_MODE === 'true')
     },
     plugins: [
-      svgr(),
       react(),
       viteCompression({ algorithm: 'brotliCompress' }),
       {
