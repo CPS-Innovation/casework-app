@@ -18,7 +18,14 @@ export const UnsavedRedactionsModal = ({
   onIgnoreClick,
   onDocumentClick
 }: UnsavedRedactionsModalProps) => {
-  const redactionDocumentIds = Object.keys(redactionsIndexedOnDocumentId);
+  const redactionDocumentIds = Object.keys(
+    redactionsIndexedOnDocumentId
+  ).filter(
+    (docId) =>
+      redactionsIndexedOnDocumentId[docId] &&
+      redactionsIndexedOnDocumentId[docId].length > 0
+  );
+
   const documentsThatHaveRedactions = documents.filter((doc) =>
     redactionDocumentIds.includes(doc.documentId)
   );
