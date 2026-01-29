@@ -12,7 +12,6 @@ import { useTrigger } from '../../../materials_components/PdfRedactor/utils/useT
 import { getDocumentIdWithoutPrefix } from '../../../utils/string';
 import { Button } from '../../components/button';
 import { Tabs } from '../../components/tabs';
-import { useStoreCWA } from '../../store';
 import { UnsavedRedactionsModal } from './UnsavedRedactionsModal';
 
 export const ReviewAndRedactPage = () => {
@@ -23,7 +22,6 @@ export const ReviewAndRedactPage = () => {
 
   const { caseInfo } = useCaseInfoStore();
   const { id: caseId, urn } = caseInfo || {};
-  const { handleTabSelection } = useStoreCWA();
 
   const [selectedDocumentForRename, setSelectedDocumentForRename] = useState<
     (TDocument & { materialId?: number }) | null
@@ -37,7 +35,7 @@ export const ReviewAndRedactPage = () => {
 
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
   const [openDocumentIds, setOpenDocumentIds] = useState<string[]>([]);
-  const [currentActiveTabId, setCurrentActiveTabId] = useState('');
+  const [activeDocumentId, setActiveDocumentId] = useState('');
   const [mode, setMode] = useState<TMode>('areaRedact');
 
   const { openPreview } = useOpenDocumentInNewWindow();
@@ -55,7 +53,7 @@ export const ReviewAndRedactPage = () => {
       );
 
       if (filteredDocs.length) {
-        setCurrentActiveTabId(filteredDocs[0].documentId);
+        setActiveDocumentId(filteredDocs[0].documentId);
         setOpenDocumentIds((prev) => [
           ...prev,
           ...filteredDocs.map((doc) => doc.documentId)
@@ -63,9 +61,6 @@ export const ReviewAndRedactPage = () => {
       }
     }
   }, [docTypeParam, documents]);
-
-  const activeTabId =
-    currentActiveTabId || openDocumentIds[openDocumentIds.length - 1] || '';
 
   const openDocuments =
     urn && caseId
@@ -106,18 +101,14 @@ export const ReviewAndRedactPage = () => {
     }
   }));
 
-  const handleCloseTab = (id: string | undefined) => {
-    if (id === currentActiveTabId) {
-      const index = openDocumentIds.indexOf(id);
-      const nextTab =
+  const handleCloseTab = (documentId: string | undefined) => {
+    if (documentId && documentId === activeDocumentId) {
+      const index = openDocumentIds.indexOf(documentId);
+      const nextDocumentId =
         openDocumentIds[index + 1] ?? openDocumentIds[index - 1] ?? '';
-      setCurrentActiveTabId(nextTab);
+      setActiveDocumentId(nextDocumentId);
     }
-    setOpenDocumentIds((prev) => prev.filter((el) => el !== id));
-  };
-
-  const handleCurrentActiveTabId = (id?: string) => {
-    setCurrentActiveTabId(id ?? '');
+    setOpenDocumentIds((prev) => prev.filter((id) => id !== documentId));
   };
 
   return (
@@ -143,7 +134,7 @@ export const ReviewAndRedactPage = () => {
           onReturnClick={() => setShowBlockNavigationModal(false)}
           documents={documents ?? []}
           onDocumentClick={(documentId) => {
-            setCurrentActiveTabId(documentId);
+            setActiveDocumentId(documentId);
             setShowBlockNavigationModal(false);
           }}
         />
@@ -168,7 +159,7 @@ export const ReviewAndRedactPage = () => {
                 caseId={caseId}
                 openDocumentIds={openDocumentIds}
                 onSetDocumentOpenIds={setOpenDocumentIds}
-                onDocumentClick={handleTabSelection}
+                onDocumentClick={setActiveDocumentId}
                 reloadTriggerData={reloadSidebarTrigger.data}
                 onDocumentsChange={setDocuments}
               />
@@ -184,9 +175,8 @@ export const ReviewAndRedactPage = () => {
                 idPrefix="tabs"
                 title="Tabs title"
                 items={tabItems}
-                activeTabId={activeTabId}
-                handleTabSelection={handleTabSelection}
-                handleCurrentActiveTabId={handleCurrentActiveTabId}
+                activeTabId={activeDocumentId}
+                handleTabSelection={setActiveDocumentId}
                 handleCloseTab={handleCloseTab}
                 noMargin
               />
