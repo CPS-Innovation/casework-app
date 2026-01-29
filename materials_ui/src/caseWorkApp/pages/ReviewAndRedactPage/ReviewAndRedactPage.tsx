@@ -12,7 +12,6 @@ import { useTrigger } from '../../../materials_components/PdfRedactor/utils/useT
 import { getDocumentIdWithoutPrefix } from '../../../utils/string';
 import { Button } from '../../components/button';
 import { Tabs } from '../../components/tabs';
-import { useStoreCWA } from '../../store';
 import { UnsavedRedactionsModal } from './UnsavedRedactionsModal';
 
 export const ReviewAndRedactPage = () => {
@@ -23,7 +22,6 @@ export const ReviewAndRedactPage = () => {
 
   const { caseInfo } = useCaseInfoStore();
   const { id: caseId, urn } = caseInfo || {};
-  const { handleTabSelection } = useStoreCWA();
 
   const [selectedDocumentForRename, setSelectedDocumentForRename] = useState<
     (TDocument & { materialId?: number }) | null
@@ -116,10 +114,6 @@ export const ReviewAndRedactPage = () => {
     setOpenDocumentIds((prev) => prev.filter((el) => el !== id));
   };
 
-  const handleCurrentActiveTabId = (id?: string) => {
-    setCurrentActiveTabId(id ?? '');
-  };
-
   return (
     <Layout
       title="Review and Redact"
@@ -168,7 +162,7 @@ export const ReviewAndRedactPage = () => {
                 caseId={caseId}
                 openDocumentIds={openDocumentIds}
                 onSetDocumentOpenIds={setOpenDocumentIds}
-                onDocumentClick={handleTabSelection}
+                onDocumentClick={setCurrentActiveTabId}
                 reloadTriggerData={reloadSidebarTrigger.data}
                 onDocumentsChange={setDocuments}
               />
@@ -185,8 +179,7 @@ export const ReviewAndRedactPage = () => {
                 title="Tabs title"
                 items={tabItems}
                 activeTabId={activeTabId}
-                handleTabSelection={handleTabSelection}
-                handleCurrentActiveTabId={handleCurrentActiveTabId}
+                handleTabSelection={setCurrentActiveTabId}
                 handleCloseTab={handleCloseTab}
                 noMargin
               />
