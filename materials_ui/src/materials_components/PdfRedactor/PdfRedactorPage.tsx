@@ -10,6 +10,7 @@ import {
 
 import './PdfRedactorPage.scss';
 
+import { DeleteIcon } from './icons/DeleteIcon';
 import { GovUkButton } from './templates/GovUkButton';
 import {
   convertCoordPairToXywh,
@@ -207,7 +208,7 @@ export const PdfRedactorDeletionOverlay = (p: {
                 padding: '5px'
               }}
             >
-              <RotateIcon color="white" />
+              <DeleteIcon color="white" />
             </span>
             <div>
               Delete page {p.pageNumber} / {p.pagesAmount}
