@@ -59,7 +59,7 @@ export const getPdfFiles = async (p: {
 export const getLookups = async (p: { axiosInstance: AxiosInstance }) => {
   try {
     const response = await p.axiosInstance.get(
-      `https://fa-redaction-log-dev-reporting.azurewebsites.net/api/lookUps`
+      `${import.meta.env.VITE_REDACTION_LOG_URL}/api/lookUps`
     );
     return response.data;
   } catch (error) {

@@ -102,8 +102,6 @@ export const RedactionLogModalBody = ({
   const underRedactionSelected = watch('underRedactionSelected');
   const overRedactionSelected = watch('overRedactionSelected');
 
-  console.log(errors);
-
   return (
     <div className={styles.modalBody}>
       <ErrorSummary errors={errors} />
