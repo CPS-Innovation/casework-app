@@ -22,6 +22,7 @@ export type DocumentTabPanelProps = {
   onModification: () => void;
   onViewInNewWindowClick: () => void;
   initRedactions?: TRedaction[];
+  onRedactionLogClick: () => void;
 };
 
 export const DocumentTabPanel = ({
@@ -35,7 +36,8 @@ export const DocumentTabPanel = ({
   onRedactionsChange,
   onModification,
   initRedactions,
-  onViewInNewWindowClick
+  onViewInNewWindowClick,
+  onRedactionLogClick
 }: DocumentTabPanelProps) => {
   const axiosInstance = useAxiosInstance();
 
@@ -104,6 +106,7 @@ export const DocumentTabPanel = ({
             mode={mode}
             onModeChange={onModeChange}
             onViewInNewWindowButtonClick={onViewInNewWindowClick}
+            onRedactionLogClick={onRedactionLogClick}
           />
           <CaseworkPdfRedactorWrapper
             fileUrl={pdfFileUrl}
@@ -123,4 +126,3 @@ export const DocumentTabPanel = ({
     </div>
   );
 };
-

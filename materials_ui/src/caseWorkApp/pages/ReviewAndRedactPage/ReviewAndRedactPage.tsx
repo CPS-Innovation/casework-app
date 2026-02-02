@@ -9,9 +9,12 @@ import { DocumentTabPanel } from '../../../materials_components/DocumentTabPanel
 import { TRedaction } from '../../../materials_components/PdfRedactor/utils/coordUtils';
 import { TMode } from '../../../materials_components/PdfRedactor/utils/modeUtils';
 import { useTrigger } from '../../../materials_components/PdfRedactor/utils/useTriggger';
+import { RedactionLogModal } from '../../../materials_components/RedactionLog/RedactionLogModal';
 import { getDocumentIdWithoutPrefix } from '../../../utils/string';
 import { Button } from '../../components/button';
 import { Tabs } from '../../components/tabs';
+import { getLookups, useAxiosInstance } from '../../components/utils/getData';
+import { TLookupsResponse } from '../../types/redaction';
 import { UnsavedRedactionsModal } from './UnsavedRedactionsModal';
 
 export const ReviewAndRedactPage = () => {
@@ -45,6 +48,11 @@ export const ReviewAndRedactPage = () => {
   const [attemptedNavigationHref, setAttemptedNavigationHref] =
     useState<string>();
   const [documents, setDocuments] = useState<TDocument[] | null | undefined>();
+
+  const [showRedactionLogModal, setShowRedactionLogModal] = useState(false);
+  const [lookups, setLookups] = useState<TLookupsResponse>();
+
+  const axiosInstance = useAxiosInstance();
 
   useEffect(() => {
     if (docTypeParam && documents && documents.length > 0) {
@@ -96,6 +104,7 @@ export const ReviewAndRedactPage = () => {
           onViewInNewWindowClick={() => {
             openPreview(Number(getDocumentIdWithoutPrefix(doc.documentId)));
           }}
+          onRedactionLogClick={() => setShowRedactionLogModal(true)}
         />
       )
     }
@@ -110,6 +119,20 @@ export const ReviewAndRedactPage = () => {
     }
     setOpenDocumentIds((prev) => prev.filter((id) => id !== documentId));
   };
+
+  const activeTabId = activeDocumentId || openDocumentIds[0] || '';
+
+  const activeDocument = openDocuments.find(
+    (doc) => doc.documentId === activeTabId
+  );
+
+  useEffect(() => {
+    if (showRedactionLogModal) {
+      getLookups({ axiosInstance: axiosInstance }).then((data) => {
+        setLookups(data);
+      });
+    }
+  }, [showRedactionLogModal]);
 
   return (
     <Layout
@@ -148,6 +171,18 @@ export const ReviewAndRedactPage = () => {
               setSelectedDocumentForRename(null);
               reloadSidebarTrigger.fire();
             }}
+          />
+        )}
+
+        {showRedactionLogModal && (
+          <RedactionLogModal
+            urn={urn!}
+            caseId={caseId!}
+            isOpen={showRedactionLogModal}
+            onClose={() => setShowRedactionLogModal(false)}
+            lookups={lookups}
+            activeDocument={activeDocument}
+            mode="over-under"
           />
         )}
 

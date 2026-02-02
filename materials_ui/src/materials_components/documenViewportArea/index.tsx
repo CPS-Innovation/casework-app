@@ -24,13 +24,15 @@ type DocumentViewportAreaProps = {
   mode: TMode;
   onModeChange: (mode: TMode) => void;
   onViewInNewWindowButtonClick: () => void;
+  onRedactionLogClick: () => void;
 };
 
 export const DocumentViewportArea = ({
   documentName,
   mode,
   onModeChange,
-  onViewInNewWindowButtonClick
+  onViewInNewWindowButtonClick,
+  onRedactionLogClick
 }: DocumentViewportAreaProps) => {
   const isAreaRedactMode = mode === 'areaRedact';
 
@@ -48,6 +50,9 @@ export const DocumentViewportArea = ({
         break;
       case DROPDOWN_ACTIONS.VIEW_NEW_WINDOW:
         onViewInNewWindowButtonClick();
+        break;
+      case DROPDOWN_ACTIONS.LOG_REDACTION:
+        onRedactionLogClick();
         break;
     }
   };
@@ -83,7 +88,7 @@ export const DocumentViewportArea = ({
             id: DROPDOWN_ACTIONS.LOG_REDACTION,
             label: 'Log an Under/Over redaction',
             ariaLabel: 'log an under or over redaction',
-            disabled: true
+            disabled: false
           },
           {
             id: DROPDOWN_ACTIONS.ROTATE,

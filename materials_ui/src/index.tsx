@@ -12,10 +12,12 @@ import { AppContextProvider } from './context/AppContext';
 import { FilterProvider } from './context/FiltersContext';
 import { msalConfig } from './msalInstance';
 
-
 if (import.meta.env.DEV && !import.meta.env.VITE_E2E) {
   const { worker } = await import('./mocks/browser');
-  await worker.start({ onUnhandledRequest: 'bypass' });
+  await worker.start({
+    onUnhandledRequest: 'bypass',
+    serviceWorker: { url: `${import.meta.env.BASE_URL}mockServiceWorker.js` }
+  });
 }
 
 const pca = new PublicClientApplication(msalConfig);
@@ -31,6 +33,7 @@ pca.initialize().then(() => {
         }}
       >
         <BrowserRouter
+          basename={import.meta.env.BASE_URL}
           future={{ v7_startTransition: false, v7_relativeSplatPath: false }}
         >
           <AppContextProvider>
@@ -43,4 +46,3 @@ pca.initialize().then(() => {
     </MsalProvider>
   );
 });
-

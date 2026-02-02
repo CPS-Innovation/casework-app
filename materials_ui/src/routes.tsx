@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Route, Routes as Router } from 'react-router';
 import { Navigate, useMatch } from 'react-router-dom';
 
-import { ReviewAndRedactPage } from './caseWorkApp/pages/ReviewAndRedactPage';
+import { ReviewAndRedactPage } from './caseWorkApp/pages/ReviewAndRedactPage/ReviewAndRedactPage';
 import { useAppRoute, useCaseInfo, useCaseInfoStore } from './hooks';
 import {
   CommunicationsPage,
