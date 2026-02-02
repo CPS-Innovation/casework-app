@@ -120,11 +120,9 @@ module "azurerm_app_reg_as_web_materials" { # Note, app roles are currently bein
       }]
     }
     ]
-
   single_page_application = {
-    redirect_uris = ["https://as-${local.web_materials_name}.azurewebsites.net/", "https://as-${local.web_materials_name}.azurewebsites.net/${var.materials_ui_sub_folder}", "https://${local.web_materials_name}.cps.gov.uk/${var.materials_ui_sub_folder}"]
+    redirect_uris = var.env != "prod" ? ["https://as-${local.web_materials_name}.azurewebsites.net/${var.materials_ui_sub_folder}", "http://localhost:3000/${var.materials_ui_sub_folder}", "https://${local.polaris_name_map[var.env]}-notprod.cps.gov.uk/${var.materials_ui_sub_folder}"] : ["https://as-${local.web_materials_name}.azurewebsites.net/${var.materials_ui_sub_folder}", "http://localhost:3000/${var.materials_ui_sub_folder}", "https://${local.polaris_name_map[var.env]}.cps.gov.uk/${var.materials_ui_sub_folder}"]
   }
-
   api = {
     mapped_claims_enabled          = true
     requested_access_token_version = 1
