@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { TDocument } from '../DocumentSelectAccordion/getters/getDocumentList';
 import { TRedaction } from '../PdfRedactor/utils/coordUtils';
+import { Popover } from './Popover';
 import styles from './RedactionLogModal.module.scss';
 import { Checkbox } from './templates/Checkbox';
 import { ErrorSummary } from './templates/ErrorSummary';
@@ -34,6 +36,7 @@ type RedactionLogModalBodyProps = {
 export type RedactionLogFormValues = {
   underRedactionSelected: boolean;
   overRedactionSelected: boolean;
+  redactionCategorySelected: boolean;
 
   underRedactionTypeIds: number[];
   overRedactionTypeIds: number[];
@@ -94,6 +97,8 @@ export const RedactionLogModalBody = ({
     formState: { errors }
   } = useFormContext<RedactionLogFormValues>();
 
+  const [showPopover, setShowPopover] = useState(false);
+
   const underRedactionSelected = watch('underRedactionSelected');
   const overRedactionSelected = watch('overRedactionSelected');
 
@@ -109,9 +114,7 @@ export const RedactionLogModalBody = ({
         <div
           className={
             `govuk-form-group` +
-            (!underRedactionSelected && !overRedactionSelected
-              ? ' govuk-form-group--error'
-              : '')
+            (errors.redactionCategorySelected ? ' govuk-form-group--error' : '')
           }
         >
           <fieldset className="govuk-fieldset">
@@ -119,24 +122,15 @@ export const RedactionLogModalBody = ({
               Confirm the redaction type
             </legend>
 
-            {!underRedactionSelected && !overRedactionSelected && (
-              <p className="govuk-error-message">Select a redaction category</p>
-            )}
-            {underRedactionSelected && errors.underRedactionSelected && (
+            {errors.redactionCategorySelected && (
               <p className="govuk-error-message">
-                {errors.underRedactionSelected.message}
-              </p>
-            )}
-            {overRedactionSelected && errors.overRedactionSelected && (
-              <p className="govuk-error-message">
-                {errors.overRedactionSelected.message}
+                {errors.redactionCategorySelected.message}
               </p>
             )}
 
             <Controller
               name="underRedactionSelected"
               control={control}
-              rules={{ required: 'Select a redaction category' }}
               render={({ field }) => (
                 <Checkbox
                   id="under-redaction"
@@ -162,9 +156,9 @@ export const RedactionLogModalBody = ({
                     control={control}
                     rules={{
                       validate: (arr) => {
-                        !underRedactionSelected ||
-                          (arr && arr.length > 0) ||
-                          'Select at least one redaction type';
+                        if (!underRedactionSelected) return true;
+                        if (arr && arr.length > 0) return true;
+                        return 'Select an under redaction type';
                       }
                     }}
                     render={({ field }) => (
@@ -200,6 +194,18 @@ export const RedactionLogModalBody = ({
                   onChange={() => field.onChange(!field.value)}
                 />
               )}
+            />
+
+            <Controller
+              name="redactionCategorySelected"
+              control={control}
+              rules={{
+                validate: () =>
+                  underRedactionSelected || overRedactionSelected
+                    ? true
+                    : 'Select a redaction category'
+              }}
+              render={() => null}
             />
 
             {overRedactionSelected && (
@@ -277,9 +283,9 @@ export const RedactionLogModalBody = ({
                     control={control}
                     rules={{
                       validate: (arr) => {
-                        !overRedactionSelected ||
-                          (arr && arr.length > 0) ||
-                          'Select at least one redaction type';
+                        if (!overRedactionSelected) return true;
+                        if (arr && arr.length > 0) return true;
+                        return 'Select an over redaction type';
                       }
                     }}
                     render={({ field }) => (
@@ -287,6 +293,12 @@ export const RedactionLogModalBody = ({
                         <legend className="govuk-fieldset__legend">
                           Types of redaction
                         </legend>
+
+                        {errors.overRedactionTypeIds && (
+                          <p className="govuk-error-message">
+                            {errors.overRedactionTypeIds.message}
+                          </p>
+                        )}
                         <RedactionTypesGrid
                           value={field.value ?? []}
                           onChange={field.onChange}
@@ -317,15 +329,45 @@ export const RedactionLogModalBody = ({
       <div
         className={`govuk-form-group ${errors.supportingNotes ? 'govuk-form-group--error' : ''} govuk-!-margin-bottom-0`}
       >
-        <label className="govuk-label" htmlFor="supportingNotes">
-          Supporting notes (optional)
-        </label>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            justifyContent: 'space-between',
+            width: '50%',
+            position: 'relative'
+          }}
+        >
+          <label className="govuk-label" htmlFor="supportingNotes">
+            Supporting notes (optional)
+          </label>
+          {errors.supportingNotes && (
+            <p className="govuk-error-message">
+              {errors.supportingNotes.message}
+            </p>
+          )}
 
-        {errors.supportingNotes && (
-          <p className="govuk-error-message">
-            {errors.supportingNotes.message}
-          </p>
-        )}
+          <a onClick={() => setShowPopover(!showPopover)}>
+            Guidance on supporting notes
+          </a>
+
+          {showPopover && (
+            <Popover
+              title="Guidance on supporting notes"
+              content={() => {
+                return (
+                  <ul style={{ paddingLeft: '1rem' }}>
+                    <li>Explain why the redaction was made</li>
+                    <li>Mention any relevant case details</li>
+                    <li>Keep notes clear and concise</li>
+                    <li>Avoid sensitive information</li>
+                  </ul>
+                );
+              }}
+            />
+          )}
+        </div>
 
         <textarea
           className="govuk-textarea"
