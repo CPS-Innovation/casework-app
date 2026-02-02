@@ -10,6 +10,7 @@ import {
 
 import './PdfRedactorPage.scss';
 
+import { DeleteIcon } from './icons/DeleteIcon';
 import { GovUkButton } from './templates/GovUkButton';
 import {
   convertCoordPairToXywh,
@@ -25,7 +26,43 @@ import { useTriggerListener, type TTriggerData } from './utils/useTriggger';
 export const PdfRedactorRotationOverlay = (p: {
   pageRotation: number;
   onPageRotationChange: (x: number) => void;
+  pageNumber: number;
+  pagesAmount: number;
 }) => {
+  const [rotationOn, setRotationOn] = useState(p.pageRotation !== 0);
+  if (!rotationOn)
+    return (
+      <div style={{ position: 'absolute', top: 0, right: 0, zIndex: 500 }}>
+        <GovUkButton
+          variant="inverse"
+          onClick={() => setRotationOn(true)}
+          style={{
+            display: 'flex',
+            whiteSpace: 'nowrap',
+            border: 0,
+            padding: 0,
+            paddingRight: '8px',
+            gap: '8px',
+            alignItems: 'center'
+          }}
+        >
+          <span
+            style={{
+              background: '#1d70b8',
+              height: '25px',
+              width: '25px',
+              padding: '5px'
+            }}
+          >
+            <RotateIcon color="white" />
+          </span>
+          <div>
+            Rotate page {p.pageNumber} / {p.pagesAmount}
+          </div>
+        </GovUkButton>
+      </div>
+    );
+
   return (
     <div
       style={{
@@ -122,11 +159,14 @@ export const PdfRedactorRotationOverlay = (p: {
           </div>
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <span
-              onClick={() => p.onPageRotationChange(0)}
+              onClick={() => {
+                p.onPageRotationChange(0);
+                setRotationOn(false);
+              }}
               className="govuk-link"
               style={{
-                color: '#ffffff',
-                visibility: p.pageRotation === 0 ? 'hidden' : 'unset'
+                color: '#ffffff'
+                // visibility: p.pageRotation === 0 ? 'hidden' : 'unset'
               }}
             >
               Cancel
@@ -168,7 +208,7 @@ export const PdfRedactorDeletionOverlay = (p: {
                 padding: '5px'
               }}
             >
-              <RotateIcon color="white" />
+              <DeleteIcon color="white" />
             </span>
             <div>
               Delete page {p.pageNumber} / {p.pagesAmount}
@@ -326,6 +366,8 @@ export const PdfRedactorPage = (p: {
             <PdfRedactorRotationOverlay
               pageRotation={p.pageRotationDegrees}
               onPageRotationChange={p.onPageRotationChange}
+              pageNumber={p.pageNumber}
+              pagesAmount={p.pagesAmount}
             />
           )}
           {p.mode === 'deletion' && (

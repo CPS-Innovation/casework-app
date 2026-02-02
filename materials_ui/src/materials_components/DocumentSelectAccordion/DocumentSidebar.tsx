@@ -8,6 +8,7 @@ export const DocumentSidebar = (p: {
   urn: string;
   caseId: number;
   openDocumentIds: string[];
+  activeDocumentId: string | null | undefined;
   onDocumentsChange: (doc: TDocument[] | null | undefined) => void;
   onSetDocumentOpenIds: (docIds: string[]) => void;
   reloadTriggerData: [] | undefined;
@@ -42,7 +43,8 @@ export const DocumentSidebar = (p: {
           caseId={caseId}
           urn={urn}
           documentList={documentList.data}
-          activeDocumentIds={p.openDocumentIds}
+          activeDocumentId={p.activeDocumentId}
+          openDocumentIds={p.openDocumentIds}
           onSetActiveDocumentIds={(docIds) => p.onSetDocumentOpenIds(docIds)}
           onDocumentClick={p.onDocumentClick}
           onNotesClick={(docId: string) =>

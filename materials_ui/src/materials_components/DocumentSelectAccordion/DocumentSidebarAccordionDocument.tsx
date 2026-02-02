@@ -54,7 +54,8 @@ export const DocumentSidebarAccordionDocument = (p: {
   urn: string;
   caseId: number;
   document: TDocument;
-  activeDocumentIds: string[];
+  activeDocumentId: string | null | undefined;
+  openDocumentIds: string[];
   readDocumentIds: string[];
   onDocumentClick: () => void;
   onNotesClick: () => void;
@@ -80,9 +81,9 @@ export const DocumentSidebarAccordionDocument = (p: {
     <DocumentSidebarAccordionDocumentTemplate
       documentName={p.document.presentationTitle}
       documentDate={p.document.documentId}
-      ActiveDocumentTag={p.activeDocumentIds.includes(p.document.documentId)}
+      ActiveDocumentTag={p.activeDocumentId === p.document.documentId}
       NewTag={!p.readDocumentIds.includes(p.document.documentId)}
-      showLeftBorder={p.activeDocumentIds.includes(p.document.documentId)}
+      showLeftBorder={p.openDocumentIds.includes(p.document.documentId)}
       notesStatus={(() => {
         if (
           p.document.cmsDocType.documentType === 'PCD' ||

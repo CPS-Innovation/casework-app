@@ -328,6 +328,7 @@ export const CaseworkPdfRedactorWrapper = (p: {
             documentId: p.documentId,
             redactions
           });
+          setRedactions([]);
           p.onModification();
           await documentCheckOutRequest.checkIn({
             documentId: p.documentId,
