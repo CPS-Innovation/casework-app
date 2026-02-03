@@ -15,7 +15,9 @@ import { useTrigger } from './utils/useTriggger';
 import '/node_modules/react-pdf/dist/cjs/Page/AnnotationLayer.css';
 import '/node_modules/react-pdf/dist/cjs/Page/TextLayer.css';
 
-pdfjs.GlobalWorkerOptions.workerSrc = `${import.meta.env.BASE_URL}node_modules/pdfjs-dist/build/pdf.worker.min.mjs`;
+console.log({ x: import.meta.env.BASE_URL });
+
+pdfjs.GlobalWorkerOptions.workerSrc = `${import.meta.env.BASE_URL}/pdf.worker.min.mjs`;
 
 const useScaleHelper = (p?: { initScale?: number }) => {
   const [scale, setScale] = useState(p?.initScale ?? 1);

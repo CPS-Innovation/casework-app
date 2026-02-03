@@ -194,7 +194,7 @@ export const RedactionLogModalBody = ({
               )}
             />
 
-            <Controller
+            {/* <Controller
               name="redactionCategorySelected"
               control={control}
               rules={{
@@ -203,8 +203,8 @@ export const RedactionLogModalBody = ({
                     ? true
                     : 'Select a redaction category'
               }}
-              render={() => null}
-            />
+              render={() => ""}
+            /> */}
 
             {overRedactionSelected && (
               <div
@@ -220,7 +220,7 @@ export const RedactionLogModalBody = ({
                       {errors.overReason?.message}
                     </p>
                   )}
-                  <Controller
+                  {/* <Controller
                     name="overReason"
                     control={control}
                     rules={{
@@ -271,7 +271,7 @@ export const RedactionLogModalBody = ({
                         </div>
                       </div>
                     )}
-                  />
+                  /> */}
                 </div>
                 <div
                   className={`govuk-form-group ${errors.overRedactionTypeIds ? 'govuk-form-group--error' : ''}`}
