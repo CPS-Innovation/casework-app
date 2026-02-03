@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Layout, RenameDrawer, TwoCol } from '../../../components';
+import {
+  Layout,
+  LoadingSpinner,
+  RenameDrawer,
+  TwoCol
+} from '../../../components';
 import { useCaseInfoStore } from '../../../hooks';
 import { useOpenDocumentInNewWindow } from '../../../hooks/ui/useOpenDocumentInNewWindow';
 import { DocumentSidebar } from '../../../materials_components/DocumentSelectAccordion/DocumentSidebar';
@@ -148,6 +153,8 @@ export const ReviewAndRedactPage = () => {
         return true;
       }}
     >
+      {documents === undefined && <LoadingSpinner />}
+      {documents === null && <div>Error...</div>}
       {showBlockNavigationModal && (
         <UnsavedRedactionsModal
           redactionsIndexedOnDocumentId={redactionsIndexedOnDocId}
