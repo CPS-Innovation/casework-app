@@ -1,3 +1,4 @@
+import pdfWorker from 'pdfjs-dist/build/pdf.worker?url';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Document, pdfjs } from 'react-pdf';
 import { AreaIcon } from './icons/AreaIcon';
@@ -17,7 +18,7 @@ import '/node_modules/react-pdf/dist/cjs/Page/TextLayer.css';
 
 console.log({ x: import.meta.env.BASE_URL });
 
-pdfjs.GlobalWorkerOptions.workerSrc = `${import.meta.env.BASE_URL}/pdf.worker.min.mjs`;
+pdfjs.GlobalWorkerOptions.workerSrc = pdfWorker;
 
 const useScaleHelper = (p?: { initScale?: number }) => {
   const [scale, setScale] = useState(p?.initScale ?? 1);

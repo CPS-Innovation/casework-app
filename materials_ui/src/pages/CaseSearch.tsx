@@ -195,7 +195,7 @@ export const CaseSearchPage = () => {
               Find a case askjdh
             </h1>
             <br />
-            <button onClick={() => setShow((x) => !x)}>button</button>
+            <button onClick={() => setShow((x) => !x)}>button2222222</button>
 
             {show && <TestComp />}
 
