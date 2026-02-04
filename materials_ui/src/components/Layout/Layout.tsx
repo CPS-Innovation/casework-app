@@ -79,6 +79,8 @@ export const Layout = ({
             banners.map((banner, index) => <Banner key={index} {...banner} />)}
         </div>
 
+        <case-info-summary urn="06SC1234571" caseid="2155068" />
+
         {!plain ? (
           <>
             {!caseInfoLoading && caseInfo ? (
