@@ -1,14 +1,14 @@
 import { AxiosError } from 'axios';
 import useSWRMutation from 'swr/mutation';
-import { QUERY_KEYS } from '../../constants/query.ts';
-import { API_ENDPOINTS } from '../../constants/url.ts';
-import { SwrPayload } from '../../schemas/api.ts';
+
+import { useCaseInfoStore, useLogger, useRequest } from '../';
+import { QUERY_KEYS } from '../../constants/query';
+import { SwrPayload } from '../../schemas';
 import {
   CaseMaterialDiscardRequestType,
   CaseMaterialDiscardResponseType,
   CaseMaterialsType
-} from '../../schemas/caseMaterials.ts';
-import { useCaseInfoStore, useLogger, useRequest } from '../index.ts';
+} from '../../schemas/caseMaterials';
 
 export type UseDiscardOptions = {
   onError?: () => void;
@@ -28,13 +28,13 @@ export const useDiscard = (
     { arg: data }: SwrPayload<CaseMaterialDiscardRequestType>
   ) => {
     return await request.patch<CaseMaterialDiscardResponseType>(
-      API_ENDPOINTS.CASE_MATERIAL_DISCARD,
+      `urns/${caseInfo?.urn}/cases/${caseInfo?.id}/materials/${material?.materialId}/discard`,
       data
     );
   };
 
   const { trigger, isMutating, error } = useSWRMutation(
-    QUERY_KEYS.CASE_MATERIAL_DISCARD,
+    caseInfo && material ? QUERY_KEYS.CASE_MATERIAL_DISCARD : null,
     discardMaterialRequest,
     {
       onSuccess: () => {

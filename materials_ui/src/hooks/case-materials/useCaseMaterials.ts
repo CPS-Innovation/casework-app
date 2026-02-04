@@ -1,22 +1,21 @@
-import { useMemo } from 'react';
 import useSWR from 'swr';
 import { useCaseInfoStore, useRequest } from '..';
 import { QUERY_KEYS } from '../../constants/query';
-import {
-  CaseMaterialDataType,
-  CaseMaterialsResponseType,
-  CaseMaterialsType
-} from '../../schemas';
+import { CaseMaterialDataType, CaseMaterialsResponseType } from '../../schemas';
 
 type UseCaseMaterialsProps = { dataType: CaseMaterialDataType };
 
 export const useCaseMaterials = ({ dataType }: UseCaseMaterialsProps) => {
   const request = useRequest();
+
   const { caseInfo } = useCaseInfoStore();
+  const { urn, id } = caseInfo || {};
+
+  const materialsKey = caseInfo ? [QUERY_KEYS.CASE_MATERIAL, id, urn] : null;
 
   const getCaseMaterials = async () => {
     const response = await request.get<CaseMaterialsResponseType>(
-      `/urns/${caseInfo?.urn}/cases/${caseInfo?.id}/case-materials`
+      `/urns/${urn}/cases/${id}/case-materials`
     );
 
     if (response.status === 422 || response.status !== 200) {
@@ -29,27 +28,15 @@ export const useCaseMaterials = ({ dataType }: UseCaseMaterialsProps) => {
   };
 
   const { data, error, isLoading, isValidating, mutate } = useSWR(
-    caseInfo ? QUERY_KEYS.CASE_MATERIAL : null,
+    materialsKey,
     getCaseMaterials
   );
 
-  const filteredData = useMemo(() => {
-    const filterFn =
-      dataType == 'communications'
-        ? (material: CaseMaterialsType) => material.category === 'Communication'
-        : (material: CaseMaterialsType) =>
-            material.category !== 'Communication';
-
-    return data?.filter(filterFn);
-  }, [data, dataType]);
-
-  // useEffect(() => {
-  //   log({
-  //     logLevel: 0,
-  //     message: `HK-UI-FE: caseId ${caseInfo?.id} with ${dataType} data length: ${data?.length}`,
-  //     errorMessage: error?.message
-  //   });
-  // }, [log, caseInfo, dataType, error, data?.length]);
+  const filteredData = (data ?? []).filter((material) =>
+    dataType === 'communications'
+      ? material.category === 'Communication'
+      : material.category !== 'Communication'
+  );
 
   return {
     data,

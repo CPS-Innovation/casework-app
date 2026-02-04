@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import {
@@ -9,7 +9,7 @@ import {
   SectionBreak,
   StatusTag
 } from '../components';
-import { useCaseSearch } from '../hooks';
+import { useCaseInfoStore, useCaseSearch } from '../hooks';
 import { formatDateLong } from '../utils/date';
 
 type IFormInput = { urn: string };
@@ -20,6 +20,7 @@ export const CaseSearchPage = () => {
     handleSubmit,
     formState: { errors }
   } = useForm<IFormInput>();
+  const { clearCaseInfo } = useCaseInfoStore();
   const [queryUrn, setQueryUrn] = useState('');
   const [hasSearched, setHasSearched] = useState(false);
 
@@ -31,11 +32,15 @@ export const CaseSearchPage = () => {
 
   const { caseDetails, loading } = useCaseSearch(queryUrn || undefined);
 
+  useEffect(() => {
+    clearCaseInfo();
+  }, []);
+
   return (
     <Layout plain title="Case Search">
       <div className="govuk-main-wrapper govuk-main-wrapper--auto-spacing">
-        <div className="govuk-grid-row">
-          <div className="govuk-grid-column-one-half">
+        <div className="govuk-grid-row govuk-grid-row--case-search">
+          <div className="govuk-grid-column-two-thirds">
             {errors.urn &&
               (errors.urn.type === 'required' ||
                 (errors.urn.type === 'pattern' && (
@@ -105,8 +110,8 @@ export const CaseSearchPage = () => {
         )}
 
         {!loading && Array.isArray(caseDetails) && caseDetails && (
-          <div className="govuk-grid-row">
-            <div className="govuk-grid-column-one-half">
+          <div className="govuk-grid-row govuk-grid-row--case-search">
+            <div className="govuk-grid-column-two-thirds">
               <p className="govuk-body">
                 We've found <b>{caseDetails.length}</b> case that matches{' '}
                 <b>{queryUrn}</b>

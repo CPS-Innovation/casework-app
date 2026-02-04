@@ -34,7 +34,7 @@ export const useRequest = () => {
       const errorStatusCodes = [400, 401, 403, 422];
 
       if (errorStatusCodes.includes(error.status)) {
-        return navigate(getRoute('UNAUTHORISED', false));
+        return navigate(`/${getRoute('UNAUTHORISED', false)}`);
       }
 
       if (error.status === 500) {
@@ -44,8 +44,13 @@ export const useRequest = () => {
           return Promise.reject(error);
         }
 
-        if (!error.request.responseURL.includes('/uma-reclassify')) {
-          return navigate(getRoute('SERVER_ERROR', false));
+        if (
+          !error.request.responseURL.includes('/uma-reclassify') &&
+          !/^\/api\/urns\/[^/]+\/cases$/.test(
+            new URL(error.request.responseURL).pathname
+          )
+        ) {
+          return navigate(`/${getRoute('SERVER_ERROR', false)}`);
         }
       }
 

@@ -9,19 +9,24 @@ import { useCaseInfoStore } from '../../stores';
 
 import './Layout.scss';
 
-type Props = { plain?: boolean; title?: string };
+type Props = {
+  plain?: boolean;
+  title?: string;
+  shouldBlockNavigationCheck?: (tab: Tab) => boolean;
+};
 
 export const Layout = ({
   children,
   plain = false,
-  title
+  title,
+  shouldBlockNavigationCheck
 }: PropsWithChildren<Props>) => {
   const { banners } = useBanner();
-  const { caseInfo } = useCaseInfoStore();
+  const { caseInfo, isLoading: caseInfoLoading } = useCaseInfoStore();
   const location = useLocation();
   const { getRoute } = useAppRoute();
 
-  const tabs: Tab[] = [
+  const initTabs: Tab[] = [
     {
       id: 'pcd-request',
       name: 'PCD Request',
@@ -47,8 +52,18 @@ export const Layout = ({
       name: 'Communications',
       href: getRoute('COMMUNICATIONS'),
       active: location.pathname === getRoute('COMMUNICATIONS')
+    },
+    {
+      id: 'pcd-review',
+      name: 'PCD Review',
+      href: getRoute('PCD_REVIEW'),
+      active:
+        location.pathname === '/' ||
+        location.pathname.includes(getRoute('PCD_REVIEW'))
     }
   ];
+
+  const tabs = initTabs.map((tab) => ({ ...tab, shouldBlockNavigationCheck }));
 
   useEffect(() => {
     if (title) {
@@ -66,7 +81,7 @@ export const Layout = ({
 
         {!plain ? (
           <>
-            {caseInfo ? (
+            {!caseInfoLoading && caseInfo ? (
               <>
                 <CaseInfo caseInfo={caseInfo} />
                 <Tabs tabs={tabs} />

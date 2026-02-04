@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Route, Routes as Router } from 'react-router';
 import { Navigate, useMatch } from 'react-router-dom';
 
-import { ReviewAndRedactPage } from './caseWorkApp/pages/ReviewAndRedactPage';
+import { ReviewAndRedactPage } from './caseWorkApp/pages/ReviewAndRedactPage/ReviewAndRedactPage';
 import { useAppRoute, useCaseInfo, useCaseInfoStore } from './hooks';
 import {
   CommunicationsPage,
@@ -12,6 +12,7 @@ import {
   NotAuthorisedPage,
   NotFoundPage,
   PcdRequestPage,
+  PcdReviewPage,
   ReclassificationPage,
   ReclassifyToUnusedPage,
   ServerErrorPage
@@ -23,14 +24,18 @@ export const Routes = () => {
   const match = useMatch('/:urn/:caseId/*');
   const { caseId, urn } = match?.params || {};
 
-  const { caseInfo } = useCaseInfo({ caseId, urn });
-  const { setCaseInfo } = useCaseInfoStore();
+  const { caseInfo, loading: caseInfoLoading } = useCaseInfo({ caseId, urn });
+  const { setCaseInfo, setIsLoading } = useCaseInfoStore();
 
   useEffect(() => {
     if (caseInfo) {
       setCaseInfo(caseInfo);
     }
   }, [caseInfo]);
+
+  useEffect(() => {
+    setIsLoading(caseInfoLoading);
+  }, [caseInfoLoading]);
 
   return (
     <Router>
@@ -60,6 +65,10 @@ export const Routes = () => {
         <Route
           path={`${getRoute('PCD_REQUEST', false)}/:pcdId?`}
           element={<PcdRequestPage />}
+        />
+        <Route
+          path={`${getRoute('PCD_REVIEW', false)}`}
+          element={<PcdReviewPage />}
         />
         <Route
           path={getRoute('MATERIALS', false)}

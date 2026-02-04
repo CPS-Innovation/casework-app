@@ -17,8 +17,6 @@ coverage
 .env
 cypress.env.json
 
-package-lock.json
-
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -50,5 +48,6 @@ terraform.tfstate
 *.tfstate.*
 _backend.tf
 *_override.tf
+.terraform.lock.hcl
 
 /.vite/

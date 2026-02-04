@@ -16,7 +16,7 @@ resource "azurerm_linux_web_app" "as_web_materials" {
   site_config {
     ftps_state              = "FtpsOnly"
     http2_enabled           = true
-    app_command_line        = "" #TBC
+    app_command_line       = "npx serve -s"
     always_on               = true
     vnet_route_all_enabled  = true
     scm_minimum_tls_version = "1.2"
@@ -122,8 +122,9 @@ module "azurerm_app_reg_as_web_materials" { # Note, app roles are currently bein
     ]
 
   single_page_application = {
-    redirect_uris = ["https://as-${local.web_materials_name}.azurewebsites.net/${var.materials_ui_sub_folder}", "http://localhost:3000/${var.materials_ui_sub_folder}", "https://${local.web_materials_name}.cps.gov.uk/${var.materials_ui_sub_folder}"]
+    redirect_uris = var.environment != "prod" ? ["https://as-${local.web_materials_name}.azurewebsites.net/${var.materials_ui_sub_folder}", "http://localhost:3000/${var.materials_ui_sub_folder}/", "https://${local.polaris_name_map[var.environment]}-notprod.cps.gov.uk/${var.materials_ui_sub_folder}/"] : ["https://as-${local.web_materials_name}.azurewebsites.net/${var.materials_ui_sub_folder}", "https://polaris.cps.gov.uk/${var.materials_ui_sub_folder}/"]
   }
+
   api = {
     mapped_claims_enabled          = true
     requested_access_token_version = 1
@@ -200,7 +201,6 @@ resource "azurerm_private_endpoint" "pep_as_web_materials" {
     private_dns_zone_ids = [data.azurerm_private_dns_zone.hub_dns_zones["sites"].id]
   }
 
-/*
   dynamic "ip_configuration" {
     for_each = var.as_web_pe_ip == null ? [] : [1]
     content {
@@ -210,6 +210,6 @@ resource "azurerm_private_endpoint" "pep_as_web_materials" {
       member_name        = "sites"
     }
   }
-*/
+
   tags = local.common_tags
 }

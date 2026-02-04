@@ -1,0 +1,139 @@
+---
+trigger: none
+pr: none
+
+resources:
+  pipelines:
+    - pipeline: MaterialsBuild
+      source: Cps-Materials-UI-Dev-Build
+      trigger:
+        branches:
+          include:
+            - refs/heads/development
+        stages:
+          - Publish_Artifacts
+
+pool:
+  name: $(dev-build-agent)
+
+parameters:
+- name: TF_Apply
+  displayName: Apply TF change
+  type: boolean
+  default: true
+
+variables:
+  - name: majorMinorVersion
+    value: 1.0
+  - name: semanticVersion 
+    value: $[counter(variables['majorMinorVersion'], 1)]
+  - name: targetLabel 
+    value: DEV
+  - group: materials-kv-dev-terraform
+  - group: materials-global
+
+stages:
+
+## Apply Terraform ##                 
+  - stage: Apply_Terraform_Dev
+    displayName: Apply Materials Terraform
+    jobs:  
+
+      - deployment: Wait_For_Running_Builds
+        environment: "Materials_Dev"
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - template: templates\task_wait-for-running-releases.yml
+                  parameters:
+                    devOpsPatToken: $(System.AccessToken)
+
+      - deployment: CI_Deploy_Materials_Terraform
+        condition: succeeded()
+        dependsOn: Wait_For_Running_Builds
+        displayName: Apply Main Terraform
+        environment: "Materials_Dev"
+        workspace:
+          clean: all
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - template: templates/task_get-credentials.yml
+                  parameters:
+                    azureSubscription: $(dev-azure-service-connection)
+
+                - template: templates/task_apply-terraform.yml
+                  parameters:
+                    targetBuild: "MaterialsBuild"
+                    targetTerraformArtifact: $(targetTerraformArtifact)
+                    targetPlanName: "dev"
+                    terraformStorageAccount: $(dev-terraform-storage-account)
+                    terraformContainerName: $(materials-terraform-container-name)
+                    terraformStateKey: $(terraform-key)
+                    terraformStateResourceGroup: $(terraform-resource-group)
+                    armClientId: $(clientId)
+                    armClientSecret: $(clientSecret)
+                    armTenantId: $(tenantId)
+                    armSubscriptionId: $(subscriptionId)       
+                    TF_Apply: ${{ parameters.TF_Apply }}
+                    terraformVersion: $(terraform-version)
+
+## UI Deployment ##
+  - stage: Apply_UI_Dev
+    displayName: Deploy Materials UI
+    condition: succeeded()
+    dependsOn: Apply_Terraform_Dev
+    jobs:
+
+      - deployment: CI_Deploy_Materials_UI
+        condition: succeeded()
+        displayName: Apply UI SPA
+        environment: "Materials_Dev"
+        workspace:
+          clean: all
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - template: templates\task_deploy-spa.yml
+                  parameters:
+                    targetBuild: "MaterialsBuild"
+                    targetLabel: $(targetLabel)
+                    azureSubscription: $(dev-azure-subscription)
+                    WebAppName: $(dev-spa-resource-name)
+                    resourceGroupName: $(dev-spa-resource-group)
+                    BuildArtifactName: $(targetUIArtifact) 
+                    SlotName: "staging1"
+
+  - stage: Swap_Slots
+    displayName: Swap Slots
+    dependsOn: Apply_UI_Dev
+    condition: succeeded()
+    jobs:
+      - template: templates/job_swap-slots.yml
+        parameters:
+            azureSubscription: $(dev-azure-service-connection)
+            resourceGroupName: $(dev-spa-resource-group)
+            AppServiceName: $(dev-spa-resource-name)
+
+# TBC requires further testing once site is live
+  # - stage: Test_UI
+  #   displayName: Test UI
+  #   jobs:
+  #   - job:
+  #     steps:       
+  #     - task: PowerShell@2
+  #       displayName: 'Checking ${{ parameters.targetLabel }} ${{ parameters.targetAppName }} status'
+  #       inputs:
+  #         failOnStderr: true
+  #         targetType: 'filePath'
+  #         filePath: $(Pipeline.Workspace)/${{ parameters.targetBuild }}/materials-script-files/InvokeRequestWithRetry.ps1
+  #         arguments: > # Use this to avoid newline characters in multi-line string
+  #           -URI "##########"
+  #           -Method "GET"
+  #           -SuccessTextContent $(resources.pipeline.MaterialsBuild.runName)
+  #           -Retries "15"
+  #           -SecondsDelay "30"
+  #           -TimeoutSec "60"

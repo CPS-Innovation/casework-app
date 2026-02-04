@@ -1,3 +1,4 @@
+import pdfWorker from 'pdfjs-dist/build/pdf.worker?url';
 import { useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
@@ -7,7 +8,7 @@ import { LoadingSpinner } from '../LoadingSpinner/LoadingSpinner.tsx';
 import { Pagination } from '../Pagination/Pagination.tsx';
 import './PdfViewer.css';
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+pdfjs.GlobalWorkerOptions.workerSrc = pdfWorker;
 
 // TODO: update 'file' type
 type Props = { file: any; fileName: string };

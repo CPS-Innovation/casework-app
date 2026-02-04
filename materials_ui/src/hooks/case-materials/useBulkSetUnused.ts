@@ -2,12 +2,12 @@ import { AxiosError } from 'axios';
 import useSWRMutation from 'swr/mutation';
 import { useBanner, useLogger, useRequest } from '..';
 import { QUERY_KEYS } from '../../constants/query';
-import { API_ENDPOINTS } from '../../constants/url';
 import { SwrPayload } from '../../schemas';
 import {
   BulkSetUnusedRequestType,
   BulkSetUnusedResponseType
 } from '../../schemas/bulkSetUnused';
+import { useCaseInfoStore } from '../../stores';
 
 type UseBulkSetUnusedOptions = {
   onError?: (error: AxiosError) => void;
@@ -21,6 +21,7 @@ export const useBulkSetUnused = ({
   const request = useRequest();
   const { resetBanner } = useBanner();
   const { log } = useLogger();
+  const { caseInfo } = useCaseInfoStore();
 
   const postBulkSetUnused = async (
     _url: string,
@@ -30,14 +31,14 @@ export const useBulkSetUnused = ({
 
     return request
       .post<BulkSetUnusedResponseType>(
-        API_ENDPOINTS.CASE_MATERIAL_BULK_SET_UNUSED,
+        `urns/${caseInfo?.urn}/cases/${caseInfo?.id}/bulk-set-unused`,
         data
       )
       .then((response) => response);
   };
 
   const { trigger, isMutating, error, data } = useSWRMutation(
-    QUERY_KEYS.BULK_SET_UNUSED,
+    caseInfo ? QUERY_KEYS.BULK_SET_UNUSED : null,
     postBulkSetUnused,
     {
       onSuccess,

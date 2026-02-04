@@ -1,0 +1,37 @@
+﻿---
+parameters:
+  - name: targetBuild
+    type: string
+  - name: targetLabel
+    type: string
+  - name: azureSubscription
+    type: string
+  - name: WebAppName
+    type: string   
+  - name: resourceGroupName
+    type: string
+  - name: SlotName
+    type: string
+  - name: BuildArtifactName
+    type: string
+
+
+steps:
+
+  # # download UI build artifact
+  # - download: ${{ parameters.targetBuild }}
+  #   displayName: Deploy > Download SPA Codebase Build
+  #   artifact: ${{ parameters.BuildArtifactName }}
+
+  # Deploy Related Codebase to Env
+  - task: AzureRmWebAppDeployment@4
+    displayName: 'Deploy SPA App Service to ${{ parameters.targetLabel }}'
+    inputs:
+      ConnectionType: 'AzureRM'
+      azureSubscription: ${{ parameters.azureSubscription }}
+      appType: 'webAppLinux'
+      WebAppName: ${{ parameters.WebAppName }}
+      packageForLinux: $(Pipeline.Workspace)/${{ parameters.targetBuild }}/${{ parameters.BuildArtifactName }}
+      deployToSlotOrASE: true
+      slotName: ${{ parameters.SlotName }}
+      resourceGroupName: ${{ parameters.resourceGroupName }}

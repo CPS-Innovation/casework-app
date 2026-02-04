@@ -6,20 +6,18 @@ $govuk-font-family: 'NewTransport', 'Arial', sans-serif;
 
 @font-face {
   font-family: 'NewTransport';
-  src:
-    local('NewTransport-RegularWEB'),
-    url('./assets/fonts/NewTransport-RegularWEB.woff') format('woff'),
-    url('./assets/fonts/NewTransport-RegularWEB.woff2') format('woff2');
+  src: local('NewTransport-RegularWEB'),
+  url('./assets/fonts/NewTransport-RegularWEB.woff') format('woff'),
+  url('./assets/fonts/NewTransport-RegularWEB.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'NewTransport';
-  src:
-    local('NewTransport-BoldWEB'),
-    url('./assets/fonts/NewTransport-BoldWEB.woff') format('woff'),
-    url('./assets/fonts/NewTransport-BoldWEB.woff2') format('woff2');
+  src: local('NewTransport-BoldWEB'),
+  url('./assets/fonts/NewTransport-BoldWEB.woff') format('woff'),
+  url('./assets/fonts/NewTransport-BoldWEB.woff2') format('woff2');
   font-weight: bold;
   font-style: normal;
 }
@@ -131,7 +129,7 @@ strong {
   }
 }
 
-.govuk-grid-row {
+.govuk-grid-row:not(.govuk-grid-row--case-search) {
   margin-left: 0;
   margin-right: 0;
 }

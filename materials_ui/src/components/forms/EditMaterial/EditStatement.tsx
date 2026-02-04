@@ -3,12 +3,15 @@ import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 
-import { useCaseWitnesses, useWitnessStatements } from '../../../hooks/index.ts';
-import { CaseMaterialsType } from '../../../schemas/index.ts';
+import {
+  useCaseWitnesses,
+  useWitnessStatements
+} from '../../../hooks/index.ts';
 import {
   EditStatementSchema,
   EditStatementType
 } from '../../../schemas/forms/editStatement.ts';
+import { CaseMaterialsType } from '../../../schemas/index.ts';
 import { SelectList } from '../../SelectList/SelectList.tsx';
 
 import { DateField } from '../../DateField/DateField.tsx';
@@ -35,6 +38,14 @@ export const EditStatementForm = ({
     loading: isWitnessStatementsLoading,
     setWitnessId
   } = useWitnessStatements();
+
+  const matchedStatement = witnessStatements.find(
+    (statement) => statement.id === material.materialId
+  );
+
+  const defaultStatementNumber = matchedStatement
+    ? `#${matchedStatement.title.toString()}`
+    : 'none';
 
   const {
     control,
@@ -74,6 +85,18 @@ export const EditStatementForm = ({
   const statementLabel = !witnessStatements?.length
     ? 'none'
     : witnessStatements.map((item) => `#${item.title}`).join(', ');
+
+  const statementNumberHint = () => {
+    if (isWitnessStatementsLoading) {
+      return 'Checking...';
+    }
+
+    if (witnessStatements?.length > 1) {
+      return `Already in use: ${statementLabel}. Current statement number: ${defaultStatementNumber}`;
+    }
+
+    return `Already in use: ${statementLabel}.`;
+  };
 
   return (
     <>
@@ -167,7 +190,7 @@ export const EditStatementForm = ({
             <TextInput
               {...field}
               id={field.name}
-              hint={`Already in use: ${isWitnessStatementsLoading ? 'checking...' : statementLabel}`}
+              hint={statementNumberHint()}
               label="What is the statement number?"
               error={errors?.statementNumber?.message as string}
               width={4}
