@@ -28,7 +28,7 @@ cypress.env.json
 *.sln
 *.sw?
 
-# 
+# materials_ui specific ignores for playwright and test results
 materials_ui/tests/.auth/
 materials_ui/test-results/
 materials_ui/playwright-report/
