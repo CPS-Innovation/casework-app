@@ -48,7 +48,7 @@ export function TableActions({
         className={`govuk-grid-row search-input-container ${isSticky ? 'is-sticky' : ''}`}
       >
         <div className="search-input-row">
-          {!isSticky && hasAccess([2, 3, 4, 5]) && (
+          {!isSticky && (
             <div className="filter-button">
               <button
                 className="govuk-button govuk-button--secondary filter-toggle-button"
