@@ -199,10 +199,10 @@ stages:
 
 # ---------- E2E TESTS (Playwright) ----------
           - task: Npm@1
-            displayName: 'Install Playwright (incl. Edge)'
+            displayName: 'Install Playwright (Chromium + Edge)'
             inputs:
               command: 'custom'
-              customCommand: 'exec playwright install -- --with-deps msedge'
+              customCommand: 'exec playwright install --with-deps chromium msedge'
               workingDir: '$(workingDir)'
 
           - task: Npm@1
