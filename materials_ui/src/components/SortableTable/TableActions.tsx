@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useCaseInfoStore, useFeatureFlag, useLogger } from '../../hooks';
+import { useCaseInfoStore, useLogger } from '../../hooks';
 import { CaseMaterialsType } from '../../schemas';
 import { ButtonMenuComponent } from '../ButtonMenu/ButtonMenu';
 
@@ -18,7 +18,6 @@ export function TableActions({
   menuItems = [],
   selectedItems
 }: Props) {
-  const hasAccess = useFeatureFlag();
   const { caseInfo } = useCaseInfoStore();
   const [isSticky, setIsSticky] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -48,7 +47,7 @@ export function TableActions({
         className={`govuk-grid-row search-input-container ${isSticky ? 'is-sticky' : ''}`}
       >
         <div className="search-input-row">
-          {!isSticky && hasAccess([2, 3, 4, 5]) && (
+          {!isSticky && (
             <div className="filter-button">
               <button
                 className="govuk-button govuk-button--secondary filter-toggle-button"
