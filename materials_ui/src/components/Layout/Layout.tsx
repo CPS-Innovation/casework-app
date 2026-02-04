@@ -1,5 +1,5 @@
 import { PropsWithChildren, useEffect } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, useParams } from 'react-router-dom';
 
 import { Banner, CaseInfo, LoadingSpinner, Tabs } from '..';
 import { useAppRoute, useBanner } from '../../hooks';
@@ -7,6 +7,7 @@ import type { Tab } from '../Tabs/Tabs';
 
 import { useCaseInfoStore } from '../../stores';
 
+import { BaseUrlParamsType } from '../../schemas/params';
 import './Layout.scss';
 
 type Props = {
@@ -25,6 +26,8 @@ export const Layout = ({
   const { caseInfo, isLoading: caseInfoLoading } = useCaseInfoStore();
   const location = useLocation();
   const { getRoute } = useAppRoute();
+
+  const { caseId, urn } = useParams<BaseUrlParamsType>();
 
   const initTabs: Tab[] = [
     {
@@ -79,7 +82,7 @@ export const Layout = ({
             banners.map((banner, index) => <Banner key={index} {...banner} />)}
         </div>
 
-        <case-info-summary urn="06SC1234571" caseid="2155068" />
+        {urn && caseId && <case-info-summary urn={urn} caseid={caseId} />}
 
         {!plain ? (
           <>

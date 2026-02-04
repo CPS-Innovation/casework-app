@@ -1,11 +1,14 @@
 import { useMsal } from '@azure/msal-react';
 import { useEffect } from 'react';
 import { RouteChangeListener } from './components';
+import { POLARIS_GATEWAY_SCOPE } from './constants/url';
+import { useBanner } from './hooks';
 import { loginRequest } from './msalInstance';
 import { Routes } from './routes';
 
 export const App = () => {
   const { instance, accounts } = useMsal();
+  const { setBanner } = useBanner();
 
   useEffect(() => {
     instance.handleRedirectPromise().then((response) => {
@@ -25,6 +28,22 @@ export const App = () => {
   if (!account) {
     return <p>Redirecting to login...</p>;
   }
+
+  window.acquireAccessToken = async () =>
+    await instance
+      .acquireTokenSilent({
+        scopes: [POLARIS_GATEWAY_SCOPE],
+        account: accounts[0]
+      })
+      .then((accessTokenResponse) => accessTokenResponse.accessToken)
+      .catch(() => null);
+
+  window.addEventListener('cwm-unauthorised', (event) => {
+    const customEvent = event as CustomEvent<{ error?: string }>;
+
+    setBanner({ type: 'error', header: customEvent.detail.error || '' });
+    console.log(customEvent.detail);
+  });
 
   return (
     <>
