@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { Document, Page } from 'react-pdf';
 import { Link } from 'react-router-dom';
+import { getPdfFiles } from '../caseWorkApp/components/utils/getData';
 import {
   DefinitionList,
   ErrorSummary,
@@ -10,9 +12,155 @@ import {
   StatusTag
 } from '../components';
 import { useCaseInfoStore, useCaseSearch } from '../hooks';
+import { useAxiosInstance } from '../materials_components/DocumentSelectAccordion/getters/getAxiosInstance';
+import { useGetDocumentList } from '../materials_components/DocumentSelectAccordion/getters/getDocumentList';
+import { useGetDocumentNotes } from '../materials_components/DocumentSelectAccordion/getters/getDocumentNotes';
 import { formatDateLong } from '../utils/date';
 
 type IFormInput = { urn: string };
+
+// // Not Sensitive - with notes
+const notSensitive = {
+  urn: '54KR7689125',
+  caseId: 2160797,
+  documentId: 'CMS-8884800',
+  versionId: '8164216'
+};
+
+// Sensitive
+const sensitive = {
+  urn: '45GD0000125',
+  caseId: 2158184,
+  documentId: 'CMS-8948775',
+  versionId: '8164166'
+};
+
+const restricted = {
+  urn: '45ED0124824',
+  caseId: 2158184,
+  documentId: 'CMS-8948775',
+  versionId: '8164166'
+};
+
+const obj = { sensitive, notSensitive, restricted };
+const key: keyof typeof obj = 'restricted';
+
+const { urn, caseId, documentId, versionId } = obj[key];
+
+const TestComp = () => {
+  const [showDocList, setShowDocList] = useState(false);
+  const [showDocNotes, setShowDocNotes] = useState(false);
+  const [showDoc, setShowDoc] = useState(false);
+
+  return (
+    <div>
+      <div>{key}</div>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div>
+          <button onClick={() => setShowDocList((prev) => !prev)}>
+            Show doc list
+          </button>
+          <br />
+          {showDocList && <GetDocListTestComp />}
+        </div>
+        <div>
+          <button onClick={() => setShowDocNotes((prev) => !prev)}>
+            Show doc notes
+          </button>
+          <br />
+          {showDocNotes && <GetDocNotesTestComp />}
+        </div>
+        <div>
+          <button onClick={() => setShowDoc((prev) => !prev)}>Show doc</button>
+          <br />
+          {showDoc && <GetDocTestComp />}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const GetDocListTestComp = () => {
+  const docList = useGetDocumentList({ urn, caseId });
+
+  useEffect(() => {
+    docList.load();
+  }, []);
+  return (
+    <div>
+      blah
+      <br />
+      <pre>{JSON.stringify({ data: docList.data }, null, 2)}</pre>
+    </div>
+  );
+};
+const GetDocNotesTestComp = () => {
+  const docList = useGetDocumentNotes({ urn, caseId, documentId });
+
+  return (
+    <div>
+      blah
+      <br />
+      <pre>{JSON.stringify({ data: docList.data }, null, 2)}</pre>
+    </div>
+  );
+};
+const GetDocTestComp = () => {
+  const axiosInstance = useAxiosInstance();
+  const blobUrlRef = useRef<string>(undefined);
+  const [status, setStatus] = useState<
+    { mode: 'loading' | 'success' } | { mode: 'error'; message: string }
+  >({ mode: 'loading' });
+
+  useEffect(() => {
+    const loadPdf = async () => {
+      try {
+        const blob = await getPdfFiles({
+          axiosInstance,
+          urn,
+          caseId,
+          documentId,
+          versionId
+        });
+
+        if (blob instanceof Blob) {
+          const url = URL.createObjectURL(blob);
+          blobUrlRef.current = url;
+          setStatus({ mode: 'success' });
+        } else {
+          setStatus({ mode: 'error', message: 'An error occurred' });
+        }
+      } catch {
+        setStatus({ mode: 'error', message: 'Not a blob' });
+      }
+    };
+
+    loadPdf();
+
+    return () => {
+      if (blobUrlRef.current) {
+        URL.revokeObjectURL(blobUrlRef.current);
+      }
+    };
+  }, []);
+
+  return (
+    <div>
+      {status.mode}
+      {status.mode === 'error' ? `: ${status.message}` : ''}
+      <br />
+      <pre>{JSON.stringify({ data: blobUrlRef.current }, null, 2)}</pre>
+
+      {blobUrlRef.current && (
+        <div style={{ border: 'solid 1px black' }}>
+          <Document file={blobUrlRef.current}>
+            <Page pageNumber={1} />
+          </Document>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export const CaseSearchPage = () => {
   const {
@@ -53,6 +201,10 @@ export const CaseSearchPage = () => {
             <h1 className="govuk-heading-l govuk-!-margin-bottom-0">
               Find a case
             </h1>
+            <div>
+              <TestComp />
+            </div>
+
             <p className="govuk-body govuk-hint govuk-!-margin-bottom-9">
               Search and review a CPS case in England and Wales
             </p>
