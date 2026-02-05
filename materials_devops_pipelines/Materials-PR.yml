@@ -1,0 +1,233 @@
+---
+name: '$(majorMinorVersion).$(Year:yy)$(DayOfYear).$(semanticVersion)-ci'
+
+trigger: none
+pr: none
+
+#trigger: none
+#
+# pr:
+#   branches:
+#     include:
+#       - main
+#   paths:
+#     include:
+#       - terraform/*
+#       - materials_ui/*
+#       - tests/*
+
+parameters:
+- name: runTerraform
+  displayName: Run terrform plan checks
+  type: boolean
+  default: true
+
+variables:
+  - name: buildConfiguration
+    value: "Release"
+  - name: majorMinorVersion
+    value: "1.0"
+  - name: semanticVersion
+    value: "$[counter(variables['majorMinorVersion'], 1)]"
+  - name: nodeVersion
+    value: "24.x"
+  - name: workingDir
+    value: "materials_ui"
+  - name: terraformWorkingDir
+    value: "$(System.DefaultWorkingDirectory)/terraform"
+  - group: materials-global
+  - group: materials_e2e_tests
+  - group: materials-ui-spa-dev
+
+stages:
+  - stage: Wait_For_Running_PRs
+    displayName: Wait for running PRs
+    jobs:
+      - job:
+        pool:
+          name: $(dev-build-agent)
+        steps:
+          - template: templates\task_wait-for-running-releases.yml
+            parameters:
+              devOpsPatToken: $(System.AccessToken)
+
+
+  - stage: Check_Terraform
+    condition: succeeded()
+    displayName: Check Main Terraform
+    dependsOn: Wait_For_Running_PRs
+    jobs:
+      - job: Validate_Main_Terraform
+        condition: eq(${{ parameters.runTerraform }}, true)
+        displayName: Validate Main Terraform
+        pool:
+          name: $(dev-build-agent)
+
+        steps:
+
+          - template: templates/task_get-credentials.yml
+            parameters:
+              azureSubscription: $(dev-azure-service-connection)
+
+          - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@1
+            displayName: Terraform > Install
+            inputs:
+              terraformVersion: $(terraform-version)
+              
+          # Terraform Init
+          - bash: |
+              terraform init \
+                -backend-config="storage_account_name=$TF_STATE_ACCOUNT_NAME" \
+                -backend-config="container_name=$TF_STATE_CONTAINER_NAME" \
+                -backend-config="key=$TF_STATE_KEY" \
+                -backend-config="resource_group_name=$TF_RESOURCE_GROUP_NAME"
+            displayName: Terraform > Init
+            workingDirectory: $(terraformWorkingDir)
+            env:
+              ARM_CLIENT_ID: $(clientId)
+              ARM_CLIENT_SECRET: $(clientSecret)
+              ARM_TENANT_ID: $(tenantId)
+              ARM_SUBSCRIPTION_ID: $(subscriptionId)
+              TF_STATE_ACCOUNT_NAME: $(dev-terraform-storage-account)
+              TF_STATE_CONTAINER_NAME: $(materials-terraform-container-name)
+              TF_STATE_KEY: $(terraform-key)
+              TF_RESOURCE_GROUP_NAME: $(terraform-resource-group)
+              TF_LOG: "ERROR"
+
+          # Terraform Plan
+          - bash: |
+              terraform plan -input=false -out=dev.tfplan -var-file="./environments/dev.tfvars"
+            displayName: Terraform > Write Plan
+            workingDirectory: $(terraformWorkingDir)
+            env:
+              ARM_CLIENT_ID: $(clientId)
+              ARM_CLIENT_SECRET: $(clientSecret)
+              ARM_TENANT_ID: $(tenantId)
+              ARM_SUBSCRIPTION_ID: $(subscriptionId)
+              TF_LOG: "ERROR"
+
+  - stage: Build_and_Test_UI
+    displayName: Front End Checks
+    jobs:
+
+      - job: Build_and_Test
+        displayName: 'Build & Test App'
+        ##### Temp Entry ##########
+        pool:
+          name: $(dev-build-agent)
+          ###########################
+        steps:
+        
+          # Setup Node.js
+          - task: UseNode@1
+            displayName: "Use Node.js"
+            inputs:
+              version: "$(nodeVersion)"
+            
+          - task: Npm@1
+            inputs:
+              command: "ci"
+              workingDir: '$(workingDir)'
+            displayName: 'Install Dependencies'
+
+          - task: Npm@1
+            inputs:
+              command: "custom"
+              workingDir: '$(workingDir)'
+              customCommand: "run format"
+            displayName: "npm prettier"
+
+# commenting out to test other parts of pipeline
+          # - task: Npm@1
+          #   displayName: 'Lint Code'
+          #   inputs:
+          #     command: 'custom'
+          #     customCommand: 'run lint'
+          #     workingDir: '$(workingDir)'
+
+          #Build the application
+          - task: Npm@1
+            displayName: "Build UI Package"
+            inputs:
+              command: "custom"
+              workingDir: '$(workingDir)'
+              customCommand: "run build"
+            env:
+              VITE_MSAL_CLIENT_ID: $(MSAL_CLIENT_ID)
+              VITE_MSAL_TENANT_ID: $(MSAL_TENANT_ID) 
+              VITE_MSAL_REDIRECT_URI: $(MSAL_REDIRECT_URI) 
+              VITE_POLARIS_GATEWAY_URL: $(POLARIS_GATEWAY_URL)
+              VITE_POLARIS_GATEWAY_SCOPE: $(POLARIS_GATEWAY_SCOPE)
+              VITE_GLOBAL_SCRIPT_URL: $(GLOBAL_SCRIPT_URL)
+              VITE_E2E: True
+
+# # ---------- UNIT TESTS (Vitest) ----------
+#           - task: Npm@1
+#             displayName: 'Run UI Unit Tests'
+#             inputs:
+#               command: 'custom'
+#               customCommand: 'run test'
+#               workingDir: '$(workingDir)'
+
+#           - task: PublishTestResults@2
+#             displayName: 'Publish Unit Test Results (JUnit)'
+#             inputs:
+#               testResultsFormat: 'JUnit'
+#               testResultsFiles: '$(workingDir)/unit-test-results.xml'
+#               testRunTitle: "Unit tests"
+#               publishRunAttachments: false
+#               mergeTestResults: true
+#             condition: always()
+
+# ---------- E2E TESTS (Playwright) ----------
+          - task: Npm@1
+            displayName: 'Install Playwright (Chromium + Edge)'
+            inputs:
+              command: 'custom'
+              customCommand: 'exec playwright install --with-deps chromium msedge'
+              workingDir: '$(workingDir)'
+
+          - task: Npm@1
+            displayName: 'Run E2E Tests with Coverage'
+            inputs:
+              command: 'custom'
+              customCommand: 'run e2e'
+              workingDir: '$(workingDir)'
+            env:
+              E2E_TEST_MS_USERNAME: $(e2e_username)
+              E2E_TEST_MS_PASSWORD: $(e2e_password) 
+              E2E_CIN3_USERNAME: $(e2e_cin3_username) 
+              E2E_CIN3_PASSWORD: $(e2e_cin3_password)
+              E2E_CMS_COOKIE_URL: $(e2e_cms_cookie_url)
+              E2E_URN: $(e2e_urn)
+              E2E_CASE: $(e2e_case)
+              VITE_MSAL_CLIENT_ID: $(MSAL_CLIENT_ID)
+              VITE_MSAL_TENANT_ID: $(MSAL_TENANT_ID) 
+              VITE_MSAL_REDIRECT_URI: $(MSAL_REDIRECT_URI) 
+              VITE_POLARIS_GATEWAY_URL: $(POLARIS_GATEWAY_URL)
+              VITE_POLARIS_GATEWAY_SCOPE: $(POLARIS_GATEWAY_SCOPE)
+              VITE_GLOBAL_SCRIPT_URL: $(GLOBAL_SCRIPT_URL)
+              VITE_E2E: True
+
+          - task: PublishPipelineArtifact@1
+            displayName: 'Publish terraform artifact'
+            inputs:
+              targetPath: '$(workingDir)/playwright-report'
+              artifact: 'playwright-report'
+              publishLocation: 'pipeline'
+            condition: succeededOrFailed() 
+
+          # - task: PublishTestResults@2
+          #   displayName: 'Publish E2E Test Results (JUnit)'
+          #   inputs:
+          #     testResultsFormat: 'JUnit'
+          #     testResultsFiles: '$(workingDir)/playwright/e2e-test-results.xml'
+          #     publishRunAttachments: false
+          #   condition: always()
+
+# Publish Code Coverage Results - publishes code coverage results to Azure Pipelines which were produced by a build in Cobertura or JaCoCo format.
+# - task: PublishCodeCoverageResults@2
+#   inputs:
+#     summaryFileLocation: # string. Required. Path to summary files. 
+#     #pathToSources: # string. Path to Source files. 
+#     #failIfCoverageEmpty: false # boolean. Fail if code coverage results are missing. Default: false.

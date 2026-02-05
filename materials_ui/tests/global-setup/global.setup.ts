@@ -32,13 +32,11 @@ setup('setup cookie', async ({ browser }) => {
   }
 
   //MSAL will redirect to Microsoft login page.
-  await page.goto('/');
+  await page.goto('/', { timeout: 30000 });
+  const signHeader = page.getByRole('heading', { name: 'Sign in' });
+  await signHeader.waitFor({ timeout: 10000 });
   await page
-    .getByRole('textbox', { name: 'someone@example.com' })
+    .locator('#i0116')
     .fill(mslUsername);
   await page.getByRole('button', { name: 'Next' }).click();
   await page.locator('#i0118').fill(mslPassword);
-  await page.getByRole('button', { name: 'Sign in' }).click();
-  await page.getByRole('button', { name: 'Yes' }).click();
-  await page.context().storageState({ path: 'tests/.auth/globalSetup.json' });
-});
