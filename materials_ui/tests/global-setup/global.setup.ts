@@ -31,7 +31,7 @@ setup('setup cookie', async ({ browser }) => {
     log('Cms-Auth-Value cookie not found');
   }
 
-  //MSAL will redirect to Microsoft login page.
+    //MSAL will redirect to Microsoft login page.
   await page.goto('/', { timeout: 30000 });
   const signHeader = page.getByRole('heading', { name: 'Sign in' });
   await signHeader.waitFor({ timeout: 10000 });
@@ -40,3 +40,7 @@ setup('setup cookie', async ({ browser }) => {
     .fill(mslUsername);
   await page.getByRole('button', { name: 'Next' }).click();
   await page.locator('#i0118').fill(mslPassword);
+  await page.getByRole('button', { name: 'Sign in' }).click();
+  await page.getByRole('button', { name: 'Yes' }).click();
+  await page.context().storageState({ path: 'tests/.auth/globalSetup.json' });
+});
