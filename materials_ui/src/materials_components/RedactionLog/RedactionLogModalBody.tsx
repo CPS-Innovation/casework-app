@@ -56,7 +56,11 @@ const RedactionTypesGrid = ({
 
   const onToggle = (id: number) => {
     const next = new Set(selected);
-    next.has(id) ? next.delete(id) : next.add(id);
+    if (next.has(id)) {
+      next.delete(id);
+    } else {
+      next.add(id);
+    }
     onChange(Array.from(next));
   };
 
@@ -203,7 +207,7 @@ export const RedactionLogModalBody = ({
                     ? true
                     : 'Select a redaction category'
               }}
-              render={() => null}
+              render={() => <></>}
             />
 
             {overRedactionSelected && (
@@ -346,7 +350,11 @@ export const RedactionLogModalBody = ({
             </p>
           )}
 
-          <a onClick={() => setShowPopover(!showPopover)}>
+          <a
+            className="govuk-link"
+            onClick={() => setShowPopover(!showPopover)}
+            style={{ fontSize: '19px' }}
+          >
             Guidance on supporting notes
           </a>
 
@@ -355,11 +363,14 @@ export const RedactionLogModalBody = ({
               title="Guidance on supporting notes"
               content={() => {
                 return (
-                  <ul style={{ paddingLeft: '1rem' }}>
-                    <li>Explain why the redaction was made</li>
-                    <li>Mention any relevant case details</li>
-                    <li>Keep notes clear and concise</li>
-                    <li>Avoid sensitive information</li>
+                  <ul style={{ paddingLeft: '1rem', fontSize: '19px' }}>
+                    <li>
+                      Detail the redaction issue identified, e.g. Statement of
+                      XX (Initials) DOB redacted
+                    </li>
+                    <li>Avoid recording full names</li>
+                    <li>Do not record sensitive personal data</li>
+                    <li>Supporting notes optional - 400 characters maximum</li>
                   </ul>
                 );
               }}
@@ -380,7 +391,9 @@ export const RedactionLogModalBody = ({
           })}
         />
 
-        <p className="govuk-body">You have 400 characters remaining</p>
+        <p className="govuk-body govuk-!-margin-top-2 govuk-!-margin-bottom-0">
+          You have 400 characters remaining
+        </p>
       </div>
     </div>
   );
