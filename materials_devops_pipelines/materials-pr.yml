@@ -178,24 +178,6 @@ stages:
 #               publishRunAttachments: false
 #               mergeTestResults: true
 #             condition: always()
-              
-          - bash: |
-              curl -o /dev/null -s -w "%{http_code}\n"  https://polaris-dev-cmsproxy.azurewebsites.net/api/dev-login-full-cookie/
-
-          - bash: |
-              getent hosts polaris-dev-cmsproxy.azurewebsites.net | awk '{ print $1 }'
-              getent hosts fa-case-materials-export-dev.azurewebsites.net | awk '{ print $1 }'
-              getent hosts fa-eas-app-ddei-dev.azurewebsites.net | awk '{ print $1 }'
-              getent hosts as-mock-polaris-ddei-dev.azurewebsites.net | awk '{ print $1 }'
-              getent hosts polaris-dev-cmsproxy.privatelink.azurewebsites.net | awk '{ print $1 }'
-              getent hosts fa-case-materials-export-dev.privatelink.azurewebsites.net | awk '{ print $1 }'
-              getent hosts fa-eas-app-ddei-dev.privatelink.azurewebsites.net | awk '{ print $1 }'
-              getent hosts as-mock-polaris-ddei-dev.privatelink.azurewebsites.net | awk '{ print $1 }'
-              getent hosts as-materials-web-dev-uks.azurewebsites.net | awk '{ print $1 }'
-              getent hosts as-materials-web-dev-uks-staging1.azurewebsites.net | awk '{ print $1 }'
-
-          - bash: |
-              cat /etc/resolv.conf
 
 # ---------- E2E TESTS (Playwright) ----------
           - task: Npm@1
@@ -243,7 +225,7 @@ stages:
           #     publishRunAttachments: false
           #   condition: always()
 
-# Publish Code Coverage Results publishes code coverage results to Azure Pipelines, which were produced by a build in Cobertura or JaCoCo format.
+# Publish Code Coverage Results - publishes code coverage results to Azure Pipelines which were produced by a build in Cobertura or JaCoCo format.
 # - task: PublishCodeCoverageResults@2
 #   inputs:
 #     summaryFileLocation: # string. Required. Path to summary files. 
