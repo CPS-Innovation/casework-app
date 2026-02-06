@@ -34,7 +34,7 @@ export default defineConfig({
     navigationTimeout: 60 * 1000,  // 60s for page.goto()
     actionTimeout: 30 * 1000,      // 30s for clicks/fills
   },
-  timeout: 120_000,
+  
   /* Configure projects for major browsers */
   projects: [
     // {
@@ -82,7 +82,8 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: {
     command: 'npm run dev',
-    url: 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI
+    url: 'http://localhost:3000/materials-ui',
+    reuseExistingServer: !process.env.CI,
+    timeout: 120_000 
   }
 });
