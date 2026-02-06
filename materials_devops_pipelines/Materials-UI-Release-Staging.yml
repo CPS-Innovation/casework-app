@@ -115,8 +115,10 @@ stages:
       - template: templates/job_swap-slots.yml
         parameters:
             azureSubscription: $(staging-azure-service-connection)
-            resourceGroupName: "rg-materials-${{ targetLabel }}-uks"
+            resourceGroupName: "rg-materials-${{ variables.targetLabel }}-uk"
             AppServiceName: $(staging-spa-resource-name)
+
+            
 
 # TBC requires further testing once site is live
   # - stage: Test_UI
