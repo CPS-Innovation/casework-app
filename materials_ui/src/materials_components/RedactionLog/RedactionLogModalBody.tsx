@@ -56,7 +56,11 @@ const RedactionTypesGrid = ({
 
   const onToggle = (id: number) => {
     const next = new Set(selected);
-    next.has(id) ? next.delete(id) : next.add(id);
+    if (next.has(id)) {
+      next.delete(id);
+    } else {
+      next.add(id);
+    }
     onChange(Array.from(next));
   };
 
@@ -203,7 +207,7 @@ export const RedactionLogModalBody = ({
                     ? true
                     : 'Select a redaction category'
               }}
-              render={() => null}
+              render={() => <></>}
             />
 
             {overRedactionSelected && (
@@ -225,9 +229,13 @@ export const RedactionLogModalBody = ({
                     control={control}
                     rules={{
                       validate: (value) => {
-                        overRedactionSelected ||
-                          value ||
-                          'Select a reason for over redaction';
+                        if (!overRedactionSelected) return true;
+                        if (
+                          value === 'investigative-agency' ||
+                          value === 'cps-colleague'
+                        )
+                          return true;
+                        return 'Select an under redaction type';
                       }
                     }}
                     render={({ field }) => (
