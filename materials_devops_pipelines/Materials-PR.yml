@@ -145,22 +145,22 @@ stages:
           #     customCommand: 'run lint'
           #     workingDir: '$(workingDir)'
 
-          #Build the application
-          - task: Npm@1
-            displayName: "Build UI Package"
-            inputs:
-              command: "custom"
-              workingDir: '$(workingDir)'
-              customCommand: "run build"
-            env:
-              VITE_MSAL_CLIENT_ID: $(MSAL_CLIENT_ID)
-              VITE_MSAL_TENANT_ID: $(MSAL_TENANT_ID) 
-              VITE_MSAL_REDIRECT_URI: $(MSAL_REDIRECT_URI_LOCAL) 
-              VITE_POLARIS_GATEWAY_URL: $(POLARIS_GATEWAY_URL)
-              VITE_POLARIS_GATEWAY_SCOPE: $(POLARIS_GATEWAY_SCOPE)
-              VITE_GLOBAL_SCRIPT_URL: $(GLOBAL_SCRIPT_URL)
-              VITE_BASE_URL: $(BASE_URL)
-              VITE_E2E: True
+          # #Build the application
+          # - task: Npm@1
+          #   displayName: "Build UI Package"
+          #   inputs:
+          #     command: "custom"
+          #     workingDir: '$(workingDir)'
+          #     customCommand: "run build"
+          #   env:
+          #     VITE_MSAL_CLIENT_ID: $(MSAL_CLIENT_ID)
+          #     VITE_MSAL_TENANT_ID: $(MSAL_TENANT_ID) 
+          #     VITE_MSAL_REDIRECT_URI: $(MSAL_REDIRECT_URI_LOCAL) 
+          #     VITE_POLARIS_GATEWAY_URL: $(POLARIS_GATEWAY_URL)
+          #     VITE_POLARIS_GATEWAY_SCOPE: $(POLARIS_GATEWAY_SCOPE)
+          #     VITE_GLOBAL_SCRIPT_URL: $(GLOBAL_SCRIPT_URL)
+          #     VITE_BASE_URL: $(BASE_URL)
+          #     VITE_E2E: True
 
 # # ---------- UNIT TESTS (Vitest) ----------
 #           - task: Npm@1
