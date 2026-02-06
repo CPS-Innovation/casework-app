@@ -103,7 +103,7 @@ stages:
                     targetLabel: $(targetLabel)
                     azureSubscription: $(staging-azure-subscription)
                     WebAppName: $(staging-spa-resource-name)
-                    resourceGroupName: "rg-materials-${{ targetLabel }}-uks"
+                    resourceGroupName: "rg-materials-${{ variables.targetLabel }}-uk"
                     BuildArtifactName: $(targetUIArtifact) 
                     SlotName: "staging1"
 
