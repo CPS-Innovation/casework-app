@@ -229,9 +229,13 @@ export const RedactionLogModalBody = ({
                     control={control}
                     rules={{
                       validate: (value) => {
-                        overRedactionSelected ||
-                          value ||
-                          'Select a reason for over redaction';
+                        if (!overRedactionSelected) return true;
+                        if (
+                          value === 'investigative-agency' ||
+                          value === 'cps-colleague'
+                        )
+                          return true;
+                        return 'Select an under redaction type';
                       }
                     }}
                     render={({ field }) => (

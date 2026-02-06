@@ -28,12 +28,12 @@ cypress.env.json
 *.sln
 *.sw?
 
-# Playwright
-/e2e/.auth/
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
+# materials_ui specific ignores for playwright and test results
+materials_ui/tests/.auth/
+materials_ui/test-results/
+materials_ui/playwright-report/
+materials_ui/blob-report/
+materials_ui/playwright/.cache/
 
 # Playwright
 /tests/.auth/
