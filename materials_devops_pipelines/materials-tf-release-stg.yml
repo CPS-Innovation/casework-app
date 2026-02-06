@@ -21,14 +21,14 @@ parameters:
   default: false
 
 pool:
-  name: $(qa-build-agent)
+  name: $(stg-build-agent)
 
 variables:
   - name: majorMinorVersion
     value: 1.0
   - name: semanticVersion 
     value: $[counter(variables['majorMinorVersion'], 1)]
-  - group: materials-kv-qa-terraform
+  - group: materials-kv-stg-terraform
   - group: materials-global
 
 stages:
@@ -47,14 +47,14 @@ stages:
               
                 - template: templates/task_get-credentials.yml
                   parameters:
-                    azureSubscription: $(qa-azure-service-connection)
+                    azureSubscription: $(staging-azure-service-connection)
 
                 - template: templates/task_apply-terraform.yml
                   parameters:
                     targetBuild: "Materials_TF_Build"
                     targetTerraformArtifact: $(targetTerraformArtifact)
                     targetPlanName: "stg"
-                    terraformStorageAccount: $(qa-terraform-storage-account)
+                    terraformStorageAccount: $(staging-terraform-storage-account)
                     terraformContainerName: $(materials-terraform-container-name)
                     terraformStateKey: $(terraform-key)
                     terraformStateResourceGroup: $(terraform-resource-group)
