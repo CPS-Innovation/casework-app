@@ -28,7 +28,7 @@ variables:
   - group: materials-ui-spa-stg
 
 pool:
-  name: $(qa-build-agent)
+  name: $(stg-build-agent)
 
 stages:
   - stage: Publish_Artifacts
