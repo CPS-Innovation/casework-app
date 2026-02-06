@@ -34,6 +34,7 @@ export default defineConfig({
     navigationTimeout: 60 * 1000,  // 60s for page.goto()
     actionTimeout: 30 * 1000,      // 30s for clicks/fills
   },
+  timeout: 120_000,
   /* Configure projects for major browsers */
   projects: [
     // {
