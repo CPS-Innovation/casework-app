@@ -1,8 +1,10 @@
 import useSWR from 'swr';
 
+import { AxiosInstance } from 'axios';
 import { useBanner, useRequest } from '..';
 import { QUERY_KEYS } from '../../constants/query';
 import { CaseDetailsType } from '../../schemas/caseDetails';
+import { useAxiosInstance } from '../ui/useRequest';
 
 export const useCaseSearch = (urn: string | undefined) => {
   const request = useRequest();
@@ -38,4 +40,22 @@ export const useCaseSearch = (urn: string | undefined) => {
     loading: isLoading || isValidating,
     refresh: mutate
   };
+};
+
+export const getCaseDetails = async (p: {
+  axiosInstance: AxiosInstance;
+  urn: string;
+}) => {
+  return p.axiosInstance.get<CaseDetailsType>(`/urns/${p.urn}/cases`);
+};
+
+const getCaseDetailsKey = (p: { urn: string }) => `getCaseDetails-${p.urn}`;
+export const useCaseDetails = (p: { urn: string }) => {
+  const axiosInstance = useAxiosInstance();
+  const rtn = useSWR(
+    getCaseDetailsKey({ urn: p.urn }), //
+    () => getCaseDetails({ axiosInstance, urn: p.urn })
+  );
+
+  return rtn;
 };

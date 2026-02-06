@@ -60,3 +60,26 @@ export const useRequest = () => {
 
   return axiosInstance;
 };
+
+export const useAxiosInstance = () => {
+  const { instance: msalInstance } = useMsal();
+
+  const axiosInstance = axios.create({
+    baseURL: `${POLARIS_GATEWAY_URL}/api/`,
+    withCredentials: true
+  });
+
+  axiosInstance.interceptors.request.use(async (config) => {
+    const tokenResponse = await msalInstance.acquireTokenSilent({
+      ...loginRequest,
+      account: msalInstance.getActiveAccount()!
+    });
+
+    config.headers['Authorization'] = `Bearer ${tokenResponse.accessToken}`;
+    config.headers['Correlation-Id'] = crypto.randomUUID();
+
+    return config;
+  });
+
+  return axiosInstance;
+};
