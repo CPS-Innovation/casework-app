@@ -103,7 +103,7 @@ stages:
                     targetLabel: $(targetLabel)
                     azureSubscription: $(staging-azure-subscription)
                     WebAppName: $(staging-spa-resource-name)
-                    resourceGroupName: "rg-materials-${{ parameters.targetLabel }}-uks"
+                    resourceGroupName: "rg-materials-${{ targetLabel }}-uks"
                     BuildArtifactName: $(targetUIArtifact) 
                     SlotName: "staging1"
 
@@ -115,7 +115,7 @@ stages:
       - template: templates/job_swap-slots.yml
         parameters:
             azureSubscription: $(staging-azure-service-connection)
-            resourceGroupName: "rg-materials-${{ parameters.targetLabel }}-uks"
+            resourceGroupName: "rg-materials-${{ targetLabel }}-uks"
             AppServiceName: $(staging-spa-resource-name)
 
 # TBC requires further testing once site is live
