@@ -103,7 +103,7 @@ stages:
                     targetLabel: $(targetLabel)
                     azureSubscription: $(staging-azure-subscription)
                     WebAppName: $(staging-spa-resource-name)
-                    resourceGroupName: "rg-materials-${{ variables.targetLabel }}-uk"
+                    resourceGroupName: "rg-materials-${{ lower(variables.targetLabel) }}-uk"
                     BuildArtifactName: $(targetUIArtifact) 
                     SlotName: "staging1"
 
@@ -115,7 +115,7 @@ stages:
       - template: templates/job_swap-slots.yml
         parameters:
             azureSubscription: $(staging-azure-service-connection)
-            resourceGroupName: "rg-materials-${{ variables.targetLabel }}-uk"
+            resourceGroupName: "rg-materials-${{ lower(variables.targetLabel) }}-uk"
             AppServiceName: $(staging-spa-resource-name)
 
             
