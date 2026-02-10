@@ -51,3 +51,4 @@ _backend.tf
 .terraform.lock.hcl
 
 /.vite/
+materials_ui/public/assets/images

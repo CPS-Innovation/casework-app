@@ -33,6 +33,17 @@ export default defineConfig(({ mode }) => {
         }
       },
       {
+        name: 'copy-govuk-assets',
+        buildStart() {
+          const dest = path.resolve(import.meta.dirname, 'public/assets/images');
+          fs.mkdirSync(dest, { recursive: true });
+          const src = path.resolve(import.meta.dirname, 'node_modules/govuk-frontend/dist/govuk/assets/images');
+          for (const file of fs.readdirSync(src)) {
+            fs.copyFileSync(path.join(src, file), path.join(dest, file));
+          }
+        }
+      },
+      {
         name: 'copy-index-to-root',
         closeBundle() {
           const src = path.resolve(
