@@ -17,7 +17,7 @@ test.describe('Materials page', () => {
     console.log(
       `Route mocked successfully for endpoint data: ${JSON.stringify(mockCaseMaterials())}`
     );
-    await page.goto('./materials');
+    await page.goto('./materials', {waitUntil: "domcontentloaded"});
     await page.waitForLoadState('networkidle');
     // await page.waitForFunction('() => !window.isCaseInfoLoading');
     await expect(
@@ -29,7 +29,7 @@ test.describe('Materials page', () => {
     page
   }) => {
     mockRoute(page, '/case-materials', []);
-    await page.goto('./materials');
+   await page.goto('./materials', {waitUntil: "domcontentloaded"});
     await page.waitForLoadState('networkidle');
     await page.waitForFunction('() => !window.isCaseInfoLoading');
 
@@ -50,7 +50,7 @@ test.describe('Materials page', () => {
         status: 'Used'
       })
     );
-    await page.goto('./materials');
+    await page.goto('./materials', {waitUntil: "domcontentloaded"});
     await page.waitForLoadState('networkidle');
     await page.waitForFunction('() => !window.isCaseInfoLoading');
 
@@ -73,7 +73,7 @@ test.describe('Materials page', () => {
         status: 'Unused'
       })
     );
-    await page.goto('./materials');
+    await page.goto('./materials', {waitUntil: "domcontentloaded"});
 
     //nused status
     await page.getByTestId('status-Unused').check();
@@ -95,7 +95,7 @@ test.describe('Materials page', () => {
         status: 'None'
       })
     );
-    await page.goto('./materials');
+    await page.goto('./materials', {waitUntil: "domcontentloaded"});
 
     //None
     await page.getByTestId('status-None').check();
@@ -118,7 +118,7 @@ test.describe('Materials page', () => {
         category: 'Statement'
       })
     );
-    await page.goto('./materials');
+    await page.goto('./materials', {waitUntil: "domcontentloaded"});
     await page.waitForLoadState('networkidle');
     await page.waitForFunction('() => !window.isCaseInfoLoading');
 
@@ -141,7 +141,7 @@ test.describe('Materials page', () => {
         category: 'Exhibit'
       })
     );
-    await page.goto('./materials');
+    await page.goto('./materials', {waitUntil: "domcontentloaded"});
     await page.waitForLoadState('networkidle');
     await page.waitForFunction('() => !window.isCaseInfoLoading');
     // exhibit
@@ -163,7 +163,7 @@ test.describe('Materials page', () => {
         category: 'Other Material'
       })
     );
-    await page.goto('./materials');
+    await page.goto('./materials', {waitUntil: "domcontentloaded"});
     await page.waitForLoadState('networkidle');
     await page.waitForFunction('() => !window.isCaseInfoLoading');
 
@@ -178,7 +178,7 @@ test.describe('Materials page', () => {
 
   test('T-009: user is able to hide filter', async ({ page }) => {
     mockRoute(page, '/case-materials', mockCaseMaterials());
-    await page.goto('./materials');
+    await page.goto('./materials', {waitUntil: "domcontentloaded"});;
     await page.waitForLoadState('networkidle');
     await page.waitForFunction('() => !window.isCaseInfoLoading');
 
@@ -200,7 +200,7 @@ test.describe('Materials page', () => {
         status: 'None'
       })
     );
-    await page.goto('./materials');
+    await page.goto('./materials', {waitUntil: "domcontentloaded"});
     await page.waitForLoadState('networkidle');
     await page.waitForFunction('() => !window.isCaseInfoLoading');
 

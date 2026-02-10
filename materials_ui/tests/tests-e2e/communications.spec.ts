@@ -13,7 +13,7 @@ test.describe('Communications page', () => {
         category: 'Communication'
       })
     );
-    await page.goto('./communications');
+    await page.goto('./communications', {waitUntil: "domcontentloaded"});
     await page.waitForLoadState('networkidle');
     await page.waitForFunction('() => !window.isCaseInfoLoading');
     await expect(
@@ -26,7 +26,7 @@ test.describe('Communications page', () => {
   }) => {
     mockRoute(page, '/case-materials', mockCaseMaterials({}));
 
-    await page.goto('./communications');
+     await page.goto('./communications', {waitUntil: "domcontentloaded"});
     await page.waitForLoadState('networkidle');
     await page.waitForFunction('() => !window.isCaseInfoLoading');
     // no materials
@@ -48,7 +48,7 @@ test.describe('Communications page', () => {
         direction: 'Incoming'
       })
     );
-    await page.goto('./communications');
+    await page.goto('./communications', {waitUntil: "domcontentloaded"});
     await page.waitForLoadState('networkidle');
     await page.waitForFunction('() => !window.isCaseInfoLoading');
     await page.getByTestId('direction-Incoming').check();
@@ -70,7 +70,7 @@ test.describe('Communications page', () => {
         method: 'Bundle'
       })
     );
-    await page.goto('./communications');
+   await page.goto('./communications', {waitUntil: "domcontentloaded"});
 
     await page.getByTestId('method-Bundle').check();
     await page.getByTestId('applyFiltersButton').click();
@@ -88,8 +88,7 @@ test.describe('Communications page', () => {
         method: 'Police'
       })
     );
-    await page.goto('./communications');
-
+    await page.goto('./communications', {waitUntil: "domcontentloaded"});
     await page.getByTestId('checkbox-party-Police').click();
     await page.getByTestId('applyFiltersButton').click();
     await expect(page.getByText('test 2', { exact: true })).toBeVisible();
@@ -106,7 +105,7 @@ test.describe('Communications page', () => {
         method: 'Police'
       })
     );
-    await page.goto('./communications');
+    await page.goto('./communications', {waitUntil: "domcontentloaded"});
 
     await page.getByTestId('type-Meeting').check();
     await page.getByTestId('applyFiltersButton').click();
@@ -135,7 +134,7 @@ test.describe('Communications page', () => {
         method: 'Police'
       })
     );
-    await page.goto('./communications');
+   await page.goto('./communications', {waitUntil: "domcontentloaded"});
     await page
       .getByRole('searchbox', { name: 'Search communications' })
       .fill('test 1');
