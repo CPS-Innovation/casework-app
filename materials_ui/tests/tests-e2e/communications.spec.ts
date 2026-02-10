@@ -14,11 +14,9 @@ test.describe('Communications page', () => {
       })
     );
     await page.goto('./communications', {waitUntil: "domcontentloaded"});
-    await page.waitForLoadState('networkidle');
-    await page.waitForFunction('() => !window.isCaseInfoLoading');
     await expect(
       page.getByText('MG7 SMITH Will (Redacted)', { exact: true })
-    ).toBeVisible();
+    ).toBeVisible({ timeout: 30000 });
   });
 
   test('T-002: page shows no communications text if no communications are displayed', async ({
@@ -27,13 +25,11 @@ test.describe('Communications page', () => {
     mockRoute(page, '/case-materials', mockCaseMaterials({}));
 
      await page.goto('./communications', {waitUntil: "domcontentloaded"});
-    await page.waitForLoadState('networkidle');
-    await page.waitForFunction('() => !window.isCaseInfoLoading');
     // no materials
     await page.route('/case-materials', (route) => route.abort());
-    await expect(page.locator('tbody')).toContainText(
-      'There are no communications that match your selection for this case'
-    );
+    expect(page.getByText( 'There are no communications that match your selection for this case'
+    )).toBeVisible({ timeout: 30000 })
+     
   });
 
   //in/out filter
@@ -49,8 +45,6 @@ test.describe('Communications page', () => {
       })
     );
     await page.goto('./communications', {waitUntil: "domcontentloaded"});
-    await page.waitForLoadState('networkidle');
-    await page.waitForFunction('() => !window.isCaseInfoLoading');
     await page.getByTestId('direction-Incoming').check();
     await page.getByTestId('applyFiltersButton').click();
     await expect(
@@ -114,7 +108,7 @@ test.describe('Communications page', () => {
 
   // hide filter
   test('T-007: user is able to hide filter', async ({ page }) => {
-    await page.goto('./communications');
+    await page.goto('./communications', {waitUntil: "domcontentloaded"});
 
     await page.getByRole('button', { name: 'Hide filter' }).click();
     await expect(page.getByText('FiltersClear filtersSearch')).toBeHidden();

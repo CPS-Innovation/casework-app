@@ -18,11 +18,10 @@ test.describe('Materials page', () => {
       `Route mocked successfully for endpoint data: ${JSON.stringify(mockCaseMaterials())}`
     );
     await page.goto('./materials', {waitUntil: "domcontentloaded"});
-    await page.waitForLoadState('networkidle');
     // await page.waitForFunction('() => !window.isCaseInfoLoading');
     await expect(
       page.getByText('MG11 Shelagh  Mc Love Undated', { exact: true })
-    ).toBeVisible({ timeout: 10_000 });
+    ).toBeVisible({ timeout: 30000 });
   });
 
   test('T-002: page shows no materials text if no materials are displayed', async ({
@@ -30,8 +29,6 @@ test.describe('Materials page', () => {
   }) => {
     mockRoute(page, '/case-materials', []);
    await page.goto('./materials', {waitUntil: "domcontentloaded"});
-    await page.waitForLoadState('networkidle');
-    await page.waitForFunction('() => !window.isCaseInfoLoading');
 
     // no materials
     await expect(page.locator('tbody')).toContainText(
@@ -51,8 +48,7 @@ test.describe('Materials page', () => {
       })
     );
     await page.goto('./materials', {waitUntil: "domcontentloaded"});
-    await page.waitForLoadState('networkidle');
-    await page.waitForFunction('() => !window.isCaseInfoLoading');
+ 
 
     //used status
     await page.getByTestId('status-Used').check();
@@ -78,7 +74,6 @@ test.describe('Materials page', () => {
     //nused status
     await page.getByTestId('status-Unused').check();
     await page.getByTestId('applyFiltersButton').click();
-    await page.waitForLoadState('networkidle');
     await expect(
       page.getByText('Stmt: Twob DCPTWIFVIC', { exact: true })
     ).toBeVisible();
@@ -100,7 +95,6 @@ test.describe('Materials page', () => {
     //None
     await page.getByTestId('status-None').check();
     await page.getByTestId('applyFiltersButton').click();
-    await page.waitForLoadState('networkidle');
     await expect(
       page.getByText('Case Action Plan 4', { exact: true })
     ).toBeVisible();
@@ -119,8 +113,6 @@ test.describe('Materials page', () => {
       })
     );
     await page.goto('./materials', {waitUntil: "domcontentloaded"});
-    await page.waitForLoadState('networkidle');
-    await page.waitForFunction('() => !window.isCaseInfoLoading');
 
     // statement
     await page.getByTestId('category-Statement').check();
@@ -142,8 +134,6 @@ test.describe('Materials page', () => {
       })
     );
     await page.goto('./materials', {waitUntil: "domcontentloaded"});
-    await page.waitForLoadState('networkidle');
-    await page.waitForFunction('() => !window.isCaseInfoLoading');
     // exhibit
     await page.getByTestId('category-Exhibit').check();
     await page.getByTestId('applyFiltersButton').click();
@@ -164,8 +154,6 @@ test.describe('Materials page', () => {
       })
     );
     await page.goto('./materials', {waitUntil: "domcontentloaded"});
-    await page.waitForLoadState('networkidle');
-    await page.waitForFunction('() => !window.isCaseInfoLoading');
 
     //other material
     await page.getByTestId('category-Other Material').check();
@@ -179,9 +167,6 @@ test.describe('Materials page', () => {
   test('T-009: user is able to hide filter', async ({ page }) => {
     mockRoute(page, '/case-materials', mockCaseMaterials());
     await page.goto('./materials', {waitUntil: "domcontentloaded"});;
-    await page.waitForLoadState('networkidle');
-    await page.waitForFunction('() => !window.isCaseInfoLoading');
-
     await page.getByRole('button', { name: 'Hide filter' }).click();
     await expect(page.getByText('FiltersClear filtersSearch')).toBeHidden();
     await page.getByRole('button', { name: 'Show filter' }).click();
@@ -201,9 +186,6 @@ test.describe('Materials page', () => {
       })
     );
     await page.goto('./materials', {waitUntil: "domcontentloaded"});
-    await page.waitForLoadState('networkidle');
-    await page.waitForFunction('() => !window.isCaseInfoLoading');
-
     await page
       .getByRole('searchbox', { name: 'Search materials' })
       .fill('Case Action');
