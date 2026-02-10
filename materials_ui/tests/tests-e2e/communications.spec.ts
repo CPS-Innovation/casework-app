@@ -13,7 +13,7 @@ test.describe('Communications page', () => {
         category: 'Communication'
       })
     );
-    await page.goto('./communications', {waitUntil: "domcontentloaded"});
+    await page.goto('./communications', { waitUntil: 'domcontentloaded' });
     await expect(
       page.getByText('MG7 SMITH Will (Redacted)', { exact: true })
     ).toBeVisible({ timeout: 30000 });
@@ -24,12 +24,15 @@ test.describe('Communications page', () => {
   }) => {
     mockRoute(page, '/case-materials', mockCaseMaterials({}));
 
-     await page.goto('./communications', {waitUntil: "domcontentloaded"});
+    await page.goto('./communications', { waitUntil: 'domcontentloaded' });
     // no materials
+    await page.waitForSelector('tbody'); // Ensure table exists first
     await page.route('/case-materials', (route) => route.abort());
-    expect(page.getByText( 'There are no communications that match your selection for this case'
-    )).toBeVisible({ timeout: 30000 })
-     
+    expect(
+      page.getByText(
+        'There are no communications that match your selection for this case'
+      )
+    ).toBeVisible({ timeout: 30000 });
   });
 
   //in/out filter
@@ -44,7 +47,7 @@ test.describe('Communications page', () => {
         direction: 'Incoming'
       })
     );
-    await page.goto('./communications', {waitUntil: "domcontentloaded"});
+    await page.goto('./communications', { waitUntil: 'domcontentloaded' });
     await page.getByTestId('direction-Incoming').check();
     await page.getByTestId('applyFiltersButton').click();
     await expect(
@@ -64,7 +67,7 @@ test.describe('Communications page', () => {
         method: 'Bundle'
       })
     );
-   await page.goto('./communications', {waitUntil: "domcontentloaded"});
+    await page.goto('./communications', { waitUntil: 'domcontentloaded' });
 
     await page.getByTestId('method-Bundle').check();
     await page.getByTestId('applyFiltersButton').click();
@@ -82,7 +85,7 @@ test.describe('Communications page', () => {
         method: 'Police'
       })
     );
-    await page.goto('./communications', {waitUntil: "domcontentloaded"});
+    await page.goto('./communications', { waitUntil: 'domcontentloaded' });
     await page.getByTestId('checkbox-party-Police').click();
     await page.getByTestId('applyFiltersButton').click();
     await expect(page.getByText('test 2', { exact: true })).toBeVisible();
@@ -99,7 +102,7 @@ test.describe('Communications page', () => {
         method: 'Police'
       })
     );
-    await page.goto('./communications', {waitUntil: "domcontentloaded"});
+    await page.goto('./communications', { waitUntil: 'domcontentloaded' });
 
     await page.getByTestId('type-Meeting').check();
     await page.getByTestId('applyFiltersButton').click();
@@ -108,7 +111,7 @@ test.describe('Communications page', () => {
 
   // hide filter
   test('T-007: user is able to hide filter', async ({ page }) => {
-    await page.goto('./communications', {waitUntil: "domcontentloaded"});
+    await page.goto('./communications', { waitUntil: 'domcontentloaded' });
 
     await page.getByRole('button', { name: 'Hide filter' }).click();
     await expect(page.getByText('FiltersClear filtersSearch')).toBeHidden();
@@ -128,7 +131,7 @@ test.describe('Communications page', () => {
         method: 'Police'
       })
     );
-   await page.goto('./communications', {waitUntil: "domcontentloaded"});
+    await page.goto('./communications', { waitUntil: 'domcontentloaded' });
     await page
       .getByRole('searchbox', { name: 'Search communications' })
       .fill('test 1');
