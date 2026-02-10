@@ -7,7 +7,7 @@ locals {
   # The below map has been added to handle the relationship between environments with Polaris. Materials Staging will use Polaris QA.
   polaris_name_map = {
     dev     = "polaris-dev"
-    stg = "polaris-qa"
+    stg     = "polaris-qa"
     prod    = "polaris-prod"
   }
   common_tags = {
