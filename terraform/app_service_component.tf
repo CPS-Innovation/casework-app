@@ -19,6 +19,7 @@ resource "azurerm_linux_web_app" "as_comp_materials" {
     app_command_line        = "" #TBC
     always_on               = true
     vnet_route_all_enabled  = true
+    minimum_tls_version     = "1.2"
     scm_minimum_tls_version = "1.2"
 
     application_stack {
