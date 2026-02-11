@@ -1,5 +1,5 @@
 #################### Functions #####################
-# Ensure Minimum Tls Cipher Suite is set to TLS_AES_256_GCM_SHA384 
+# Ensure Minimum Tls Cipher Suite is set to TLS_AES_128_GCM_SHA256 
 # WORKAROUND - to be done directly in the azurerm_linux_web_app resource once supported
 # See the following links for more information
 # https://github.com/hashicorp/terraform-provider-azurerm/issues/24223
@@ -30,7 +30,7 @@ resource "azapi_resource_action" "set_min_tls_cipher_suite" {
   body = {
     name = data.azapi_resource_id.web_function_apps[each.key].name
     properties = {
-      minTlsCipherSuite = "TLS_AES_256_GCM_SHA384"
+      minTlsCipherSuite = "TLS_AES_128_GCM_SHA256"
     }
   }
   response_export_values = {
