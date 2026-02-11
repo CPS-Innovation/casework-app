@@ -10,6 +10,11 @@ import { useCaseInfoStore } from '../../../hooks';
 import { useOpenDocumentInNewWindow } from '../../../hooks/ui/useOpenDocumentInNewWindow';
 import { DocumentSidebar } from '../../../materials_components/DocumentSelectAccordion/DocumentSidebar';
 import { TDocument } from '../../../materials_components/DocumentSelectAccordion/getters/getDocumentList';
+import {
+  clearOpenDocumentTabsFromLocalStorage,
+  safeGetOpenDocumentTabsFromLocalStorage,
+  safeSetOpenDocumentTabsFromLocalStorage
+} from '../../../materials_components/DocumentSelectAccordion/utils/OpenDocumentTabsLocalStorageUtils';
 import { DocumentTabPanel } from '../../../materials_components/DocumentTabPanel/DocumentTabPanel';
 import { TRedaction } from '../../../materials_components/PdfRedactor/utils/coordUtils';
 import { TMode } from '../../../materials_components/PdfRedactor/utils/modeUtils';
@@ -58,6 +63,28 @@ export const ReviewAndRedactPage = () => {
   const [lookups, setLookups] = useState<TLookupsResponse>();
 
   const axiosInstance = useAxiosInstance();
+
+  useEffect(() => {
+    if (!caseId) return;
+    const saved = safeGetOpenDocumentTabsFromLocalStorage(caseId);
+    if (saved && saved.openDocumentIds.length > 0) {
+      setOpenDocumentIds(saved.openDocumentIds);
+      setActiveDocumentId(saved.activeDocumentId);
+    }
+  }, [caseId]);
+
+  useEffect(() => {
+    if (!caseId) return;
+    if (openDocumentIds.length === 0) {
+      clearOpenDocumentTabsFromLocalStorage(caseId);
+    } else {
+      safeSetOpenDocumentTabsFromLocalStorage({
+        caseId,
+        openDocumentIds,
+        activeDocumentId
+      });
+    }
+  }, [caseId, openDocumentIds, activeDocumentId]);
 
   useEffect(() => {
     if (docTypeParam && documents && documents.length > 0) {
