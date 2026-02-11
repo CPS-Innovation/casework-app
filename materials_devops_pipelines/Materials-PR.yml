@@ -214,7 +214,7 @@ stages:
           - task: PublishPipelineArtifact@1
             displayName: 'Publish terraform artifact'
             inputs:
-              targetPath: '$(workingDir)/playwright-report'
+              targetPath: '$(workingDir)/tests/playwright-report'
               artifact: 'playwright-report'
               publishLocation: 'pipeline'
             condition: succeededOrFailed() 
