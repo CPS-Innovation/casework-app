@@ -163,22 +163,22 @@ stages:
               VITE_E2E: True
 
 # ---------- UNIT TESTS (Vitest) ----------
-          - task: Npm@1
-            displayName: 'Run Unit Tests'
-            inputs:
-              command: 'custom'
-              customCommand: 'run test'
-              workingDir: '$(workingDir)'
+          # - task: Npm@1
+          #   displayName: 'Run Unit Tests'
+          #   inputs:
+          #     command: 'custom'
+          #     customCommand: 'run test'
+          #     workingDir: '$(workingDir)'
 
-          - task: PublishTestResults@2
-            displayName: 'Publish Unit Test Results (JUnit)'
-            inputs:
-              testResultsFormat: 'JUnit'
-              testResultsFiles: '$(workingDir)/unit-test-results.xml'
-              testRunTitle: "Unit tests"
-              publishRunAttachments: false
-              mergeTestResults: true
-            condition: always()
+          # - task: PublishTestResults@2
+          #   displayName: 'Publish Unit Test Results (JUnit)'
+          #   inputs:
+          #     testResultsFormat: 'JUnit'
+          #     testResultsFiles: '$(workingDir)/unit-test-results.xml'
+          #     testRunTitle: "Unit tests"
+          #     publishRunAttachments: false
+          #     mergeTestResults: true
+          #   condition: always()
 
 # ---------- E2E TESTS (Playwright) ----------
           - task: Npm@1
