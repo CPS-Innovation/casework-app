@@ -219,13 +219,13 @@ stages:
               publishLocation: 'pipeline'
             condition: succeededOrFailed() 
 
-          # - task: PublishTestResults@2
-          #   displayName: 'Publish E2E Test Results (JUnit)'
-          #   inputs:
-          #     testResultsFormat: 'JUnit'
-          #     testResultsFiles: '$(workingDir)/playwright/e2e-test-results.xml'
-          #     publishRunAttachments: false
-          #   condition: always()
+          - task: PublishTestResults@2
+            displayName: 'Publish E2E Test Results (JUnit)'
+            inputs:
+              testResultsFormat: 'JUnit'
+              testResultsFiles: '$(workingDir)/tests/e2e-test-results.xml'
+              publishRunAttachments: false
+            condition: always()
 
 # Publish Code Coverage Results - publishes code coverage results to Azure Pipelines which were produced by a build in Cobertura or JaCoCo format.
 # - task: PublishCodeCoverageResults@2
