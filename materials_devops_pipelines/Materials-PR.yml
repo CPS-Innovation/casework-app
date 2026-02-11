@@ -162,23 +162,23 @@ stages:
               VITE_BASE_URL: $(BASE_URL)
               VITE_E2E: True
 
-# # ---------- UNIT TESTS (Vitest) ----------
-#           - task: Npm@1
-#             displayName: 'Run UI Unit Tests'
-#             inputs:
-#               command: 'custom'
-#               customCommand: 'run test'
-#               workingDir: '$(workingDir)'
+# ---------- UNIT TESTS (Vitest) ----------
+          - task: Npm@1
+            displayName: 'Run Unit Tests'
+            inputs:
+              command: 'custom'
+              customCommand: 'run test'
+              workingDir: '$(workingDir)'
 
-#           - task: PublishTestResults@2
-#             displayName: 'Publish Unit Test Results (JUnit)'
-#             inputs:
-#               testResultsFormat: 'JUnit'
-#               testResultsFiles: '$(workingDir)/unit-test-results.xml'
-#               testRunTitle: "Unit tests"
-#               publishRunAttachments: false
-#               mergeTestResults: true
-#             condition: always()
+          - task: PublishTestResults@2
+            displayName: 'Publish Unit Test Results (JUnit)'
+            inputs:
+              testResultsFormat: 'JUnit'
+              testResultsFiles: '$(workingDir)/unit-test-results.xml'
+              testRunTitle: "Unit tests"
+              publishRunAttachments: false
+              mergeTestResults: true
+            condition: always()
 
 # ---------- E2E TESTS (Playwright) ----------
           - task: Npm@1
@@ -224,12 +224,6 @@ stages:
             inputs:
               testResultsFormat: 'JUnit'
               testResultsFiles: '$(workingDir)/tests/e2e-test-results.xml'
+              testRunTitle: 'E2E Tests'
               publishRunAttachments: false
             condition: always()
-
-# Publish Code Coverage Results - publishes code coverage results to Azure Pipelines which were produced by a build in Cobertura or JaCoCo format.
-# - task: PublishCodeCoverageResults@2
-#   inputs:
-#     summaryFileLocation: # string. Required. Path to summary files. 
-#     #pathToSources: # string. Path to Source files. 
-#     #failIfCoverageEmpty: false # boolean. Fail if code coverage results are missing. Default: false.
