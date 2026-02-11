@@ -11,7 +11,7 @@ locals {
   web_function_apps = {
       web_materials_ui          = azurerm_linux_web_app.as_web_materials.id
       web_materials_ui_staging1 = azurerm_linux_web_app_slot.as_web_materials_staging1.id
-      web_materials_components  = azurerm_linux_web_app.as_web_materials.id
+      web_materials_components  = azurerm_linux_web_app.as_comp_materials.id
     }
 }
 
