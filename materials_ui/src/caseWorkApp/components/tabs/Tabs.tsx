@@ -16,6 +16,8 @@ export const Tabs: React.FC<TabsProps> = ({
   handleTabSelection,
   handleCloseTab,
   noMargin,
+  idPrefix: _idPrefix,
+  title: _title,
   ...attributes
 }) => {
   useLastFocus('#case-details-search');

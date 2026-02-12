@@ -1,11 +1,18 @@
 {
   "name": "casework-app",
   "private": true,
+  "workspaces": [
+    "materials_ui"
+  ],
   "devDependencies": {
     "husky": "^9.1.7"
   },
   "scripts": {
     "prepare": "husky",
-    "postinstall": "cd materials_ui && npm install"
+    "postinstall": "cd materials_ui && npm install",
+    "dev": "npm run dev --workspace=materials_ui",
+    "build": "npm run build --workspace=materials_ui",
+    "lint": "npm run lint --workspace=materials_ui"
   }
 }
+
