@@ -87,13 +87,13 @@ export default defineConfig(({ mode }) => {
           base-uri 'self';
           default-src 'self';
           img-src 'self' data:;
-            script-src 'self'
+            script-src 'self' 
               https://polaris-dev-notprod.cps.gov.uk/ 
               https://polaris-qa-notprod.cps.gov.uk/
               https://sacpsglobalcomponents.blob.core.windows.net/
               ;
           style-src 'self';
-          connect-src 'self' 
+            connect-src 'self' blob: 
               https://polaris-dev-notprod.cps.gov.uk/ 
               https://polaris-qa-notprod.cps.gov.uk/
               https://login.microsoftonline.com/

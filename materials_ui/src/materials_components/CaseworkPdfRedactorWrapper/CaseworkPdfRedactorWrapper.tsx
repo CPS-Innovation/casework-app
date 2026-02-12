@@ -159,6 +159,8 @@ export const CaseworkPdfRedactorWrapper = (p: {
     return checkoutResponse;
   };
 
+  console.log('p file url', p.fileUrl);
+
   return (
     <div>
       {redactionDisabledModalProps &&
