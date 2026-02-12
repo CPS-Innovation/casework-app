@@ -2,6 +2,7 @@
   "name": "casework-app",
   "version": "1.0.0",
   "description": "Merging Housekeeping and Casework app",
+  "type": "module",
   "main": "eslint.config.js",
   "scripts": {
     "dev": "vite",
@@ -85,7 +86,8 @@
     "vitest": "^3.2.4"
   },
   "lint-staged": {
-    "*/.{js,jsx,ts,tsx}": [
+    "**/*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
       "prettier --write"
     ]
   },

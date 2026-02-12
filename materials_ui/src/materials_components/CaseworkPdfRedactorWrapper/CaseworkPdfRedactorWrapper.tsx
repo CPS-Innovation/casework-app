@@ -134,7 +134,7 @@ export const CaseworkPdfRedactorWrapper = (p: {
   };
   const undeletePage = (pageNumber: number) => {
     setIndexedDeletion((prev) => {
-      const { [pageNumber]: _, ...rest } = prev;
+      const { [pageNumber]: _deleted, ...rest } = prev;
       return rest;
     });
   };
