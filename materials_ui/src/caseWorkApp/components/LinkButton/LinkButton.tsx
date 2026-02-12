@@ -1,4 +1,5 @@
 import React, { forwardRef } from 'react';
+import classes from './LinkButton.module.scss';
 
 type LinkButtonProps = {
   id?: string;
@@ -29,7 +30,7 @@ export const LinkButton = forwardRef<HTMLButtonElement | null, LinkButtonProps>(
     },
     ref
   ) => {
-    const resolvedClassName = `govuk-button govuk-button--inverse ${className}`;
+    const resolvedClassName = `${classes.linkButton} ${className}`;
     return (
       <button
         ref={ref}
