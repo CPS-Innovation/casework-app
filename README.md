@@ -46,8 +46,10 @@ https://polaris-dev-notprod.cps.gov.uk/api/dev-login-full-cookie/
 3. After logging in, open a new tab (same browser) and navigate to the local app route to view a specific case:
 
 ```text
-http://localhost:3000/materials-ui/50DE0001921/2147043/
+http://localhost:3000/materials-ui/case-search
 ```
+
+4. Enter a URN to access the app e.g 16123630825
 
 You should now be able to access the app locally using the authentication cookie set by the dev-login endpoint.
 
