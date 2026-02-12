@@ -19,8 +19,6 @@ export const Tabs: React.FC<TabsProps> = ({
   handleTabSelection,
   handleCloseTab,
   noMargin,
-  idPrefix: _idPrefix,
-  title: _title,
   onShowHideCategoriesClick,
   isShowCategories,
   ...attributes
