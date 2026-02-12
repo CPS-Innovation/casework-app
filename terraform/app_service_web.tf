@@ -19,8 +19,8 @@ resource "azurerm_linux_web_app" "as_web_materials" {
     app_command_line        = "npx serve -s"
     always_on               = true
     vnet_route_all_enabled  = true
-    minimum_tls_version     = "1.2"
-    scm_minimum_tls_version = "1.2"
+    minimum_tls_version     = "1.3"
+    scm_minimum_tls_version = "1.3"
 
     application_stack {
       node_version = "22-lts" #TBC
