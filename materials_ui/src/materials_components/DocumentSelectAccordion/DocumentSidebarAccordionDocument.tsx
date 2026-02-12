@@ -4,6 +4,7 @@ import { TDocument } from './getters/getDocumentList';
 import { useGetDocumentNotes } from './getters/getDocumentNotes';
 import './templates/GovUkAccordion.scss';
 import { NotesIcon } from './templates/NotesIcon';
+import { formatShortDate } from './utils/dateUtils';
 
 export const DocumentSidebarAccordionNoDocumentsAvailable = () => {
   return (
@@ -80,7 +81,7 @@ export const DocumentSidebarAccordionDocument = (p: {
   return (
     <DocumentSidebarAccordionDocumentTemplate
       documentName={p.document.presentationTitle}
-      documentDate={p.document.documentId}
+      documentDate={formatShortDate(p.document.cmsFileCreatedDate)}
       ActiveDocumentTag={p.activeDocumentId === p.document.documentId}
       NewTag={!p.readDocumentIds.includes(p.document.documentId)}
       showLeftBorder={p.openDocumentIds.includes(p.document.documentId)}
