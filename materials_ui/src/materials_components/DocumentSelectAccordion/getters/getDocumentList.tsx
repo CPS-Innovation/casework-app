@@ -13,6 +13,7 @@ export const documentSchema = z.object({
   }),
   cmsOriginalFileName: z.string(),
   presentationTitle: z.string(),
+  cmsFileCreatedDate: z.string(),
   isUnused: z.boolean(),
   hasNotes: z.boolean(),
   versionId: z.number(),

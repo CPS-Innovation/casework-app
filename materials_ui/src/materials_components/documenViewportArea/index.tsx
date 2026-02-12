@@ -1,9 +1,8 @@
+import { Button } from '../../caseWorkApp/components/button';
 import { DropdownButton } from '../../caseWorkApp/components/dropDownButton/DropdownButton';
-import { LinkButton } from '../../caseWorkApp/components/LinkButton/LinkButton';
 import Tooltip from '../../caseWorkApp/components/tooltip';
 import { AreaIcon } from '../PdfRedactor/icons/AreaIcon';
 import { TMode } from '../PdfRedactor/utils/modeUtils';
-import classes from './index.module.scss';
 
 export type DropdownButtonItem = {
   id: string;
@@ -58,73 +57,89 @@ export const DocumentViewportArea = ({
   };
 
   return (
-    <div className={classes.content}>
-      <p style={{ color: '#ffffff' }}>{documentName}</p>
-      <Tooltip
-        text={isAreaRedactMode ? 'Redact area tool On' : 'Redact area tool Off'}
+    <div
+      style={{
+        padding: '.5rem 1rem',
+        backgroundColor: '#1d70b8',
+        borderBottom: '0.0625rem solid #b1b4b6'
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between'
+        }}
       >
-        <LinkButton
-          className={
-            isAreaRedactMode
-              ? `${classes.areaToolBtn} ${classes.areaToolBtnEnabled}`
-              : classes.areaToolBtn
-          }
-          dataTestId="btn-area-tool"
-          id="btn-area-tool"
-          ariaLabel={
-            isAreaRedactMode
-              ? 'disable area redaction mode'
-              : 'enable area redaction mode'
-          }
-          onClick={handleAreaToolClick}
-        >
-          <AreaIcon height={20} width={20} />
-        </LinkButton>
-      </Tooltip>
-      <DropdownButton
-        name="Document actions"
-        dropDownItems={[
-          {
-            id: DROPDOWN_ACTIONS.LOG_REDACTION,
-            label: 'Log an Under/Over redaction',
-            ariaLabel: 'log an under or over redaction',
-            disabled: false
-          },
-          {
-            id: DROPDOWN_ACTIONS.ROTATE,
-            label:
-              mode === 'rotation'
-                ? 'Hide rotate document pages'
-                : 'Rotate document pages',
-            ariaLabel:
-              mode === 'rotation'
-                ? 'hide rotate document pages'
-                : 'rotate document pages',
-            disabled: false
-          },
-          {
-            id: DROPDOWN_ACTIONS.DELETE,
-            label:
-              mode === 'deletion'
-                ? 'Hide delete page options'
-                : 'Show delete page options',
-            ariaLabel:
-              mode === 'deletion'
-                ? 'hide delete page options'
-                : 'show delete page options',
-            disabled: false
-          },
-          {
-            id: DROPDOWN_ACTIONS.VIEW_NEW_WINDOW,
-            label: 'View in new window',
-            ariaLabel: 'view in new window',
-            disabled: false
-          }
-        ]}
-        callBackFn={handleDropdownAction}
-        ariaLabel="document actions dropdown"
-        showLastItemSeparator={true}
-      />
+        <span style={{ color: '#ffffff', fontWeight: 700, lineHeight: 1 }}>
+          {documentName}
+        </span>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <Tooltip
+            text={
+              isAreaRedactMode ? 'Redact area tool On' : 'Redact area tool Off'
+            }
+          >
+            <Button
+              dataTestId="btn-area-tool"
+              id="btn-area-tool"
+              ariaLabel={
+                isAreaRedactMode
+                  ? 'disable area redaction mode'
+                  : 'enable area redaction mode'
+              }
+              onClick={handleAreaToolClick}
+            >
+              <AreaIcon height={20} width={20} />
+            </Button>
+          </Tooltip>
+          <DropdownButton
+            name="Document actions"
+            iconScale={0.75}
+            dropDownItems={[
+              {
+                id: DROPDOWN_ACTIONS.LOG_REDACTION,
+                label: 'Log an Under/Over redaction',
+                ariaLabel: 'log an under or over redaction',
+                disabled: false
+              },
+              {
+                id: DROPDOWN_ACTIONS.ROTATE,
+                label:
+                  mode === 'rotation'
+                    ? 'Hide rotate document pages'
+                    : 'Rotate document pages',
+                ariaLabel:
+                  mode === 'rotation'
+                    ? 'hide rotate document pages'
+                    : 'rotate document pages',
+                disabled: false
+              },
+              {
+                id: DROPDOWN_ACTIONS.DELETE,
+                label:
+                  mode === 'deletion'
+                    ? 'Hide delete page options'
+                    : 'Show delete page options',
+                ariaLabel:
+                  mode === 'deletion'
+                    ? 'hide delete page options'
+                    : 'show delete page options',
+                disabled: false
+              },
+              {
+                id: DROPDOWN_ACTIONS.VIEW_NEW_WINDOW,
+                label: 'View in new window',
+                ariaLabel: 'view in new window',
+                disabled: false
+              }
+            ]}
+            callBackFn={handleDropdownAction}
+            ariaLabel="document actions dropdown"
+            showLastItemSeparator={true}
+          />
+        </div>
+      </div>
     </div>
   );
 };

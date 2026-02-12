@@ -21,7 +21,6 @@ import { TMode } from '../../../materials_components/PdfRedactor/utils/modeUtils
 import { useTrigger } from '../../../materials_components/PdfRedactor/utils/useTriggger';
 import { RedactionLogModal } from '../../../materials_components/RedactionLog/RedactionLogModal';
 import { getDocumentIdWithoutPrefix } from '../../../utils/string';
-import { Button } from '../../components/button';
 import { Tabs } from '../../components/tabs';
 import { getLookups, useAxiosInstance } from '../../components/utils/getData';
 import { TLookupsResponse } from '../../types/redaction';
@@ -180,7 +179,9 @@ export const ReviewAndRedactPage = () => {
         return true;
       }}
     >
-      {documents === undefined && <LoadingSpinner />}
+      {documents === undefined && (
+        <LoadingSpinner textContent="Loading documents" />
+      )}
       {documents === null && <div>Error...</div>}
       {showBlockNavigationModal && (
         <UnsavedRedactionsModal
@@ -238,9 +239,6 @@ export const ReviewAndRedactPage = () => {
         >
           {tabItems.length > 0 && (
             <>
-              <Button onClick={() => setIsSidebarVisible((v) => !v)}>
-                {isSidebarVisible ? 'Hide categories' : 'Show categories'}
-              </Button>
               <Tabs
                 idPrefix="tabs"
                 title="Tabs title"
@@ -249,6 +247,8 @@ export const ReviewAndRedactPage = () => {
                 handleTabSelection={setActiveDocumentId}
                 handleCloseTab={handleCloseTab}
                 noMargin
+                onShowHideCategoriesClick={() => setIsSidebarVisible((v) => !v)}
+                isShowCategories={isSidebarVisible}
               />
             </>
           )}

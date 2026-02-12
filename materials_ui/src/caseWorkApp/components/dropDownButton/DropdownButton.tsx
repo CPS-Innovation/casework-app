@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
-import DownArrow from '../../assetsCWA/svgs/down.svg?react';
 import { LinkButton } from '../LinkButton/LinkButton';
 
+import { DownArrowIcon } from '../../assetsCWA/svgs/DownArrowIcon';
 import { useGlobalDropdownClose } from '../../hooks/useGlobalDropdownClose';
 import classes from './DropdownButton.module.scss';
 
@@ -20,6 +20,7 @@ export type DropdownButtonProps = {
   disabled?: boolean;
   showLastItemSeparator?: boolean;
   icon?: React.ReactElement;
+  iconScale?: number;
 };
 
 export const DropdownButton: React.FC<DropdownButtonProps> = ({
@@ -28,7 +29,8 @@ export const DropdownButton: React.FC<DropdownButtonProps> = ({
   name,
   dataTestId = 'dropdown-btn',
   ariaLabel = 'dropdown',
-  disabled = false
+  disabled = false,
+  iconScale = 1
 }) => {
   const dropDownBtnRef = useRef<HTMLButtonElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
@@ -54,16 +56,27 @@ export const DropdownButton: React.FC<DropdownButtonProps> = ({
         ref={dropDownBtnRef}
         ariaLabel={ariaLabel}
         ariaExpanded={buttonOpen}
-        className={`${classes.dropDownButton} ${
-          buttonOpen && classes.upArrow
-        } ${name && classes.btnWithText}`}
+        className={`${classes.dropDownButton} ${buttonOpen && classes.upArrow}`}
         disabled={disabled}
         onClick={() => {
           setButtonOpen((buttonOpen) => !buttonOpen);
         }}
       >
-        {name && <span className={classes.dropdownBtnName}>{name}</span>}
-        <DownArrow />
+        <div style={{ display: 'flex', alignItems: 'flex-end', gap: '4px' }}>
+          {name && (
+            <span
+              style={{ fontWeight: '700' }}
+              className={classes.dropdownBtnName}
+            >
+              {name}
+            </span>
+          )}
+          <DownArrowIcon
+            color="#1d70b8"
+            rotateDegrees={buttonOpen ? 180 : 0}
+            scale={iconScale}
+          />
+        </div>
       </LinkButton>
 
       {buttonOpen && (
