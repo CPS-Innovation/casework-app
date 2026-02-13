@@ -29,9 +29,17 @@ export const useDocumentCheckOutRequest = ({
     } catch (error: unknown) {
       setIsLoading(false);
 
-      const schema = z.object({ message: z.string() });
+      console.log('asd', error);
+
+      const schema = z.object({
+        response: z.object({ data: z.object({ detail: z.string() }) })
+      });
       const parsedResp = schema.safeParse(error);
-      const message = parsedResp.success ? parsedResp.data.message : undefined;
+      const message = parsedResp.success
+        ? parsedResp.data.response.data.detail
+            .split('Exception Message: ')[1]
+            ?.toLowerCase()
+        : undefined;
 
       if (error instanceof AxiosError && error.status === 409)
         return { success: false, status: 'locked', message } as const;
