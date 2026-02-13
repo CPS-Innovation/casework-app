@@ -1,5 +1,8 @@
 import { Button } from '../../caseWorkApp/components/button';
-import { DropdownButton } from '../../caseWorkApp/components/dropDownButton/DropdownButton';
+import {
+  DropdownButton2,
+  DropdownListItem2
+} from '../../caseWorkApp/components/dropDownButton/DropdownButton';
 import Tooltip from '../../caseWorkApp/components/tooltip';
 import { AreaIcon } from '../PdfRedactor/icons/AreaIcon';
 import { TMode } from '../PdfRedactor/utils/modeUtils';
@@ -33,29 +36,6 @@ export const DocumentViewportArea = ({
   onViewInNewWindowButtonClick,
   onRedactionLogClick
 }: DocumentViewportAreaProps) => {
-  const isAreaRedactMode = mode === 'areaRedact';
-
-  const handleAreaToolClick = () => {
-    onModeChange(mode === 'areaRedact' ? 'textRedact' : 'areaRedact');
-  };
-
-  const handleDropdownAction = (id: string) => {
-    switch (id) {
-      case DROPDOWN_ACTIONS.ROTATE:
-        onModeChange(mode === 'rotation' ? 'areaRedact' : 'rotation');
-        break;
-      case DROPDOWN_ACTIONS.DELETE:
-        onModeChange(mode === 'deletion' ? 'areaRedact' : 'deletion');
-        break;
-      case DROPDOWN_ACTIONS.VIEW_NEW_WINDOW:
-        onViewInNewWindowButtonClick();
-        break;
-      case DROPDOWN_ACTIONS.LOG_REDACTION:
-        onRedactionLogClick();
-        break;
-    }
-  };
-
   return (
     <div
       style={{
@@ -77,67 +57,72 @@ export const DocumentViewportArea = ({
         <div style={{ display: 'flex', gap: '8px' }}>
           <Tooltip
             text={
-              isAreaRedactMode ? 'Redact area tool On' : 'Redact area tool Off'
+              mode === 'areaRedact'
+                ? 'Redact area tool On'
+                : 'Redact area tool Off'
             }
           >
             <Button
               dataTestId="btn-area-tool"
               id="btn-area-tool"
               ariaLabel={
-                isAreaRedactMode
+                mode === 'areaRedact'
                   ? 'disable area redaction mode'
                   : 'enable area redaction mode'
               }
-              onClick={handleAreaToolClick}
+              onClick={() =>
+                onModeChange(
+                  mode === 'areaRedact' ? 'textRedact' : 'areaRedact'
+                )
+              }
             >
               <AreaIcon height={20} width={20} />
             </Button>
           </Tooltip>
-          <DropdownButton
-            name="Document actions"
-            iconScale={0.75}
-            dropDownItems={[
-              {
-                id: DROPDOWN_ACTIONS.LOG_REDACTION,
-                label: 'Log an Under/Over redaction',
-                ariaLabel: 'log an under or over redaction',
-                disabled: false
-              },
-              {
-                id: DROPDOWN_ACTIONS.ROTATE,
-                label:
-                  mode === 'rotation'
-                    ? 'Hide rotate document pages'
-                    : 'Rotate document pages',
-                ariaLabel:
-                  mode === 'rotation'
-                    ? 'hide rotate document pages'
-                    : 'rotate document pages',
-                disabled: false
-              },
-              {
-                id: DROPDOWN_ACTIONS.DELETE,
-                label:
-                  mode === 'deletion'
-                    ? 'Hide delete page options'
-                    : 'Show delete page options',
-                ariaLabel:
-                  mode === 'deletion'
-                    ? 'hide delete page options'
-                    : 'show delete page options',
-                disabled: false
-              },
-              {
-                id: DROPDOWN_ACTIONS.VIEW_NEW_WINDOW,
-                label: 'View in new window',
-                ariaLabel: 'view in new window',
-                disabled: false
-              }
-            ]}
-            callBackFn={handleDropdownAction}
+          <DropdownButton2
             ariaLabel="document actions dropdown"
-            showLastItemSeparator={true}
-          />
+            ButtonContent={<span>Document Actions</span>}
+          >
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <DropdownListItem2
+                id={DROPDOWN_ACTIONS.LOG_REDACTION}
+                onClick={() => onRedactionLogClick()}
+                borderBottom
+              >
+                Log an Under/Over redaction
+              </DropdownListItem2>
+              <DropdownListItem2
+                id={DROPDOWN_ACTIONS.ROTATE}
+                borderBottom
+                onClick={() =>
+                  onModeChange(mode === 'rotation' ? 'areaRedact' : 'rotation')
+                }
+              >
+                {mode === 'rotation'
+                  ? 'Hide rotate document pages'
+                  : 'Rotate document pages'}
+              </DropdownListItem2>
+              <DropdownListItem2
+                id={DROPDOWN_ACTIONS.DELETE}
+                borderBottom
+                onClick={() =>
+                  onModeChange(mode === 'deletion' ? 'areaRedact' : 'deletion')
+                }
+              >
+                {mode === 'deletion'
+                  ? 'Hide delete page options'
+                  : 'Show delete page options'}
+              </DropdownListItem2>
+              <DropdownListItem2
+                id={DROPDOWN_ACTIONS.VIEW_NEW_WINDOW}
+                borderBottom={false}
+                disabled
+                onClick={() => onViewInNewWindowButtonClick()}
+              >
+                View in new window
+              </DropdownListItem2>
+            </div>
+          </DropdownButton2>
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import React from 'react';
+import { CSSProperties, forwardRef } from 'react';
 
 type TButtonVariant = 'primary' | 'secondary' | 'inverse' | 'default';
 type TButtonSize = 's' | 'm';
@@ -13,6 +13,7 @@ type ButtonProps = {
   dataTestId?: string;
   id?: string;
   ariaLabel?: string;
+  style?: CSSProperties;
 };
 
 const buttonVariantMap: { [k in TButtonVariant]: string } = {
@@ -27,35 +28,42 @@ const buttonSizeStyleMap: { [k in TButtonSize]: Record<string, string> } = {
   m: {}
 };
 
-export const Button: React.FC<ButtonProps> = ({
-  onClick,
-  disabled = false,
-  children,
-  variant = 'default',
-  type,
-  size = 'm',
-  dataTestId,
-  ariaLabel,
-  id
-}) => {
-  const variantClass = buttonVariantMap[variant];
-  const sizeStyle = buttonSizeStyleMap[size];
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  (
+    {
+      onClick,
+      disabled = false,
+      children,
+      variant = 'default',
+      type,
+      size = 'm',
+      dataTestId,
+      ariaLabel,
+      id,
+      style
+    },
+    ref
+  ) => {
+    const variantClass = buttonVariantMap[variant];
+    const sizeStyle = buttonSizeStyleMap[size];
 
-  return (
-    <button
-      type={type}
-      className={`govuk-button ${variantClass}`}
-      data-module="govuk-button"
-      data-govuk-button-init=""
-      onClick={onClick}
-      disabled={disabled}
-      style={sizeStyle}
-      data-test-id={dataTestId}
-      id={id}
-      aria-label={ariaLabel}
-    >
-      {children}
-      <span data-ismodified="1" className="br_wrap"></span>
-    </button>
-  );
-};
+    return (
+      <button
+        ref={ref}
+        type={type}
+        className={`govuk-button ${variantClass}`}
+        data-module="govuk-button"
+        data-govuk-button-init=""
+        onClick={onClick}
+        disabled={disabled}
+        style={{ ...style, ...sizeStyle }}
+        data-test-id={dataTestId}
+        id={id}
+        aria-label={ariaLabel}
+      >
+        {children}
+        <span data-ismodified="1" className="br_wrap"></span>
+      </button>
+    );
+  }
+);

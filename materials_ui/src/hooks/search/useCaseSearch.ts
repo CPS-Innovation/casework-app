@@ -54,7 +54,10 @@ export const useCaseDetails = (p: { urn: string }) => {
   const axiosInstance = useAxiosInstance();
   const rtn = useSWR(
     getCaseDetailsKey({ urn: p.urn }), //
-    () => getCaseDetails({ axiosInstance, urn: p.urn })
+    () => {
+      if (!p.urn) return;
+      return getCaseDetails({ axiosInstance, urn: p.urn });
+    }
   );
 
   return rtn;
