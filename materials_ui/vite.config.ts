@@ -74,6 +74,9 @@ export default defineConfig(({ mode }) => {
     },
     server: { port: 3000 },
     preview: { port: 3000 },
+    esbuild: {
+      drop: mode === 'production' ? ['console', 'debugger'] : []
+    },
     build: {
       outDir: 'build/materials-ui',
       target: 'esnext',

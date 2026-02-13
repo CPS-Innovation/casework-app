@@ -1,3 +1,4 @@
+import DOMPurify from 'dompurify';
 import { Fragment, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -14,6 +15,7 @@ import {
 import { useAppRoute, usePCD, usePCDList } from '../hooks';
 import { formatDate } from '../utils/date';
 import { cleanString } from '../utils/string';
+
 
 export const PcdRequestPage = () => {
   const { pcdId } = useParams<{ pcdId?: string }>();
@@ -157,7 +159,9 @@ export const PcdRequestPage = () => {
                         <p
                           className="govuk-body"
                           dangerouslySetInnerHTML={{
-                            __html: cleanString(textWithCmsMarkup)
+                            __html: DOMPurify.sanitize(
+                              cleanString(textWithCmsMarkup)
+                            )
                           }}
                         />
                       </Fragment>
