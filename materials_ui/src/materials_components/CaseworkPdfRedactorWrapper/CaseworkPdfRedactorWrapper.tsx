@@ -54,7 +54,7 @@ const getDocumentRedactionDisabledMessage = (
 
 const createCheckoutMessageFromCheckoutResponse = (p: { message?: string }) =>
   p.message
-    ? `It is not possible to redact as the document is already checked out by ${p.message} Please try again later.`
+    ? `It is not possible to redact as ${p.message}. Please try again later.`
     : 'Something has gone wrong, please try again later';
 
 export const CaseworkPdfRedactorWrapper = (p: {
