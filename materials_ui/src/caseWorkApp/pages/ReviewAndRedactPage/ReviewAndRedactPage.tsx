@@ -10,13 +10,17 @@ import { useCaseInfoStore } from '../../../hooks';
 import { useOpenDocumentInNewWindow } from '../../../hooks/ui/useOpenDocumentInNewWindow';
 import { DocumentSidebar } from '../../../materials_components/DocumentSelectAccordion/DocumentSidebar';
 import { TDocument } from '../../../materials_components/DocumentSelectAccordion/getters/getDocumentList';
+import {
+  clearOpenDocumentTabsFromLocalStorage,
+  safeGetOpenDocumentTabsFromLocalStorage,
+  safeSetOpenDocumentTabsFromLocalStorage
+} from '../../../materials_components/DocumentSelectAccordion/utils/OpenDocumentTabsLocalStorageUtils';
 import { DocumentTabPanel } from '../../../materials_components/DocumentTabPanel/DocumentTabPanel';
 import { TRedaction } from '../../../materials_components/PdfRedactor/utils/coordUtils';
 import { TMode } from '../../../materials_components/PdfRedactor/utils/modeUtils';
 import { useTrigger } from '../../../materials_components/PdfRedactor/utils/useTriggger';
 import { RedactionLogModal } from '../../../materials_components/RedactionLog/RedactionLogModal';
 import { getDocumentIdWithoutPrefix } from '../../../utils/string';
-import { Button } from '../../components/button';
 import { Tabs } from '../../components/tabs';
 import { getLookups, useAxiosInstance } from '../../components/utils/getData';
 import { TLookupsResponse } from '../../types/redaction';
@@ -58,6 +62,28 @@ export const ReviewAndRedactPage = () => {
   const [lookups, setLookups] = useState<TLookupsResponse>();
 
   const axiosInstance = useAxiosInstance();
+
+  useEffect(() => {
+    if (!caseId) return;
+    const saved = safeGetOpenDocumentTabsFromLocalStorage(caseId);
+    if (saved && saved.openDocumentIds.length > 0) {
+      setOpenDocumentIds(saved.openDocumentIds);
+      setActiveDocumentId(saved.activeDocumentId);
+    }
+  }, [caseId]);
+
+  useEffect(() => {
+    if (!caseId) return;
+    if (openDocumentIds.length === 0) {
+      clearOpenDocumentTabsFromLocalStorage(caseId);
+    } else {
+      safeSetOpenDocumentTabsFromLocalStorage({
+        caseId,
+        openDocumentIds,
+        activeDocumentId
+      });
+    }
+  }, [caseId, openDocumentIds, activeDocumentId]);
 
   useEffect(() => {
     if (docTypeParam && documents && documents.length > 0) {
@@ -153,7 +179,9 @@ export const ReviewAndRedactPage = () => {
         return true;
       }}
     >
-      {documents === undefined && <LoadingSpinner />}
+      {documents === undefined && (
+        <LoadingSpinner textContent="Loading documents" />
+      )}
       {documents === null && <div>Error...</div>}
       {showBlockNavigationModal && (
         <UnsavedRedactionsModal
@@ -211,9 +239,6 @@ export const ReviewAndRedactPage = () => {
         >
           {tabItems.length > 0 && (
             <>
-              <Button onClick={() => setIsSidebarVisible((v) => !v)}>
-                {isSidebarVisible ? 'Hide categories' : 'Show categories'}
-              </Button>
               <Tabs
                 idPrefix="tabs"
                 title="Tabs title"
@@ -222,6 +247,8 @@ export const ReviewAndRedactPage = () => {
                 handleTabSelection={setActiveDocumentId}
                 handleCloseTab={handleCloseTab}
                 noMargin
+                onShowHideCategoriesClick={() => setIsSidebarVisible((v) => !v)}
+                isShowCategories={isSidebarVisible}
               />
             </>
           )}

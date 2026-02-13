@@ -1,8 +1,8 @@
 $govuk-focus-colour: #ffdd00;
 $govuk-focus-text-colour: #0b0c0c;
 
-[aria-sort] button,
-[aria-sort] button:hover {
+.govuk-table [aria-sort] button,
+.govuk-table [aria-sort] button:hover {
   background-color: transparent;
   border-width: 0;
   -webkit-box-shadow: 0 0 0 0;
@@ -20,7 +20,7 @@ $govuk-focus-text-colour: #0b0c0c;
   margin: 0;
 }
 
-[aria-sort] button:focus {
+.govuk-table [aria-sort] button:focus {
   background-color: $govuk-focus-colour;
   color: $govuk-focus-text-colour;
   box-shadow:
@@ -29,11 +29,11 @@ $govuk-focus-text-colour: #0b0c0c;
   outline: none;
 }
 
-[aria-sort]:first-child button {
+.govuk-table [aria-sort]:first-child button {
   right: auto;
 }
 
-[aria-sort] button:before {
+.govuk-table [aria-sort] button:before {
   content: ' \25bc';
   position: absolute;
   right: -1px;
@@ -41,7 +41,7 @@ $govuk-focus-text-colour: #0b0c0c;
   font-size: 0.5em;
 }
 
-[aria-sort] button:after {
+.govuk-table [aria-sort] button:after {
   content: ' \25b2';
   position: absolute;
   right: -1px;
@@ -49,12 +49,12 @@ $govuk-focus-text-colour: #0b0c0c;
   font-size: 0.5em;
 }
 
-[aria-sort='ascending'] button:before,
-[aria-sort='descending'] button:before {
+.govuk-table [aria-sort='ascending'] button:before,
+.govuk-table [aria-sort='descending'] button:before {
   content: none;
 }
 
-[aria-sort='ascending'] button:after {
+.govuk-table [aria-sort='ascending'] button:after {
   content: ' \25b2';
   font-size: 0.8em;
   position: absolute;
@@ -62,7 +62,7 @@ $govuk-focus-text-colour: #0b0c0c;
   top: 2px;
 }
 
-[aria-sort='descending'] button:after {
+.govuk-table [aria-sort='descending'] button:after {
   content: ' \25bc';
   font-size: 0.8em;
   position: absolute;
