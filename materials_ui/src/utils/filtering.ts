@@ -26,7 +26,7 @@ export const defaultFilterFn = <T>(filters: FilterItem['filters'] = {}) => {
 
     for (const [filterName, filterValue] of Object.entries(filters)) {
       if (
-        // @ts-ignore
+        // @ts-expect-error dynamic object index causing TS error
         !filterValue.includes(item[filterName])
       ) {
         return false;

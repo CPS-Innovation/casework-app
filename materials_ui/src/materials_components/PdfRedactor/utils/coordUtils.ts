@@ -54,7 +54,7 @@ export const safeGetRangeAt = (p: { selection: Selection }) => {
   try {
     const range = p.selection.getRangeAt(0);
     return { success: true, data: range } as const;
-  } catch (error) {
+  } catch (_error) {
     return { success: false } as const;
   }
 };
