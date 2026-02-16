@@ -106,6 +106,8 @@ export const RedactionLogModalBody = ({
 
   const underRedactionSelected = watch('underRedactionSelected');
   const overRedactionSelected = watch('overRedactionSelected');
+  const supportingNotes = watch('supportingNotes') ?? '';
+  const supportingNotesRemaining = Math.max(0, 400 - supportingNotes.length);
 
   return (
     <div className={styles.modalBody}>
@@ -401,6 +403,7 @@ export const RedactionLogModalBody = ({
           id="supportingNotes"
           rows={5}
           style={{ width: '50%' }}
+          maxLength={400}
           {...register('supportingNotes', {
             maxLength: {
               value: 400,
@@ -410,7 +413,7 @@ export const RedactionLogModalBody = ({
         />
 
         <p className="govuk-body govuk-!-margin-top-2 govuk-!-margin-bottom-0">
-          You have 400 characters remaining
+          You have {supportingNotesRemaining} characters remaining
         </p>
       </div>
     </div>
