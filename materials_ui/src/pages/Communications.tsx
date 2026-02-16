@@ -90,11 +90,7 @@ export const CommunicationsPage = () => {
   const handleViewInNewWindowClick = async () => {
     if (!row) return;
 
-    try {
-      await openPreview(row.materialId);
-    } catch (error) {
-      console.error('Error opening document preview:', error);
-    }
+    await openPreview(row.materialId);
   };
 
   const menuItems = [

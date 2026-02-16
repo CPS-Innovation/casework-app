@@ -101,10 +101,8 @@ export const MaterialsPage = () => {
   const handleViewInNewWindowClick = async () => {
     if (!selectedItems.materials) return;
 
-    try {
-      await openPreview(selectedItems.materials.map((item) => item.materialId));
-    } catch (error) {
-      console.error('Error opening document preview:', error);
+    for (const item of selectedItems.materials) {
+      await openPreview(item.materialId);
     }
   };
 
