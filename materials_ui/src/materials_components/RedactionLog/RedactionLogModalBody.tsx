@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { TDocument } from '../DocumentSelectAccordion/getters/getDocumentList';
+import { TRedactionType } from '../PdfRedactor/PdfRedactionTypeForm';
 import { TRedaction } from '../PdfRedactor/utils/coordUtils';
 import { Popover } from './Popover';
 import styles from './RedactionLogModal.module.scss';
@@ -31,7 +32,7 @@ type RedactionLogModalBodyProps = {
   activeDocument?: TDocument | null;
   mode?: Mode;
   redactions?: TRedaction[];
-  selectedRedactionTypes?: { id: string; name: string }[];
+  selectedRedactionTypes?: TRedactionType[];
 };
 
 export type RedactionLogFormValues = {
