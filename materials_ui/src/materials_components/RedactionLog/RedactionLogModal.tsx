@@ -36,6 +36,7 @@ type RedactionLogModalProps = {
   lookups?: TLookupsResponse;
   mode?: 'over-under' | 'list';
   redactions?: TRedaction[];
+  selectedRedactionTypes?: { id: string; name: string }[];
 };
 
 export const RedactionLogModal = ({
@@ -45,7 +46,8 @@ export const RedactionLogModal = ({
   onClose,
   lookups,
   mode,
-  redactions
+  redactions,
+  selectedRedactionTypes
 }: RedactionLogModalProps) => {
   const form = useForm<RedactionLogFormInputs>({
     defaultValues: {
@@ -83,6 +85,7 @@ export const RedactionLogModal = ({
             activeDocument={activeDocument}
             mode={mode}
             redactions={redactions}
+            selectedRedactionTypes={selectedRedactionTypes}
           />
 
           <div className={styles.modalFooter}>

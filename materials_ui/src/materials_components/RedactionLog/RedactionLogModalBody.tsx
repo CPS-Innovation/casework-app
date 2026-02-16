@@ -31,6 +31,7 @@ type RedactionLogModalBodyProps = {
   activeDocument?: TDocument | null;
   mode?: Mode;
   redactions?: TRedaction[];
+  selectedRedactionTypes?: { id: string; name: string }[];
 };
 
 export type RedactionLogFormValues = {
@@ -92,7 +93,7 @@ const RedactionTypesGrid = ({
 export const RedactionLogModalBody = ({
   activeDocument,
   mode,
-  redactions
+  selectedRedactionTypes
 }: RedactionLogModalBodyProps) => {
   const {
     control,
@@ -111,6 +112,32 @@ export const RedactionLogModalBody = ({
       <ErrorSummary errors={errors} />
 
       <h2>Redaction details for: {activeDocument?.presentationTitle}</h2>
+
+      {mode === 'list' && selectedRedactionTypes && (
+        <div className="govuk-form-group">
+          {selectedRedactionTypes.length > 0 && (
+            <ul className="govuk-list">
+              {Object.entries(
+                selectedRedactionTypes.reduce(
+                  (acc, x) => {
+                    const current = acc[x.id];
+                    acc[x.id] = {
+                      name: current?.name ?? x.name,
+                      count: (current?.count ?? 0) + 1
+                    };
+                    return acc;
+                  },
+                  {} as Record<string, { name: string; count: number }>
+                )
+              ).map(([id, value]) => (
+                <li key={id}>
+                  {value.count} - {value.name}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
 
       {mode === 'over-under' && (
         <div
@@ -316,19 +343,6 @@ export const RedactionLogModalBody = ({
               </div>
             )}
           </fieldset>
-        </div>
-      )}
-
-      {redactions && redactions.length > 0 && (
-        <div className="govuk-form-group">
-          <legend className="govuk-fieldset__legend">Redaction details</legend>
-          <ul className="govuk-list">
-            {redactions.map((redaction) => (
-              <li key={redaction.id}>
-                {redaction.id} - Page {redaction.pageNumber}
-              </li>
-            ))}
-          </ul>
         </div>
       )}
 

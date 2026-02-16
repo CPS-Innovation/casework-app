@@ -71,6 +71,10 @@ export const CaseworkPdfRedactorWrapper = (p: {
   initRedactions: TRedaction[];
 }) => {
   const [isDocumentCheckedOut, setIsDocumentCheckedOut] = useState(false);
+  const [selectedRedactionTypes, setSelectedRedactionTypes] = useState<
+    { id: string; name: string }[]
+  >([]);
+
   const documentCheckOutRequest = useDocumentCheckOutRequest({
     caseId: p.caseId,
     urn: p.urn
@@ -224,6 +228,13 @@ export const CaseworkPdfRedactorWrapper = (p: {
                 documentId={redactionPopupProps.documentId}
                 urn={redactionPopupProps.urn}
                 caseId={redactionPopupProps.caseId}
+                onRedactionTypeChange={(type) => {
+                  if (!type) return;
+                  setSelectedRedactionTypes((prev) => {
+                    const next = [...prev, { id: type.id, name: type.name }];
+                    return next;
+                  });
+                }}
                 onCancelClick={() => {
                   removeRedactions(redactionPopupProps.redactionIds);
                   setRedactionPopupProps(null);
@@ -269,6 +280,8 @@ export const CaseworkPdfRedactorWrapper = (p: {
           onClose={() => setShowRedactionLogModal(false)}
           mode={redactionLogModalMode}
           redactions={redactionLogModalRedactions}
+          selectedRedactionTypes={selectedRedactionTypes}
+          activeDocument={p.document}
         />
       )}
 

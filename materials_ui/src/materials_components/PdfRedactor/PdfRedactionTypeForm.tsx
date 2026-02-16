@@ -60,6 +60,7 @@ export const RedactionDetailsForm = (p: {
   documentId: string;
   urn: string;
   caseId: string;
+  onRedactionTypeChange?: (x: TRedactionType | undefined) => void;
   onCancelClick: () => void;
   onSaveSuccess: () => void;
 }) => {
@@ -71,7 +72,10 @@ export const RedactionDetailsForm = (p: {
       <div style={{ display: 'flex', alignItems: 'start', gap: '8px' }}>
         <RedactionTypeSelect
           initFocus
-          onRedactionTypeChange={(type) => setRedactionType(type)}
+          onRedactionTypeChange={(type) => {
+            setRedactionType(type);
+            p.onRedactionTypeChange?.(type);
+          }}
         />
         <GovUkButton variant="secondary" onClick={p.onCancelClick}>
           Cancel
