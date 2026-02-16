@@ -29,8 +29,6 @@ export const useDocumentCheckOutRequest = ({
     } catch (error: unknown) {
       setIsLoading(false);
 
-      console.log('asd', error);
-
       const schema = z.object({
         response: z.object({ data: z.object({ detail: z.string() }) })
       });
