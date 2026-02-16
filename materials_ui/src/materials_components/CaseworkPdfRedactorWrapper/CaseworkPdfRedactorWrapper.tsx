@@ -4,7 +4,10 @@ import { TDocument } from '../DocumentSelectAccordion/getters/getDocumentList';
 import { PdfRedactorCenteredModal } from '../PdfRedactor/modals/PdfRedactorCenteredModal';
 import { PdfRedactorMiniModal } from '../PdfRedactor/modals/PdfRedactorMiniModal';
 import { DeletionReasonForm } from '../PdfRedactor/PdfDeletionReasonForm';
-import { RedactionDetailsForm } from '../PdfRedactor/PdfRedactionTypeForm';
+import {
+  RedactionDetailsForm,
+  TRedactionType
+} from '../PdfRedactor/PdfRedactionTypeForm';
 import { PdfRedactor } from '../PdfRedactor/PdfRedactor';
 import { GovUkButton } from '../PdfRedactor/templates/GovUkButton';
 import { TCoord, TRedaction } from '../PdfRedactor/utils/coordUtils';
@@ -72,7 +75,7 @@ export const CaseworkPdfRedactorWrapper = (p: {
 }) => {
   const [isDocumentCheckedOut, setIsDocumentCheckedOut] = useState(false);
   const [selectedRedactionTypes, setSelectedRedactionTypes] = useState<
-    { id: string; name: string }[]
+    TRedactionType[]
   >([]);
 
   const documentCheckOutRequest = useDocumentCheckOutRequest({

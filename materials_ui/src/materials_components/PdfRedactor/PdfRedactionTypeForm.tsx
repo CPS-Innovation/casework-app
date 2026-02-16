@@ -19,7 +19,7 @@ const redactionTypeData = [
   { id: '15', name: 'Other' }
 ];
 
-type TRedactionType = (typeof redactionTypeData)[number];
+export type TRedactionType = (typeof redactionTypeData)[number];
 
 const RedactionTypeSelect = (p: {
   onRedactionTypeChange: (x: TRedactionType | undefined) => void;
