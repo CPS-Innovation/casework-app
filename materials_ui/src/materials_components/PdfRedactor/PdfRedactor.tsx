@@ -29,7 +29,7 @@ const useScaleHelper = (p?: { initScale?: number }) => {
     });
   const resetScale = () => setScale(1);
 
-  return { scale, increaseScale, decreaseScale, resetScale };
+  return { scale, setScale, increaseScale, decreaseScale, resetScale };
 };
 
 const indexRedactionsOnPageNumber = (redactions: TRedaction[]) => {
@@ -375,8 +375,10 @@ export const PdfRedactor = (p: {
             width: '100%',
             overflowX: 'scroll',
             overflowY: 'scroll',
-            backgroundColor: '#808080',
-            paddingBottom: '70px'
+            backgroundColor: '#F3F2F1',
+            paddingBottom: '70px',
+            boxSizing: 'border-box',
+            border: 'solid 1px black'
           }}
         >
           <Document
@@ -384,6 +386,29 @@ export const PdfRedactor = (p: {
             onLoadSuccess={(x) => {
               p.onRedactionsChange(p.initRedactions ?? []);
               setNumPages(x.numPages);
+
+              setTimeout(() => {
+                // TODO: store most current scale value in local storage and don't zoom in/out if already has a value
+                const documentElement = window.document.querySelector(
+                  '.react-pdf__Document'
+                );
+                const documentElementWidth =
+                  documentElement?.getBoundingClientRect().width;
+                if (!documentElementWidth) return;
+
+                const pageElements =
+                  window.document.querySelectorAll('.react-pdf__Page');
+
+                const pageElementWidths = [...pageElements]
+                  .map((elm) => elm.getBoundingClientRect().width)
+                  .filter((num) => !!num);
+
+                const pageElementMaxWidth = Math.max(...pageElementWidths);
+                if (!pageElementMaxWidth) return;
+
+                const ratio = documentElementWidth / pageElementMaxWidth;
+                scaleHelper.setScale(ratio * 0.98);
+              }, 100);
             }}
           >
             {[...Array(numPages)].map((_, j) => (
