@@ -1,6 +1,7 @@
 import { FormProvider, useForm } from 'react-hook-form';
 import { TLookupsResponse } from '../../caseWorkApp/types/redaction';
 import { TDocument } from '../DocumentSelectAccordion/getters/getDocumentList';
+import { TRedactionType } from '../PdfRedactor/PdfRedactionTypeForm';
 import { TRedaction } from '../PdfRedactor/utils/coordUtils';
 import { Modal } from './Modal';
 import styles from './RedactionLogModal.module.scss';
@@ -36,7 +37,7 @@ type RedactionLogModalProps = {
   lookups?: TLookupsResponse;
   mode?: 'over-under' | 'list';
   redactions?: TRedaction[];
-  selectedRedactionTypes?: { id: string; name: string }[];
+  selectedRedactionTypes?: TRedactionType[];
 };
 
 export const RedactionLogModal = ({
