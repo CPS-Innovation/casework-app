@@ -376,7 +376,9 @@ export const PdfRedactor = (p: {
             overflowX: 'scroll',
             overflowY: 'scroll',
             backgroundColor: '#F3F2F1',
-            paddingBottom: '70px'
+            paddingBottom: '70px',
+            boxSizing: 'border-box',
+            border: 'solid 1px black'
           }}
         >
           <Document
