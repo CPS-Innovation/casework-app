@@ -389,30 +389,24 @@ export const PdfRedactor = (p: {
 
               setTimeout(() => {
                 // TODO: store most current scale value in local storage and don't zoom in/out if already has a value
-                const documentElements = window.document.querySelectorAll(
+                const documentElement = window.document.querySelector(
                   '.react-pdf__Document'
                 );
-                const documentElementWidths =
-                  [...documentElements]
-                    .map((elm) => elm.getBoundingClientRect().width)
-                    .filter((num) => !!num) ?? 0;
-                const documentElementMaxWidth = Math.max(
-                  ...documentElementWidths
-                );
-                if (!documentElementMaxWidth) return;
+                const documentElementWidth =
+                  documentElement?.getBoundingClientRect().width;
+                if (!documentElementWidth) return;
 
                 const pageElements =
                   window.document.querySelectorAll('.react-pdf__Page');
 
-                const pageElementWidths =
-                  [...pageElements]
-                    .map((elm) => elm.getBoundingClientRect().width)
-                    .filter((num) => !!num) ?? 0;
+                const pageElementWidths = [...pageElements]
+                  .map((elm) => elm.getBoundingClientRect().width)
+                  .filter((num) => !!num);
 
                 const pageElementMaxWidth = Math.max(...pageElementWidths);
                 if (!pageElementMaxWidth) return;
 
-                const ratio = documentElementMaxWidth / pageElementMaxWidth;
+                const ratio = documentElementWidth / pageElementMaxWidth;
                 scaleHelper.setScale(ratio * 0.98);
               }, 100);
             }}
