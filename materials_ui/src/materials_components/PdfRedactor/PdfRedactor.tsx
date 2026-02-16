@@ -29,7 +29,7 @@ const useScaleHelper = (p?: { initScale?: number }) => {
     });
   const resetScale = () => setScale(1);
 
-  return { scale, increaseScale, decreaseScale, resetScale };
+  return { scale, setScale, increaseScale, decreaseScale, resetScale };
 };
 
 const indexRedactionsOnPageNumber = (redactions: TRedaction[]) => {
@@ -375,7 +375,7 @@ export const PdfRedactor = (p: {
             width: '100%',
             overflowX: 'scroll',
             overflowY: 'scroll',
-            backgroundColor: '#808080',
+            backgroundColor: '#F3F2F1',
             paddingBottom: '70px'
           }}
         >
@@ -384,6 +384,35 @@ export const PdfRedactor = (p: {
             onLoadSuccess={(x) => {
               p.onRedactionsChange(p.initRedactions ?? []);
               setNumPages(x.numPages);
+
+              setTimeout(() => {
+                // TODO: store most current scale value in local storage and don't zoom in/out if already has a value
+                const documentElements = window.document.querySelectorAll(
+                  '.react-pdf__Document'
+                );
+                const documentElementWidths =
+                  [...documentElements]
+                    .map((elm) => elm.getBoundingClientRect().width)
+                    .filter((num) => !!num) ?? 0;
+                const documentElementMaxWidth = Math.max(
+                  ...documentElementWidths
+                );
+                if (!documentElementMaxWidth) return;
+
+                const pageElements =
+                  window.document.querySelectorAll('.react-pdf__Page');
+
+                const pageElementWidths =
+                  [...pageElements]
+                    .map((elm) => elm.getBoundingClientRect().width)
+                    .filter((num) => !!num) ?? 0;
+
+                const pageElementMaxWidth = Math.max(...pageElementWidths);
+                if (!pageElementMaxWidth) return;
+
+                const ratio = documentElementMaxWidth / pageElementMaxWidth;
+                scaleHelper.setScale(ratio * 0.98);
+              }, 100);
             }}
           >
             {[...Array(numPages)].map((_, j) => (
