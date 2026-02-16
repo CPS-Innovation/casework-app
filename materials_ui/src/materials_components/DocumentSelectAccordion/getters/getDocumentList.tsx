@@ -50,7 +50,7 @@ export const safeGetDocumentListFromAxiosInstance = async (p: {
     });
 
     return documentListSchema.safeParse(resp);
-  } catch (error) {
+  } catch (_error) {
     return { success: false } as const;
   }
 };
@@ -65,7 +65,7 @@ export const safeGetDocumentListFromLocalStorage = (p: {
     const resp = JSON.parse(initResp!); // assert with !, any errors caught
 
     return documentListSchema.safeParse(resp);
-  } catch (error) {
+  } catch (_error) {
     return { success: false } as const;
   }
 };

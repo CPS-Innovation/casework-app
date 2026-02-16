@@ -14,10 +14,7 @@ export type TabsProps = CommonTabsProps & {
 };
 
 export const Tabs: React.FC<TabsProps> = ({
-  id,
-  idPrefix,
   items,
-  title,
   activeTabId,
   handleTabSelection,
   handleCloseTab,

@@ -3,11 +3,11 @@ import { Controller, useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 
 import { useExhibitProducers } from '../../../hooks/index.ts';
-import { CaseMaterialsType } from '../../../schemas/index.ts';
 import {
   EditExhibitSchema,
   EditExhibitType
 } from '../../../schemas/forms/editStatement.ts';
+import { CaseMaterialsType } from '../../../schemas/index.ts';
 import { SelectList } from '../../SelectList/SelectList.tsx';
 
 import { TextInput } from '../../TextInput/TextInput.tsx';
