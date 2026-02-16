@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { TDocument } from '../DocumentSelectAccordion/getters/getDocumentList';
+import { TRedactionType } from '../PdfRedactor/PdfRedactionTypeForm';
 import { TRedaction } from '../PdfRedactor/utils/coordUtils';
 import { Popover } from './Popover';
 import styles from './RedactionLogModal.module.scss';
@@ -31,6 +32,7 @@ type RedactionLogModalBodyProps = {
   activeDocument?: TDocument | null;
   mode?: Mode;
   redactions?: TRedaction[];
+  selectedRedactionTypes?: TRedactionType[];
 };
 
 export type RedactionLogFormValues = {
@@ -92,7 +94,7 @@ const RedactionTypesGrid = ({
 export const RedactionLogModalBody = ({
   activeDocument,
   mode,
-  redactions
+  selectedRedactionTypes
 }: RedactionLogModalBodyProps) => {
   const {
     control,
@@ -105,12 +107,40 @@ export const RedactionLogModalBody = ({
 
   const underRedactionSelected = watch('underRedactionSelected');
   const overRedactionSelected = watch('overRedactionSelected');
+  const supportingNotes = watch('supportingNotes') ?? '';
+  const supportingNotesRemaining = Math.max(0, 400 - supportingNotes.length);
 
   return (
     <div className={styles.modalBody}>
       <ErrorSummary errors={errors} />
 
       <h2>Redaction details for: {activeDocument?.presentationTitle}</h2>
+
+      {mode === 'list' && selectedRedactionTypes && (
+        <div className="govuk-form-group">
+          {selectedRedactionTypes.length > 0 && (
+            <ul className="govuk-list">
+              {Object.entries(
+                selectedRedactionTypes.reduce(
+                  (acc, x) => {
+                    const current = acc[x.id];
+                    acc[x.id] = {
+                      name: current?.name ?? x.name,
+                      count: (current?.count ?? 0) + 1
+                    };
+                    return acc;
+                  },
+                  {} as Record<string, { name: string; count: number }>
+                )
+              ).map(([id, value]) => (
+                <li key={id}>
+                  {value.count} - {value.name}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
 
       {mode === 'over-under' && (
         <div
@@ -319,19 +349,6 @@ export const RedactionLogModalBody = ({
         </div>
       )}
 
-      {redactions && redactions.length > 0 && (
-        <div className="govuk-form-group">
-          <legend className="govuk-fieldset__legend">Redaction details</legend>
-          <ul className="govuk-list">
-            {redactions.map((redaction) => (
-              <li key={redaction.id}>
-                {redaction.id} - Page {redaction.pageNumber}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
       <div
         className={`govuk-form-group ${errors.supportingNotes ? 'govuk-form-group--error' : ''} govuk-!-margin-bottom-0`}
       >
@@ -354,7 +371,11 @@ export const RedactionLogModalBody = ({
             </p>
           )}
 
-          <a onClick={() => setShowPopover(!showPopover)}>
+          <a
+            className="govuk-link"
+            onClick={() => setShowPopover(!showPopover)}
+            style={{ fontSize: '19px' }}
+          >
             Guidance on supporting notes
           </a>
 
@@ -363,11 +384,14 @@ export const RedactionLogModalBody = ({
               title="Guidance on supporting notes"
               content={() => {
                 return (
-                  <ul style={{ paddingLeft: '1rem' }}>
-                    <li>Explain why the redaction was made</li>
-                    <li>Mention any relevant case details</li>
-                    <li>Keep notes clear and concise</li>
-                    <li>Avoid sensitive information</li>
+                  <ul style={{ paddingLeft: '1rem', fontSize: '19px' }}>
+                    <li>
+                      Detail the redaction issue identified, e.g. Statement of
+                      XX (Initials) DOB redacted
+                    </li>
+                    <li>Avoid recording full names</li>
+                    <li>Do not record sensitive personal data</li>
+                    <li>Supporting notes optional - 400 characters maximum</li>
                   </ul>
                 );
               }}
@@ -380,6 +404,7 @@ export const RedactionLogModalBody = ({
           id="supportingNotes"
           rows={5}
           style={{ width: '50%' }}
+          maxLength={400}
           {...register('supportingNotes', {
             maxLength: {
               value: 400,
@@ -388,7 +413,9 @@ export const RedactionLogModalBody = ({
           })}
         />
 
-        <p className="govuk-body">You have 400 characters remaining</p>
+        <p className="govuk-body govuk-!-margin-top-2 govuk-!-margin-bottom-0">
+          You have {supportingNotesRemaining} characters remaining
+        </p>
       </div>
     </div>
   );

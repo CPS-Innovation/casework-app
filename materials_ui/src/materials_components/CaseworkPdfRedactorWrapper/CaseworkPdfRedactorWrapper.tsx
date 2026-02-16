@@ -4,7 +4,10 @@ import { TDocument } from '../DocumentSelectAccordion/getters/getDocumentList';
 import { PdfRedactorCenteredModal } from '../PdfRedactor/modals/PdfRedactorCenteredModal';
 import { PdfRedactorMiniModal } from '../PdfRedactor/modals/PdfRedactorMiniModal';
 import { DeletionReasonForm } from '../PdfRedactor/PdfDeletionReasonForm';
-import { RedactionDetailsForm } from '../PdfRedactor/PdfRedactionTypeForm';
+import {
+  RedactionDetailsForm,
+  TRedactionType
+} from '../PdfRedactor/PdfRedactionTypeForm';
 import { PdfRedactor } from '../PdfRedactor/PdfRedactor';
 import { GovUkButton } from '../PdfRedactor/templates/GovUkButton';
 import { TCoord, TRedaction } from '../PdfRedactor/utils/coordUtils';
@@ -71,6 +74,10 @@ export const CaseworkPdfRedactorWrapper = (p: {
   initRedactions: TRedaction[];
 }) => {
   const [isDocumentCheckedOut, setIsDocumentCheckedOut] = useState(false);
+  const [selectedRedactionTypes, setSelectedRedactionTypes] = useState<
+    TRedactionType[]
+  >([]);
+
   const documentCheckOutRequest = useDocumentCheckOutRequest({
     caseId: p.caseId,
     urn: p.urn
@@ -224,6 +231,13 @@ export const CaseworkPdfRedactorWrapper = (p: {
                 documentId={redactionPopupProps.documentId}
                 urn={redactionPopupProps.urn}
                 caseId={redactionPopupProps.caseId}
+                onRedactionTypeChange={(type) => {
+                  if (!type) return;
+                  setSelectedRedactionTypes((prev) => {
+                    const next = [...prev, { id: type.id, name: type.name }];
+                    return next;
+                  });
+                }}
                 onCancelClick={() => {
                   removeRedactions(redactionPopupProps.redactionIds);
                   setRedactionPopupProps(null);
@@ -269,6 +283,8 @@ export const CaseworkPdfRedactorWrapper = (p: {
           onClose={() => setShowRedactionLogModal(false)}
           mode={redactionLogModalMode}
           redactions={redactionLogModalRedactions}
+          selectedRedactionTypes={selectedRedactionTypes}
+          activeDocument={p.document}
         />
       )}
 

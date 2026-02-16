@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { TLookupsResponse } from '../../caseWorkApp/types/redaction';
+import { Popover } from './Popover';
 import { RedactionLogFormInputs } from './RedactionLogModal';
 import styles from './RedactionLogModal.module.scss';
 import { SelectDropdown } from './templates/Select';
@@ -25,6 +26,8 @@ export const RedactionLogModalHeader = ({
   const [selectedId, setSelectedId] = useState<string>('');
   const selectedItem = areasAndDivisions.find((item) => item.id === selectedId);
 
+  const [showPopover, setShowPopover] = useState<boolean>(false);
+
   const {
     control,
     setValue,
@@ -41,7 +44,50 @@ export const RedactionLogModalHeader = ({
 
   return (
     <div className={styles.modalHeader}>
-      <h1 className="govuk-heading-l">{urn} - Redaction Log</h1>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginBottom: '2rem',
+          position: 'relative'
+        }}
+      >
+        <h1 className="govuk-heading-l govuk-!-margin-bottom-0">
+          {urn} - Redaction Log
+        </h1>
+        <a
+          className="govuk-link"
+          style={{ fontSize: '19px' }}
+          onClick={() => setShowPopover(!showPopover)}
+        >
+          Redaction log Guidance
+        </a>
+
+        {showPopover && (
+          <Popover
+            title="Redaction Log Guidance"
+            content={() => {
+              return (
+                <ul style={{ paddingLeft: '1rem', fontSize: '19px' }}>
+                  <li>
+                    This popup allows the capture of details which will be
+                    recorded into the Redaction Log automatically
+                  </li>
+                  <li>
+                    Once added, if an entry needs editing or deleting, this
+                    should be done in the Redaction log
+                  </li>
+                  <li>
+                    Once added, if an entry needs editing or deleting, this
+                    should be done in the Redaction log
+                  </li>
+                </ul>
+              );
+            }}
+          />
+        )}
+      </div>
 
       <div
         className="govuk-form-group"
