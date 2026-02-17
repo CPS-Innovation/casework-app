@@ -84,7 +84,12 @@ export const DocumentSidebarAccordionDocument = (p: {
       documentDate={formatShortDate(p.document.cmsFileCreatedDate)}
       ActiveDocumentTag={p.activeDocumentId === p.document.documentId}
       NewTag={!p.readDocumentIds.includes(p.document.documentId)}
-      showLeftBorder={p.openDocumentIds.includes(p.document.documentId)}
+      showLeftBorder={p.activeDocumentId === p.document.documentId}
+      showRightBorder={p.openDocumentIds.includes(p.document.documentId)}
+      backgroundColor={
+        p.readDocumentIds.includes(p.document.documentId) ? 'white' : 'blue'
+      }
+      // backgroundColor="blue"
       notesStatus={(() => {
         if (
           p.document.cmsDocType.documentType === 'PCD' ||
@@ -113,6 +118,8 @@ export const DocumentSidebarAccordionDocumentTemplate = (p: {
   UpdatedTag?: boolean;
   notesStatus: 'disabled' | 'newNotes' | 'none';
   showLeftBorder?: boolean;
+  showRightBorder: boolean;
+  backgroundColor: 'blue' | 'white';
   onDocumentClick: () => void;
   onNotesClick: () => void;
   ActionComponent?: React.ReactNode;
@@ -123,7 +130,7 @@ export const DocumentSidebarAccordionDocumentTemplate = (p: {
 
   return (
     <div
-      className={`document-select-accordion-document ${p.showLeftBorder ? 'show-left-border' : ''}`}
+      className={`document-select-accordion-document ${p.backgroundColor === 'blue' ? 'bg-blue' : 'bg-white'} ${p.showLeftBorder ? 'show-left-border' : ''} ${p.showRightBorder ? 'show-right-border' : ''}`}
     >
       <div className="document-select-accordion-document--inner-wrapper">
         <div

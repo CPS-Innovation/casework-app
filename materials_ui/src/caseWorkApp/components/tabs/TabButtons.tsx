@@ -166,14 +166,7 @@ const TabButtons: React.FC<TabButtonProps> = ({
         </ul>
       </div>
 
-      <div
-        style={{
-          flexShrink: 0,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}
-      >
+      <div style={{ flexShrink: 0, display: 'flex' }}>
         <DropdownButton
           dropDownItems={tabDropdownItems}
           callBackFn={handleTabSelection}
