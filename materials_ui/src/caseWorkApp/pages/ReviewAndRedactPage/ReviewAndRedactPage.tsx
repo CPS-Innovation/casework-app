@@ -48,7 +48,7 @@ export const ReviewAndRedactPage = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
   const [openDocumentIds, setOpenDocumentIds] = useState<string[]>([]);
   const [activeDocumentId, setActiveDocumentId] = useState('');
-  const [mode, setMode] = useState<TMode>('areaRedact');
+  const [mode, setMode] = useState<TMode>('textRedact');
 
   const { openPreview } = useOpenDocumentInNewWindow();
 

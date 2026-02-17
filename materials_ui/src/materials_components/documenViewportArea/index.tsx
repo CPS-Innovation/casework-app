@@ -94,7 +94,7 @@ export const DocumentViewportArea = ({
                 id={DROPDOWN_ACTIONS.ROTATE}
                 borderBottom
                 onClick={() =>
-                  onModeChange(mode === 'rotation' ? 'areaRedact' : 'rotation')
+                  onModeChange(mode === 'rotation' ? 'textRedact' : 'rotation')
                 }
               >
                 {mode === 'rotation'
@@ -105,7 +105,7 @@ export const DocumentViewportArea = ({
                 id={DROPDOWN_ACTIONS.DELETE}
                 borderBottom
                 onClick={() =>
-                  onModeChange(mode === 'deletion' ? 'areaRedact' : 'deletion')
+                  onModeChange(mode === 'deletion' ? 'textRedact' : 'deletion')
                 }
               >
                 {mode === 'deletion'
