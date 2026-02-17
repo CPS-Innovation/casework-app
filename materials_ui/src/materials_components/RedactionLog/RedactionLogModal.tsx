@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { TLookupsResponse } from '../../caseWorkApp/types/redaction';
 import { TDocument } from '../DocumentSelectAccordion/getters/getDocumentList';
@@ -50,6 +51,10 @@ export const RedactionLogModal = ({
   redactions,
   selectedRedactionTypes
 }: RedactionLogModalProps) => {
+  const existingInvestigatingAgency = lookups?.ouCodeMapping.find(
+    (item) => item.ouCode === urn?.substring(0, 2)
+  )?.investigatingAgencyCode;
+
   const form = useForm<RedactionLogFormInputs>({
     defaultValues: {
       underRedactionSelected: false,
@@ -60,12 +65,18 @@ export const RedactionLogModal = ({
       overReason: null,
       areasAndDivisionsId: '',
       businessUnitId: '',
-      investigatingAgencyId: '',
+      investigatingAgencyId: existingInvestigatingAgency || '',
       chargeStatus: 'Pre-charge',
       documentTypeId: activeDocument?.cmsDocType.documentTypeId || '',
       supportingNotes: ''
     }
   });
+
+  useEffect(() => {
+    if (existingInvestigatingAgency && lookups?.investigatingAgencies) {
+      form.setValue('investigatingAgencyId', existingInvestigatingAgency);
+    }
+  }, [existingInvestigatingAgency, lookups?.investigatingAgencies, form]);
 
   const onSubmit = (values: RedactionLogFormInputs) => {
     console.log('Form submitted with values:', values);
