@@ -1,4 +1,6 @@
 import { ComponentProps, useEffect, useState } from 'react';
+import { getLookups } from '../../caseWorkApp/components/utils/getData';
+import { TLookupsResponse } from '../../caseWorkApp/types/redaction';
 import { useAxiosInstance } from '../DocumentSelectAccordion/getters/getAxiosInstance';
 import { TDocument } from '../DocumentSelectAccordion/getters/getDocumentList';
 import { PdfRedactorCenteredModal } from '../PdfRedactor/modals/PdfRedactorCenteredModal';
@@ -77,6 +79,7 @@ export const CaseworkPdfRedactorWrapper = (p: {
   const [selectedRedactionTypes, setSelectedRedactionTypes] = useState<
     TRedactionType[]
   >([]);
+  const [lookups, setLookups] = useState<TLookupsResponse>();
 
   const documentCheckOutRequest = useDocumentCheckOutRequest({
     caseId: p.caseId,
@@ -165,6 +168,14 @@ export const CaseworkPdfRedactorWrapper = (p: {
     setIsDocumentCheckedOut(checkoutResponse.success);
     return checkoutResponse;
   };
+
+  useEffect(() => {
+    if (showRedactionLogModal) {
+      getLookups({ axiosInstance: axiosInstance }).then((data) => {
+        setLookups(data);
+      });
+    }
+  }, [showRedactionLogModal]);
 
   return (
     <div>
@@ -285,6 +296,7 @@ export const CaseworkPdfRedactorWrapper = (p: {
           redactions={redactionLogModalRedactions}
           selectedRedactionTypes={selectedRedactionTypes}
           activeDocument={p.document}
+          lookups={lookups}
         />
       )}
 
