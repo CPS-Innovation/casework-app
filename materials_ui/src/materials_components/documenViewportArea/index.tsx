@@ -57,17 +57,16 @@ export const DocumentViewportArea = ({
         <div style={{ display: 'flex', gap: '8px' }}>
           <Tooltip
             text={
-              mode === 'areaRedact'
-                ? 'Redact area tool On'
-                : 'Redact area tool Off'
+              mode === 'areaRedact' ? 'Redact area mode' : 'Redact text mode'
             }
           >
             <Button
+              variant="inverse"
               dataTestId="btn-area-tool"
               id="btn-area-tool"
               ariaLabel={
                 mode === 'areaRedact'
-                  ? 'disable area redaction mode'
+                  ? 'enable text redaction mode'
                   : 'enable area redaction mode'
               }
               onClick={() =>
@@ -95,7 +94,7 @@ export const DocumentViewportArea = ({
                 id={DROPDOWN_ACTIONS.ROTATE}
                 borderBottom
                 onClick={() =>
-                  onModeChange(mode === 'rotation' ? 'areaRedact' : 'rotation')
+                  onModeChange(mode === 'rotation' ? 'textRedact' : 'rotation')
                 }
               >
                 {mode === 'rotation'
@@ -106,7 +105,7 @@ export const DocumentViewportArea = ({
                 id={DROPDOWN_ACTIONS.DELETE}
                 borderBottom
                 onClick={() =>
-                  onModeChange(mode === 'deletion' ? 'areaRedact' : 'deletion')
+                  onModeChange(mode === 'deletion' ? 'textRedact' : 'deletion')
                 }
               >
                 {mode === 'deletion'
