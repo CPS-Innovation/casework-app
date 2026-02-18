@@ -1,17 +1,5 @@
 import { useEffect, useRef, type ReactNode } from 'react';
 
-const ModalStyleTag = () => {
-  return (
-    <style>
-      {`
-      html, body {
-        overflow: hidden !important;
-      }
-      `}
-    </style>
-  );
-};
-
 export const PdfRedactorCenteredModal = (p: {
   children: ReactNode;
   onBackgroundClick: () => void;
@@ -27,9 +15,15 @@ export const PdfRedactorCenteredModal = (p: {
     return () => window.removeEventListener('keydown', fn);
   }, []);
 
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, []);
+
   return (
     <>
-      <ModalStyleTag />
       <div
         style={{
           position: 'fixed',

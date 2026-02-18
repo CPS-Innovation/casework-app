@@ -10,13 +10,21 @@ import { SaveToProceedToRotationsModal } from './modals/SaveToProceedToRotations
 import { PdfRedactorPage } from './PdfRedactorPage';
 import type { TRedaction } from './utils/coordUtils';
 import { TDeletion, TIndexedDeletion } from './utils/deletionUtils';
-import { ModeStyleTag, type TMode } from './utils/modeUtils';
+import { type TMode } from './utils/modeUtils';
+import styles from './utils/PdfRedactor.module.css';
 import { TIndexedRotation, TRotation } from './utils/rotationUtils';
 import { useTrigger } from './utils/useTriggger';
 import '/node_modules/react-pdf/dist/cjs/Page/AnnotationLayer.css';
 import '/node_modules/react-pdf/dist/cjs/Page/TextLayer.css';
 
 pdfjs.GlobalWorkerOptions.workerSrc = pdfWorker;
+
+const modeClassMap: { [x in TMode]: string | undefined } = {
+  areaRedact: styles.areaRedact,
+  textRedact: styles.textRedact,
+  rotation: styles.rotation,
+  deletion: styles.deletion
+};
 
 const useScaleHelper = (p?: { initScale?: number }) => {
   const [scale, setScale] = useState(p?.initScale ?? 1);
@@ -279,7 +287,7 @@ export const PdfRedactor = (p: {
   }, []);
 
   return (
-    <div ref={pdfRedactorWrapperElmRef}>
+    <div className={modeClassMap[p.mode]} ref={pdfRedactorWrapperElmRef}>
       {displayToProceedModal && (
         <PdfRedactorCenteredModal
           onBackgroundClick={() => setDisplayToProceedModal(undefined)}
@@ -302,7 +310,6 @@ export const PdfRedactor = (p: {
           )}
         </PdfRedactorCenteredModal>
       )}
-      <ModeStyleTag mode={p.mode} />
       {!p.hideToolbar && (
         <div
           style={{
