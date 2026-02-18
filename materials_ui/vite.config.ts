@@ -35,9 +35,15 @@ export default defineConfig(({ mode }) => {
       {
         name: 'copy-govuk-assets',
         buildStart() {
-          const dest = path.resolve(import.meta.dirname, 'public/assets/images');
+          const dest = path.resolve(
+            import.meta.dirname,
+            'public/assets/images'
+          );
           fs.mkdirSync(dest, { recursive: true });
-          const src = path.resolve(import.meta.dirname, 'node_modules/govuk-frontend/dist/govuk/assets/images');
+          const src = path.resolve(
+            import.meta.dirname,
+            'node_modules/govuk-frontend/dist/govuk/assets/images'
+          );
           for (const file of fs.readdirSync(src)) {
             fs.copyFileSync(path.join(src, file), path.join(dest, file));
           }
@@ -73,10 +79,33 @@ export default defineConfig(({ mode }) => {
       dedupe: ['react', 'react-dom']
     },
     server: { port: 3000 },
-    preview: { port: 3000 },
-    esbuild: {
-      drop: mode === 'production' ? ['console', 'debugger'] : []
+    preview: {
+      port: 3000,
+      headers: {
+        // TODO: script-src unsafe-inline is not great, looks like a single GDS setting requiring this
+        'Content-Security-Policy': `
+          base-uri 'self';
+          default-src 'self';
+          img-src 'self' data:;
+            script-src 'self' 
+              https://polaris-dev-notprod.cps.gov.uk/ 
+              https://polaris-qa-notprod.cps.gov.uk/
+              https://sacpsglobalcomponents.blob.core.windows.net/
+              ;
+          style-src 'self';
+            connect-src 'self' blob: 
+              https://polaris-dev-notprod.cps.gov.uk/ 
+              https://polaris-qa-notprod.cps.gov.uk/
+              https://login.microsoftonline.com/
+              https://sacpsglobalcomponents.blob.core.windows.net/ 
+              https://js.monitor.azure.com/
+              ;
+        `
+          .replace(/\s{2,}/g, ' ')
+          .trim()
+      }
     },
+    esbuild: { drop: mode === 'production' ? ['console', 'debugger'] : [] },
     build: {
       outDir: 'build/materials-ui',
       target: 'esnext',
