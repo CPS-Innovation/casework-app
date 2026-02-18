@@ -53,15 +53,15 @@ export const PdfRedactorMiniModal = (p: {
     return () => window.removeEventListener('keydown', fn);
   }, []);
 
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, []);
+
   return (
     <>
-      <style>
-        {`
-      html, body {
-        overflow: hidden !important;
-      }
-    `}
-      </style>
       <div
         style={{
           position: 'fixed',
