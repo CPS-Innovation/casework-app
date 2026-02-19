@@ -221,6 +221,7 @@ export const PdfRedactor = (p: {
   const [numPages, setNumPages] = useState<number>();
   const scaleHelper = useScaleHelper();
   const pdfRedactorWrapperElmRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const indexedRedactions = useMemo(() => {
     return indexRedactionsOnPageNumber(p.redactions);
@@ -369,6 +370,7 @@ export const PdfRedactor = (p: {
       )}
       <div style={{ position: 'relative' }}>
         <div
+          ref={containerRef}
           style={{
             position: 'relative',
             height: '500px',
@@ -388,8 +390,7 @@ export const PdfRedactor = (p: {
               setNumPages(x.numPages);
 
               setTimeout(() => {
-                // TODO: store most current scale value in local storage and don't zoom in/out if already has a value
-                const documentElement = window.document.querySelector(
+                const documentElement = containerRef.current?.querySelector(
                   '.react-pdf__Document'
                 );
                 const documentElementWidth =
@@ -397,7 +398,8 @@ export const PdfRedactor = (p: {
                 if (!documentElementWidth) return;
 
                 const pageElements =
-                  window.document.querySelectorAll('.react-pdf__Page');
+                  containerRef.current?.querySelectorAll('.react-pdf__Page');
+                if (!pageElements) return;
 
                 const pageElementWidths = [...pageElements]
                   .map((elm) => elm.getBoundingClientRect().width)
