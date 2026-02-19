@@ -96,7 +96,7 @@ stages:
           - task: CopyFiles@2
             displayName: "Copy serve.json into build"
             inputs:
-              SourceFolder: "$(Build.SourcesDirectory)"
+              SourceFolder: '$(Pipeline.Workspace)/s/materials_ui/'
               Contents: |
                 serve.json           
               TargetFolder: "$(Build.SourcesDirectory)/build"
