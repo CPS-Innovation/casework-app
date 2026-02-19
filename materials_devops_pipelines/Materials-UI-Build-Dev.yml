@@ -99,7 +99,7 @@ stages:
               SourceFolder: '$(Pipeline.Workspace)/s/materials_ui/'
               Contents: |
                 serve.json           
-              TargetFolder: "$(Build.SourcesDirectory)/build"
+              TargetFolder: '$(workingDir)/build'
 
           - task: PublishPipelineArtifact@1
             displayName: "Publish Web UI artifact"
