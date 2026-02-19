@@ -94,6 +94,7 @@ export default defineConfig(({ mode }) => {
               ;
           style-src 'self';
             connect-src 'self' blob: 
+              https://fa-redaction-log-dev-reporting.azurewebsites.net/
               https://polaris-dev-notprod.cps.gov.uk/ 
               https://polaris-qa-notprod.cps.gov.uk/
               https://login.microsoftonline.com/
