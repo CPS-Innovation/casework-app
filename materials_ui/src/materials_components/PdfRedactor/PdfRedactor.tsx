@@ -390,6 +390,7 @@ export const PdfRedactor = (p: {
               setNumPages(x.numPages);
 
               setTimeout(() => {
+                // TODO: store most current scale value in local storage and don't zoom in/out if already has a value
                 const documentElement = containerRef.current?.querySelector(
                   '.react-pdf__Document'
                 );
