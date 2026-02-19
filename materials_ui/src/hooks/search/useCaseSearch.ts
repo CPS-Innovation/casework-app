@@ -56,7 +56,7 @@ export const useCaseDetails = (p: { urn: string }) => {
     getCaseDetailsKey({ urn: p.urn }), //
     () => {
       if (!p.urn) return;
-      return getCaseDetails({ axiosInstance, urn: p.urn });
+      return getCaseDetails({ axiosInstance, urn: p.urn.slice(0, 11) });
     }
   );
 
