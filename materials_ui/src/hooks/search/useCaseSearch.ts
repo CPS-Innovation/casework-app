@@ -6,10 +6,7 @@ import { QUERY_KEYS } from '../../constants/query';
 import { CaseDetailsType } from '../../schemas/caseDetails';
 import { useAxiosInstance } from '../ui/useRequest';
 
-const MAX_URN_LENGTH = 11;
-
 export const useCaseSearch = (urn: string | undefined) => {
-  const truncatedUrn = urn?.slice(0, MAX_URN_LENGTH);
   const request = useRequest();
   const { resetBanner, setBanner } = useBanner();
 
@@ -17,7 +14,7 @@ export const useCaseSearch = (urn: string | undefined) => {
     resetBanner();
 
     return await request
-      .get<CaseDetailsType>(`/urns/${truncatedUrn}/cases`)
+      .get<CaseDetailsType>(`/urns/${urn}/cases`)
       .then((response) => response.data);
   };
 
@@ -54,13 +51,12 @@ export const getCaseDetails = async (p: {
 
 const getCaseDetailsKey = (p: { urn: string }) => `getCaseDetails-${p.urn}`;
 export const useCaseDetails = (p: { urn: string }) => {
-  const truncatedUrn = p.urn?.slice(0, MAX_URN_LENGTH);
   const axiosInstance = useAxiosInstance();
   const rtn = useSWR(
     getCaseDetailsKey({ urn: p.urn }), //
     () => {
       if (!p.urn) return;
-      return getCaseDetails({ axiosInstance, urn: truncatedUrn });
+      return getCaseDetails({ axiosInstance, urn: p.urn });
     }
   );
 
