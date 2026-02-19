@@ -80,7 +80,7 @@ export const CaseSearchPage = () => {
                 )}
 
                 <input
-                  className={`govuk-input ${errors.urn ? 'govuk-input--error' : ''}`}
+                  className={`govuk-input govuk-input--width-10 ${errors.urn ? 'govuk-input--error' : ''}`}
                   id="case-urn"
                   type="text"
                   {...register('urn', { required: 'URN is required' })}
