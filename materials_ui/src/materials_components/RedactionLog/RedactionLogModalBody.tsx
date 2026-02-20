@@ -97,7 +97,6 @@ export const RedactionLogModalBody = ({
   const supportingNotes = watch('supportingNotes') ?? '';
   const supportingNotesRemaining = Math.max(0, 400 - supportingNotes.length);
 
-  // Get redaction types from lookups, fallback to empty array
   const redactionTypes =
     lookups?.missedRedactions?.map((redaction) => ({
       id: parseInt(redaction.id),

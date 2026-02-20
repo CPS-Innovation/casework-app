@@ -3,13 +3,11 @@ import { RedactionLogData } from '../../../caseWorkApp/types/redactionLog';
 import { TDocument } from '../../DocumentSelectAccordion/getters/getDocumentList';
 import { RedactionLogFormInputs } from '../RedactionLogModal';
 
-// Helper function to find area/division and unit data
 const findAreaAndUnit = (
   lookups: TLookupsResponse,
   areaId: string,
   unitId: string
 ) => {
-  // Search in areas first
   for (const area of lookups.areas || []) {
     if (
       area.id === areaId ||
@@ -20,7 +18,6 @@ const findAreaAndUnit = (
     }
   }
 
-  // Then search in divisions
   for (const division of lookups.divisions || []) {
     if (
       division.id === areaId ||
@@ -34,7 +31,6 @@ const findAreaAndUnit = (
   return { area: null, unit: null };
 };
 
-// Helper function to create redactions array
 const createRedactionsArray = (
   lookups: TLookupsResponse,
   underRedactionTypeIds: number[],
@@ -75,7 +71,6 @@ const createRedactionsArray = (
   return redactionsArray;
 };
 
-// Main transformation function
 export const transformFormDataToApiFormat = (
   formData: RedactionLogFormInputs,
   urn: string,
@@ -86,14 +81,12 @@ export const transformFormDataToApiFormat = (
     throw new Error('Lookups data is required for form transformation');
   }
 
-  // Find area/division and unit
   const { area, unit } = findAreaAndUnit(
     lookups,
     formData.areasAndDivisionsId,
     formData.businessUnitId
   );
 
-  // Find other lookup items
   const investigatingAgency = lookups.investigatingAgencies?.find(
     (ia) => ia.id === formData.investigatingAgencyId
   );
@@ -102,7 +95,6 @@ export const transformFormDataToApiFormat = (
     (dt) => dt.id.toString() === formData.documentTypeId.toString()
   );
 
-  // Create redactions array
   const redactions = createRedactionsArray(
     lookups,
     formData.underRedactionTypeIds,

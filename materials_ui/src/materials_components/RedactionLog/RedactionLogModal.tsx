@@ -95,7 +95,6 @@ export const RedactionLogModal = ({
       onClose();
     } catch (error) {
       console.error('Failed to submit redaction log:', error);
-      // You might want to show an error message to the user here
     }
   };
 
