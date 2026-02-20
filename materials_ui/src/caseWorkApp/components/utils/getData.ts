@@ -2,6 +2,54 @@ import { useMsal } from '@azure/msal-react';
 import axios, { AxiosError, AxiosInstance } from 'axios';
 import { getAccessTokenFromMsalInstance } from '../../../materials_components/DocumentSelectAccordion/getters/getAccessTokenFromMsalInstance';
 
+// Type definitions for redaction log data structure
+interface Unit {
+  id: string;
+  type: string;
+  areaDivisionName: string;
+  name: string;
+}
+
+interface InvestigatingAgency {
+  id: string;
+  name: string;
+}
+
+interface DocumentType {
+  id: string;
+  name: string;
+}
+
+interface MissedRedaction {
+  id: string;
+  name: string;
+}
+
+interface Redaction {
+  missedRedaction: MissedRedaction;
+  redactionType: number;
+  returnedToInvestigativeAuthority: boolean;
+}
+
+interface CmsValues {
+  originalFileName: string;
+  documentId: string | number;
+  documentType: string;
+  fileCreatedDate: string;
+  documentTypeId: number;
+}
+
+interface RedactionLogData {
+  urn: string;
+  unit: Unit;
+  investigatingAgency: InvestigatingAgency;
+  documentType: DocumentType;
+  redactions: Redaction[];
+  notes: string;
+  chargeStatus: number;
+  cmsValues: CmsValues;
+}
+
 export const useAxiosInstance = () => {
   const { instance: msalInstance } = useMsal();
 
@@ -68,6 +116,32 @@ export const getLookups = async (p: { axiosInstance: AxiosInstance }) => {
   }
 };
 
-export const GetDataFromAxios = () => {
-  return { useAxiosInstance, getDocuments, getPdfFiles, getLookups };
+export const postRedactionLog = async (p: {
+  axiosInstance: AxiosInstance;
+  data: RedactionLogData;
+}) => {
+  try {
+    const response = await p.axiosInstance.post(
+      `${import.meta.env.VITE_REDACTION_LOG_URL}/api/redactionLogs`,
+      p.data
+    );
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError)
+      console.error(`Error posting redaction log: ${error.message}`);
+    throw error;
+  }
 };
+
+export const GetDataFromAxios = () => {
+  return {
+    useAxiosInstance,
+    getDocuments,
+    getPdfFiles,
+    getLookups,
+    postRedactionLog
+  };
+};
+
+// Export the type for use in other components
+export type { RedactionLogData };

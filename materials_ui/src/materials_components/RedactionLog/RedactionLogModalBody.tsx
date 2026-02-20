@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
+import { TLookupsResponse } from '../../caseWorkApp/types/redaction';
 import { TDocument } from '../DocumentSelectAccordion/getters/getDocumentList';
 import { TRedactionType } from '../PdfRedactor/PdfRedactionTypeForm';
 import { TRedaction } from '../PdfRedactor/utils/coordUtils';
@@ -8,24 +9,6 @@ import styles from './RedactionLogModal.module.scss';
 import { Checkbox } from './templates/Checkbox';
 import { ErrorSummary } from './templates/ErrorSummary';
 
-const redactionTypes = [
-  { id: 1, name: 'Named individual ' },
-  { id: 2, name: 'Title' },
-  { id: 3, name: 'Occupation' },
-  { id: 4, name: 'Relationship to others' },
-  { id: 5, name: 'Address' },
-  { id: 6, name: 'Location' },
-  { id: 7, name: 'Vehicle registration' },
-  { id: 8, name: 'NHS number' },
-  { id: 9, name: 'Date of birth' },
-  { id: 10, name: 'Bank details' },
-  { id: 11, name: 'NI Number' },
-  { id: 12, name: 'Phone number' },
-  { id: 13, name: 'Email address' },
-  { id: 14, name: 'Previous convictions' },
-  { id: 15, name: 'Other' }
-];
-
 type Mode = 'over-under' | 'list';
 
 type RedactionLogModalBodyProps = {
@@ -33,6 +16,7 @@ type RedactionLogModalBodyProps = {
   mode?: Mode;
   redactions?: TRedaction[];
   selectedRedactionTypes?: TRedactionType[];
+  lookups?: TLookupsResponse;
 };
 
 export type RedactionLogFormValues = {
@@ -49,10 +33,12 @@ export type RedactionLogFormValues = {
 
 const RedactionTypesGrid = ({
   value,
-  onChange
+  onChange,
+  redactionTypes = []
 }: {
   value: number[];
   onChange: (next: number[]) => void;
+  redactionTypes?: Array<{ id: number; name: string }>;
 }) => {
   const selected = new Set(value);
 
@@ -82,8 +68,8 @@ const RedactionTypesGrid = ({
           key={`${type.id}`}
           id={`redaction-type-${type.id}`}
           label={type.name}
-          checked={selected.has(type.id)}
-          onChange={() => onToggle(type.id)}
+          checked={selected.has(parseInt(type.id.toString()))}
+          onChange={() => onToggle(parseInt(type.id.toString()))}
           isSmall
         />
       ))}
@@ -94,7 +80,8 @@ const RedactionTypesGrid = ({
 export const RedactionLogModalBody = ({
   activeDocument,
   mode,
-  selectedRedactionTypes
+  selectedRedactionTypes,
+  lookups
 }: RedactionLogModalBodyProps) => {
   const {
     control,
@@ -109,6 +96,13 @@ export const RedactionLogModalBody = ({
   const overRedactionSelected = watch('overRedactionSelected');
   const supportingNotes = watch('supportingNotes') ?? '';
   const supportingNotesRemaining = Math.max(0, 400 - supportingNotes.length);
+
+  // Get redaction types from lookups, fallback to empty array
+  const redactionTypes =
+    lookups?.missedRedactions?.map((redaction) => ({
+      id: parseInt(redaction.id),
+      name: redaction.name
+    })) || [];
 
   return (
     <div className={styles.modalBody}>
@@ -207,6 +201,7 @@ export const RedactionLogModalBody = ({
                         <RedactionTypesGrid
                           value={field.value ?? []}
                           onChange={field.onChange}
+                          redactionTypes={redactionTypes}
                         />
                       </>
                     )}
@@ -338,6 +333,7 @@ export const RedactionLogModalBody = ({
                         <RedactionTypesGrid
                           value={field.value ?? []}
                           onChange={field.onChange}
+                          redactionTypes={redactionTypes}
                         />
                       </>
                     )}
