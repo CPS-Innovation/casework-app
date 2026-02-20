@@ -16,7 +16,7 @@ export const RedactionLogModalHeader = ({
   const divisions = lookups?.divisions || [];
   const investigatingAgencies = lookups?.investigatingAgencies || [];
 
-  // Temp data for charge statuses
+  // TODO: Temp data for charge statuses - to be replaced with API data when available
   const chargeStatuses = [
     { id: 'Pre-charge', name: 'Pre-charge' },
     { id: 'Post-charge', name: 'Post-charge' }
