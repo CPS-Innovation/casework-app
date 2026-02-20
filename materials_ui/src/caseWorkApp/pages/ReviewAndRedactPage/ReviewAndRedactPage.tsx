@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
+  DocumentKeywordSearch,
   Layout,
   LoadingSpinner,
   RenameDrawer,
@@ -28,7 +29,9 @@ import { UnsavedRedactionsModal } from './UnsavedRedactionsModal';
 
 export const ReviewAndRedactPage = () => {
   const { state: locationState } = useLocation();
-  const { docType: docTypeParam } = locationState as { docType?: string };
+  const { docType: docTypeParam } = (locationState || {}) as {
+    docType?: string;
+  };
 
   const navigate = useNavigate();
 
@@ -224,16 +227,19 @@ export const ReviewAndRedactPage = () => {
         <TwoCol
           sidebar={
             isSidebarVisible && caseId && urn ? (
-              <DocumentSidebar
-                urn={urn}
-                caseId={caseId}
-                activeDocumentId={activeTabId}
-                openDocumentIds={openDocumentIds}
-                onSetDocumentOpenIds={setOpenDocumentIds}
-                onDocumentClick={setActiveDocumentId}
-                reloadTriggerData={reloadSidebarTrigger.data}
-                onDocumentsChange={setDocuments}
-              />
+              <>
+                <DocumentKeywordSearch />
+                <DocumentSidebar
+                  urn={urn}
+                  caseId={caseId}
+                  activeDocumentId={activeTabId}
+                  openDocumentIds={openDocumentIds}
+                  onSetDocumentOpenIds={setOpenDocumentIds}
+                  onDocumentClick={setActiveDocumentId}
+                  reloadTriggerData={reloadSidebarTrigger.data}
+                  onDocumentsChange={setDocuments}
+                />
+              </>
             ) : undefined
           }
         >
