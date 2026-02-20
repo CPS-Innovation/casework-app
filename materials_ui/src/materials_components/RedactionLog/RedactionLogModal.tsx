@@ -1,7 +1,6 @@
 import { FormProvider, useForm } from 'react-hook-form';
 import {
   postRedactionLog,
-  RedactionLogData,
   useAxiosInstance
 } from '../../caseWorkApp/components/utils/getData';
 import { TLookupsResponse } from '../../caseWorkApp/types/redaction';
@@ -12,6 +11,7 @@ import { Modal } from './Modal';
 import styles from './RedactionLogModal.module.scss';
 import { RedactionLogModalBody } from './RedactionLogModalBody';
 import { RedactionLogModalHeader } from './RedactionLogModalHeader';
+import { transformFormDataToApiFormat } from './utils/transformFormData';
 
 export type RedactionLogFormInputs = {
   underRedactionSelected: boolean;
@@ -79,126 +79,14 @@ export const RedactionLogModal = ({
     }
   });
 
-  const transformFormDataToApiFormat = (
-    formData: RedactionLogFormInputs
-  ): RedactionLogData => {
-    // Find area and business unit from lookups structure
-    let areaData = null;
-    let unitData = null;
-
-    // Search in areas
-    for (const area of lookups?.areas || []) {
-      if (area.id === formData.areasAndDivisionsId) {
-        areaData = area;
-        unitData = area.children?.find(
-          (child) => child.id === formData.businessUnitId
-        );
-        break;
-      }
-      // Also check if business unit is in this area's children
-      const foundUnit = area.children?.find(
-        (child) => child.id === formData.businessUnitId
-      );
-      if (foundUnit && !unitData) {
-        areaData = area;
-        unitData = foundUnit;
-      }
-    }
-
-    // Search in divisions if not found in areas
-    if (!areaData) {
-      for (const division of lookups?.divisions || []) {
-        if (division.id === formData.areasAndDivisionsId) {
-          areaData = division;
-          unitData = division.children?.find(
-            (child) => child.id === formData.businessUnitId
-          );
-          break;
-        }
-        // Also check if business unit is in this division's children
-        const foundUnit = division.children?.find(
-          (child) => child.id === formData.businessUnitId
-        );
-        if (foundUnit && !unitData) {
-          areaData = division;
-          unitData = foundUnit;
-        }
-      }
-    }
-
-    const investigatingAgency = lookups?.investigatingAgencies.find(
-      (ia) => ia.id === formData.investigatingAgencyId
-    );
-    const docType = lookups?.documentTypes.find(
-      (dt) => dt.id.toString() === formData.documentTypeId.toString()
-    );
-
-    // Build redactions array
-    const redactionsArray: RedactionLogData['redactions'] = [];
-
-    // Add under redactions (redactionType: 1)
-    formData.underRedactionTypeIds.forEach((typeId) => {
-      const redactionType = lookups?.missedRedactions.find(
-        (rt) => parseInt(rt.id) === typeId
-      );
-      if (redactionType) {
-        redactionsArray.push({
-          missedRedaction: { id: redactionType.id, name: redactionType.name },
-          redactionType: 1, // Under redaction
-          returnedToInvestigativeAuthority:
-            formData.overReason === 'investigative-agency'
-        });
-      }
-    });
-
-    // Add over redactions (redactionType: 2)
-    formData.overRedactionTypeIds.forEach((typeId) => {
-      const redactionType = lookups?.missedRedactions.find(
-        (rt) => parseInt(rt.id) === typeId
-      );
-      if (redactionType) {
-        redactionsArray.push({
-          missedRedaction: { id: redactionType.id, name: redactionType.name },
-          redactionType: 2, // Over redaction
-          returnedToInvestigativeAuthority:
-            formData.overReason === 'investigative-agency'
-        });
-      }
-    });
-
-    return {
-      urn,
-      unit: {
-        id: unitData?.id || formData.businessUnitId,
-        type: 'Area', // This might need to come from lookup data
-        areaDivisionName: areaData?.name || '',
-        name: unitData?.name || ''
-      },
-      investigatingAgency: {
-        id: investigatingAgency?.id || formData.investigatingAgencyId,
-        name: investigatingAgency?.name || ''
-      },
-      documentType: {
-        id: docType?.id.toString() || formData.documentTypeId.toString(),
-        name: docType?.name || ''
-      },
-      redactions: redactionsArray,
-      notes: formData.supportingNotes,
-      chargeStatus: formData.chargeStatus === 'Pre-charge' ? 1 : 2,
-      cmsValues: {
-        originalFileName: activeDocument?.cmsOriginalFileName || '',
-        documentId: activeDocument?.documentId || 0,
-        documentType: activeDocument?.cmsDocType.documentType || '',
-        fileCreatedDate:
-          activeDocument?.cmsFileCreatedDate || new Date().toISOString(),
-        documentTypeId: activeDocument?.cmsDocType.documentTypeId || 0
-      }
-    };
-  };
-
   const onSubmit = async (values: RedactionLogFormInputs) => {
     try {
-      const apiData = transformFormDataToApiFormat(values);
+      const apiData = transformFormDataToApiFormat(
+        values,
+        urn,
+        activeDocument,
+        lookups
+      );
       console.log('Submitting redaction log:', apiData);
 
       await postRedactionLog({ axiosInstance, data: apiData });
