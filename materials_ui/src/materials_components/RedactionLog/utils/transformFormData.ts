@@ -1,5 +1,5 @@
-import { RedactionLogData } from '../../../caseWorkApp/components/utils/getData';
 import { TLookupsResponse } from '../../../caseWorkApp/types/redaction';
+import { RedactionLogData } from '../../../caseWorkApp/types/redactionLog';
 import { TDocument } from '../../DocumentSelectAccordion/getters/getDocumentList';
 import { RedactionLogFormInputs } from '../RedactionLogModal';
 

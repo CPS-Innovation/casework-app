@@ -1,54 +1,7 @@
 import { useMsal } from '@azure/msal-react';
 import axios, { AxiosError, AxiosInstance } from 'axios';
 import { getAccessTokenFromMsalInstance } from '../../../materials_components/DocumentSelectAccordion/getters/getAccessTokenFromMsalInstance';
-
-// Type definitions for redaction log data structure
-interface Unit {
-  id: string;
-  type: string;
-  areaDivisionName: string;
-  name: string;
-}
-
-interface InvestigatingAgency {
-  id: string;
-  name: string;
-}
-
-interface DocumentType {
-  id: string;
-  name: string;
-}
-
-interface MissedRedaction {
-  id: string;
-  name: string;
-}
-
-interface Redaction {
-  missedRedaction: MissedRedaction;
-  redactionType: number;
-  returnedToInvestigativeAuthority: boolean;
-}
-
-interface CmsValues {
-  originalFileName: string;
-  documentId: string | number;
-  documentType: string;
-  fileCreatedDate: string;
-  documentTypeId: number;
-}
-
-interface RedactionLogData {
-  urn: string;
-  unit: Unit;
-  investigatingAgency: InvestigatingAgency;
-  documentType: DocumentType;
-  redactions: Redaction[];
-  notes: string;
-  chargeStatus: number;
-  cmsValues: CmsValues;
-}
+import { RedactionLogData } from '../../types/redactionLog';
 
 export const useAxiosInstance = () => {
   const { instance: msalInstance } = useMsal();
@@ -142,6 +95,3 @@ export const GetDataFromAxios = () => {
     postRedactionLog
   };
 };
-
-// Export the type for use in other components
-export type { RedactionLogData };
