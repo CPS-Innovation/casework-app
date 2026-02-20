@@ -93,7 +93,7 @@ export const Tabs: React.FC<TabsProps> = ({
                   Document view port
                 </span>
               )}
-              {index === activeTabIndex && panel?.children}
+              {panel?.children}
             </div>
           );
         })}
