@@ -228,7 +228,7 @@ export const ReviewAndRedactPage = () => {
           sidebar={
             isSidebarVisible && caseId && urn ? (
               <>
-                <DocumentKeywordSearch />
+                {documents && <DocumentKeywordSearch />}
                 <DocumentSidebar
                   urn={urn}
                   caseId={caseId}
