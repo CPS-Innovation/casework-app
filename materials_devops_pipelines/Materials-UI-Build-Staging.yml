@@ -93,6 +93,14 @@ stages:
               VITE_POLARIS_GATEWAY_SCOPE: $(POLARIS_GATEWAY_SCOPE)
               VITE_GLOBAL_SCRIPT_URL: $(GLOBAL_SCRIPT_URL)
 
+          - task: CopyFiles@2
+            displayName: "Copy serve.json into build"
+            inputs:
+              SourceFolder: '$(Pipeline.Workspace)/s/materials_ui/'
+              Contents: |
+                serve.json           
+              TargetFolder: '$(workingDir)/build'
+
           - task: PublishPipelineArtifact@1
             displayName: "Publish Web UI artifact"
             inputs:
