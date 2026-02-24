@@ -29,8 +29,9 @@ import { UnsavedRedactionsModal } from './UnsavedRedactionsModal';
 
 export const ReviewAndRedactPage = () => {
   const { state: locationState } = useLocation();
-  const { docType: docTypeParam } = (locationState || {}) as {
+  const { docType: docTypeParam, materialId: materialIdParam } = (locationState || {}) as {
     docType?: string;
+    materialId?: string;
   };
 
   const navigate = useNavigate();
@@ -87,6 +88,13 @@ export const ReviewAndRedactPage = () => {
       });
     }
   }, [caseId, openDocumentIds, activeDocumentId]);
+
+  useEffect(() => {
+    if (materialIdParam) {
+      setActiveDocumentId(materialIdParam);
+      setOpenDocumentIds((openedDocumentIds) => [...openedDocumentIds, `${materialIdParam}`]);
+    }
+  }, [materialIdParam]);
 
   useEffect(() => {
     if (docTypeParam && documents && documents.length > 0) {
