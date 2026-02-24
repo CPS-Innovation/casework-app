@@ -27,7 +27,7 @@ export function TableActions({
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setIsSticky(!entry.isIntersecting);
+        if (entry) setIsSticky(!entry.isIntersecting);
       },
       { threshold: 0 }
     );

@@ -16,19 +16,21 @@ import { useAppRoute, usePCD, usePCDList } from '../hooks';
 import { formatDate } from '../utils/date';
 import { cleanString } from '../utils/string';
 
-
 export const PcdRequestPage = () => {
   const { pcdId } = useParams<{ pcdId?: string }>();
   const navigate = useNavigate();
   const { getRoute } = useAppRoute();
   const { data: pcdListData, isLoading: isPcdListLoading } = usePCDList();
 
-  if (!pcdId && pcdListData?.length) {
+  if (!pcdId && pcdListData?.[0]) {
     navigate(`${pcdListData[0].id}`);
   }
 
   const { data: pcdDetailsData, isLoading: isPcdDetailsLoading } = usePCD({
-    pcdId: pcdId ? pcdId : pcdListData?.length ? pcdListData[0].id : undefined
+    pcdId: (() => {
+      if (pcdId) return pcdId;
+      if (pcdListData?.[0]) return pcdListData[0].id;
+    })()
   });
 
   const navLinks: NavListItem[] | undefined = pcdListData?.map(

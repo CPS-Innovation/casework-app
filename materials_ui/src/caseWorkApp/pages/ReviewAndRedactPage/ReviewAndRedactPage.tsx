@@ -95,7 +95,8 @@ export const ReviewAndRedactPage = () => {
       );
 
       if (filteredDocs.length) {
-        setActiveDocumentId(filteredDocs[0].documentId);
+        const newActiveDocId = filteredDocs[0]?.documentId;
+        if (newActiveDocId) setActiveDocumentId(newActiveDocId);
         setOpenDocumentIds((prev) => [
           ...prev,
           ...filteredDocs.map((doc) => doc.documentId)

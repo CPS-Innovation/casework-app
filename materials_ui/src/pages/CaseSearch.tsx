@@ -219,7 +219,7 @@ export const CaseSearchPage = () => {
                                 {
                                   title: 'Charges: ',
                                   description: [
-                                    `${caseItem.defendants[0].charges[0].shortDescription}`
+                                    `${caseItem.defendants[0]?.charges[0]?.shortDescription}`
                                   ]
                                 }
                               ]}
@@ -238,7 +238,7 @@ export const CaseSearchPage = () => {
                               {
                                 title: 'Proposed: ',
                                 description: [
-                                  !caseItem.defendants[0].proposedCharges
+                                  !caseItem.defendants[0]?.proposedCharges
                                     .length && 'N/A'
                                 ]
                               }

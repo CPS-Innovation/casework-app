@@ -61,14 +61,14 @@ const TabButtons: React.FC<TabButtonProps> = ({
     }
 
     const nextTabIndex = activeTabIndex + thisShift;
-    const nextTabId = items[nextTabIndex].id;
-    handleTabSelection(nextTabId);
+    const nextTabId = items[nextTabIndex]?.id;
+    if (nextTabId) handleTabSelection(nextTabId);
   };
 
   const tabDropdownItems = useMemo(() => {
     return items.map((item) => ({
       ...item,
-      disabled: item.id === items[activeTabIndex].id
+      disabled: item.id === items[activeTabIndex]?.id
     }));
   }, [items, activeTabIndex]);
 
@@ -136,7 +136,7 @@ const TabButtons: React.FC<TabButtonProps> = ({
                     index === activeTabIndex ? 'tab-active' : `btn-tab-${index}`
                   }
                   onClick={() => {
-                    if (id !== items[activeTabIndex].id) {
+                    if (id !== items[activeTabIndex]?.id) {
                       handleTabSelection(id);
                     }
                   }}
