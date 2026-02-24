@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { useAppRoute, useReadStatus } from '../';
 import { READ_STATUS } from '../../constants';
-import { URL } from '../../constants/url';
 import { CaseMaterialsType } from '../../schemas';
 import { useSelectedItemsStore } from '../../stores';
 
@@ -39,8 +38,8 @@ export const useTableActions = ({
   };
 
   const handleDiscardClick = (returnToUrl: string) => {
-    navigate(URL.DISCARD_MATERIAL, {
-      state: { row: selectedItems[0], returnTo: returnToUrl }
+    navigate(getRoute('DISCARD'), {
+      state: { selectedMaterial: selectedItems[0], returnTo: returnToUrl }
     });
   };
 
