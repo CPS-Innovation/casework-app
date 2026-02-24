@@ -51,7 +51,9 @@ export const useTableActions = ({
   };
 
   const handleRedactClick = (materialId: number) => {
-    alert(`REDACT COMING SOON (material id ${materialId})`);
+    navigate(getRoute('REVIEW_REDACT'), {
+      state: { materialId: `CMS-${materialId}` }
+    });
   };
 
   const handleUnusedClick = (
