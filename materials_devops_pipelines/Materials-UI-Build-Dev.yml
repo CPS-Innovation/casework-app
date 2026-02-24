@@ -93,11 +93,11 @@ stages:
               VITE_POLARIS_GATEWAY_SCOPE: $(POLARIS_GATEWAY_SCOPE)
               VITE_GLOBAL_SCRIPT_URL: $(GLOBAL_SCRIPT_URL)
 
-          # This task updates the variable CSP_RETRIEVED_FROM_PIPELINE_VAR found in serve.json file with appropriate values for dev/staging/prod
-          - task: FileTransform@1
+          - task: FileTransform@2
+            displayName: "Replace CSP value in serve.json with appropriate values for dev/staging/prod"
             inputs:
               folderPath: '$(Pipeline.Workspace)/s/materials_ui/'  
-              fileType: json
+              fileType: 'json'
               targetFiles: |
                 serve.json
 

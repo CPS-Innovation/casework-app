@@ -10,7 +10,7 @@
         { "key": "X-Permitted-Cross-Domain-Policies", "value": "none" },
         {
           "key": "Content-Security-Policy",
-          "value": "#{CSP_RETRIEVED_FROM_PIPELINE_VAR}#"
+          "value": "#{CSP_VALUE}#"
         }
       ]
     }
