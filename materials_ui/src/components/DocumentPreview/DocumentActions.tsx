@@ -25,12 +25,6 @@ export default function DocumentActions({
       data-testid="buttonActions"
     >
       <span style={{ marginRight: '2px' }}>{isOpen ? 'Hide' : 'Preview'}</span>
-      <img
-        src={PreviewIcon}
-        alt="Actions Icon"
-        className={isOpen ? 'preview-icon-flipped govuk-link' : 'govuk-link'}
-        style={{ width: '12px', height: '12px', marginLeft: '4px' }}
-      />
     </a>
   );
 }
