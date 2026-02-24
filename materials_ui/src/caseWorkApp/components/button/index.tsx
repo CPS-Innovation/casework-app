@@ -1,13 +1,19 @@
-import React from 'react';
-import classes from './Button.module.scss';
+import { CSSProperties, forwardRef } from 'react';
 
 type TButtonVariant = 'primary' | 'secondary' | 'inverse' | 'default';
+type TButtonSize = 's' | 'm';
 
 type ButtonProps = {
   onClick?: () => void;
   children?: React.ReactNode;
   disabled?: boolean;
   variant?: TButtonVariant;
+  type?: 'submit' | 'reset' | 'button' | undefined;
+  size?: TButtonSize;
+  dataTestId?: string;
+  id?: string;
+  ariaLabel?: string;
+  style?: CSSProperties;
 };
 
 const buttonVariantMap: { [k in TButtonVariant]: string } = {
@@ -17,27 +23,47 @@ const buttonVariantMap: { [k in TButtonVariant]: string } = {
   secondary: 'govuk-button--secondary'
 };
 
-const Button: React.FC<ButtonProps> = ({
-  onClick,
-  disabled = false,
-  children,
-  variant = 'default'
-}) => {
-  const variantClass = buttonVariantMap[variant];
-
-  return (
-    <button
-      type="submit"
-      className={`govuk-button ${variantClass} ${classes.cwaSubmitButton}`}
-      data-module="govuk-button"
-      data-govuk-button-init=""
-      onClick={onClick}
-      disabled={disabled}
-    >
-      {children}
-      <span data-ismodified="1" className="br_wrap"></span>
-    </button>
-  );
+const buttonSizeStyleMap: { [k in TButtonSize]: Record<string, string> } = {
+  s: { fontSize: '0.875rem' },
+  m: {}
 };
 
-export { Button };
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  (
+    {
+      onClick,
+      disabled = false,
+      children,
+      variant = 'default',
+      type,
+      size = 'm',
+      dataTestId,
+      ariaLabel,
+      id,
+      style
+    },
+    ref
+  ) => {
+    const variantClass = buttonVariantMap[variant];
+    const sizeStyle = buttonSizeStyleMap[size];
+
+    return (
+      <button
+        ref={ref}
+        type={type}
+        className={`govuk-button ${variantClass}`}
+        data-module="govuk-button"
+        data-govuk-button-init=""
+        onClick={onClick}
+        disabled={disabled}
+        style={{ ...style, ...sizeStyle }}
+        data-test-id={dataTestId}
+        id={id}
+        aria-label={ariaLabel}
+      >
+        {children}
+        <span data-ismodified="1" className="br_wrap"></span>
+      </button>
+    );
+  }
+);

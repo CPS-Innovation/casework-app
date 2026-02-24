@@ -14,6 +14,7 @@ import { DeleteIcon } from './icons/DeleteIcon';
 import { GovUkButton } from './templates/GovUkButton';
 import {
   convertCoordPairToXywh,
+  createRedaction,
   getPdfCoords,
   type TCoord,
   type TRedaction
@@ -394,16 +395,13 @@ export const PdfRedactorPage = (p: {
                 const pdfPageRect = pdfPageWrapperElm.getBoundingClientRect();
 
                 if (firstCorner && mousePos) {
-                  const newRedaction: TRedaction = {
-                    id: crypto.randomUUID(),
-                    x1: firstCorner.x,
-                    y1: firstCorner.y,
-                    x2: mousePos.x,
-                    y2: mousePos.y,
+                  const newRedaction = createRedaction({
+                    coord1: firstCorner,
+                    coord2: mousePos,
                     pageNumber: p.pageNumber,
-                    pageHeight: pdfPageRect.height,
-                    pageWidth: pdfPageRect.width
-                  };
+                    pageRect: pdfPageRect,
+                    scale
+                  });
                   p.onAddRedactions([newRedaction]);
                   p.onPageRedactionsChange([
                     ...(redactions ? redactions : []),

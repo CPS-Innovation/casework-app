@@ -36,7 +36,7 @@ export const DocumentSidebar = (p: {
 
   if (status.mode === 'accordion') {
     if (documentList.data === null) return <div>error</div>;
-    if (documentList.data === undefined) return <div>loading</div>;
+    if (documentList.data === undefined) return <></>; //loading state
     return (
       <div>
         <DocumentSidebarAccordion

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react';
+import { DownArrowIcon } from '../../assetsCWA/svgs/DownArrowIcon';
 import CloseIcon from '../../assetsCWA/svgs/closeIconBold.svg?react';
-import DownArrow from '../../assetsCWA/svgs/down.svg?react';
-import { LinkButton } from '../LinkButton/LinkButton';
+import { Button } from '../button';
 import { DropdownButton } from '../dropDownButton/DropdownButton';
 import classes from './Tabs.module.scss';
 
@@ -75,100 +75,98 @@ const TabButtons: React.FC<TabButtonProps> = ({
   if (!items.length) {
     return null;
   }
+
   return (
-    <div
-      role="region"
-      aria-labelledby="document-tabs-region-label"
-      tabIndex={0}
-      id="document-tabs"
-      className={`${classes.tabsWrapper} ${classes.contentArea}`}
-    >
+    <div style={{ display: 'flex', minWidth: 0, gap: '8px' }}>
       <span id="document-tabs-region-label" className={classes.tabsRegionLabel}>
         Document control area
       </span>
-      <div className={`${classes.arrowBtnsWrapper}`}>
-        <LinkButton
-          disabled={activeTabIndex === 0}
-          className={classes.tabPreviousButton}
-          data-test-id="btn-tab-previous"
-          aria-label="tab previous"
-          onClick={() => {
-            moveToNextOrPreviousTab(-1);
-          }}
-        >
-          <DownArrow />
-        </LinkButton>
-        <LinkButton
-          disabled={activeTabIndex === items.length - 1}
-          className={classes.tabNextButton}
-          data-test-id="btn-tab-next"
-          aria-label="tab next"
-          onClick={() => {
-            moveToNextOrPreviousTab(1);
-          }}
-        >
-          <DownArrow />
-        </LinkButton>
+      <div style={{ flexShrink: 0, display: 'flex', alignItems: 'start' }}>
+        <div style={{ display: 'flex', gap: '4px' }}>
+          <Button
+            disabled={activeTabIndex === 0}
+            variant="inverse"
+            data-test-id="btn-tab-previous"
+            aria-label="tab previous"
+            onClick={() => moveToNextOrPreviousTab(-1)}
+          >
+            <DownArrowIcon color="#1d70b8" rotateDegrees={90} />
+          </Button>
+          <Button
+            disabled={activeTabIndex === items.length - 1}
+            variant="inverse"
+            data-test-id="btn-tab-next"
+            aria-label="tab next"
+            onClick={() => moveToNextOrPreviousTab(1)}
+          >
+            <DownArrowIcon color="#1d70b8" rotateDegrees={270} />
+          </Button>
+        </div>
       </div>
 
-      <ul className={`${classes.tabsList}`} role="tablist">
-        {items.map((item, index) => {
-          const { id, label, ariaLabel } = item;
+      <div
+        style={{ flex: 1, minWidth: 0, overflowX: 'auto', overflowY: 'hidden' }}
+      >
+        <ul className={`${classes.tabsList}`} role="tablist">
+          {items.map((item, index) => {
+            const { id, label, ariaLabel } = item;
 
-          return (
-            <li
-              className={`${
-                activeTabIndex === index
-                  ? classes.activeTab
-                  : classes.inactiveTab
-              } ${classes.tabListItem}`}
-              key={id}
-              data-testid={`tab-${index}`}
-              role="presentation"
-            >
-              <button
-                id={`tab_${index}`}
-                aria-controls={
-                  index === activeTabIndex
-                    ? 'active-tab-panel'
-                    : `panel-${index}`
-                }
-                aria-label={ariaLabel}
-                role="tab"
-                className={`${classes.tabButton} ${index === activeTabIndex ? 'tabButtonFocused' : ''}`}
-                data-testid={
-                  index === activeTabIndex ? 'tab-active' : `btn-tab-${index}`
-                }
-                onClick={() => {
-                  if (id !== items[activeTabIndex].id) {
-                    handleTabSelection(id);
-                  }
-                }}
-                onKeyDown={handleKeyPressOnTab}
-                tabIndex={index === activeTabIndex ? 0 : -1}
-                ref={index === activeTabIndex ? activeTabRef : undefined}
+            return (
+              <li
+                className={`${
+                  activeTabIndex === index
+                    ? classes.activeTab
+                    : classes.inactiveTab
+                } ${classes.tabListItem}`}
+                key={id}
+                data-testid={`tab-${index}`}
+                role="presentation"
               >
-                <span className={classes.tabLabel}>{label}</span>
-              </button>
-              {activeTabIndex === index && (
                 <button
+                  id={`tab_${index}`}
+                  aria-controls={
+                    index === activeTabIndex
+                      ? 'active-tab-panel'
+                      : `panel-${index}`
+                  }
+                  aria-label={ariaLabel}
                   role="tab"
-                  className={classes.tabCloseButton}
+                  className={`${classes.tabButton} ${index === activeTabIndex ? 'tabButtonFocused' : ''}`}
+                  data-testid={
+                    index === activeTabIndex ? 'tab-active' : `btn-tab-${index}`
+                  }
                   onClick={() => {
-                    handleCloseTab(items[activeTabIndex]?.id);
+                    if (id !== items[activeTabIndex].id) {
+                      handleTabSelection(id);
+                    }
                   }}
                   onKeyDown={handleKeyPressOnTab}
-                  data-testid="tab-remove"
-                  aria-label="close tab"
+                  tabIndex={index === activeTabIndex ? 0 : -1}
+                  ref={index === activeTabIndex ? activeTabRef : undefined}
                 >
-                  <CloseIcon />
+                  <span className={classes.tabLabel}>{label}</span>
                 </button>
-              )}
-            </li>
-          );
-        })}
-      </ul>
-      <div className={classes.tabsDropDownWrapper}>
+                {activeTabIndex === index && (
+                  <button
+                    role="tab"
+                    className={classes.tabCloseButton}
+                    onClick={() => {
+                      handleCloseTab(items[activeTabIndex]?.id);
+                    }}
+                    onKeyDown={handleKeyPressOnTab}
+                    data-testid="tab-remove"
+                    aria-label="close tab"
+                  >
+                    <CloseIcon />
+                  </button>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+
+      <div style={{ flexShrink: 0, display: 'flex' }}>
         <DropdownButton
           dropDownItems={tabDropdownItems}
           callBackFn={handleTabSelection}
@@ -182,4 +180,3 @@ const TabButtons: React.FC<TabButtonProps> = ({
 };
 
 export default TabButtons;
-

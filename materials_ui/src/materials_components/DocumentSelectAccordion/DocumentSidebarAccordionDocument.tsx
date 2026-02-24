@@ -4,6 +4,7 @@ import { TDocument } from './getters/getDocumentList';
 import { useGetDocumentNotes } from './getters/getDocumentNotes';
 import './templates/GovUkAccordion.scss';
 import { NotesIcon } from './templates/NotesIcon';
+import { formatShortDate } from './utils/dateUtils';
 
 export const DocumentSidebarAccordionNoDocumentsAvailable = () => {
   return (
@@ -80,10 +81,15 @@ export const DocumentSidebarAccordionDocument = (p: {
   return (
     <DocumentSidebarAccordionDocumentTemplate
       documentName={p.document.presentationTitle}
-      documentDate={p.document.documentId}
+      documentDate={formatShortDate(p.document.cmsFileCreatedDate)}
       ActiveDocumentTag={p.activeDocumentId === p.document.documentId}
       NewTag={!p.readDocumentIds.includes(p.document.documentId)}
-      showLeftBorder={p.openDocumentIds.includes(p.document.documentId)}
+      showLeftBorder={p.activeDocumentId === p.document.documentId}
+      showRightBorder={p.openDocumentIds.includes(p.document.documentId)}
+      backgroundColor={
+        p.readDocumentIds.includes(p.document.documentId) ? 'white' : 'blue'
+      }
+      // backgroundColor="blue"
       notesStatus={(() => {
         if (
           p.document.cmsDocType.documentType === 'PCD' ||
@@ -112,6 +118,8 @@ export const DocumentSidebarAccordionDocumentTemplate = (p: {
   UpdatedTag?: boolean;
   notesStatus: 'disabled' | 'newNotes' | 'none';
   showLeftBorder?: boolean;
+  showRightBorder: boolean;
+  backgroundColor: 'blue' | 'white';
   onDocumentClick: () => void;
   onNotesClick: () => void;
   ActionComponent?: React.ReactNode;
@@ -122,7 +130,7 @@ export const DocumentSidebarAccordionDocumentTemplate = (p: {
 
   return (
     <div
-      className={`document-select-accordion-document ${p.showLeftBorder ? 'show-left-border' : ''}`}
+      className={`document-select-accordion-document ${p.backgroundColor === 'blue' ? 'bg-blue' : 'bg-white'} ${p.showLeftBorder ? 'show-left-border' : ''} ${p.showRightBorder ? 'show-right-border' : ''}`}
     >
       <div className="document-select-accordion-document--inner-wrapper">
         <div

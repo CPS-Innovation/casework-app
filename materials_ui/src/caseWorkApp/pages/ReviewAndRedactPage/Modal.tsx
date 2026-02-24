@@ -1,15 +1,5 @@
 import { useEffect, useRef } from 'react';
 
-const ModalStyleTag = () => (
-  <style>
-    {`
-    html, body {
-      overflow: hidden !important;
-    }
-    `}
-  </style>
-);
-
 export type ModalProps = {
   children: React.ReactNode;
   onBackgroundClick: () => void;
@@ -31,9 +21,15 @@ export const Modal = ({
     return () => window.removeEventListener('keydown', fn);
   }, [onEscPress]);
 
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, []);
+
   return (
     <>
-      <ModalStyleTag />
       <div
         style={{
           position: 'fixed',
