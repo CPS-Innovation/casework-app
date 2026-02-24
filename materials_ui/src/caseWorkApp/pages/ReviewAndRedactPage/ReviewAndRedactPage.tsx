@@ -246,8 +246,6 @@ export const ReviewAndRedactPage = () => {
           {tabItems.length > 0 && (
             <>
               <Tabs
-                idPrefix="tabs"
-                title="Tabs title"
                 items={tabItems}
                 activeTabId={activeDocumentId}
                 handleTabSelection={setActiveDocumentId}
