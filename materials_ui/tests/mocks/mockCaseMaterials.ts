@@ -4,7 +4,7 @@ const material: CaseMaterialsType[] = [
   {
     id: 8836399,
     originalFileName: 'MG11 Abdul Tarafdar Undated.docx',
-    subject: 'test',
+    subject: 'test 1',
     documentTypeId: 1062,
     materialId: 8836399,
     link: 'k9rTE1hWRBUI$$LCDSccY4m7E2ucUo9TGU6w$$KNSprckSf-vpqXiJ/MG11 Absul Tarafdar Undated.docx',
@@ -25,10 +25,10 @@ const material: CaseMaterialsType[] = [
     item: 'test',
     existingproducerOrWitnessId: 0,
     isReclassifiable: true
-  }
+  },
 ];
 
-export const mockCaseMaterials = (overwrite?: Partial<CaseMaterialsType>) => {
+export const mockCaseMaterials = (overwrite?: Partial<CaseMaterialsType>, p0?: { subject: string; type: string; category: string; }) => {
   try {
     return material.map((currentMaterial) => ({
       ...currentMaterial,

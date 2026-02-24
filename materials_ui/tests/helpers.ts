@@ -29,6 +29,6 @@ export async function clickTab(page: Page, name: string) {
 }
 
 export async function navigateToPage(page: Page, name: string) {
-  await page.goto('/');
+  await page.goto('./materials');
   await clickTab(page, name);
 }
