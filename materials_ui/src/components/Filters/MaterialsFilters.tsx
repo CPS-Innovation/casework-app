@@ -3,7 +3,6 @@ import { materialsCategoryList } from '../../constants/categoryList';
 import { READ_STATUS } from '../../constants/readStatus';
 import { useFeatureFlag, useFilters } from '../../hooks';
 import Checkbox from '../Checkbox/Checkbox';
-import { DocumentKeywordSearch } from '../DocumentKeywordSearch/DocumentKeywordSearch';
 import { SearchInput } from '../SearchInput/SearchInput';
 import './Filters.scss';
 
@@ -62,7 +61,6 @@ export const MaterialsFilters = () => {
       </div>
 
       <div className="govuk-form-group">
-        <DocumentKeywordSearch />
         <SearchInput
           placeholder=""
           label="Search materials"

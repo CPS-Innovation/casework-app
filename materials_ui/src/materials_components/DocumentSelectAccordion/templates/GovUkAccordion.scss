@@ -60,10 +60,22 @@
   display: flex;
   padding: 12px 22px;
   border-top: solid 1px #b1b4b6;
-  background-color: #1d70b813;
+  
+  &.bg-blue {
+    background-color: #1d70b813;
+  }
+  &.bg-white {
+    background-color: #ffffff;
+  }
   
   &.show-left-border {
+    padding-left: 17px;
     border-left: solid 5px #1d70b8;
+  }
+  
+  &.show-right-border {
+    padding-right: 17px;
+    border-right: solid 5px #1d70b8;
   }
 
   .document-select-accordion-document--inner-wrapper {

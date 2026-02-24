@@ -4,7 +4,10 @@ import { TDocument } from '../DocumentSelectAccordion/getters/getDocumentList';
 import { PdfRedactorCenteredModal } from '../PdfRedactor/modals/PdfRedactorCenteredModal';
 import { PdfRedactorMiniModal } from '../PdfRedactor/modals/PdfRedactorMiniModal';
 import { DeletionReasonForm } from '../PdfRedactor/PdfDeletionReasonForm';
-import { RedactionDetailsForm } from '../PdfRedactor/PdfRedactionTypeForm';
+import {
+  RedactionDetailsForm,
+  TRedactionType
+} from '../PdfRedactor/PdfRedactionTypeForm';
 import { PdfRedactor } from '../PdfRedactor/PdfRedactor';
 import { GovUkButton } from '../PdfRedactor/templates/GovUkButton';
 import { TCoord, TRedaction } from '../PdfRedactor/utils/coordUtils';
@@ -54,7 +57,7 @@ const getDocumentRedactionDisabledMessage = (
 
 const createCheckoutMessageFromCheckoutResponse = (p: { message?: string }) =>
   p.message
-    ? `It is not possible to redact as the document is already checked out by ${p.message} Please try again later.`
+    ? `It is not possible to redact as ${p.message}. Please try again later.`
     : 'Something has gone wrong, please try again later';
 
 export const CaseworkPdfRedactorWrapper = (p: {
@@ -71,6 +74,10 @@ export const CaseworkPdfRedactorWrapper = (p: {
   initRedactions: TRedaction[];
 }) => {
   const [isDocumentCheckedOut, setIsDocumentCheckedOut] = useState(false);
+  const [selectedRedactionTypes, setSelectedRedactionTypes] = useState<
+    TRedactionType[]
+  >([]);
+
   const documentCheckOutRequest = useDocumentCheckOutRequest({
     caseId: p.caseId,
     urn: p.urn
@@ -134,7 +141,7 @@ export const CaseworkPdfRedactorWrapper = (p: {
   };
   const undeletePage = (pageNumber: number) => {
     setIndexedDeletion((prev) => {
-      const { [pageNumber]: _, ...rest } = prev;
+      const { [pageNumber]: _deleted, ...rest } = prev;
       return rest;
     });
   };
@@ -224,6 +231,13 @@ export const CaseworkPdfRedactorWrapper = (p: {
                 documentId={redactionPopupProps.documentId}
                 urn={redactionPopupProps.urn}
                 caseId={redactionPopupProps.caseId}
+                onRedactionTypeChange={(type) => {
+                  if (!type) return;
+                  setSelectedRedactionTypes((prev) => {
+                    const next = [...prev, { id: type.id, name: type.name }];
+                    return next;
+                  });
+                }}
                 onCancelClick={() => {
                   removeRedactions(redactionPopupProps.redactionIds);
                   setRedactionPopupProps(null);
@@ -269,6 +283,8 @@ export const CaseworkPdfRedactorWrapper = (p: {
           onClose={() => setShowRedactionLogModal(false)}
           mode={redactionLogModalMode}
           redactions={redactionLogModalRedactions}
+          selectedRedactionTypes={selectedRedactionTypes}
+          activeDocument={p.document}
         />
       )}
 

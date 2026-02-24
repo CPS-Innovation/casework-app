@@ -53,7 +53,7 @@ export const safeGetDocumentNotesFromLocalStorage = (p: {
     const resp = JSON.parse(initResp!); // assert with !, any errors caught
 
     return documentNotesSchema.safeParse(resp);
-  } catch (error) {
+  } catch (_error) {
     return { success: false } as const;
   }
 };
@@ -79,7 +79,7 @@ export const safeGetDocumentNotesFromAxiosInstance = async (p: {
     });
 
     return documentNotesSchema.safeParse(resp);
-  } catch (error) {
+  } catch (_error) {
     return { success: false } as const;
   }
 };

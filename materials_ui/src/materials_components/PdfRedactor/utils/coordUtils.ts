@@ -54,7 +54,24 @@ export const safeGetRangeAt = (p: { selection: Selection }) => {
   try {
     const range = p.selection.getRangeAt(0);
     return { success: true, data: range } as const;
-  } catch (error) {
+  } catch (_error) {
     return { success: false } as const;
   }
 };
+
+export const createRedaction = (p: {
+  coord1: TCoord;
+  coord2: TCoord;
+  pageNumber: number;
+  pageRect: DOMRect;
+  scale: number;
+}): TRedaction => ({
+  id: crypto.randomUUID(),
+  x1: p.coord1.x,
+  y1: p.coord1.y,
+  x2: p.coord2.x,
+  y2: p.coord2.y,
+  pageNumber: p.pageNumber,
+  pageHeight: p.pageRect.height / p.scale,
+  pageWidth: p.pageRect.width / p.scale
+});

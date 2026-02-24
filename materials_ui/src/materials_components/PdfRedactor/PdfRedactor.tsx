@@ -10,13 +10,21 @@ import { SaveToProceedToRotationsModal } from './modals/SaveToProceedToRotations
 import { PdfRedactorPage } from './PdfRedactorPage';
 import type { TRedaction } from './utils/coordUtils';
 import { TDeletion, TIndexedDeletion } from './utils/deletionUtils';
-import { ModeStyleTag, type TMode } from './utils/modeUtils';
+import { type TMode } from './utils/modeUtils';
+import styles from './utils/PdfRedactor.module.css';
 import { TIndexedRotation, TRotation } from './utils/rotationUtils';
 import { useTrigger } from './utils/useTriggger';
 import '/node_modules/react-pdf/dist/cjs/Page/AnnotationLayer.css';
 import '/node_modules/react-pdf/dist/cjs/Page/TextLayer.css';
 
 pdfjs.GlobalWorkerOptions.workerSrc = pdfWorker;
+
+const modeClassMap: { [x in TMode]: string | undefined } = {
+  areaRedact: styles.areaRedact,
+  textRedact: styles.textRedact,
+  rotation: styles.rotation,
+  deletion: styles.deletion
+};
 
 const useScaleHelper = (p?: { initScale?: number }) => {
   const [scale, setScale] = useState(p?.initScale ?? 1);
@@ -29,7 +37,7 @@ const useScaleHelper = (p?: { initScale?: number }) => {
     });
   const resetScale = () => setScale(1);
 
-  return { scale, increaseScale, decreaseScale, resetScale };
+  return { scale, setScale, increaseScale, decreaseScale, resetScale };
 };
 
 const indexRedactionsOnPageNumber = (redactions: TRedaction[]) => {
@@ -221,6 +229,7 @@ export const PdfRedactor = (p: {
   const [numPages, setNumPages] = useState<number>();
   const scaleHelper = useScaleHelper();
   const pdfRedactorWrapperElmRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const indexedRedactions = useMemo(() => {
     return indexRedactionsOnPageNumber(p.redactions);
@@ -279,7 +288,7 @@ export const PdfRedactor = (p: {
   }, []);
 
   return (
-    <div ref={pdfRedactorWrapperElmRef}>
+    <div className={modeClassMap[p.mode]} ref={pdfRedactorWrapperElmRef}>
       {displayToProceedModal && (
         <PdfRedactorCenteredModal
           onBackgroundClick={() => setDisplayToProceedModal(undefined)}
@@ -302,7 +311,6 @@ export const PdfRedactor = (p: {
           )}
         </PdfRedactorCenteredModal>
       )}
-      <ModeStyleTag mode={p.mode} />
       {!p.hideToolbar && (
         <div
           style={{
@@ -369,14 +377,17 @@ export const PdfRedactor = (p: {
       )}
       <div style={{ position: 'relative' }}>
         <div
+          ref={containerRef}
           style={{
             position: 'relative',
             height: '500px',
             width: '100%',
             overflowX: 'scroll',
             overflowY: 'scroll',
-            backgroundColor: '#808080',
-            paddingBottom: '70px'
+            backgroundColor: '#F3F2F1',
+            paddingBottom: '70px',
+            boxSizing: 'border-box',
+            border: 'solid 1px black'
           }}
         >
           <Document
@@ -384,6 +395,30 @@ export const PdfRedactor = (p: {
             onLoadSuccess={(x) => {
               p.onRedactionsChange(p.initRedactions ?? []);
               setNumPages(x.numPages);
+
+              setTimeout(() => {
+                // TODO: store most current scale value in local storage and don't zoom in/out if already has a value
+                const documentElement = containerRef.current?.querySelector(
+                  '.react-pdf__Document'
+                );
+                const documentElementWidth =
+                  documentElement?.getBoundingClientRect().width;
+                if (!documentElementWidth) return;
+
+                const pageElements =
+                  containerRef.current?.querySelectorAll('.react-pdf__Page');
+                if (!pageElements) return;
+
+                const pageElementWidths = [...pageElements]
+                  .map((elm) => elm.getBoundingClientRect().width)
+                  .filter((num) => !!num);
+
+                const pageElementMaxWidth = Math.max(...pageElementWidths);
+                if (!pageElementMaxWidth) return;
+
+                const ratio = documentElementWidth / pageElementMaxWidth;
+                scaleHelper.setScale(ratio * 0.98);
+              }, 100);
             }}
           >
             {[...Array(numPages)].map((_, j) => (

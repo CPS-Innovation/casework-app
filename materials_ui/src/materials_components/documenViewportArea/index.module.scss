@@ -1,50 +1,5 @@
 .content {
-  font-size: 1rem !important;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: relative;
-  padding: .25rem .75rem;
-  height: 3.125rem;
+  padding: .5rem 1rem;
   background-color: #1d70b8;
   border-bottom: 0.0625rem solid #b1b4b6;
 }
-
-.areaToolBtn {
-  margin-right: 0.625rem;
-  display: flex;
-  align-items: center;
-  border: none;
-  border-radius: 0.3125rem;
-  position: relative;
-  width: 2.3rem;
-  height: 2.3rem;
-  background: #ffffff;
-  cursor: pointer;
-  & svg {
-    width: 100%;
-    fill: #000;
-  }
-  &:focus {
-    & svg {
-      fill: #000;
-    }
-  }
-  &:hover {
-    border: 1px solid #000;
-  }
-}
-
-.areaToolBtnEnabled {
-  background: #fff;
-  & svg {
-    width: 100%;
-    fill: #000;
-  }
-  &:focus {
-    & svg {
-      fill: #fff;
-    }
-  }
-}
-

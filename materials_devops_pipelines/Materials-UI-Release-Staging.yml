@@ -5,7 +5,7 @@ pr: none
 resources:
   pipelines:
     - pipeline: MaterialsBuild
-      source: Cps-Materials-UI-Dev-Build
+      source: Cps-Materials-UI-Staging-Build
       trigger:
         branches:
           include:
@@ -14,7 +14,7 @@ resources:
           - Publish_Artifacts
 
 pool:
-  name: $(dev-build-agent)
+  name: $(stg-build-agent)
 
 parameters:
 - name: TF_Apply
@@ -28,19 +28,19 @@ variables:
   - name: semanticVersion 
     value: $[counter(variables['majorMinorVersion'], 1)]
   - name: targetLabel 
-    value: DEV
-  - group: materials-kv-dev-terraform
+    value: STG
+  - group: materials-kv-stg-terraform
   - group: materials-global
 
 stages:
 
 ## Apply Terraform ##                 
-  - stage: Apply_Terraform_Dev
+  - stage: Apply_Terraform_Staging
     displayName: Apply Materials Terraform
     jobs:  
 
       - deployment: Wait_For_Running_Builds
-        environment: "Materials_Dev"
+        environment: "Materials_Staging"
         strategy:
           runOnce:
             deploy:
@@ -53,7 +53,7 @@ stages:
         condition: succeeded()
         dependsOn: Wait_For_Running_Builds
         displayName: Apply Main Terraform
-        environment: "Materials_Dev"
+        environment: "Materials_Staging"
         workspace:
           clean: all
         strategy:
@@ -62,35 +62,35 @@ stages:
               steps:
                 - template: templates/task_get-credentials.yml
                   parameters:
-                    azureSubscription: $(dev-azure-service-connection)
+                    azureSubscription: $(staging-azure-service-connection)
 
                 - template: templates/task_apply-terraform.yml
                   parameters:
                     targetBuild: "MaterialsBuild"
                     targetTerraformArtifact: $(targetTerraformArtifact)
-                    targetPlanName: "dev"
-                    terraformStorageAccount: $(dev-terraform-storage-account)
+                    targetPlanName: "stg"
+                    terraformStorageAccount: $(staging-terraform-storage-account)
                     terraformContainerName: $(materials-terraform-container-name)
                     terraformStateKey: $(terraform-key)
                     terraformStateResourceGroup: $(terraform-resource-group)
                     armClientId: $(clientId)
                     armClientSecret: $(clientSecret)
                     armTenantId: $(tenantId)
-                    armSubscriptionId: $(subscriptionId)       
+                    armSubscriptionId: $(subscriptionId)
                     TF_Apply: ${{ parameters.TF_Apply }}
                     terraformVersion: $(terraform-version)
 
 ## UI Deployment ##
-  - stage: Apply_UI_Dev
+  - stage: Apply_UI_Staging
     displayName: Deploy Materials UI
     condition: succeeded()
-    dependsOn: Apply_Terraform_Dev
+    dependsOn: Apply_Terraform_Staging
     jobs:
 
       - deployment: CI_Deploy_Materials_UI
         condition: succeeded()
         displayName: Apply UI SPA
-        environment: "Materials_Dev"
+        environment: "Materials_Staging"
         workspace:
           clean: all
         strategy:
@@ -101,22 +101,24 @@ stages:
                   parameters:
                     targetBuild: "MaterialsBuild"
                     targetLabel: $(targetLabel)
-                    azureSubscription: $(dev-azure-subscription)
-                    WebAppName: $(dev-spa-resource-name)
+                    azureSubscription: $(staging-azure-subscription)
+                    WebAppName: $(staging-spa-resource-name)
                     resourceGroupName: "rg-materials-${{ lower(variables.targetLabel) }}-uks"
                     BuildArtifactName: $(targetUIArtifact) 
                     SlotName: "staging1"
 
   - stage: Swap_Slots
     displayName: Swap Slots
-    dependsOn: Apply_UI_Dev
+    dependsOn: Apply_UI_Staging
     condition: succeeded()
     jobs:
       - template: templates/job_swap-slots.yml
         parameters:
-            azureSubscription: $(dev-azure-service-connection)
+            azureSubscription: $(staging-azure-service-connection)
             resourceGroupName: "rg-materials-${{ lower(variables.targetLabel) }}-uks"
-            AppServiceName: $(dev-spa-resource-name)
+            AppServiceName: $(staging-spa-resource-name)
+
+            
 
 # TBC requires further testing once site is live
   # - stage: Test_UI

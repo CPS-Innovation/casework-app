@@ -15,6 +15,8 @@ import { formatDateLong } from '../utils/date';
 
 type IFormInput = { urn: string };
 
+const MAX_URN_LENGTH = 11;
+
 export const CaseSearchPage = () => {
   const {
     register,
@@ -27,7 +29,7 @@ export const CaseSearchPage = () => {
   const [hasSearched, setHasSearched] = useState(false);
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    const urn = data.urn?.trim() ?? '';
+    const urn = (data.urn?.trim() ?? '').slice(0, MAX_URN_LENGTH);
     setQueryUrn(urn);
     setHasSearched(true);
   };
@@ -80,7 +82,7 @@ export const CaseSearchPage = () => {
                 )}
 
                 <input
-                  className={`govuk-input ${errors.urn ? 'govuk-input--error' : ''}`}
+                  className={`govuk-input govuk-input--width-10 ${errors.urn ? 'govuk-input--error' : ''}`}
                   id="case-urn"
                   type="text"
                   {...register('urn', { required: 'URN is required' })}
