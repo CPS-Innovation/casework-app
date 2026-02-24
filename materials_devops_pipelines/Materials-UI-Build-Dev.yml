@@ -100,7 +100,7 @@ stages:
               targetFiles: |
                 serve.json
               encoding: 'utf-8'
-              tokenPattern: 'default'   # default matches #{VarName}#
+              tokenPattern: 'default'
 
           - task: CopyFiles@2
             displayName: "Copy serve.json into build"

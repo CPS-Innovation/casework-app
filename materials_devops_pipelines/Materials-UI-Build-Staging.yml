@@ -93,6 +93,15 @@ stages:
               VITE_POLARIS_GATEWAY_SCOPE: $(POLARIS_GATEWAY_SCOPE)
               VITE_GLOBAL_SCRIPT_URL: $(GLOBAL_SCRIPT_URL)
 
+          - task: replacetokens@5
+            displayName: "Replace CSP value in serve.json with appropriate values for dev/staging/prod"
+            inputs:
+              rootDirectory: '$(Pipeline.Workspace)/s/materials_ui/'
+              targetFiles: |
+                serve.json
+              encoding: 'utf-8'
+              tokenPattern: 'default'
+              
           - task: CopyFiles@2
             displayName: "Copy serve.json into build"
             inputs:

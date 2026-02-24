@@ -10,7 +10,7 @@
         { "key": "X-Permitted-Cross-Domain-Policies", "value": "none" },
         {
           "key": "Content-Security-Policy",
-          "value": "#{CSP_VALUE}#"
+          "value": "#{CSP_VALUE_IN_ADO_VARIABLE}#"
         }
       ]
     }
