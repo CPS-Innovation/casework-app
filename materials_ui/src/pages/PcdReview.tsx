@@ -116,7 +116,7 @@ export const PcdReviewPage = () => {
   }
 
   return (
-    <Layout title="PCD Review">
+    <Layout title="Reviews">
       {!caseInfo ||
       isLoading ||
       historyDataLoading ||
