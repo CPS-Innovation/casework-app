@@ -1,3 +1,4 @@
+import type { PDFDocumentProxy } from 'pdfjs-dist';
 import pdfWorker from 'pdfjs-dist/build/pdf.worker?url';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Document, pdfjs } from 'react-pdf';
@@ -229,6 +230,7 @@ export const PdfRedactor = (p: {
   const [numPages, setNumPages] = useState<number>();
   const scaleHelper = useScaleHelper();
   const pdfRedactorWrapperElmRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const indexedRedactions = useMemo(() => {
     return indexRedactionsOnPageNumber(p.redactions);
@@ -271,6 +273,23 @@ export const PdfRedactor = (p: {
       setDisplayToProceedModal(previousModeRef.current);
     }
   }, [p.mode]);
+
+  const autoScale = async (pdf: PDFDocumentProxy) => {
+    const containerWidth = containerRef.current?.clientWidth;
+    if (!containerWidth) return;
+
+    let maxPageWidth = 0;
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const viewport = page.getViewport({ scale: 1 });
+      maxPageWidth = Math.max(maxPageWidth, viewport.width);
+    }
+
+    if (maxPageWidth > 0) {
+      const ratio = containerWidth / maxPageWidth;
+      scaleHelper.setScale(ratio * 0.98);
+    }
+  };
 
   const redactHighlightedTextTrigger = useTrigger();
   const redactHighlightedIfTextRedactionMode = () => {
@@ -376,6 +395,7 @@ export const PdfRedactor = (p: {
       )}
       <div style={{ position: 'relative' }}>
         <div
+          ref={containerRef}
           style={{
             position: 'relative',
             height: '500px',
@@ -390,32 +410,10 @@ export const PdfRedactor = (p: {
         >
           <Document
             file={p.fileUrl}
-            onLoadSuccess={(x) => {
+            onLoadSuccess={async (pdf) => {
               p.onRedactionsChange(p.initRedactions ?? []);
-              setNumPages(x.numPages);
-
-              setTimeout(() => {
-                // TODO: store most current scale value in local storage and don't zoom in/out if already has a value
-                const documentElement = window.document.querySelector(
-                  '.react-pdf__Document'
-                );
-                const documentElementWidth =
-                  documentElement?.getBoundingClientRect().width;
-                if (!documentElementWidth) return;
-
-                const pageElements =
-                  window.document.querySelectorAll('.react-pdf__Page');
-
-                const pageElementWidths = [...pageElements]
-                  .map((elm) => elm.getBoundingClientRect().width)
-                  .filter((num) => !!num);
-
-                const pageElementMaxWidth = Math.max(...pageElementWidths);
-                if (!pageElementMaxWidth) return;
-
-                const ratio = documentElementWidth / pageElementMaxWidth;
-                scaleHelper.setScale(ratio * 0.98);
-              }, 100);
+              setNumPages(pdf.numPages);
+              await autoScale(pdf);
             }}
           >
             {[...Array(numPages)].map((_, j) => (

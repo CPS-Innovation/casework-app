@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
+  DocumentKeywordSearch,
   Layout,
   LoadingSpinner,
   RenameDrawer,
@@ -28,7 +29,10 @@ import { UnsavedRedactionsModal } from './UnsavedRedactionsModal';
 
 export const ReviewAndRedactPage = () => {
   const { state: locationState } = useLocation();
-  const { docType: docTypeParam } = locationState as { docType?: string };
+  const { docType: docTypeParam, materialId: materialIdParam } = (locationState || {}) as {
+    docType?: string;
+    materialId?: string;
+  };
 
   const navigate = useNavigate();
 
@@ -84,6 +88,13 @@ export const ReviewAndRedactPage = () => {
       });
     }
   }, [caseId, openDocumentIds, activeDocumentId]);
+
+  useEffect(() => {
+    if (materialIdParam) {
+      setActiveDocumentId(materialIdParam);
+      setOpenDocumentIds((openedDocumentIds) => [...openedDocumentIds, `${materialIdParam}`]);
+    }
+  }, [materialIdParam]);
 
   useEffect(() => {
     if (docTypeParam && documents && documents.length > 0) {
@@ -224,24 +235,25 @@ export const ReviewAndRedactPage = () => {
         <TwoCol
           sidebar={
             isSidebarVisible && caseId && urn ? (
-              <DocumentSidebar
-                urn={urn}
-                caseId={caseId}
-                activeDocumentId={activeTabId}
-                openDocumentIds={openDocumentIds}
-                onSetDocumentOpenIds={setOpenDocumentIds}
-                onDocumentClick={setActiveDocumentId}
-                reloadTriggerData={reloadSidebarTrigger.data}
-                onDocumentsChange={setDocuments}
-              />
+              <>
+                {documents && <DocumentKeywordSearch />}
+                <DocumentSidebar
+                  urn={urn}
+                  caseId={caseId}
+                  activeDocumentId={activeTabId}
+                  openDocumentIds={openDocumentIds}
+                  onSetDocumentOpenIds={setOpenDocumentIds}
+                  onDocumentClick={setActiveDocumentId}
+                  reloadTriggerData={reloadSidebarTrigger.data}
+                  onDocumentsChange={setDocuments}
+                />
+              </>
             ) : undefined
           }
         >
           {tabItems.length > 0 && (
             <>
               <Tabs
-                idPrefix="tabs"
-                title="Tabs title"
                 items={tabItems}
                 activeTabId={activeDocumentId}
                 handleTabSelection={setActiveDocumentId}

@@ -55,7 +55,7 @@ export const Layout = ({
     },
     {
       id: 'pcd-review',
-      name: 'PCD Review',
+      name: 'Reviews',
       href: getRoute('PCD_REVIEW'),
       active:
         location.pathname === '/' ||

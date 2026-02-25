@@ -1,4 +1,8 @@
 import { FormProvider, useForm } from 'react-hook-form';
+import {
+  postRedactionLog,
+  useAxiosInstance
+} from '../../caseWorkApp/components/utils/getData';
 import { TLookupsResponse } from '../../caseWorkApp/types/redaction';
 import { TDocument } from '../DocumentSelectAccordion/getters/getDocumentList';
 import { TRedactionType } from '../PdfRedactor/PdfRedactionTypeForm';
@@ -7,6 +11,7 @@ import { Modal } from './Modal';
 import styles from './RedactionLogModal.module.scss';
 import { RedactionLogModalBody } from './RedactionLogModalBody';
 import { RedactionLogModalHeader } from './RedactionLogModalHeader';
+import { transformFormDataToApiFormat } from './utils/transformFormData';
 
 export type RedactionLogFormInputs = {
   underRedactionSelected: boolean;
@@ -50,6 +55,13 @@ export const RedactionLogModal = ({
   redactions,
   selectedRedactionTypes
 }: RedactionLogModalProps) => {
+  const policeCode = urn.substring(0, 2);
+
+  const existingInvestigatingAgencyId = lookups?.ouCodeMapping.find(
+    (ia) => ia.ouCode === policeCode
+  )?.investigatingAgencyCode;
+
+  const axiosInstance = useAxiosInstance();
   const form = useForm<RedactionLogFormInputs>({
     defaultValues: {
       underRedactionSelected: false,
@@ -60,16 +72,30 @@ export const RedactionLogModal = ({
       overReason: null,
       areasAndDivisionsId: '',
       businessUnitId: '',
-      investigatingAgencyId: '',
+      investigatingAgencyId: existingInvestigatingAgencyId || '',
       chargeStatus: 'Pre-charge',
       documentTypeId: activeDocument?.cmsDocType.documentTypeId || '',
       supportingNotes: ''
     }
   });
 
-  const onSubmit = (values: RedactionLogFormInputs) => {
-    console.log('Form submitted with values:', values);
-    onClose();
+  const onSubmit = async (values: RedactionLogFormInputs) => {
+    try {
+      const apiData = transformFormDataToApiFormat(
+        values,
+        urn,
+        activeDocument,
+        lookups
+      );
+      console.log('Submitting redaction log:', apiData);
+
+      await postRedactionLog({ axiosInstance, data: apiData });
+
+      console.log('Redaction log submitted successfully');
+      onClose();
+    } catch (error) {
+      console.error('Failed to submit redaction log:', error);
+    }
   };
 
   if (!isOpen) return null;
@@ -77,16 +103,14 @@ export const RedactionLogModal = ({
   return (
     <Modal onClose={onClose}>
       <FormProvider {...form}>
-        <form
-          onSubmit={form.handleSubmit(() => onSubmit(form.getValues()))}
-          noValidate
-        >
+        <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
           <RedactionLogModalHeader urn={urn} lookups={lookups} />
           <RedactionLogModalBody
             activeDocument={activeDocument}
             mode={mode}
             redactions={redactions}
             selectedRedactionTypes={selectedRedactionTypes}
+            lookups={lookups}
           />
 
           <div className={styles.modalFooter}>
