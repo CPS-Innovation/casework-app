@@ -11,7 +11,6 @@ import {
   TwoCol
 } from '../components';
 
-import { URL } from '../constants/url';
 import {
   useAppRoute,
   useBanner,
@@ -123,7 +122,7 @@ export const CommunicationsPage = () => {
     },
     {
       label: 'Discard',
-      onClick: () => handleDiscardClick(URL.COMMUNICATIONS),
+      onClick: () => handleDiscardClick(getRoute('COMMUNICATIONS')),
       hide: selectedItems.communications.length > 1
     },
     {

@@ -1,5 +1,3 @@
-import PreviewIcon from '../../assets/images/preview-hide-arrow.svg';
-
 type Props = { label: string; isOpen: boolean; onDocumentOpen: () => void };
 
 export default function DocumentActions({
