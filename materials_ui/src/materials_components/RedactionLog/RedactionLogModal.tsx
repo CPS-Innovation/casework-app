@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import {
   postRedactionLog,
@@ -72,12 +73,31 @@ export const RedactionLogModal = ({
       overReason: null,
       areasAndDivisionsId: '',
       businessUnitId: '',
-      investigatingAgencyId: existingInvestigatingAgencyId || '',
+      investigatingAgencyId: '',
       chargeStatus: 'Pre-charge',
-      documentTypeId: activeDocument?.cmsDocType.documentTypeId || '',
+      documentTypeId: '',
       supportingNotes: ''
     }
   });
+
+  useEffect(() => {
+    if (isOpen) {
+      form.reset({
+        underRedactionSelected: false,
+        overRedactionSelected: false,
+        underRedactionTypeIds: [],
+        overRedactionTypeIds: [],
+
+        overReason: null,
+        areasAndDivisionsId: '',
+        businessUnitId: '',
+        investigatingAgencyId: existingInvestigatingAgencyId || '',
+        chargeStatus: 'Pre-charge',
+        documentTypeId: activeDocument?.cmsDocType.documentTypeId || '',
+        supportingNotes: ''
+      });
+    }
+  }, [isOpen, existingInvestigatingAgencyId, activeDocument, form]);
 
   const onSubmit = async (values: RedactionLogFormInputs) => {
     try {
