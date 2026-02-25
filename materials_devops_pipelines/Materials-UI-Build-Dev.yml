@@ -99,7 +99,7 @@ stages:
               rootDirectory: '$(Pipeline.Workspace)/s/materials_ui/'
               targetFiles: |
                 serve.json
-              encoding: 'utf-8'
+              encoding: 'auto'
               tokenPattern: 'default'
 
           - task: CopyFiles@2
