@@ -1,4 +1,5 @@
 import { ComponentProps, useEffect, useState } from 'react';
+import { Button } from '../../caseWorkApp/components/button';
 import { useAxiosInstance } from '../DocumentSelectAccordion/getters/getAxiosInstance';
 import { TDocument } from '../DocumentSelectAccordion/getters/getDocumentList';
 import { PdfRedactorCenteredModal } from '../PdfRedactor/modals/PdfRedactorCenteredModal';
@@ -9,6 +10,7 @@ import {
   TRedactionType
 } from '../PdfRedactor/PdfRedactionTypeForm';
 import { PdfRedactor } from '../PdfRedactor/PdfRedactor';
+import { CloseIcon } from '../PdfRedactor/PdfRedactorComponents';
 import { GovUkButton } from '../PdfRedactor/templates/GovUkButton';
 import { TCoord, TRedaction } from '../PdfRedactor/utils/coordUtils';
 import { TIndexedDeletion } from '../PdfRedactor/utils/deletionUtils';
@@ -178,16 +180,37 @@ export const CaseworkPdfRedactorWrapper = (p: {
               onEscPress={closeModal}
             >
               <div
-                style={{
-                  background: '#d4351c',
-                  padding: '20px',
-                  color: 'white'
-                }}
+                className="govuk-notification-banner govuk-notification-banner banner-error"
+                role="alert"
+                aria-labelledby="govuk-notification-banner-title"
+                data-module="govuk-notification-banner"
               >
-                <h1 className="govuk-heading-m" style={{ color: '#fff' }}>
-                  Unable to redact
-                </h1>
-                <div>{redactionDisabledModalProps.message}</div>
+                <div
+                  className="govuk-notification-banner__header"
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'baseline'
+                  }}
+                >
+                  <h2
+                    className="govuk-notification-banner__title"
+                    id="govuk-notification-banner-title"
+                  >
+                    Error
+                  </h2>
+                  <Button autoFocus onClick={closeModal}>
+                    <CloseIcon />
+                  </Button>
+                </div>
+                <div className="govuk-notification-banner__content">
+                  <h3 className="govuk-notification-banner__heading">
+                    Unable to redact
+                  </h3>
+                  <p className="govuk-body">
+                    {redactionDisabledModalProps.message}
+                  </p>
+                </div>
               </div>
             </PdfRedactorCenteredModal>
           );

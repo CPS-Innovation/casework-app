@@ -14,6 +14,7 @@ type ButtonProps = {
   id?: string;
   ariaLabel?: string;
   style?: CSSProperties;
+  autoFocus?: boolean;
 };
 
 const buttonVariantMap: { [k in TButtonVariant]: string } = {
@@ -40,7 +41,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       dataTestId,
       ariaLabel,
       id,
-      style
+      style,
+      autoFocus
     },
     ref
   ) => {
@@ -60,6 +62,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         data-test-id={dataTestId}
         id={id}
         aria-label={ariaLabel}
+        autoFocus={autoFocus}
       >
         {children}
         <span data-ismodified="1" className="br_wrap"></span>
