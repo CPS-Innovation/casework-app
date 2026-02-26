@@ -24,11 +24,9 @@ test.describe('Actions', () => {
     await page
       .getByRole('menuitem', { name: 'Discard' })
       .click({ force: true });
-    await page.waitForLoadState('networkidle');
     await page.getByRole('radio', { name: 'Attached in error' }).click();
     await page.getByRole('button', { name: 'Save and discard' }).click();
     const succesMessage = page.getByText('Discard successful');
-    await page.waitForLoadState('networkidle');
     await expect(succesMessage).toBeVisible();
   });
 
@@ -69,7 +67,6 @@ test.describe('Actions', () => {
       .first()
       .click();
     await page.getByRole('menuitem', { name: 'Mark as unread' }).click();
-    await page.waitForLoadState('networkidle');
     const succesMessage = page.getByText('Read status updated');
     await expect(succesMessage).toBeVisible();
   });
