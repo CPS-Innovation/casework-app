@@ -94,7 +94,7 @@ stages:
               VITE_GLOBAL_SCRIPT_URL: $(GLOBAL_SCRIPT_URL)
 
           - task: replacetokens@5
-            displayName: "Replace CSP value in serve.json with appropriate values for dev/staging/prod"
+            displayName: "Set environment specific CSP in serve.json"
             inputs:
               rootDirectory: '$(Pipeline.Workspace)/s/materials_ui/'
               targetFiles: |
