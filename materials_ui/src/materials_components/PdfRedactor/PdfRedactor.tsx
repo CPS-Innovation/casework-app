@@ -44,7 +44,9 @@ const useScaleHelper = (p?: { initScale?: number }) => {
 const indexRedactionsOnPageNumber = (redactions: TRedaction[]) => {
   const temp: { [k: number]: TRedaction[] } = {};
   redactions.forEach((redaction) => (temp[redaction.pageNumber] = []));
-  redactions.forEach((redaction) => temp[redaction.pageNumber].push(redaction));
+  redactions.forEach((redaction) =>
+    temp[redaction.pageNumber]!.push(redaction)
+  );
   return temp;
 };
 

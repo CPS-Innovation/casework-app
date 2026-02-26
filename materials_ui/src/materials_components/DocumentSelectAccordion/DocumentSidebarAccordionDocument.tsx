@@ -75,7 +75,10 @@ export const DocumentSidebarAccordionDocument = (p: {
     if (documentNotes.data.length === 0) return 'No messages';
 
     const firstNote = documentNotes.data[0];
-    return `${firstNote.text} (+${documentNotes.data.length - 1} more)`;
+
+    return firstNote
+      ? `${firstNote.text} (+${documentNotes.data.length - 1} more)`
+      : '';
   })();
 
   return (

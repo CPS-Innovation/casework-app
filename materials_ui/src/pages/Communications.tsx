@@ -56,7 +56,7 @@ export const CommunicationsPage = () => {
   });
 
   const handleRenameClick = () => {
-    if (selectedItems.communications.length) {
+    if (selectedItems.communications[0]) {
       setSelectedMaterial(selectedItems.communications[0]);
     }
   };
@@ -96,9 +96,15 @@ export const CommunicationsPage = () => {
     {
       label: 'Rename',
       onClick: handleRenameClick,
-      hide:
-        [1031, 1059].includes(row?.documentTypeId) ||
-        selectedItems.communications.length > 1
+      hide: (() => {
+        const rowDocId = row?.documentTypeId;
+        if (!rowDocId) return false;
+
+        return (
+          [1031, 1059].includes(rowDocId) ||
+          selectedItems.communications.length > 1
+        );
+      })()
     },
     {
       label: 'Reclassify',
@@ -109,15 +115,20 @@ export const CommunicationsPage = () => {
       label: 'Update',
       onClick: () =>
         handleEditClick(row as CaseMaterialsType, getRoute('COMMUNICATIONS')),
-      hide:
-        selectedItems.communications.length > 1 ||
-        !['Exhibit', 'Statement'].includes(
-          selectedItems.communications[0]?.category
-        )
+      hide: (() => {
+        const itemCommsCategory = selectedItems.communications[0]?.category;
+        if (!itemCommsCategory) return;
+        return (
+          selectedItems.communications.length > 1 ||
+          !['Exhibit', 'Statement'].includes(itemCommsCategory)
+        );
+      })()
     },
     {
       label: 'Redact',
-      onClick: () => handleRedactClick(row.materialId),
+      onClick: () => {
+        if (row?.materialId) return handleRedactClick(row.materialId);
+      },
       hide: selectedItems.communications.length > 1
     },
     {

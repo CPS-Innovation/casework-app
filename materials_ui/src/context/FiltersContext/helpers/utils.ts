@@ -31,7 +31,7 @@ export const setFilter = (
 
   const newFilterValues = checked
     ? [...(currentFilters?.[fieldGroup] || []), name]
-    : currentFilters?.[fieldGroup].filter(
+    : currentFilters?.[fieldGroup]?.filter(
         (existingFilterName) => existingFilterName !== name
       ) || [];
 
