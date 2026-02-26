@@ -93,6 +93,23 @@ stages:
               VITE_POLARIS_GATEWAY_SCOPE: $(POLARIS_GATEWAY_SCOPE)
               VITE_GLOBAL_SCRIPT_URL: $(GLOBAL_SCRIPT_URL)
 
+          - task: replacetokens@5
+            displayName: "Set environment specific CSP in serve.json"
+            inputs:
+              rootDirectory: '$(Pipeline.Workspace)/s/materials_ui/'
+              targetFiles: |
+                serve.json
+              encoding: 'auto'
+              tokenPattern: 'default'
+              
+          - task: CopyFiles@2
+            displayName: "Copy serve.json into build"
+            inputs:
+              SourceFolder: '$(Pipeline.Workspace)/s/materials_ui/'
+              Contents: |
+                serve.json           
+              TargetFolder: '$(workingDir)/build'
+
           - task: PublishPipelineArtifact@1
             displayName: "Publish Web UI artifact"
             inputs:
