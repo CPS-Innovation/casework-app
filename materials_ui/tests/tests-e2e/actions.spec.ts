@@ -13,7 +13,6 @@ test.describe('Actions', () => {
       mockCaseMaterials({ subject: 'test 1' })
     );
     mockRoute(page, '/material/discard');
-    await page.waitForLoadState('networkidle');
     const table = page.getByRole('table');
     const row = table.getByRole('row', { name: 'test 1' });
     await row.getByRole('checkbox').check();
@@ -39,7 +38,6 @@ test.describe('Actions', () => {
       '/case-materials',
       mockCaseMaterials({ subject: 'test 1' })
     );
-    await page.waitForLoadState('networkidle');
     const table = page.getByRole('table');
     const row = table.getByRole('row', { name: 'test 1' });
     await row.getByRole('checkbox').check();
@@ -53,7 +51,7 @@ test.describe('Actions', () => {
       .fill('New file name');
     await page.getByRole('button', { name: 'Save and close' }).click();
     const succesMessage = page.getByText('Material successfully renamed.');
-    await expect(succesMessage).toBeVisible({ timeout: 10_000 });
+    await expect(succesMessage).toBeVisible();
   });
 
   //mark as read
@@ -63,7 +61,6 @@ test.describe('Actions', () => {
       '/case-materials',
       mockCaseMaterials({ subject: 'test 1' })
     );
-    await page.waitForLoadState('networkidle');
     const table = page.getByRole('table');
     const row = table.getByRole('row', { name: 'test 1' });
     await row.getByRole('checkbox').check();
@@ -74,7 +71,7 @@ test.describe('Actions', () => {
     await page.getByRole('menuitem', { name: 'Mark as unread' }).click();
     await page.waitForLoadState('networkidle');
     const succesMessage = page.getByText('Read status updated');
-    await expect(succesMessage).toBeVisible({ timeout: 30000 });
+    await expect(succesMessage).toBeVisible();
   });
 
   //mark as unread
@@ -84,7 +81,6 @@ test.describe('Actions', () => {
       '/case-materials',
       mockCaseMaterials({ subject: 'test 2', readStatus: 'Unread' })
     );
-    await page.waitForLoadState('networkidle');
     const table = page.getByRole('table');
     const row = table.getByRole('row', { name: 'test 2' });
     await row.getByRole('checkbox').check();
@@ -93,8 +89,7 @@ test.describe('Actions', () => {
       .first()
       .click();
     await page.getByRole('menuitem', { name: 'Mark as read' }).click();
-    await page.waitForLoadState('networkidle');
     const succesMessage = page.getByText('Read status updated');
-    await expect(succesMessage).toBeVisible({ timeout: 30000 });
+    await expect(succesMessage).toBeVisible();
   });
 });
