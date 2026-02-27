@@ -29,7 +29,8 @@ export const useCaseMaterials = ({ dataType }: UseCaseMaterialsProps) => {
 
   const { data, error, isLoading, isValidating, mutate } = useSWR(
     materialsKey,
-    getCaseMaterials
+    getCaseMaterials,
+    { keepPreviousData: true }
   );
 
   const filteredData = (data ?? []).filter((material) =>
@@ -38,9 +39,13 @@ export const useCaseMaterials = ({ dataType }: UseCaseMaterialsProps) => {
       : material.category !== 'Communication'
   );
 
+  const isInitialLoading = !data && isLoading;
+  const isRefreshing = !!data && isValidating;
+
   return {
     data,
-    loading: isLoading || isValidating,
+    loading: isInitialLoading,
+    refreshing: isRefreshing,
     error,
     filteredData,
     mutate
