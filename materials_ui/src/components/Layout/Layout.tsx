@@ -67,7 +67,7 @@ export const Layout = ({
 
   useEffect(() => {
     if (title) {
-      document.title = title + ' - Casework App';
+      document.title = title + ' - Manage Materials and Communications';
     }
   }, [location, title]);
 
