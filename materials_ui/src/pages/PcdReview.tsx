@@ -100,28 +100,31 @@ export const PcdReviewPage = () => {
     'Public Interest Code (if C, D, D2, D5, E, F or L)'
   ];
 
-  if (
-    !isLoading &&
+  const noReviewCompleted = !isLoading &&
     !historyDataLoading &&
     !initialReviewDataLoading &&
-    (!data || !initialReviewData)
-  ) {
-    return (
-      <div className="govuk-main-wrapper">
-        <p className="govuk-body">
-          A Review has not yet been completed for this case.
-        </p>
-      </div>
-    );
-  }
+    (!data || !initialReviewData);
+
+  const isLoadingData =
+    !caseInfo ||
+    isLoading ||
+    historyDataLoading ||
+    initialReviewDataLoading;
+
+  const noReviewContent = (
+    <div className="govuk-main-wrapper">
+      <p className="govuk-body">
+        A Review has not yet been completed for this case.
+      </p>
+    </div>
+  );
 
   return (
     <Layout title="Reviews">
-      {!caseInfo ||
-      isLoading ||
-      historyDataLoading ||
-      initialReviewDataLoading ? (
+      {isLoadingData ? (
         <LoadingSpinner />
+      ) : noReviewCompleted ? (
+        noReviewContent
       ) : (
         <div className="govuk-main-wrapper" style={{ whiteSpace: 'pre-wrap' }}>
           <TwoCol sidebar={renderSidebar()}>
