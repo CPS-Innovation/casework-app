@@ -42,7 +42,6 @@ test.describe('PCD Request Page', () => {
   }) => {
     mockRoute(page, 'pcds/2167259/pcd-request-core', []);
     await page.goto('./pcd-request/');
-    await page.waitForLoadState('networkidle');
     await expect(
       page.getByText('There are no PCD Requests to show.')
     ).toBeVisible({ timeout: 10000 });
