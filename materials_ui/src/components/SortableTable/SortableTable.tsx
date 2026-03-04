@@ -5,12 +5,14 @@ import { useAutoReclassify, useCaseMaterial, useFilters } from '../../hooks';
 import { CaseMaterialDataType, CaseMaterialsType } from '../../schemas';
 import { useSelectedItemsStore } from '../../stores';
 import './SortableTable.scss';
+import { ColumnSortFn } from '../../utils/filtering';
 
 export type Column<T> = {
   key: string;
   heading: string | ReactNode;
   render?: (row: T) => ReactNode;
   isSortable?: boolean;
+  sortFn?: ColumnSortFn<T>;
 };
 
 type SortableTableProps<T> = {

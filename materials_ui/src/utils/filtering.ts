@@ -1,5 +1,34 @@
-import { FilterItem } from '../context/FiltersContext/helpers/types';
+import {
+  FilterItem,
+  SortBy
+} from '../context/FiltersContext/helpers/types';
 import { isObjectEmpty } from './object';
+
+export type ColumnSortFn<T> = (a: T, b: T, direction: SortBy) => number;
+
+/**
+ * Resolves the sort comparator for the current sort column.
+ * Uses the column's custom sortFn if defined, otherwise falls back to defaultSortFn.
+ */
+export const getSortFn = <T>(
+  columns: { key: string; sortFn?: ColumnSortFn<T> }[],
+  sort: FilterItem['sort'],
+  fallbackSortFn: (s: FilterItem['sort']) => (a: T, b: T) => number
+): (a: T, b: T) => number => {
+  if (!sort?.column || !sort?.direction) {
+    return fallbackSortFn(sort);
+  }
+
+  const column = columns.find((column) => column.key === sort.column);
+
+  const columnSortFn = column?.sortFn;
+  if (columnSortFn) {
+    const direction = sort.direction;
+    return (a, b) => columnSortFn(a, b, direction);
+  }
+
+  return fallbackSortFn(sort);
+};
 
 export const defaultSortFn = <T>(sort: FilterItem['sort']) => {
   return (a: T, b: T) => {
