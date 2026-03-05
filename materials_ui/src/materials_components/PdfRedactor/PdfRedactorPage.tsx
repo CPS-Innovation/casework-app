@@ -183,7 +183,10 @@ export const PdfRedactorDeletionOverlay = (p: {
   onPageIsDeleteChange: (x: boolean) => void;
   pageNumber: number;
   pagesAmount: number;
+  pageDeleteButtonDisabled: boolean;
 }) => {
+  const { pageDeleteButtonDisabled = false } = p;
+
   return (
     <>
       {!p.pageIsDelete && (
@@ -200,10 +203,11 @@ export const PdfRedactorDeletionOverlay = (p: {
               gap: '8px',
               alignItems: 'center'
             }}
+            disabled={pageDeleteButtonDisabled}
           >
             <span
               style={{
-                background: '#1d70b8',
+                background: pageDeleteButtonDisabled ? 'gray' : '#1d70b8',
                 height: '25px',
                 width: '25px',
                 padding: '5px'
@@ -211,7 +215,13 @@ export const PdfRedactorDeletionOverlay = (p: {
             >
               <DeleteIcon color="white" />
             </span>
-            <div>
+            <div
+              style={{
+                textDecoration: pageDeleteButtonDisabled
+                  ? 'line-through'
+                  : 'none'
+              }}
+            >
               Delete page {p.pageNumber} / {p.pagesAmount}
             </div>
           </GovUkButton>
@@ -298,6 +308,7 @@ export const PdfRedactorPage = (p: {
   onPageRotationChange: (x: number) => void;
   pageIsDelete: boolean;
   onPageIsDeleteChange: (x: boolean) => void;
+  pageDeleteButtonDisabled: boolean;
 }) => {
   const { pageNumber, scale, redactions } = p;
 
@@ -377,6 +388,7 @@ export const PdfRedactorPage = (p: {
               onPageIsDeleteChange={p.onPageIsDeleteChange}
               pageNumber={p.pageNumber}
               pagesAmount={p.pagesAmount}
+              pageDeleteButtonDisabled={p.pageDeleteButtonDisabled}
             />
           )}
           <div
