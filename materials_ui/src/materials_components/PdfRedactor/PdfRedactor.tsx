@@ -420,6 +420,9 @@ export const PdfRedactor = (p: {
           >
             {[...Array(numPages)].map((_, j) => (
               <PdfRedactorPage
+                pageDeleteButtonDisabled={
+                  (numPages ?? 0) - deletions.length <= 1
+                }
                 key={`pdf-redactor-page-${j}`}
                 pageNumber={j + 1}
                 pagesAmount={numPages!}
