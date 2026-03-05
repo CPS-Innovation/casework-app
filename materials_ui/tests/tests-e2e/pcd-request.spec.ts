@@ -10,10 +10,14 @@ test.describe('PCD Request Page', () => {
   }) => {
     mockRoute(page, 'pcds/2167259/pcd-request-core', mockPcdCoreResponse());
     mockRoute(page, '/pcd-request', mockPcdRequestResponse());
-    page.goto('./pcd-request/145739');
+    await page.goto('./pcd-request/145739');
+    const loader = page.locator('.hods-loading-spinner__content');
+    await loader.waitFor({ state: 'detached' });
+
     await expect(
       page.getByRole('heading', { name: 'Police details' })
-    ).toBeVisible({ timeout: 10000 });
+    ).toBeVisible();
+
     await expect(page.getByText('Case outline')).toBeVisible();
     await expect(
       page.getByText(`Supervising officer's comments`)
@@ -28,11 +32,12 @@ test.describe('PCD Request Page', () => {
   }) => {
     mockRoute(page, 'pcds/2167259/pcd-request-core', mockPcdCoreResponse());
     mockRoute(page, '/pcd-request', mockPcdRequestResponse());
-
-    page.goto('./pcd-request/145739');
+    await page.goto('./pcd-request/145739');
+    const loader = page.locator('.hods-loading-spinner__content');
+    await loader.waitFor({ state: 'detached' });
     await expect(
       page.getByRole('heading', { name: 'Police details' })
-    ).toBeVisible({ timeout: 10000 });
+    ).toBeVisible();
     await page.locator(`a:text("01/01/2000")`).click();
     await expect(page.locator('dd').nth(0)).toHaveText(`02/02/2021`);
   });
@@ -42,8 +47,10 @@ test.describe('PCD Request Page', () => {
   }) => {
     mockRoute(page, 'pcds/2167259/pcd-request-core', []);
     await page.goto('./pcd-request/');
+    const loader = page.locator('.hods-loading-spinner__content');
+    await loader.waitFor({ state: 'detached' });
     await expect(
       page.getByText('There are no PCD Requests to show.')
-    ).toBeVisible({ timeout: 10000 });
+    ).toBeVisible();
   });
 });
