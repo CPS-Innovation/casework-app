@@ -11,8 +11,9 @@ test.describe('PCD Request Page', () => {
     mockRoute(page, 'pcds/2167259/pcd-request-core', mockPcdCoreResponse());
     mockRoute(page, '/pcd-request', mockPcdRequestResponse());
     await page.goto('./pcd-request/145739');
-    const loader = page.locator('.hods-loading-spinner__content');
-    await loader.waitFor({ state: 'detached' });
+    await page
+      .getByRole('heading', { name: 'Loading status' })
+      .waitFor({ state: 'detached' });
 
     await expect(
       page.getByRole('heading', { name: 'Police details' })
@@ -33,8 +34,9 @@ test.describe('PCD Request Page', () => {
     mockRoute(page, 'pcds/2167259/pcd-request-core', mockPcdCoreResponse());
     mockRoute(page, '/pcd-request', mockPcdRequestResponse());
     await page.goto('./pcd-request/145739');
-    const loader = page.locator('.hods-loading-spinner__content');
-    await loader.waitFor({ state: 'detached' });
+    await page
+      .getByRole('heading', { name: 'Loading status' })
+      .waitFor({ state: 'detached' });
     await expect(
       page.getByRole('heading', { name: 'Police details' })
     ).toBeVisible();
@@ -47,8 +49,9 @@ test.describe('PCD Request Page', () => {
   }) => {
     mockRoute(page, 'pcds/2167259/pcd-request-core', []);
     await page.goto('./pcd-request/');
-    const loader = page.locator('.hods-loading-spinner__content');
-    await loader.waitFor({ state: 'detached' });
+    await page
+      .getByRole('heading', { name: 'Loading status' })
+      .waitFor({ state: 'detached' });
     await expect(
       page.getByText('There are no PCD Requests to show.')
     ).toBeVisible();
