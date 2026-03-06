@@ -17,59 +17,6 @@ resource "azurerm_linux_web_app" "as_web_materials" {
     ftps_state              = "FtpsOnly"
     http2_enabled           = true
     app_command_line        = "npx serve -s" loading a nbode lirary called serve, a basic webserver. runs permanently, runs the static werbsite sitting on app service. so we can add headers during commnad line. 
-
-deploy these into nginx proxy, we have a materials UI location. adding headers into a location,
-npx serve will have to lookup - we can add headers into the build.
-to custom
-create a serve ,json fle and insert properties.?
-headers property, adda  json file, serv./json ifle with headers property.
-nginx will add more headers::: 
-
-
-content sec policy thats tough, 
-
-
-the value of that will change will change on an environmnent basis. dev/qa/prod.
-if we are pushgina  server.json file, it will need to have environment substitiutions. if putting into the proxy.
-
-
-
-
-actually, I don't think the devs load the app using "npx serve"locally anyway, so there is a good chance the serve.json file wont be getting loaded in automatically anyway. b
-
-
-
-
-# SkillSet B
-resource "restapi_object" "create_skillset" {
-  count        = var.deploy_azsearch_services ? 1 : 0
-  path         = "/skillsets"
-  query_string = "api-version=2024-09-01-preview" # Unit field is only available on 2024-09-01-preview -  https://learn.microsoft.com/en-us/azure/search/cognitive-search-skill-textsplit#:~:text=unit-,2024%2D09%2D01%2Dpreview,-New.%20Only%20applies
-  data = templatefile("${path.module}/ai_config/skillset_correspondence-index-with-metadata-skillset.json", {
-    search_service_name = azurerm_search_service.search[0].name,
-    skillset_name       = var.search_correspondencedrafter_skillset_name,
-    embedding_model     = var.embedding_model,
-    target_index        = var.search_index_name,
-    openai_resource_uri = trimsuffix(azurerm_cognitive_account.llm_ca.endpoint, "/")
-    depends_on = [
-      resource.restapi_object.create_index,
-      azurerm_cognitive_account.llm_ca,
-      azurerm_search_service.search
-    ]
-  })
-  depends_on = [
-    resource.restapi_object.create_index
-  ]
-}
-
-
-
-
-
-
-
-
-
     always_on               = true
     vnet_route_all_enabled  = true
     minimum_tls_version     = "1.3"
