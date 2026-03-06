@@ -14,7 +14,6 @@ pdfjs.GlobalWorkerOptions.workerSrc = pdfWorker;
 type Props = { file: any; fileName: string };
 
 export const PdfViewer = ({ file, fileName }: Props) => {
-  // eslint-disable-next-line no-unused-vars
   const [numItems, setNumItems] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const { currentPage, setNextPage, setPreviousPage, setPage, totalPages } =

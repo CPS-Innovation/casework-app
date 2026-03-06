@@ -68,7 +68,7 @@ export const DiscardMaterialPage = () => {
       setError('You must select a reason for discarding the material');
     } else {
       await trigger({
-        materialId: material?.id,
+        materialId: material?.materialId,
         discardReason: reason.value as string,
         discardReasonDescription: reason.label
       });

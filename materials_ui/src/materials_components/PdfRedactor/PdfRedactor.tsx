@@ -1,3 +1,4 @@
+import type { PDFDocumentProxy } from 'pdfjs-dist';
 import pdfWorker from 'pdfjs-dist/build/pdf.worker?url';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Document, pdfjs } from 'react-pdf';
@@ -10,13 +11,21 @@ import { SaveToProceedToRotationsModal } from './modals/SaveToProceedToRotations
 import { PdfRedactorPage } from './PdfRedactorPage';
 import type { TRedaction } from './utils/coordUtils';
 import { TDeletion, TIndexedDeletion } from './utils/deletionUtils';
-import { ModeStyleTag, type TMode } from './utils/modeUtils';
+import { type TMode } from './utils/modeUtils';
+import styles from './utils/PdfRedactor.module.css';
 import { TIndexedRotation, TRotation } from './utils/rotationUtils';
 import { useTrigger } from './utils/useTriggger';
 import '/node_modules/react-pdf/dist/cjs/Page/AnnotationLayer.css';
 import '/node_modules/react-pdf/dist/cjs/Page/TextLayer.css';
 
 pdfjs.GlobalWorkerOptions.workerSrc = pdfWorker;
+
+const modeClassMap: { [x in TMode]: string | undefined } = {
+  areaRedact: styles.areaRedact,
+  textRedact: styles.textRedact,
+  rotation: styles.rotation,
+  deletion: styles.deletion
+};
 
 const useScaleHelper = (p?: { initScale?: number }) => {
   const [scale, setScale] = useState(p?.initScale ?? 1);
@@ -29,13 +38,15 @@ const useScaleHelper = (p?: { initScale?: number }) => {
     });
   const resetScale = () => setScale(1);
 
-  return { scale, increaseScale, decreaseScale, resetScale };
+  return { scale, setScale, increaseScale, decreaseScale, resetScale };
 };
 
 const indexRedactionsOnPageNumber = (redactions: TRedaction[]) => {
   const temp: { [k: number]: TRedaction[] } = {};
   redactions.forEach((redaction) => (temp[redaction.pageNumber] = []));
-  redactions.forEach((redaction) => temp[redaction.pageNumber].push(redaction));
+  redactions.forEach((redaction) =>
+    temp[redaction.pageNumber]!.push(redaction)
+  );
   return temp;
 };
 
@@ -221,6 +232,7 @@ export const PdfRedactor = (p: {
   const [numPages, setNumPages] = useState<number>();
   const scaleHelper = useScaleHelper();
   const pdfRedactorWrapperElmRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const indexedRedactions = useMemo(() => {
     return indexRedactionsOnPageNumber(p.redactions);
@@ -264,6 +276,23 @@ export const PdfRedactor = (p: {
     }
   }, [p.mode]);
 
+  const autoScale = async (pdf: PDFDocumentProxy) => {
+    const containerWidth = containerRef.current?.clientWidth;
+    if (!containerWidth) return;
+
+    let maxPageWidth = 0;
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const viewport = page.getViewport({ scale: 1 });
+      maxPageWidth = Math.max(maxPageWidth, viewport.width);
+    }
+
+    if (maxPageWidth > 0) {
+      const ratio = containerWidth / maxPageWidth;
+      scaleHelper.setScale(ratio * 0.98);
+    }
+  };
+
   const redactHighlightedTextTrigger = useTrigger();
   const redactHighlightedIfTextRedactionMode = () => {
     if (modeRef.current === 'textRedact') redactHighlightedTextTrigger.fire();
@@ -279,7 +308,7 @@ export const PdfRedactor = (p: {
   }, []);
 
   return (
-    <div ref={pdfRedactorWrapperElmRef}>
+    <div className={modeClassMap[p.mode]} ref={pdfRedactorWrapperElmRef}>
       {displayToProceedModal && (
         <PdfRedactorCenteredModal
           onBackgroundClick={() => setDisplayToProceedModal(undefined)}
@@ -302,7 +331,6 @@ export const PdfRedactor = (p: {
           )}
         </PdfRedactorCenteredModal>
       )}
-      <ModeStyleTag mode={p.mode} />
       {!p.hideToolbar && (
         <div
           style={{
@@ -369,25 +397,32 @@ export const PdfRedactor = (p: {
       )}
       <div style={{ position: 'relative' }}>
         <div
+          ref={containerRef}
           style={{
             position: 'relative',
             height: '500px',
             width: '100%',
             overflowX: 'scroll',
             overflowY: 'scroll',
-            backgroundColor: '#808080',
-            paddingBottom: '70px'
+            backgroundColor: '#F3F2F1',
+            paddingBottom: '70px',
+            boxSizing: 'border-box',
+            border: 'solid 1px black'
           }}
         >
           <Document
             file={p.fileUrl}
-            onLoadSuccess={(x) => {
+            onLoadSuccess={async (pdf) => {
               p.onRedactionsChange(p.initRedactions ?? []);
-              setNumPages(x.numPages);
+              setNumPages(pdf.numPages);
+              await autoScale(pdf);
             }}
           >
             {[...Array(numPages)].map((_, j) => (
               <PdfRedactorPage
+                pageDeleteButtonDisabled={
+                  (numPages ?? 0) - deletions.length <= 1
+                }
                 key={`pdf-redactor-page-${j}`}
                 pageNumber={j + 1}
                 pagesAmount={numPages!}

@@ -3,7 +3,7 @@ import { useRequest } from '../';
 import { SearchTermResultType } from '../../schemas/documents';
 import { useCaseInfoStore } from '../../stores';
 
-export const useSearchTracker = (trigger: any) => {
+export const useSearchTracker = (trigger: unknown) => {
   const request = useRequest();
   const { caseInfo } = useCaseInfoStore();
 

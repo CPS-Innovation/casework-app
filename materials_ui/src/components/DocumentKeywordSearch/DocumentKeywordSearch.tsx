@@ -263,7 +263,10 @@ export const DocumentKeywordSearch = () => {
                     </p>
 
                     <div className="govuk-inset-text">
-                      <p>{highlightExactMatches(first.text, first.words)}</p>
+                      <p>
+                        {first &&
+                          highlightExactMatches(first.text, first.words)}
+                      </p>
 
                       {isExpanded && remainingCount > 0 && (
                         <>

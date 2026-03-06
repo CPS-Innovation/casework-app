@@ -3,7 +3,7 @@ import { SELECTED_MATERIAL_QUERY_PARAM } from '../../constants/materials';
 
 export const useCaseMaterial = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const newQueryCommands: URLSearchParams = new URLSearchParams(searchParams);
+  const newQueryCommands = new URLSearchParams(searchParams);
   const selectedMaterialId = newQueryCommands.get(
     SELECTED_MATERIAL_QUERY_PARAM
   );

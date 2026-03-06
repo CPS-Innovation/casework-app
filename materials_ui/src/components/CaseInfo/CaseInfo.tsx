@@ -72,7 +72,7 @@ export const CaseInfo = ({ caseInfo }: Props) => {
                   data-module="govuk-button"
                   draggable="false"
                 >
-                  Start review
+                  Case review
                 </a>
               </div>
             </div>

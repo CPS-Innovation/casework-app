@@ -10,3 +10,15 @@ export const formatDate = (dtStr: string) => {
     year: 'numeric'
   });
 };
+
+export const formatShortDate = (dtStr: string) => {
+  const date = new Date(dtStr);
+
+  // FORMAT: "02/06/2020" (DD/MM/YYYY)
+
+  return date.toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  });
+};

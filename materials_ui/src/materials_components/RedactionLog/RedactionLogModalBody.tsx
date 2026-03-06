@@ -1,29 +1,13 @@
 import { useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
+import { TLookupsResponse } from '../../caseWorkApp/types/redaction';
 import { TDocument } from '../DocumentSelectAccordion/getters/getDocumentList';
+import { TRedactionType } from '../PdfRedactor/PdfRedactionTypeForm';
 import { TRedaction } from '../PdfRedactor/utils/coordUtils';
 import { Popover } from './Popover';
 import styles from './RedactionLogModal.module.scss';
 import { Checkbox } from './templates/Checkbox';
 import { ErrorSummary } from './templates/ErrorSummary';
-
-const redactionTypes = [
-  { id: 1, name: 'Named individual ' },
-  { id: 2, name: 'Title' },
-  { id: 3, name: 'Occupation' },
-  { id: 4, name: 'Relationship to others' },
-  { id: 5, name: 'Address' },
-  { id: 6, name: 'Location' },
-  { id: 7, name: 'Vehicle registration' },
-  { id: 8, name: 'NHS number' },
-  { id: 9, name: 'Date of birth' },
-  { id: 10, name: 'Bank details' },
-  { id: 11, name: 'NI Number' },
-  { id: 12, name: 'Phone number' },
-  { id: 13, name: 'Email address' },
-  { id: 14, name: 'Previous convictions' },
-  { id: 15, name: 'Other' }
-];
 
 type Mode = 'over-under' | 'list';
 
@@ -31,6 +15,8 @@ type RedactionLogModalBodyProps = {
   activeDocument?: TDocument | null;
   mode?: Mode;
   redactions?: TRedaction[];
+  selectedRedactionTypes?: TRedactionType[];
+  lookups?: TLookupsResponse;
 };
 
 export type RedactionLogFormValues = {
@@ -47,10 +33,12 @@ export type RedactionLogFormValues = {
 
 const RedactionTypesGrid = ({
   value,
-  onChange
+  onChange,
+  redactionTypes = []
 }: {
   value: number[];
   onChange: (next: number[]) => void;
+  redactionTypes?: Array<{ id: number; name: string }>;
 }) => {
   const selected = new Set(value);
 
@@ -80,8 +68,8 @@ const RedactionTypesGrid = ({
           key={`${type.id}`}
           id={`redaction-type-${type.id}`}
           label={type.name}
-          checked={selected.has(type.id)}
-          onChange={() => onToggle(type.id)}
+          checked={selected.has(parseInt(type.id.toString()))}
+          onChange={() => onToggle(parseInt(type.id.toString()))}
           isSmall
         />
       ))}
@@ -92,7 +80,8 @@ const RedactionTypesGrid = ({
 export const RedactionLogModalBody = ({
   activeDocument,
   mode,
-  redactions
+  selectedRedactionTypes,
+  lookups
 }: RedactionLogModalBodyProps) => {
   const {
     control,
@@ -105,12 +94,46 @@ export const RedactionLogModalBody = ({
 
   const underRedactionSelected = watch('underRedactionSelected');
   const overRedactionSelected = watch('overRedactionSelected');
+  const supportingNotes = watch('supportingNotes') ?? '';
+  const supportingNotesRemaining = Math.max(0, 400 - supportingNotes.length);
+
+  const redactionTypes =
+    lookups?.missedRedactions?.map((redaction) => ({
+      id: parseInt(redaction.id),
+      name: redaction.name
+    })) || [];
 
   return (
     <div className={styles.modalBody}>
       <ErrorSummary errors={errors} />
 
       <h2>Redaction details for: {activeDocument?.presentationTitle}</h2>
+
+      {mode === 'list' && selectedRedactionTypes && (
+        <div className="govuk-form-group">
+          {selectedRedactionTypes.length > 0 && (
+            <ul className="govuk-list">
+              {Object.entries(
+                selectedRedactionTypes.reduce(
+                  (acc, x) => {
+                    const current = acc[x.id];
+                    acc[x.id] = {
+                      name: current?.name ?? x.name,
+                      count: (current?.count ?? 0) + 1
+                    };
+                    return acc;
+                  },
+                  {} as Record<string, { name: string; count: number }>
+                )
+              ).map(([id, value]) => (
+                <li key={id}>
+                  {value.count} - {value.name}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
 
       {mode === 'over-under' && (
         <div
@@ -177,6 +200,7 @@ export const RedactionLogModalBody = ({
                         <RedactionTypesGrid
                           value={field.value ?? []}
                           onChange={field.onChange}
+                          redactionTypes={redactionTypes}
                         />
                       </>
                     )}
@@ -308,6 +332,7 @@ export const RedactionLogModalBody = ({
                         <RedactionTypesGrid
                           value={field.value ?? []}
                           onChange={field.onChange}
+                          redactionTypes={redactionTypes}
                         />
                       </>
                     )}
@@ -316,19 +341,6 @@ export const RedactionLogModalBody = ({
               </div>
             )}
           </fieldset>
-        </div>
-      )}
-
-      {redactions && redactions.length > 0 && (
-        <div className="govuk-form-group">
-          <legend className="govuk-fieldset__legend">Redaction details</legend>
-          <ul className="govuk-list">
-            {redactions.map((redaction) => (
-              <li key={redaction.id}>
-                {redaction.id} - Page {redaction.pageNumber}
-              </li>
-            ))}
-          </ul>
         </div>
       )}
 
@@ -354,7 +366,11 @@ export const RedactionLogModalBody = ({
             </p>
           )}
 
-          <a onClick={() => setShowPopover(!showPopover)}>
+          <a
+            className="govuk-link"
+            onClick={() => setShowPopover(!showPopover)}
+            style={{ fontSize: '19px' }}
+          >
             Guidance on supporting notes
           </a>
 
@@ -363,11 +379,14 @@ export const RedactionLogModalBody = ({
               title="Guidance on supporting notes"
               content={() => {
                 return (
-                  <ul style={{ paddingLeft: '1rem' }}>
-                    <li>Explain why the redaction was made</li>
-                    <li>Mention any relevant case details</li>
-                    <li>Keep notes clear and concise</li>
-                    <li>Avoid sensitive information</li>
+                  <ul style={{ paddingLeft: '1rem', fontSize: '19px' }}>
+                    <li>
+                      Detail the redaction issue identified, e.g. Statement of
+                      XX (Initials) DOB redacted
+                    </li>
+                    <li>Avoid recording full names</li>
+                    <li>Do not record sensitive personal data</li>
+                    <li>Supporting notes optional - 400 characters maximum</li>
                   </ul>
                 );
               }}
@@ -380,6 +399,7 @@ export const RedactionLogModalBody = ({
           id="supportingNotes"
           rows={5}
           style={{ width: '50%' }}
+          maxLength={400}
           {...register('supportingNotes', {
             maxLength: {
               value: 400,
@@ -388,7 +408,9 @@ export const RedactionLogModalBody = ({
           })}
         />
 
-        <p className="govuk-body">You have 400 characters remaining</p>
+        <p className="govuk-body govuk-!-margin-top-2 govuk-!-margin-bottom-0">
+          You have {supportingNotesRemaining} characters remaining
+        </p>
       </div>
     </div>
   );

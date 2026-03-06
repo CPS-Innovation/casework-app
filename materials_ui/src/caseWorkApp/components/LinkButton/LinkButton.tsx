@@ -1,5 +1,5 @@
-import React, { forwardRef } from "react";
-import classes from "./LinkButton.module.scss";
+import React, { forwardRef } from 'react';
+import classes from './LinkButton.module.scss';
 
 type LinkButtonProps = {
   id?: string;
@@ -9,7 +9,7 @@ type LinkButtonProps = {
   disabled?: boolean;
   ariaLabel?: string;
   ariaExpanded?: boolean;
-  type?: "button" | "submit" | "reset";
+  type?: 'button' | 'submit' | 'reset';
   onClick: () => void;
   onFocus?: () => void;
 };
@@ -26,7 +26,7 @@ export const LinkButton = forwardRef<HTMLButtonElement | null, LinkButtonProps>(
       ariaLabel,
       ariaExpanded,
       disabled = false,
-      type,
+      type
     },
     ref
   ) => {

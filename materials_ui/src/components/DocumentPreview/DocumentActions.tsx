@@ -1,5 +1,3 @@
-import PreviewIcon from '../../assets/images/preview-hide-arrow.svg';
-
 type Props = { label: string; isOpen: boolean; onDocumentOpen: () => void };
 
 export default function DocumentActions({
@@ -25,12 +23,6 @@ export default function DocumentActions({
       data-testid="buttonActions"
     >
       <span style={{ marginRight: '2px' }}>{isOpen ? 'Hide' : 'Preview'}</span>
-      <img
-        src={PreviewIcon}
-        alt="Actions Icon"
-        className={isOpen ? 'preview-icon-flipped govuk-link' : 'govuk-link'}
-        style={{ width: '12px', height: '12px', marginLeft: '4px' }}
-      />
     </a>
   );
 }

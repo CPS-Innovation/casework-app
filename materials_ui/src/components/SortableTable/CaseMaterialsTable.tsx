@@ -7,7 +7,8 @@ import { CaseMaterialsType } from '../../schemas';
 import {
   defaultFilterFn,
   defaultSearchFn,
-  defaultSortFn
+  defaultSortFn,
+  getSortFn
 } from '../../utils/filtering';
 import SortableTable, { Column } from './SortableTable';
 
@@ -34,8 +35,60 @@ export const CaseMaterialsTable = () => {
   const { filters } = useFilters('materials');
   const { materialTags } = useMaterialTags();
 
+  const columns = useMemo<Column<CaseMaterialsType>[]>(
+    () => [
+    {
+      key: 'subject',
+      heading: 'Material',
+      render: (row) => (
+        <>
+          {row.readStatus == READ_STATUS.UNREAD && <StatusTag status="New" />}
+          <span className="subject-field">{row.subject}</span>
+          {row.statusLabel && <StatusTag status={row.statusLabel} />}
+        </>
+      ),
+      isSortable: true
+    },
+    {
+      key: 'type',
+      heading: 'Type',
+      isSortable: true,
+      sortFn: ({ type: leftType }, { type: rightType }, direction) => {
+        const compareResult = leftType.localeCompare(
+          rightType,
+          undefined,
+          { numeric: true, sensitivity: 'base' }
+        );
+        return direction === 'ascending' ? compareResult : -compareResult;
+      }
+    },
+    { key: 'category', heading: 'Category', isSortable: true },
+    {
+      key: 'date',
+      heading: 'Date',
+      render: (row) => (
+        <span aria-label={row.date === null ? 'No date available' : undefined}>
+          {formatDate(row.date)}
+        </span>
+      ),
+      isSortable: true
+    },
+    {
+      key: 'status',
+      heading: 'Status',
+      render: (row) => <StatusTag status={row.status} />,
+      isSortable: true
+    }
+  ],
+    []
+  );
+
   const filteredSortedData = useMemo(() => {
-    const sortFn = defaultSortFn<CaseMaterialsType>(filters?.sort);
+    const sortFn = getSortFn(
+      columns,
+      filters?.sort,
+      (sortConfig) => defaultSortFn<CaseMaterialsType>(sortConfig)
+    );
     const sortByStatusFn = defaultSortFn<CaseMaterialsType>({
       column: 'statusLabel',
       direction: 'descending'
@@ -92,39 +145,6 @@ export const CaseMaterialsTable = () => {
     initialPageSize: DEFAULT_RESULTS_PER_PAGE,
     initialPage: currentPageParam ? +currentPageParam - 1 : 0
   });
-
-  const columns: Column<CaseMaterialsType>[] = [
-    {
-      key: 'subject',
-      heading: 'Material',
-      render: (row) => (
-        <>
-          {row.readStatus == READ_STATUS.UNREAD && <StatusTag status="New" />}
-          <span className="subject-field">{row.subject}</span>
-          {row.statusLabel && <StatusTag status={row.statusLabel} />}
-        </>
-      ),
-      isSortable: true
-    },
-    { key: 'type', heading: 'Type', isSortable: true },
-    { key: 'category', heading: 'Category', isSortable: true },
-    {
-      key: 'date',
-      heading: 'Date',
-      render: (row) => (
-        <span aria-label={row.date === null ? 'No date available' : undefined}>
-          {formatDate(row.date)}
-        </span>
-      ),
-      isSortable: true
-    },
-    {
-      key: 'status',
-      heading: 'Status',
-      render: (row) => <StatusTag status={row.status} />,
-      isSortable: true
-    }
-  ];
 
   const expandableRow = (row: CaseMaterialsType) => (
     <DocumentPreview row={row} />

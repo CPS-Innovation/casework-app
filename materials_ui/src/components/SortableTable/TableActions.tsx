@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { Button } from '../../caseWorkApp/components/button';
 import { useCaseInfoStore, useLogger } from '../../hooks';
 import { CaseMaterialsType } from '../../schemas';
 import { ButtonMenuComponent } from '../ButtonMenu/ButtonMenu';
@@ -26,7 +27,7 @@ export function TableActions({
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setIsSticky(!entry.isIntersecting);
+        if (entry) setIsSticky(!entry.isIntersecting);
       },
       { threshold: 0 }
     );
@@ -49,8 +50,10 @@ export function TableActions({
         <div className="search-input-row">
           {!isSticky && (
             <div className="filter-button">
-              <button
-                className="govuk-button govuk-button--secondary filter-toggle-button"
+              <Button
+                size="s"
+                data-module="govuk-button"
+                data-govuk-button-init=""
                 onClick={() => {
                   onSetShowFilter(!showFilter);
                   log({
@@ -60,7 +63,8 @@ export function TableActions({
                 }}
               >
                 {showFilter ? 'Hide' : 'Show'} filters
-              </button>
+                <span data-ismodified="1" className="br_wrap"></span>
+              </Button>
             </div>
           )}
 

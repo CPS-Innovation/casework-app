@@ -55,7 +55,7 @@ export const Layout = ({
     },
     {
       id: 'pcd-review',
-      name: 'PCD Review',
+      name: 'Reviews',
       href: getRoute('PCD_REVIEW'),
       active:
         location.pathname === '/' ||
@@ -67,7 +67,7 @@ export const Layout = ({
 
   useEffect(() => {
     if (title) {
-      document.title = title + ' - Casework App';
+      document.title = title + ' - Manage Materials and Communications';
     }
   }, [location, title]);
 

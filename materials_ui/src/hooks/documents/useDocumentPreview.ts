@@ -1,19 +1,19 @@
 import useSWR from 'swr';
-import { useRequest } from '../';
 import { QUERY_KEYS } from '../../constants/query';
 import { CaseMaterialDocumentPreviewResponseType } from '../../schemas/caseMaterials';
 import { useCaseInfoStore } from '../../stores';
+import { useAxiosInstance } from '../ui/useRequest';
 
 type Props = { materialId: number };
 
 export const useDocumentPreview = ({ materialId }: Props) => {
-  const request = useRequest();
+  const request = useAxiosInstance();
   const { caseInfo } = useCaseInfoStore();
 
   const getDocumentPreview = async () =>
     await request
       .get<CaseMaterialDocumentPreviewResponseType>(
-        `/urns/${caseInfo?.urn}/cases/${caseInfo?.id}/materials/${materialId}/preview`,
+        `/urns/${caseInfo?.urn}/cases/${caseInfo?.id}/materials/${materialId}/document`,
         { responseType: 'blob' }
       )
       .then((response) => response.data);

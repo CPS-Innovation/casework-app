@@ -14,6 +14,7 @@ import { DeleteIcon } from './icons/DeleteIcon';
 import { GovUkButton } from './templates/GovUkButton';
 import {
   convertCoordPairToXywh,
+  createRedaction,
   getPdfCoords,
   type TCoord,
   type TRedaction
@@ -182,7 +183,10 @@ export const PdfRedactorDeletionOverlay = (p: {
   onPageIsDeleteChange: (x: boolean) => void;
   pageNumber: number;
   pagesAmount: number;
+  pageDeleteButtonDisabled: boolean;
 }) => {
+  const { pageDeleteButtonDisabled = false } = p;
+
   return (
     <>
       {!p.pageIsDelete && (
@@ -199,10 +203,11 @@ export const PdfRedactorDeletionOverlay = (p: {
               gap: '8px',
               alignItems: 'center'
             }}
+            disabled={pageDeleteButtonDisabled}
           >
             <span
               style={{
-                background: '#1d70b8',
+                background: pageDeleteButtonDisabled ? 'gray' : '#1d70b8',
                 height: '25px',
                 width: '25px',
                 padding: '5px'
@@ -210,7 +215,13 @@ export const PdfRedactorDeletionOverlay = (p: {
             >
               <DeleteIcon color="white" />
             </span>
-            <div>
+            <div
+              style={{
+                textDecoration: pageDeleteButtonDisabled
+                  ? 'line-through'
+                  : 'none'
+              }}
+            >
               Delete page {p.pageNumber} / {p.pagesAmount}
             </div>
           </GovUkButton>
@@ -297,6 +308,7 @@ export const PdfRedactorPage = (p: {
   onPageRotationChange: (x: number) => void;
   pageIsDelete: boolean;
   onPageIsDeleteChange: (x: boolean) => void;
+  pageDeleteButtonDisabled: boolean;
 }) => {
   const { pageNumber, scale, redactions } = p;
 
@@ -376,6 +388,7 @@ export const PdfRedactorPage = (p: {
               onPageIsDeleteChange={p.onPageIsDeleteChange}
               pageNumber={p.pageNumber}
               pagesAmount={p.pagesAmount}
+              pageDeleteButtonDisabled={p.pageDeleteButtonDisabled}
             />
           )}
           <div
@@ -394,16 +407,13 @@ export const PdfRedactorPage = (p: {
                 const pdfPageRect = pdfPageWrapperElm.getBoundingClientRect();
 
                 if (firstCorner && mousePos) {
-                  const newRedaction: TRedaction = {
-                    id: crypto.randomUUID(),
-                    x1: firstCorner.x,
-                    y1: firstCorner.y,
-                    x2: mousePos.x,
-                    y2: mousePos.y,
+                  const newRedaction = createRedaction({
+                    coord1: firstCorner,
+                    coord2: mousePos,
                     pageNumber: p.pageNumber,
-                    pageHeight: pdfPageRect.height,
-                    pageWidth: pdfPageRect.width
-                  };
+                    pageRect: pdfPageRect,
+                    scale
+                  });
                   p.onAddRedactions([newRedaction]);
                   p.onPageRedactionsChange([
                     ...(redactions ? redactions : []),

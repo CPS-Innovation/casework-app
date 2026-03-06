@@ -38,7 +38,7 @@ export const useDocumentTypes = () => {
       if (!acc[item.group]) {
         acc[item.group] = [];
       }
-      acc[item.group].push(item);
+      acc[item.group]?.push(item);
       return acc;
     },
     {}
@@ -46,7 +46,7 @@ export const useDocumentTypes = () => {
 
   // Step 2: Sort each group by `name`
   for (const group in types) {
-    types[group].sort((a, b) => a.name.localeCompare(b.name));
+    types[group]?.sort((a, b) => a.name.localeCompare(b.name));
   }
 
   const selectOptions = (group: DocumentType['group']): SelectOption[] => {

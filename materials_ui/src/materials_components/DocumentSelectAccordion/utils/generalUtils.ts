@@ -1,7 +1,7 @@
 export const safeJsonParse = (x: unknown) => {
   try {
     return { success: true, data: JSON.parse(x as string) } as const;
-  } catch (error) {
+  } catch (_error) {
     return { success: false, error: {} } as const;
   }
 };

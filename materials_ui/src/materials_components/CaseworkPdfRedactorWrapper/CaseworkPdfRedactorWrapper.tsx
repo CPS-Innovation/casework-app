@@ -1,11 +1,16 @@
 import { ComponentProps, useEffect, useState } from 'react';
+import { Button } from '../../caseWorkApp/components/button';
 import { useAxiosInstance } from '../DocumentSelectAccordion/getters/getAxiosInstance';
 import { TDocument } from '../DocumentSelectAccordion/getters/getDocumentList';
 import { PdfRedactorCenteredModal } from '../PdfRedactor/modals/PdfRedactorCenteredModal';
 import { PdfRedactorMiniModal } from '../PdfRedactor/modals/PdfRedactorMiniModal';
 import { DeletionReasonForm } from '../PdfRedactor/PdfDeletionReasonForm';
-import { RedactionDetailsForm } from '../PdfRedactor/PdfRedactionTypeForm';
+import {
+  RedactionDetailsForm,
+  TRedactionType
+} from '../PdfRedactor/PdfRedactionTypeForm';
 import { PdfRedactor } from '../PdfRedactor/PdfRedactor';
+import { CloseIcon } from '../PdfRedactor/PdfRedactorComponents';
 import { GovUkButton } from '../PdfRedactor/templates/GovUkButton';
 import { TCoord, TRedaction } from '../PdfRedactor/utils/coordUtils';
 import { TIndexedDeletion } from '../PdfRedactor/utils/deletionUtils';
@@ -54,7 +59,7 @@ const getDocumentRedactionDisabledMessage = (
 
 const createCheckoutMessageFromCheckoutResponse = (p: { message?: string }) =>
   p.message
-    ? `It is not possible to redact as the document is already checked out by ${p.message} Please try again later.`
+    ? `It is not possible to redact as ${p.message}. Please try again later.`
     : 'Something has gone wrong, please try again later';
 
 export const CaseworkPdfRedactorWrapper = (p: {
@@ -71,6 +76,10 @@ export const CaseworkPdfRedactorWrapper = (p: {
   initRedactions: TRedaction[];
 }) => {
   const [isDocumentCheckedOut, setIsDocumentCheckedOut] = useState(false);
+  const [selectedRedactionTypes, setSelectedRedactionTypes] = useState<
+    TRedactionType[]
+  >([]);
+
   const documentCheckOutRequest = useDocumentCheckOutRequest({
     caseId: p.caseId,
     urn: p.urn
@@ -134,7 +143,7 @@ export const CaseworkPdfRedactorWrapper = (p: {
   };
   const undeletePage = (pageNumber: number) => {
     setIndexedDeletion((prev) => {
-      const { [pageNumber]: _, ...rest } = prev;
+      const { [pageNumber]: _deleted, ...rest } = prev;
       return rest;
     });
   };
@@ -171,16 +180,37 @@ export const CaseworkPdfRedactorWrapper = (p: {
               onEscPress={closeModal}
             >
               <div
-                style={{
-                  background: '#d4351c',
-                  padding: '20px',
-                  color: 'white'
-                }}
+                className="govuk-notification-banner govuk-notification-banner banner-error"
+                role="alert"
+                aria-labelledby="govuk-notification-banner-title"
+                data-module="govuk-notification-banner"
               >
-                <h1 className="govuk-heading-m" style={{ color: '#fff' }}>
-                  Unable to redact
-                </h1>
-                <div>{redactionDisabledModalProps.message}</div>
+                <div
+                  className="govuk-notification-banner__header"
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'baseline'
+                  }}
+                >
+                  <h2
+                    className="govuk-notification-banner__title"
+                    id="govuk-notification-banner-title"
+                  >
+                    Error
+                  </h2>
+                  <Button autoFocus onClick={closeModal}>
+                    <CloseIcon />
+                  </Button>
+                </div>
+                <div className="govuk-notification-banner__content">
+                  <h3 className="govuk-notification-banner__heading">
+                    Unable to redact
+                  </h3>
+                  <p className="govuk-body">
+                    {redactionDisabledModalProps.message}
+                  </p>
+                </div>
               </div>
             </PdfRedactorCenteredModal>
           );
@@ -224,6 +254,13 @@ export const CaseworkPdfRedactorWrapper = (p: {
                 documentId={redactionPopupProps.documentId}
                 urn={redactionPopupProps.urn}
                 caseId={redactionPopupProps.caseId}
+                onRedactionTypeChange={(type) => {
+                  if (!type) return;
+                  setSelectedRedactionTypes((prev) => {
+                    const next = [...prev, { id: type.id, name: type.name }];
+                    return next;
+                  });
+                }}
                 onCancelClick={() => {
                   removeRedactions(redactionPopupProps.redactionIds);
                   setRedactionPopupProps(null);
@@ -269,6 +306,8 @@ export const CaseworkPdfRedactorWrapper = (p: {
           onClose={() => setShowRedactionLogModal(false)}
           mode={redactionLogModalMode}
           redactions={redactionLogModalRedactions}
+          selectedRedactionTypes={selectedRedactionTypes}
+          activeDocument={p.document}
         />
       )}
 

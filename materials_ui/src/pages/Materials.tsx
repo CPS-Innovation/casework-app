@@ -59,7 +59,7 @@ export const MaterialsPage = () => {
   });
 
   const handleRenameClick = () => {
-    if (selectedItems.materials.length) {
+    if (selectedItems.materials[0]) {
       setSelectedMaterial(selectedItems.materials[0]);
     }
   };
@@ -101,10 +101,8 @@ export const MaterialsPage = () => {
   const handleViewInNewWindowClick = async () => {
     if (!selectedItems.materials) return;
 
-    try {
-      await openPreview(selectedItems.materials.map((item) => item.materialId));
-    } catch (error) {
-      console.error('Error opening document preview:', error);
+    for (const item of selectedItems.materials) {
+      await openPreview(item.materialId);
     }
   };
 
@@ -112,9 +110,15 @@ export const MaterialsPage = () => {
     {
       label: 'Rename',
       onClick: handleRenameClick,
-      hide:
-        [1031, 1059].includes(row?.documentTypeId) ||
-        selectedItems.materials?.length > 1
+      hide: (() => {
+        const rowDocId = row?.documentTypeId;
+        if (!rowDocId) return false;
+
+        return (
+          [1031, 1059].includes(rowDocId) ||
+          selectedItems.communications.length > 1
+        );
+      })()
     },
     {
       label: 'Reclassify',
@@ -125,13 +129,20 @@ export const MaterialsPage = () => {
       label: 'Update',
       onClick: () =>
         handleEditClick(row as CaseMaterialsType, getRoute('MATERIALS')),
-      hide:
-        selectedItems.materials.length > 1 ||
-        !['Exhibit', 'Statement'].includes(selectedItems.materials[0]?.category)
+      hide: (() => {
+        const itemCommsCategory = selectedItems.communications[0]?.category;
+        if (!itemCommsCategory) return;
+        return (
+          selectedItems.communications.length > 1 ||
+          !['Exhibit', 'Statement'].includes(itemCommsCategory)
+        );
+      })()
     },
     {
       label: 'Redact',
-      onClick: () => handleRedactClick(row?.materialId),
+      onClick: () => {
+        if (row?.materialId) return handleRedactClick(row.materialId);
+      },
       hide: selectedItems.materials?.length > 1
     },
     {
