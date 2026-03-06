@@ -87,18 +87,20 @@ const TabButtons: React.FC<TabButtonProps> = ({
             disabled={activeTabIndex === 0}
             variant="inverse"
             data-test-id="btn-tab-previous"
-            aria-label="tab previous"
+            aria-label="Previous tab"
             onClick={() => moveToNextOrPreviousTab(-1)}
           >
+            <span className="govuk-visually-hidden">Previous tab</span>
             <DownArrowIcon color="#1d70b8" rotateDegrees={90} />
           </Button>
           <Button
             disabled={activeTabIndex === items.length - 1}
             variant="inverse"
             data-test-id="btn-tab-next"
-            aria-label="tab next"
+            aria-label="Next tab"
             onClick={() => moveToNextOrPreviousTab(1)}
           >
+            <span className="govuk-visually-hidden">Next tab</span>
             <DownArrowIcon color="#1d70b8" rotateDegrees={270} />
           </Button>
         </div>
