@@ -16,7 +16,7 @@ resource "azurerm_linux_web_app" "as_web_materials" {
   site_config {
     ftps_state              = "FtpsOnly"
     http2_enabled           = true
-    app_command_line        = "npx serve -s" loading a nbode lirary called serve, a basic webserver. runs permanently, runs the static werbsite sitting on app service. so we can add headers during commnad line. 
+    app_command_line        = "npx serve -s"
     always_on               = true
     vnet_route_all_enabled  = true
     minimum_tls_version     = "1.3"
