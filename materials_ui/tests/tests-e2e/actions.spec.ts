@@ -4,7 +4,7 @@ import { mockCaseMaterials } from '../mocks/mockCaseMaterials';
 
 test.describe('Actions', () => {
   test.beforeEach(async ({ page }) => {
-    page.goto('./materials');
+    await page.goto('./materials');
   });
   test('Discard material', async ({ page }) => {
     mockRoute(
