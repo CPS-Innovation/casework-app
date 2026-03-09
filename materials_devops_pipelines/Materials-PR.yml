@@ -134,10 +134,10 @@ stages:
             displayName: "npm prettier"
 
           - script: |
-              npx lint-staged
-            displayName: "Run lint-staged"
+              npx eslint . --max-warnings=0
+            displayName: "ESLint"
             workingDirectory: '$(workingDir)'
-
+          
           #Build the application
           - task: Npm@1
             displayName: "Build UI Package"
