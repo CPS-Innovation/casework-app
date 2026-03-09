@@ -1,17 +1,16 @@
 ---
-name: '$(majorMinorVersion).$(Year:yy)$(DayOfYear).$(semanticVersion)-ci'
+name: '$(majorMinorVersion).$(Year:yy)$(DayOfYear).$(semanticVersion)-pr'
 
 trigger: none
-pr: none
 
-# pr:
-#   branches:
-#     include:
-#       - main
-#   paths:
-#     include:
-#       - terraform/*
-#       - materials_ui/*
+pr:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - terraform/*
+      - materials_ui/*
 
 parameters:
 - name: runTerraform
@@ -134,13 +133,12 @@ stages:
               customCommand: "run format"
             displayName: "npm prettier"
 
-# commenting out to test other parts of pipeline
-          # - task: Npm@1
-          #   displayName: 'Lint Code'
-          #   inputs:
-          #     command: 'custom'
-          #     customCommand: 'run lint'
-          #     workingDir: '$(workingDir)'
+          - task: Npm@1
+            displayName: 'Lint Code'
+            inputs:
+              command: 'custom'
+              customCommand: 'run lint'
+              workingDir: '$(workingDir)'
 
           #Build the application
           - task: Npm@1
@@ -158,24 +156,6 @@ stages:
               VITE_GLOBAL_SCRIPT_URL: $(GLOBAL_SCRIPT_URL)
               VITE_BASE_URL: $(BASE_URL)
               VITE_E2E: True
-
-# ---------- UNIT TESTS (Vitest) ----------
-          # - task: Npm@1
-          #   displayName: 'Run Unit Tests'
-          #   inputs:
-          #     command: 'custom'
-          #     customCommand: 'run test'
-          #     workingDir: '$(workingDir)'
-
-          # - task: PublishTestResults@2
-          #   displayName: 'Publish Unit Test Results (JUnit)'
-          #   inputs:
-          #     testResultsFormat: 'JUnit'
-          #     testResultsFiles: '$(workingDir)/unit-test-results.xml'
-          #     testRunTitle: "Unit tests"
-          #     publishRunAttachments: false
-          #     mergeTestResults: true
-          #   condition: always()
 
 # ---------- E2E TESTS (Playwright) ----------
           - task: Npm@1
