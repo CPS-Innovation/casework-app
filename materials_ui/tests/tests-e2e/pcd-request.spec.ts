@@ -3,17 +3,15 @@ import { mockRoute } from '../helpers';
 import { mockPcdCoreResponse } from '../mocks/pcd/mockPcdCore';
 import { mockPcdRequestResponse } from '../mocks/pcd/mockPcdRequest';
 
-// cases/2172759/pcds/145739/pcd-request
 test.describe('PCD Request Page', () => {
   test('T-001: page loads list of PCD requests as expected', async ({
     page
   }) => {
     mockRoute(page, 'pcds/2167259/pcd-request-core', mockPcdCoreResponse());
     mockRoute(page, '/pcd-request', mockPcdRequestResponse());
-    await page.goto('./pcd-request/145739');
-    await page
-      .getByRole('heading', { name: 'Loading status' })
-      .waitFor({ state: 'detached' });
+    await page.goto('./pcd-request/145739', { waitUntil: 'domcontentloaded' });
+    await expect(page.getByText('Loading case')).toBeVisible();
+    await page.getByText('Loading case').waitFor({ state: 'detached' });
 
     await expect(
       page.getByRole('heading', { name: 'Police details' })
@@ -33,10 +31,9 @@ test.describe('PCD Request Page', () => {
   }) => {
     mockRoute(page, 'pcds/2167259/pcd-request-core', mockPcdCoreResponse());
     mockRoute(page, '/pcd-request', mockPcdRequestResponse());
-    await page.goto('./pcd-request/145739');
-    await page
-      .getByRole('heading', { name: 'Loading status' })
-      .waitFor({ state: 'detached' });
+    await page.goto('./pcd-request/145739', { waitUntil: 'domcontentloaded' });
+    await expect(page.getByText('Loading case')).toBeVisible();
+    await page.getByText('Loading case').waitFor({ state: 'hidden' });
     await expect(
       page.getByRole('heading', { name: 'Police details' })
     ).toBeVisible();
@@ -48,10 +45,9 @@ test.describe('PCD Request Page', () => {
     page
   }) => {
     mockRoute(page, 'pcds/2167259/pcd-request-core', []);
-    await page.goto('./pcd-request/');
-    await page
-      .getByRole('heading', { name: 'Loading status' })
-      .waitFor({ state: 'detached' });
+    await page.goto('./pcd-request', { waitUntil: 'domcontentloaded' });
+    await expect(page.getByText('Loading case')).toBeVisible();
+    await page.getByText('Loading case').waitFor({ state: 'hidden' });
     await expect(
       page.getByText('There are no PCD Requests to show.')
     ).toBeVisible();
