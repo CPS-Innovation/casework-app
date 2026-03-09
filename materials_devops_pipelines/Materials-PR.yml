@@ -133,12 +133,10 @@ stages:
               customCommand: "run format"
             displayName: "npm prettier"
 
-          - task: Npm@1
-            displayName: 'Lint Code'
-            inputs:
-              command: 'custom'
-              customCommand: 'run lint'
-              workingDir: '$(workingDir)'
+          - script: |
+              npx lint-staged
+            displayName: "Run lint-staged"
+            workingDirectory: '$(workingDir)'
 
           #Build the application
           - task: Npm@1
