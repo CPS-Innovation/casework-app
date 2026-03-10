@@ -89,7 +89,7 @@ stages:
   - stage: Check_Terraform
     condition: succeeded()
     displayName: Check Main Terraform
-    dependsOn: Wait_For_Running_PRs
+    dependsOn: Determine_Changes
     variables:
       runTerraform: $[stageDependencies.Determine_Changes.Generate_Diff.outputs['Change_Results.RUN_TERRAFORM']]
     jobs:
@@ -148,6 +148,7 @@ stages:
 
   - stage: Build_and_Test_UI
     displayName: Front End Checks
+    dependsOn: Determine_Changes
     variables:
       runUI: $[stageDependencies.Determine_Changes.Generate_Diff.outputs['Change_Results.RUN_UI_CODEBASE']]
     jobs:
