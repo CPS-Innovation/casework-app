@@ -160,10 +160,8 @@ stages:
             eq(${{ parameters.RunUIBuild }}, true),
             eq(variables['runUI'], 'true')
           )
-        ##### Temp Entry ##########
         pool:
           name: $(dev-build-agent)
-          ###########################
         steps:
         
           # Setup Node.js
