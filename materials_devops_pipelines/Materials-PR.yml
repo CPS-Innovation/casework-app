@@ -13,8 +13,12 @@ pr:
       - materials_ui/*
 
 parameters:
-- name: runTerraform
-  displayName: Run terrform plan checks
+- name: RunTerraformPlan
+  displayName: Run terraform plan checks
+  type: boolean
+  default: true
+- name: RunUIBuild
+  displayName: Run UI build checks
   type: boolean
   default: true
 
@@ -83,14 +87,18 @@ stages:
             displayName: Processing changes to repo
 
   - stage: Check_Terraform
-    condition: eq(variables.runTerraform, 'true')
+    condition: succeeded()
     displayName: Check Main Terraform
     dependsOn: Wait_For_Running_PRs
     variables:
       runTerraform: $[stageDependencies.Determine_Changes.Generate_Diff.outputs['Change_Results.RUN_TERRAFORM']]
     jobs:
       - job: Validate_Main_Terraform
-        condition: eq(${{ parameters.runTerraform }}, true)
+        condition: |
+          or(
+            eq(${{ parameters.RunTerraformPlan }}, true),
+            eq(variables['runTerraform'], 'true')
+          )
         displayName: Validate Main Terraform
         pool:
           name: $(dev-build-agent)
@@ -145,7 +153,11 @@ stages:
     jobs:
       - job: Build_and_Test
         displayName: 'Build & Test App'
-        condition: eq(${{ parameters.runUI }}, true)
+        condition: |
+          or(
+            eq(${{ parameters.RunUIBuild }}, true),
+            eq(variables['runUI'], 'true')
+          )
         ##### Temp Entry ##########
         pool:
           name: $(dev-build-agent)
