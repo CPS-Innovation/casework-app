@@ -47,11 +47,47 @@ stages:
             parameters:
               devOpsPatToken: $(System.AccessToken)
 
+  - stage: Determine_Changes
+    displayName: Determine Changes
+    dependsOn: Wait_For_Running_PRs
+    jobs:
+      - job: Generate_Diff
+        pool:
+          name: $(dev-build-agent)
+        steps:
+          - task: PowerShell@2
+            inputs:
+              targetType: 'inline'
+              script: |
+                $files = $(git diff --name-only origin/main)
+                $temp=$files -split ' '
+                $count=$temp.Length
+                echo "Total changed $count files"
+
+                For ($i=0; $i -lt $temp.Length; $i++)
+                {
+                  $name=$temp[$i]
+                  echo "this is $name file"
+                  if ($name -like 'terraform/*')
+                  {
+                    echo "run terraform..."
+                    Write-Host "##vso[task.setvariable variable=RUN_TERRAFORM;isOutput=true]true"
+                  }
+                  if ($name -like 'materials_ui/*')
+                  {
+                    echo "run UI codebase ..."
+                    Write-Host "##vso[task.setvariable variable=RUN_UI_CODEBASE;isOutput=true]true"
+                  }
+                }
+            name: Change_Results
+            displayName: Processing changes to repo
 
   - stage: Check_Terraform
-    condition: succeeded()
+    condition: eq(variables.runTerraform, 'true')
     displayName: Check Main Terraform
     dependsOn: Wait_For_Running_PRs
+    variables:
+      runTerraform: $[stageDependencies.Determine_Changes.Generate_Diff.outputs['Change_Results.RUN_TERRAFORM']]
     jobs:
       - job: Validate_Main_Terraform
         condition: eq(${{ parameters.runTerraform }}, true)
@@ -104,10 +140,12 @@ stages:
 
   - stage: Build_and_Test_UI
     displayName: Front End Checks
+    variables:
+      runUI: $[stageDependencies.Determine_Changes.Generate_Diff.outputs['Change_Results.RUN_UI_CODEBASE']]
     jobs:
-
       - job: Build_and_Test
         displayName: 'Build & Test App'
+        condition: eq(${{ parameters.runUI }}, true)
         ##### Temp Entry ##########
         pool:
           name: $(dev-build-agent)
