@@ -64,25 +64,7 @@ stages:
               targetType: 'inline'
               script: |
                 $files = $(git diff --name-only origin/main)
-                $temp=$files -split ' '
-                $count=$temp.Length
-                echo "Total changed $count files"
-
-                For ($i=0; $i -lt $temp.Length; $i++)
-                {
-                  $name=$temp[$i]
-                  echo "this is $name file"
-                  if ($name -like 'terraform/*')
-                  {
-                    echo "run terraform..."
-                    Write-Host "##vso[task.setvariable variable=RUN_TERRAFORM;isOutput=true]true"
-                  }
-                  if ($name -like 'materials_ui/*')
-                  {
-                    echo "run UI codebase ..."
-                    Write-Host "##vso[task.setvariable variable=RUN_UI_CODEBASE;isOutput=true]true"
-                  }
-                }
+                $files
             name: Change_Results
             displayName: Processing changes to repo
 
