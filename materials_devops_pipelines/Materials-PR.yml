@@ -63,8 +63,7 @@ stages:
             inputs:
               targetType: 'inline'
               script: |
-                $files = $(git diff --name-only origin/main)
-                $files
+                git diff --name-only origin/main
             name: Change_Results
             displayName: Processing changes to repo
 
