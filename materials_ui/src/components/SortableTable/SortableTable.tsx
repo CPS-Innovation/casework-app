@@ -105,34 +105,41 @@ const SortableTable = <T,>({
               </th>
             )}
             {columns.length &&
-              columns.map(({ key, heading, isSortable }) => (
-                <th
-                  key={key}
-                  scope="col"
-                  className="govuk-table__header"
-                  aria-sort={
-                    filters?.sort?.column === key && filters?.sort.direction
-                      ? filters.sort.direction
-                      : 'none'
-                  }
-                >
-                  {isSortable ? (
-                    <button
-                      type="button"
-                      className="sortable-table-header-button"
-                      onClick={() => setSort(key)}
-                      aria-label={`Sort ${heading} by ${
-                        filters?.sort?.direction
-                      } order`}
-                    >
-                      {heading}
-                    </button>
-                  ) : (
-                    heading
-                  )}
-                </th>
-              ))}
-            <td className="govuk-table__header" style={{ width: '10%' }}></td>
+              columns.map(({ key, heading, isSortable }) => {
+                const isSortedColumn =
+                  filters?.sort?.column === key && !!filters?.sort?.direction;
+                const ariaSortValue = isSortable
+                  ? isSortedColumn && filters?.sort?.direction
+                    ? filters.sort.direction
+                    : 'none'
+                  : undefined;
+
+                return (
+                  <th
+                    key={key}
+                    scope="col"
+                    className="govuk-table__header"
+                    aria-sort={ariaSortValue}
+                  >
+                    {isSortable ? (
+                      <button
+                        type="button"
+                        className="sortable-table-header-button"
+                        onClick={() => setSort(key)}
+                      >
+                        {heading}
+                      </button>
+                    ) : (
+                      heading
+                    )}
+                  </th>
+                );
+              })}
+            <th
+              scope="col"
+              className="govuk-table__header"
+              style={{ width: '10%' }}
+            ></th>
           </tr>
         </thead>
 
