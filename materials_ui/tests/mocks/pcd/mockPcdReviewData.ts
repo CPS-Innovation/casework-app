@@ -2,12 +2,12 @@ import { PCDReviewResponseType } from '../../../src/schemas/pcdReview';
 
 const PcdReviewReviewDataResponse: PCDReviewResponseType = {
   author: 'Erika Farrugia',
-  caseId: 2161796,
+  caseId: 2167259,
   decisionRequestedDate: '01/05/2025',
   decisionMadeDateTime: '19/05/2025 16:42',
   defendantDecisions: [
     {
-      id: 2785312,
+      id: 2167259,
       defendantName: 'SIMPSON Homer',
       decisionDescription: 'K - No Prosecution - Evidential',
       decision: 15,
@@ -82,7 +82,7 @@ const PcdReviewReviewDataResponse: PCDReviewResponseType = {
       cpscovidUrgency: ''
     }
   ],
-  urn: '16XL9132025',
+  urn: '16123630825',
   currentEvent: {
     id: 4380522,
     name: 'Pre-charge Decision',
