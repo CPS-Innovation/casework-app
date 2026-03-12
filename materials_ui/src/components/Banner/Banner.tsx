@@ -12,9 +12,7 @@ export const Banner = ({
   const bannerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (type === 'success') {
-      bannerRef.current?.focus();
-    }
+    bannerRef.current?.focus();
   }, []);
 
   const getBannerClass = () => {
@@ -45,7 +43,7 @@ export const Banner = ({
     <div
       ref={bannerRef}
       className={`govuk-notification-banner ${getBannerClass()}`}
-      role={type === 'success' ? 'alert' : 'region'}
+      role="alert"
       aria-labelledby="govuk-notification-banner-title"
       data-module="govuk-notification-banner"
       tabIndex={-1}
