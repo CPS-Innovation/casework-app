@@ -11,7 +11,7 @@ export const DropdownListItem2 = (
     borderBottom: boolean;
   }
 ) => {
-  const { style, ...props } = initProps;
+  const { ...props } = initProps;
   return (
     <div style={{ whiteSpace: 'nowrap', borderBottom: 'solid 2px black' }}>
       <Button style={{ width: '100%', textAlign: 'right' }} {...props} />
