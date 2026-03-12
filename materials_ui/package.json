@@ -21,7 +21,8 @@
     "e2e:debug": "playwright test --debug",
     "e2e:report": "playwright show-report",
     "dev1": "npm run dev",
-    "dev2": "npm run tsc"
+    "dev2": "npm run tsc",
+    "postinstall": "cd .. && npm install"
   },
   "keywords": [],
   "author": "",
