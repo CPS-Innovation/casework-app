@@ -61,5 +61,5 @@ export const categoriseDocument = (
   if (documentTypeIdsMap.uncategorised.includes(doc.cmsDocType.documentTypeId))
     return 'uncategorised' as const;
 
-  return 'uncategorised' as const;
+  // return 'uncategorised' as const;
 };
