@@ -564,3 +564,15 @@ strong {
   border-bottom: 0.625rem solid #1d70b8;
 }
 
+.notes-icon-button {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+
+  &--disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
