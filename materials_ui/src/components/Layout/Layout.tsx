@@ -74,7 +74,7 @@ export const Layout = ({
   return (
     <>
       <main className="main-container">
-        <div role="status" aria-atomic="true">
+        <div>
           {banners &&
             banners.map((banner, index) => <Banner key={index} {...banner} />)}
         </div>
