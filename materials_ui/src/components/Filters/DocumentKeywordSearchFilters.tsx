@@ -6,8 +6,7 @@ import {
   initDocsOnDocCategoryNamesMap
 } from '../../materials_components/DocumentSelectAccordion/utils/categoriseDocumentHelperUtils';
 import Checkbox from '../Checkbox/Checkbox';
-import { SearchInput } from '../SearchInput/SearchInput';
-import './Filters.scss';
+import { FilterForm } from './FilterForm';
 
 export const DocumentKeywordSearchFilters = () => {
   const {
@@ -64,59 +63,13 @@ export const DocumentKeywordSearchFilters = () => {
   //   })();
 
   return (
-    <div className="filters-container" id="filters">
-      <div
-        style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}
-      >
-        <h2 className="govuk-heading-m" style={{ marginBottom: '0px' }}>
-          Filters
-        </h2>
-
-        <a
-          href="#"
-          className="govuk-link link"
-          onClick={(event) => {
-            event.preventDefault();
-            resetFilters();
-          }}
-          style={{ fontSize: '19px' }}
-          aria-label="Clear filters"
-        >
-          Clear filters
-        </a>
-      </div>
-
-      {/* <div className="govuk-form-group">
-        <fieldset className="govuk-fieldset">
-          <legend className="govuk-fieldset__legend govuk-fieldset__legend--m">
-            <h3 className="govuk-heading-s small-heading-spacing">
-              Document type
-            </h3>
-          </legend>
-          {docTypes.map((type) => (
-            <Checkbox
-              id={`documentType-${type}`}
-              label={`${type} (${docsByDocType[type] ?? 0})`}
-              checked={
-                shallowFilters?.filters?.documentType?.includes(type) || false
-              }
-              onChange={(event) => handleCheckboxChange('documentType', event)}
-              value={type}
-              key={type}
-            />
-          ))}
-        </fieldset>
-      </div> */}
-
-      <div className="govuk-form-group">
-        <SearchInput
-          placeholder=""
-          label="Search materials"
-          id="search"
-          onChange={handleSearchChange}
-          defaultValue={filters?.search || ''}
-        />
-      </div>
+    <FilterForm
+      onSubmit={handleFiltersSubmit}
+      onReset={resetFilters}
+      onSearchChange={handleSearchChange}
+      searchLabel="Search materials"
+      defaultSearchValue={filters?.search || ''}
+    >
 
       <div className="govuk-form-group">
         <div className="govuk-form-group">
@@ -160,33 +113,6 @@ export const DocumentKeywordSearchFilters = () => {
           ))}
         </fieldset>
       </div>
-
-      <div
-        style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}
-      >
-        <button
-          type="submit"
-          className="govuk-button"
-          data-module="govuk-button"
-          onClick={handleFiltersSubmit}
-          data-testid="applyFiltersButton"
-        >
-          Apply filters
-        </button>
-
-        <a
-          href="#"
-          className="govuk-link link"
-          onClick={(event) => {
-            event.preventDefault();
-            resetFilters();
-          }}
-          style={{ fontSize: '19px', textAlign: 'right' }}
-          aria-label="Clear filters"
-        >
-          Clear filters
-        </a>
-      </div>
-    </div>
+    </FilterForm>
   );
 };
