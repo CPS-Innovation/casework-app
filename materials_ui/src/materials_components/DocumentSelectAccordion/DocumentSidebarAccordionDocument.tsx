@@ -167,12 +167,16 @@ export const DocumentSidebarAccordionDocumentTemplate = (p: {
           {p.ActionComponent && <div>{p.ActionComponent}</div>}
         </div>
         <div>
-          <a className="govuk-link" onClick={() => p.onDocumentClick()}>
+          <button
+            type="button"
+            className="govuk-link button-as-link"
+            onClick={() => p.onDocumentClick()}
+          >
             {p.documentName}
-          </a>
+          </button>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <div>Date: {p.documentDate}</div>
+          <span>Date: {p.documentDate}</span>
 
           <span
             onMouseEnter={() => {

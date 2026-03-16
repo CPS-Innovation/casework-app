@@ -63,13 +63,14 @@ export const GovUkAccordionOpenCloseLinkTemplate = (p: {
 }) => {
   return (
     <div style={{ display: 'flex', justifyContent: 'end' }}>
-      <a
-        className="govuk-link"
+      <button
+        type="button"
+        className="govuk-link button-as-link"
         onClick={() => p.onClick()}
-        style={{ paddingBottom: '8px', cursor: 'pointer' }}
+        style={{ paddingBottom: '8px' }}
       >
         {p.isExpandedController ? 'Close' : 'Open'} all sections
-      </a>
+      </button>
     </div>
   );
 };
