@@ -65,6 +65,7 @@ export function ButtonMenuComponent({
       .includes(event.target as HTMLButtonElement);
 
     if (isToggle) {
+      if (isDisabled) return;
       switch (key) {
         case 'ArrowDown':
           event.preventDefault();
@@ -134,7 +135,6 @@ export function ButtonMenuComponent({
         aria-haspopup="true"
         aria-expanded={openMenu}
         aria-disabled={isDisabled}
-        disabled={isDisabled}
         onClick={() => handleToggleMenu(false)}
       >
         <span>
