@@ -114,7 +114,7 @@ stages:
             displayName: Terraform > Install
             inputs:
               terraformVersion: $(terraform-version)
-              
+
           # Terraform Init
           - bash: |
               terraform init \
