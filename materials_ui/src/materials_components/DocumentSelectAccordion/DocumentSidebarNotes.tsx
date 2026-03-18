@@ -13,6 +13,8 @@ import { GovUkLink } from './templates/GovUkLink';
 import { GovUkTextarea } from './templates/GovUkTextarea';
 import { formatDate } from './utils/dateUtils';
 
+const NOTES_CHAR_COUNT_MAX_LENGTH = 500;
+
 export const DocumentSidebarNotes = (p: {
   urn: string;
   caseId: number;
@@ -21,6 +23,7 @@ export const DocumentSidebarNotes = (p: {
 }) => {
   const [text, setText] = useState('');
   const [savedSuccessfully, setSavedSuccessfully] = useState(false);
+  const remainingCharacters = NOTES_CHAR_COUNT_MAX_LENGTH - text.length;
 
   const axiosInstance = useAxiosInstance();
   const documentNotes = useGetDocumentNotes({
@@ -72,10 +75,13 @@ export const DocumentSidebarNotes = (p: {
             id="notes-textarea"
             value={text}
             onInput={(x) => setText(x)}
-            maxLength={500}
+            aria-describedby="notes-char-count"
+            maxLength={NOTES_CHAR_COUNT_MAX_LENGTH}
             rows={5}
           />
-          <div>You have {500 - text.length} characters remaining</div>
+          <span id="notes-char-count" role="status" aria-live="polite" aria-atomic="true">
+            You have {remainingCharacters} characters remaining
+          </span>
           <div
             style={{
               display: 'flex',
