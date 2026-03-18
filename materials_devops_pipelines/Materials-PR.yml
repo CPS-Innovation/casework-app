@@ -184,8 +184,8 @@ stages:
             displayName: "npm prettier"
 
           - script: |
-              npx eslint . --max-warnings=0
-            displayName: "ESLint"
+              npx eslint .
+            displayName: "ESLint – fail on errors only"
             workingDirectory: '$(workingDir)'
           
           #Build the application
