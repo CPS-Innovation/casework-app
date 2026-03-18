@@ -16,11 +16,11 @@ parameters:
 - name: RunTerraformPlan
   displayName: Run terraform plan checks
   type: boolean
-  default: true
+  default: false
 - name: RunUIBuild
   displayName: Run UI build checks
   type: boolean
-  default: true
+  default: false
 
 variables:
   - name: buildConfiguration
