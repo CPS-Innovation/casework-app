@@ -1,4 +1,4 @@
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useEffect, useRef } from 'react';
 import { BannerType } from '../../schemas';
 import './Banner.scss';
 
@@ -9,6 +9,12 @@ export const Banner = ({
   header,
   content
 }: PropsWithChildren<Props>) => {
+  const bannerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    bannerRef.current?.focus();
+  }, []);
+
   const getBannerClass = () => {
     switch (type) {
       case 'success':
@@ -35,10 +41,12 @@ export const Banner = ({
 
   return (
     <div
+      ref={bannerRef}
       className={`govuk-notification-banner ${getBannerClass()}`}
-      role="region"
+      role="alert"
       aria-labelledby="govuk-notification-banner-title"
       data-module="govuk-notification-banner"
+      tabIndex={-1}
     >
       <div className="govuk-notification-banner__header">
         <h2

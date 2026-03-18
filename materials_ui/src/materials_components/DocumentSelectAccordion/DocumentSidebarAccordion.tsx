@@ -70,6 +70,7 @@ export const DocumentSidebarAccordion = (p: {
   const newData = categoryDetails.map((x) => ({
     key: x.label,
     label: x.label,
+    categoryName: x.categoryName,
     documents: docsOnDocCategoryNames[x.categoryName]
   }));
 
@@ -82,7 +83,12 @@ export const DocumentSidebarAccordion = (p: {
       <DocumentSidebarWrapper>
         <GovUkAccordionTemplate>
           {newData.map((item) => {
-            if (item.label === 'Communication') return;
+            if (item.categoryName === 'communication') return;
+            if (
+              item.categoryName === 'uncategorised' &&
+              item.documents.length === 0
+            )
+              return;
 
             return (
               <GovUkAccordionSectionTemplate

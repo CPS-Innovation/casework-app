@@ -3,7 +3,12 @@ import { DocumentSidebarTag } from './DocumentSidebarTag';
 import { TDocument } from './getters/getDocumentList';
 import { useGetDocumentNotes } from './getters/getDocumentNotes';
 import './templates/GovUkAccordion.scss';
-import { NotesIcon } from './templates/NotesIcon';
+import {
+  NotesIcon,
+  NotesStatus,
+  NOTES_ARIA_LABELS,
+  NOTES_STATUS
+} from './templates/NotesIcon';
 import { formatShortDate } from './utils/dateUtils';
 
 export const DocumentSidebarAccordionNoDocumentsAvailable = () => {
@@ -98,8 +103,8 @@ export const DocumentSidebarAccordionDocument = (p: {
           p.document.cmsDocType.documentType === 'PCD' ||
           p.document.cmsDocType.documentCategory === 'Review'
         )
-          return 'disabled';
-        return p.document.hasNotes ? 'newNotes' : 'none';
+          return NOTES_STATUS.DISABLED;
+        return p.document.hasNotes ? NOTES_STATUS.NEW_NOTES : NOTES_STATUS.NONE;
       })()}
       onDocumentClick={p.onDocumentClick}
       onNotesClick={p.onNotesClick}
@@ -119,7 +124,7 @@ export const DocumentSidebarAccordionDocumentTemplate = (p: {
   NewTag?: boolean;
   ReclassifiedTag?: boolean;
   UpdatedTag?: boolean;
-  notesStatus: 'disabled' | 'newNotes' | 'none';
+  notesStatus: NotesStatus;
   showLeftBorder?: boolean;
   showRightBorder: boolean;
   backgroundColor: 'blue' | 'white';
@@ -162,12 +167,16 @@ export const DocumentSidebarAccordionDocumentTemplate = (p: {
           {p.ActionComponent && <div>{p.ActionComponent}</div>}
         </div>
         <div>
-          <a className="govuk-link" onClick={() => p.onDocumentClick()}>
+          <button
+            type="button"
+            className="govuk-link button-as-link"
+            onClick={() => p.onDocumentClick()}
+          >
             {p.documentName}
-          </a>
+          </button>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <div>Date: {p.documentDate}</div>
+          <span>Date: {p.documentDate}</span>
 
           <span
             onMouseEnter={() => {
@@ -189,14 +198,17 @@ export const DocumentSidebarAccordionDocumentTemplate = (p: {
                 <Tooltip text={p.tooltipText} />
               </span>
             )}
-            <a
-              className={`govuk-link ${p.notesStatus === 'disabled' ? 'disabled' : ''}`}
+            <button
+              type="button"
+              className={`notes-icon-button${p.notesStatus === NOTES_STATUS.DISABLED ? ' notes-icon-button--disabled' : ''}`}
+              aria-label={NOTES_ARIA_LABELS[p.notesStatus]}
+              disabled={p.notesStatus === NOTES_STATUS.DISABLED}
               onClick={() => {
-                if (p.notesStatus !== 'disabled') p.onNotesClick();
+                p.onNotesClick();
               }}
             >
               <NotesIcon width={20} notesStatus={p.notesStatus} />
-            </a>
+            </button>
           </span>
         </div>
       </div>

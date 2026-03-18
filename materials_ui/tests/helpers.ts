@@ -15,7 +15,7 @@ export async function mockRoute(page: Page, endpoint: string, data?: unknown) {
 }
 
 export async function mockServerError(page: Page, endpoint: string) {
-  await page.route(`./${endpoint}`, (route) => {
+  await page.route(`**${endpoint}`, (route) => {
     route.fulfill({
       status: 401,
       contentType: 'application/json',

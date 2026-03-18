@@ -1,7 +1,7 @@
 import { PCDInitialReviewResponseType } from '../../../src/schemas/pcdReview';
 
 const PcdReviewInitialDataResponse: PCDInitialReviewResponseType = {
-  caseId: 2161796,
+  caseId: 2167259,
   allocation:
     'Make your recommendation for how the case should be allocated and describe your reasoning for it.',
   caseSummary:

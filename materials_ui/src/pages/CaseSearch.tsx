@@ -45,14 +45,12 @@ export const CaseSearchPage = () => {
       <div className="govuk-main-wrapper govuk-main-wrapper--auto-spacing">
         <div className="govuk-grid-row govuk-grid-row--case-search">
           <div className="govuk-grid-column-two-thirds">
-            {errors.urn &&
-              (errors.urn.type === 'required' ||
-                (errors.urn.type === 'pattern' && (
-                  <ErrorSummary
-                    errorTitle={'There is a problem'}
-                    errorMessage={errors.urn.message || ''}
-                  />
-                )))}
+            {errors.urn && errors.urn.type === 'required' && (
+              <ErrorSummary
+                errorTitle="There is a problem"
+                errorMessage={errors.urn.message || ''}
+              />
+            )}
 
             <h1 className="govuk-heading-l govuk-!-margin-bottom-0">
               Find a case

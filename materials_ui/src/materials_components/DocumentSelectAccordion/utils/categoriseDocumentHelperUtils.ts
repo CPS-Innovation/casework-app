@@ -85,7 +85,7 @@ export const categoryDetails = [
   { label: 'Exhibits', categoryName: 'exhibit' },
   { label: 'Forensics', categoryName: 'forensic' },
   { label: 'Unused material', categoryName: 'unusedMaterial' },
-  { label: 'Defendant', categoryName: 'defendant' },
+  { label: 'Defendant pre cons', categoryName: 'defendant' },
   { label: 'Court preparation', categoryName: 'courtPreparation' },
   { label: 'Communication', categoryName: 'communication' },
   { label: 'Uncategorised', categoryName: 'uncategorised' }
