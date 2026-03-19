@@ -169,6 +169,7 @@ export const DocumentKeywordSearch = () => {
         onChange={handleInputChange}
         onSearch={handleSearchSubmit}
         placeholder="Enter search term"
+        hideButton={false}
       />
 
       <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
