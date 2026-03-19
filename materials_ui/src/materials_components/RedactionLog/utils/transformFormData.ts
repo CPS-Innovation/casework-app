@@ -123,7 +123,9 @@ export const transformFormDataToApiFormat = (
     chargeStatus: formData.chargeStatus === 'Pre-charge' ? 1 : 2,
     cmsValues: {
       originalFileName: activeDocument?.cmsOriginalFileName || '',
-      documentId: activeDocument?.documentId || 0,
+      documentId: activeDocument?.documentId
+        ? activeDocument.documentId.replace(/^CMS-/, '')
+        : 0,
       documentType: activeDocument?.cmsDocType?.documentType || '',
       fileCreatedDate:
         activeDocument?.cmsFileCreatedDate || new Date().toISOString(),

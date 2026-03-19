@@ -1,10 +1,11 @@
 import { IPublicClientApplication } from '@azure/msal-browser';
 
 export const getAccessTokenFromMsalInstance = async (
-  msalInstance: IPublicClientApplication
+  msalInstance: IPublicClientApplication,
+  scopes?: string[]
 ) => {
   const tokenResponse = await msalInstance.acquireTokenSilent({
-    scopes: [import.meta.env.VITE_POLARIS_GATEWAY_SCOPE],
+    scopes: scopes || [import.meta.env.VITE_POLARIS_GATEWAY_SCOPE],
     account: msalInstance.getActiveAccount()!
   });
 
