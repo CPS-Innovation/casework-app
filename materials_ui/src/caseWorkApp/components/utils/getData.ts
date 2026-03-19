@@ -3,24 +3,32 @@ import axios, { AxiosError, AxiosInstance } from 'axios';
 import { getAccessTokenFromMsalInstance } from '../../../materials_components/DocumentSelectAccordion/getters/getAccessTokenFromMsalInstance';
 import { RedactionLogData } from '../../types/redactionLog';
 
-export const useAxiosInstance = () => {
+export const useAxiosInstances = () => {
   const { instance: msalInstance } = useMsal();
 
-  const axiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_POLARIS_GATEWAY_URL,
-    withCredentials: true
-  });
+  const createInstance = (baseURL: string, scopes?: string[]) => {
+    const instance = axios.create({ baseURL, withCredentials: true });
+    instance.interceptors.request.use(async (config) => {
+      const accessToken = await getAccessTokenFromMsalInstance(
+        msalInstance,
+        scopes
+      );
+      config.headers.Authorization = `Bearer ${accessToken}`;
+      config.headers['Correlation-Id'] = crypto.randomUUID();
+      return config;
+    });
+    return instance;
+  };
 
-  axiosInstance.interceptors.request.use(async (config) => {
-    const accessToken = await getAccessTokenFromMsalInstance(msalInstance);
-    config.headers.Authorization = `Bearer ${accessToken}`;
-    config.headers['Correlation-Id'] = crypto.randomUUID();
-
-    return config;
-  });
-
-  return axiosInstance;
+  return {
+    axiosInstance: createInstance(import.meta.env.VITE_POLARIS_GATEWAY_URL),
+    redactionLogAxios: createInstance(import.meta.env.VITE_REDACTION_LOG_URL, [
+      import.meta.env.VITE_REDACTION_LOG_SCOPE
+    ])
+  };
 };
+
+export const useAxiosInstance = () => useAxiosInstances().axiosInstance;
 
 export const getDocuments = async (p: {
   axiosInstance: AxiosInstance;

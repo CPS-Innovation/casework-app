@@ -1,7 +1,7 @@
 import { FormProvider, useForm } from 'react-hook-form';
 import {
   postRedactionLog,
-  useAxiosInstance
+  useAxiosInstances
 } from '../../caseWorkApp/components/utils/getData';
 import { TLookupsResponse } from '../../caseWorkApp/types/redaction';
 import { TDocument } from '../DocumentSelectAccordion/getters/getDocumentList';
@@ -61,7 +61,8 @@ export const RedactionLogModal = ({
     (ia) => ia.ouCode === policeCode
   )?.investigatingAgencyCode;
 
-  const axiosInstance = useAxiosInstance();
+  const { redactionLogAxios } = useAxiosInstances();
+
   const form = useForm<RedactionLogFormInputs>({
     defaultValues: {
       underRedactionSelected: false,
@@ -87,9 +88,16 @@ export const RedactionLogModal = ({
         activeDocument,
         lookups
       );
+
+      // TODO: ensure documentType values are taken from the dropdown selection
+      // and propagated into apiData.documentType and apiData.cmsValues.
+      // This is required to avoid API validation errors: DocumentType.Name is required.
       console.log('Submitting redaction log:', apiData);
 
-      await postRedactionLog({ axiosInstance, data: apiData });
+      await postRedactionLog({
+        axiosInstance: redactionLogAxios,
+        data: apiData
+      });
 
       console.log('Redaction log submitted successfully');
       onClose();
