@@ -1,4 +1,4 @@
-import { useEffect, useState, ChangeEvent, KeyboardEvent } from 'react';
+import { ChangeEvent, KeyboardEvent, useEffect, useState } from 'react';
 
 export type Props = {
   id: string;
@@ -22,7 +22,7 @@ export const SearchInput = ({
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleSearchClick = () => {
-    if (onSearch) onSearch(searchTerm);
+    if (onSearch && searchTerm.trim()) onSearch(searchTerm);
   };
 
   const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -33,7 +33,7 @@ export const SearchInput = ({
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter' && searchTerm.trim()) {
       event.preventDefault();
       handleSearchClick();
     }
@@ -50,7 +50,10 @@ export const SearchInput = ({
       <label className="govuk-label--s govuk-label" htmlFor={id}>
         {label}
       </label>
-      <div className="search-form-container">
+      <div
+        className="search-form-container"
+        style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
+      >
         <input
           className="govuk-input"
           id={id}
@@ -60,6 +63,7 @@ export const SearchInput = ({
           onChange={handleSearchChange}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
+          style={{ flex: 1 }}
         />
 
         {!hideButton && (
@@ -68,6 +72,8 @@ export const SearchInput = ({
             className="govuk-button search-button"
             data-module="govuk-button"
             onClick={handleSearchClick}
+            style={{ height: '38px' }}
+            disabled={!searchTerm.trim()}
           >
             Search
           </button>
