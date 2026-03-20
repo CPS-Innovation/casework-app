@@ -52,16 +52,19 @@ export const getPdfFiles = async (p: {
   caseId: number | string;
   documentId: number | string;
   versionId?: number | string;
-}) => {
+
+}): Promise<Blob> => {
   try {
     const response = await p.axiosInstance.get(
       `/api/urns/${p.urn}/cases/${p.caseId}/documents/${p.documentId}/versions/${p.versionId}/pdf`,
       { responseType: 'blob' }
     );
     return response.data;
-  } catch (error) {
-    if (error instanceof AxiosError)
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
       console.error(`Error getting PDF file: ${error.message}`);
+    }
+    throw error;
   }
 };
 

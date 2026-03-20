@@ -7,6 +7,8 @@ import { TDocument } from '../DocumentSelectAccordion/getters/getDocumentList';
 import { DocumentViewportArea } from '../documenViewportArea';
 import { TRedaction } from '../PdfRedactor/utils/coordUtils';
 import { TMode } from '../PdfRedactor/utils/modeUtils';
+import { Banner } from '../../components';
+import axios from 'axios';
 
 type LoadStatus = 'loading' | 'error' | 'success';
 
@@ -43,6 +45,7 @@ export const DocumentTabPanel = ({
 
   const [pdfFileUrl, setPdfFileUrl] = useState<string>('');
   const [status, setStatus] = useState<LoadStatus>('loading');
+  const [statusCode, setStatusCode] = useState<number | null>(null);
   const blobUrlRef = useRef<string | null>(null);
 
   useEffect(() => {
@@ -66,7 +69,8 @@ export const DocumentTabPanel = ({
         } else {
           setStatus('error');
         }
-      } catch {
+      } catch (e) {
+        setStatusCode(axios.isAxiosError(e) ? e.response?.status ?? null : null);
         setStatus('error');
       }
     };
@@ -97,6 +101,14 @@ export const DocumentTabPanel = ({
 
       {status === 'error' && (
         <div className="govuk-error-message">Failed to load Document</div>
+      )}
+
+      {status === 'error' && statusCode === 403 && (
+        <Banner
+          type="error"
+          header='This document is password protected'
+          content={"Ask the agency who supplied it to remove the password and resend the document."}
+        />  
       )}
 
       {status === 'success' && pdfFileUrl && (
