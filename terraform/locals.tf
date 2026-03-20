@@ -4,7 +4,7 @@ locals {
   resource_name               = "${var.project_name}-${var.environment}-${var.location_abbr}"
   web_materials_name          = "${var.project_name}-web-${var.environment}-${var.location_abbr}"
   web_components_name         = "components-web-${var.environment}-${var.location_abbr}"
-  redaction_log_resource_name = var.env != "prod" ? var.env != "dev" ? "redaction-log-qa" : "redaction-log-reporting-${var.env}" : "redaction-log"
+  redaction_log_resource_name = var.environment != "prod" ? var.environment != "dev" ? "redaction-log-qa" : "redaction-log-reporting-${var.environment}" : "redaction-log"
 
   # The below map has been added to handle the relationship between environments with Polaris. Materials Staging will use Polaris QA.
   polaris_name_map = {
