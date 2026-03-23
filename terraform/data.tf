@@ -39,9 +39,9 @@ data "azuread_application_published_app_ids" "well_known" {}
 
 # New block below using v3 of provider which replaces application ID with client_id.
 resource "azuread_service_principal" "msgraph" {
-  client_id      = data.azuread_application_published_app_ids.well_known.result.MicrosoftGraph
-  use_existing   = true
-  owners         = var.app_reg_owners
+  client_id    = data.azuread_application_published_app_ids.well_known.result.MicrosoftGraph
+  use_existing = true
+  owners       = var.app_reg_owners
 }
 
 # Retrieval of casework app redaction logger

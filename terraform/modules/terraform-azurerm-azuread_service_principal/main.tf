@@ -1,7 +1,7 @@
 resource "azuread_service_principal" "main" {
   # Mandatory arguments
   # application_id = var.application_id  # removed this as application_id has been replaced with client_id in V3 of provider
-  client_id      = var.client_id
+  client_id = var.client_id
 
 
   #Option arguments

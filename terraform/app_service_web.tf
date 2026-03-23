@@ -4,10 +4,10 @@ resource "azurerm_linux_web_app" "as_web_materials" {
   #checkov:skip=CKV_AZURE_213:Ensure that App Service configures health check
   #checkov:skip=CKV_AZURE_13:Ensure App Service Authentication is set on Azure App Service
   #checkov:skip=CKV_AZURE_17:Ensure the web app has 'Client Certificates (Incoming client certificates)' set
-  name                          = "as-${local.web_materials_name}"
-  location                      = azurerm_resource_group.rg_materials.location
-  service_plan_id               = azurerm_service_plan.web_linux.id
-  resource_group_name           = azurerm_resource_group.rg_materials.name
+  name                = "as-${local.web_materials_name}"
+  location            = azurerm_resource_group.rg_materials.location
+  service_plan_id     = azurerm_service_plan.web_linux.id
+  resource_group_name = azurerm_resource_group.rg_materials.name
   #virtual_network_subnet_id     = data.azurerm_subnet.materials_subnets[var.ui_subnet_name].id #TBC vnet integration is not required
   public_network_access_enabled = false
   https_only                    = true
@@ -28,15 +28,15 @@ resource "azurerm_linux_web_app" "as_web_materials" {
   }
 
   app_settings = {
-    "APPINSIGHTS_INSTRUMENTATIONKEY"  = azurerm_application_insights.ai_materials.instrumentation_key
-    "HostType"                        = "Production"
+    "APPINSIGHTS_INSTRUMENTATIONKEY" = azurerm_application_insights.ai_materials.instrumentation_key
+    "HostType"                       = "Production"
   }
 
   sticky_settings {
     app_setting_names = ["HostType"]
   }
 
-/*
+  /*
   auth_settings_v2 {
     auth_enabled           = true
     require_authentication = true
@@ -106,9 +106,9 @@ module "azurerm_app_reg_as_web_materials" { # Note, app roles are currently bein
   #use this code for adding api permissions
   required_resource_access = [{
     # Microsoft Graph
-    resource_app_id = "00000003-0000-0000-c000-000000000000"  # AppId for Microsoft Graph
+    resource_app_id = "00000003-0000-0000-c000-000000000000" # AppId for Microsoft Graph
     resource_access = [{
-      id   = "e1fe6dd8-ba31-4d61-89e7-88639da4683d"  # user.read for Microsoft Graph)
+      id   = "e1fe6dd8-ba31-4d61-89e7-88639da4683d" # user.read for Microsoft Graph)
       type = "Scope"
     }]
     },
@@ -126,7 +126,7 @@ module "azurerm_app_reg_as_web_materials" { # Note, app roles are currently bein
         type = "Scope"
       }]
     }
-    ]
+  ]
 
   single_page_application = {
     redirect_uris = var.environment != "prod" ? ["https://as-${local.web_materials_name}.azurewebsites.net/${var.materials_ui_sub_folder}", "http://localhost:3000/${var.materials_ui_sub_folder}/", "https://${local.polaris_name_map[var.environment]}-notprod.cps.gov.uk/${var.materials_ui_sub_folder}/"] : ["https://as-${local.web_materials_name}.azurewebsites.net/${var.materials_ui_sub_folder}", "https://polaris.cps.gov.uk/${var.materials_ui_sub_folder}/"]

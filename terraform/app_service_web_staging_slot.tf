@@ -1,6 +1,6 @@
 resource "azurerm_linux_web_app_slot" "as_web_materials_staging1" {
-  name                          = "staging1"
-  app_service_id                = azurerm_linux_web_app.as_web_materials.id
+  name           = "staging1"
+  app_service_id = azurerm_linux_web_app.as_web_materials.id
   #virtual_network_subnet_id     = data.azurerm_subnet.materials_subnets[var.ui_subnet_name].id #TBC vnet integration is not required
   public_network_access_enabled = false
   https_only                    = true
@@ -21,11 +21,11 @@ resource "azurerm_linux_web_app_slot" "as_web_materials_staging1" {
   }
 
   app_settings = {
-    "APPINSIGHTS_INSTRUMENTATIONKEY"  = azurerm_application_insights.ai_materials.instrumentation_key
-    "HostType"                        = "Staging1"
+    "APPINSIGHTS_INSTRUMENTATIONKEY" = azurerm_application_insights.ai_materials.instrumentation_key
+    "HostType"                       = "Staging1"
   }
 
-/*
+  /*
   auth_settings_v2 {
     auth_enabled           = true
     require_authentication = true
@@ -67,7 +67,7 @@ resource "azurerm_linux_web_app_slot" "as_web_materials_staging1" {
 
 }
 
-resource "azurerm_private_endpoint" "pep_as_web_materials_staging1" {     
+resource "azurerm_private_endpoint" "pep_as_web_materials_staging1" {
   name                = "${azurerm_linux_web_app.as_web_materials.name}-staging1-pe"
   location            = azurerm_resource_group.rg_materials.location
   resource_group_name = azurerm_resource_group.rg_materials.name
@@ -85,7 +85,7 @@ resource "azurerm_private_endpoint" "pep_as_web_materials_staging1" {
     private_dns_zone_ids = [data.azurerm_private_dns_zone.hub_dns_zones["sites"].id]
   }
 
-  tags  = local.common_tags
+  tags = local.common_tags
 
 
   dynamic "ip_configuration" {

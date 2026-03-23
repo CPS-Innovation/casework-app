@@ -111,7 +111,7 @@ resource "azuread_application" "main" {
     }
   }
 
-/*
+  /*
 app roles are currently being managed outside of teraform. Commenting out the below block to make sure terraform does not track the app_role attribute.
   dynamic "app_role" {
     for_each = var.app_role != null ? var.app_role : []
@@ -149,5 +149,5 @@ app roles are currently being managed outside of teraform. Commenting out the be
       app_role
     ]
   }
-  
+
 }
