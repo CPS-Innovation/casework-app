@@ -85,7 +85,6 @@ resource "azurerm_linux_web_app" "as_web_materials" {
   }
 }
 
-## Below app registation will be recreated ##
 module "azurerm_app_reg_as_web_materials" { # Note, app roles are currently being managed outside of terraform and it's functionality has been commented out from the module.
   source                  = "./modules/terraform-azurerm-azuread-app-registration"
   display_name            = "as-${local.web_materials_name}-appreg"
@@ -112,6 +111,13 @@ module "azurerm_app_reg_as_web_materials" { # Note, app roles are currently bein
       id   = "e1fe6dd8-ba31-4d61-89e7-88639da4683d"  # user.read for Microsoft Graph)
       type = "Scope"
     }]
+    },
+    {
+      resource_app_id = data.azuread_application.fa_redaction_log_reporting.client_id
+      resource_access = [{
+        id   = data.azuread_application.fa_redaction_log_reporting.oauth2_permission_scope_ids["user_impersonation"]
+        type = "Scope"
+      }]
     },
     {
       resource_app_id = data.azuread_application.fa_polaris_gateway.client_id

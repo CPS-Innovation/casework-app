@@ -43,3 +43,8 @@ resource "azuread_service_principal" "msgraph" {
   use_existing   = true
   owners         = var.app_reg_owners
 }
+
+# Retrieval of casework app redaction logger
+data "azuread_application" "fa_redaction_log_reporting" {
+  display_name = "fa-${local.redaction_log_resource_name}-reporting"
+}
