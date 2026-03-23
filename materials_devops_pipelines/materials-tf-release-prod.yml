@@ -47,7 +47,7 @@ stages:
               
                 - template: templates/task_get-credentials.yml
                   parameters:
-                    azureSubscription: $(production-azure-service-connection)
+                    azureSubscription: $(prod-azure-service-connection)
 
                 - template: templates/task_apply-terraform.yml
                   parameters:
