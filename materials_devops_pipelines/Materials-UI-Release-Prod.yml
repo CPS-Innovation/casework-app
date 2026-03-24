@@ -1,0 +1,119 @@
+---
+trigger: none
+pr: none
+
+resources:
+  pipelines:
+    - pipeline: MaterialsBuild
+      source: Cps-Materials-UI-Production-Build
+      trigger:
+        branches:
+          include:
+            - refs/heads/development
+        stages:
+          - Publish_Artifacts
+
+pool:
+  name: $(prod-build-agent)
+
+parameters:
+- name: TF_Apply
+  displayName: Apply TF change
+  type: boolean
+  default: true
+
+variables:
+  - name: majorMinorVersion
+    value: 1.0
+  - name: semanticVersion 
+    value: $[counter(variables['majorMinorVersion'], 1)]
+  - name: targetLabel 
+    value: PROD
+  - group: materials-kv-prod-terraform
+  - group: materials-global
+
+stages:
+
+## Apply Terraform ##                 
+  - stage: Apply_Terraform_Staging
+    displayName: Apply Materials Terraform
+    jobs:  
+
+      - deployment: Wait_For_Running_Builds
+        environment: "Materials_Staging"
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - template: templates\task_wait-for-running-releases.yml
+                  parameters:
+                    devOpsPatToken: $(System.AccessToken)
+
+      - deployment: CI_Deploy_Materials_Terraform
+        condition: succeeded()
+        dependsOn: Wait_For_Running_Builds
+        displayName: Apply Main Terraform
+        environment: "Materials_Staging"
+        workspace:
+          clean: all
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - template: templates/task_get-credentials.yml
+                  parameters:
+                    azureSubscription: $(prod-azure-service-connection)
+
+                - template: templates/task_apply-terraform.yml
+                  parameters:
+                    targetBuild: "MaterialsBuild"
+                    targetTerraformArtifact: $(targetTerraformArtifact)
+                    targetPlanName: "prod"
+                    terraformStorageAccount: $(prod-terraform-storage-account)
+                    terraformContainerName: $(materials-terraform-container-name)
+                    terraformStateKey: $(terraform-key)
+                    terraformStateResourceGroup: $(terraform-resource-group)
+                    armClientId: $(clientId)
+                    armClientSecret: $(clientSecret)
+                    armTenantId: $(tenantId)
+                    armSubscriptionId: $(subscriptionId)
+                    TF_Apply: ${{ parameters.TF_Apply }}
+                    terraformVersion: $(terraform-version)
+
+## UI Deployment ##
+  - stage: Apply_UI_Production
+    displayName: Deploy Materials UI
+    condition: succeeded()
+    dependsOn: Apply_Terraform_Production
+    jobs:
+
+      - deployment: CI_Deploy_Materials_UI
+        condition: succeeded()
+        displayName: Apply UI SPA
+        environment: "Materials_Production"
+        workspace:
+          clean: all
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - template: templates\task_deploy-spa.yml
+                  parameters:
+                    targetBuild: "MaterialsBuild"
+                    targetLabel: $(targetLabel)
+                    azureSubscription: $(prod-azure-subscription)
+                    WebAppName: $(prod-spa-resource-name)
+                    resourceGroupName: "rg-materials-${{ lower(variables.targetLabel) }}-uks"
+                    BuildArtifactName: $(targetUIArtifact) 
+                    SlotName: "staging1"
+
+  - stage: Swap_Slots
+    displayName: Swap Slots
+    dependsOn: Apply_UI_Staging
+    condition: succeeded()
+    jobs:
+      - template: templates/job_swap-slots.yml
+        parameters:
+            azureSubscription: $(prod-azure-service-connection)
+            resourceGroupName: "rg-materials-${{ lower(variables.targetLabel) }}-uks"
+            AppServiceName: $(prod-spa-resource-name)
