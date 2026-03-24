@@ -100,6 +100,10 @@ export const CaseworkPdfRedactorWrapper = (p: {
   >('list');
   const [redactionLogModalRedactions, setRedactionLogModalRedactions] =
     useState<TRedaction[]>([]);
+  const [redactionSaveStatus, setRedactionSaveStatus] = useState<
+    'saving' | 'saved'
+  >();
+  const [pendingModification, setPendingModification] = useState(false);
 
   const cleanupRedactionDetails = () => {
     const redactionIds = redactions.map((red) => red.id);
@@ -303,11 +307,19 @@ export const CaseworkPdfRedactorWrapper = (p: {
         <RedactionLogModal
           urn={p.urn}
           isOpen={showRedactionLogModal}
-          onClose={() => setShowRedactionLogModal(false)}
+          onClose={() => {
+            setShowRedactionLogModal(false);
+            setRedactionSaveStatus(undefined);
+            if (pendingModification) {
+              setPendingModification(false);
+              p.onModification();
+            }
+          }}
           mode={redactionLogModalMode}
           redactions={redactionLogModalRedactions}
           selectedRedactionTypes={selectedRedactionTypes}
           activeDocument={p.document}
+          redactionSaveStatus={redactionSaveStatus}
         />
       )}
 
@@ -355,24 +367,31 @@ export const CaseworkPdfRedactorWrapper = (p: {
         }}
         onRemoveRedactions={() => {}}
         onSaveRedactions={async () => {
-          combineRedactionsWithRedactionDetails({
-            redactions,
-            redactionDetails
-          });
-          await saveRedactions({
-            axiosInstance,
-            urn: p.urn,
-            caseId: p.caseId,
-            versionId: p.versionId,
-            documentId: p.documentId,
-            redactions
-          });
-          setRedactions([]);
-          p.onModification();
-          await documentCheckOutRequest.checkIn({
-            documentId: p.documentId,
-            versionId: p.versionId
-          });
+          setRedactionSaveStatus('saving');
+          try {
+            combineRedactionsWithRedactionDetails({
+              redactions,
+              redactionDetails
+            });
+            await saveRedactions({
+              axiosInstance,
+              urn: p.urn,
+              caseId: p.caseId,
+              versionId: p.versionId,
+              documentId: p.documentId,
+              redactions
+            });
+            setRedactions([]);
+            setPendingModification(true);
+            await documentCheckOutRequest.checkIn({
+              documentId: p.documentId,
+              versionId: p.versionId
+            });
+            setRedactionSaveStatus('saved');
+          } catch (error) {
+            setRedactionSaveStatus(undefined);
+            throw error;
+          }
         }}
         onShowRedactionLogModal={(redactions) => {
           setRedactionLogModalMode('list');
