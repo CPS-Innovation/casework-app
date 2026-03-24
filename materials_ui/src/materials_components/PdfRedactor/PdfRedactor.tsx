@@ -50,6 +50,21 @@ const indexRedactionsOnPageNumber = (redactions: TRedaction[]) => {
   return temp;
 };
 
+const PdfRedactorFooter = (p: { children: React.ReactNode }) => {
+  return (
+    <div
+      style={{
+        border: '1px solid black',
+        background: 'white',
+        color: 'black',
+        userSelect: 'none'
+      }}
+    >
+      {p.children}
+    </div>
+  );
+};
+
 const RedactionsFooter = (p: {
   redactions: TRedaction[];
   onRemoveAllRedactionsClick: () => void;
@@ -57,43 +72,42 @@ const RedactionsFooter = (p: {
   onShowRedactionLogModal?: (redactions: TRedaction[]) => void;
 }) => {
   return (
-    <div
-      style={{
-        border: '1px solid black',
-        background: 'white',
-        color: 'black',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '10px'
-      }}
-    >
-      <button
-        className="govuk-button govuk-button--inverse"
-        onClick={() => p.onRemoveAllRedactionsClick()}
+    <PdfRedactorFooter>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: '10px'
+        }}
       >
-        Remove all redactions
-      </button>
-      <span style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-        <span>
-          {p.redactions.length === 1 && <>There is 1 redaction</>}
-          {p.redactions.length > 1 && (
-            <>There are {p.redactions.length} redactions</>
-          )}
-        </span>
         <button
-          className="govuk-button"
-          onClick={() => {
-            p.onSaveRedactionsClick(p.redactions);
-            if (p.onShowRedactionLogModal) {
-              p.onShowRedactionLogModal(p.redactions);
-            }
-          }}
+          className="govuk-button govuk-button--inverse"
+          onClick={() => p.onRemoveAllRedactionsClick()}
         >
-          Save all redactions
+          Remove all redactions
         </button>
-      </span>
-    </div>
+        <span style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <span>
+            {p.redactions.length === 1 && <>There is 1 redaction</>}
+            {p.redactions.length > 1 && (
+              <>There are {p.redactions.length} redactions</>
+            )}
+          </span>
+          <button
+            className="govuk-button"
+            onClick={() => {
+              p.onSaveRedactionsClick(p.redactions);
+              if (p.onShowRedactionLogModal) {
+                p.onShowRedactionLogModal(p.redactions);
+              }
+            }}
+          >
+            Save all redactions
+          </button>
+        </span>
+      </div>
+    </PdfRedactorFooter>
   );
 };
 
@@ -103,38 +117,37 @@ const RotationsFooter = (p: {
   onSaveRotationsClick: (x: TRotation[]) => void;
 }) => {
   return (
-    <div
-      style={{
-        border: '1px solid black',
-        background: 'white',
-        color: 'black',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '10px'
-      }}
-    >
-      <button
-        className="govuk-button govuk-button--inverse"
-        onClick={() => p.onRemoveAllRotationsClick()}
+    <PdfRedactorFooter>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: '10px'
+        }}
       >
-        Remove all rotations
-      </button>
-      <span style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-        <span>
-          {p.rotations.length === 1 && <>There is 1 rotation</>}
-          {p.rotations.length > 1 && (
-            <>There are {p.rotations.length} rotations</>
-          )}
-        </span>
         <button
-          className="govuk-button"
-          onClick={() => p.onSaveRotationsClick(p.rotations)}
+          className="govuk-button govuk-button--inverse"
+          onClick={() => p.onRemoveAllRotationsClick()}
         >
-          Save all rotations
+          Remove all rotations
         </button>
-      </span>
-    </div>
+        <span style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <span>
+            {p.rotations.length === 1 && <>There is 1 rotation</>}
+            {p.rotations.length > 1 && (
+              <>There are {p.rotations.length} rotations</>
+            )}
+          </span>
+          <button
+            className="govuk-button"
+            onClick={() => p.onSaveRotationsClick(p.rotations)}
+          >
+            Save all rotations
+          </button>
+        </span>
+      </div>
+    </PdfRedactorFooter>
   );
 };
 
@@ -144,38 +157,37 @@ const DeletionsFooter = (p: {
   onSaveDeletionsClick: (x: TDeletion[]) => void;
 }) => {
   return (
-    <div
-      style={{
-        border: '1px solid black',
-        background: 'white',
-        color: 'black',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '10px'
-      }}
-    >
-      <button
-        className="govuk-button govuk-button--inverse"
-        onClick={() => p.onRemoveAllDeletionsClick()}
+    <PdfRedactorFooter>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: '10px'
+        }}
       >
-        Remove all deletions
-      </button>
-      <span style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-        <span>
-          {p.deletions.length === 1 && <>There is 1 deletion</>}
-          {p.deletions.length > 1 && (
-            <>There are {p.deletions.length} deletions</>
-          )}
-        </span>
         <button
-          className="govuk-button"
-          onClick={() => p.onSaveDeletionsClick(p.deletions)}
+          className="govuk-button govuk-button--inverse"
+          onClick={() => p.onRemoveAllDeletionsClick()}
         >
-          Save all deletions
+          Remove all deletions
         </button>
-      </span>
-    </div>
+        <span style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <span>
+            {p.deletions.length === 1 && <>There is 1 deletion</>}
+            {p.deletions.length > 1 && (
+              <>There are {p.deletions.length} deletions</>
+            )}
+          </span>
+          <button
+            className="govuk-button"
+            onClick={() => p.onSaveDeletionsClick(p.deletions)}
+          >
+            Save all deletions
+          </button>
+        </span>
+      </div>
+    </PdfRedactorFooter>
   );
 };
 

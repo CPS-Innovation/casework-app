@@ -354,6 +354,8 @@ export const PdfRedactorPage = (p: {
 
       p.onAddRedactions(newRedactions);
       p.onPageRedactionsChange([...redactions, ...newRedactions]);
+
+      window.getSelection()?.removeAllRanges();
     }
   });
 
