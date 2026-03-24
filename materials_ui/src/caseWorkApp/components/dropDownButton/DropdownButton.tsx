@@ -67,7 +67,7 @@ export const DropdownButton2 = (p: {
   return (
     <span style={{ position: 'relative' }}>
       <Button
-        ariaLabel={p.ariaLabel}
+        aria-label={p.ariaLabel}
         ref={dropDownBtnRef}
         variant="inverse"
         onClick={() => setIsOpen((prev) => !prev)}

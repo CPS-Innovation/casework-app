@@ -64,6 +64,7 @@ export const DocumentSidebar = (p: {
         caseId={caseId}
         urn={urn}
         onBackButtonClick={() => setStatus({ mode: 'accordion' })}
+        onNoteSavedSuccess={() => {}}
       />
     );
   }

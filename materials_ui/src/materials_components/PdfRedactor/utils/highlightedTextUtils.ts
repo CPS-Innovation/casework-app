@@ -1,4 +1,4 @@
-import { getPdfCoords, safeGetRangeAt, type TCoordPair } from "./coordUtils";
+import { getPdfCoords, safeGetRangeAt, type TCoordPair } from './coordUtils';
 
 export const getPdfCoordPairsOfHighlightedText = (p: {
   pdfPageRect: DOMRect;
@@ -19,13 +19,13 @@ export const getPdfCoordPairsOfHighlightedText = (p: {
       screenX: rect.left,
       screenY: rect.bottom,
       scale: p.scale,
-      pdfPageRect: p.pdfPageRect,
+      pdfPageRect: p.pdfPageRect
     });
     const coord2 = getPdfCoords({
       screenX: rect.right,
       screenY: rect.top,
       scale: p.scale,
-      pdfPageRect: p.pdfPageRect,
+      pdfPageRect: p.pdfPageRect
     });
 
     if (!coord1 || !coord2) return;
@@ -34,7 +34,7 @@ export const getPdfCoordPairsOfHighlightedText = (p: {
       x1: coord1.x,
       y1: coord1.y,
       x2: coord2.x,
-      y2: coord2.y,
+      y2: coord2.y
     };
     return newRedaction;
   });

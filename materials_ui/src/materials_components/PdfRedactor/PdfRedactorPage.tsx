@@ -332,6 +332,9 @@ export const PdfRedactorPage = (p: {
       const pdfPageRect = pdfPageWrapperElmRef.current?.getBoundingClientRect();
       if (!pdfPageRect) return;
 
+      const pageHeight = pdfPageRect.height / p.scale;
+      const pageWidth = pdfPageRect.width / p.scale;
+
       const coordPairs = getPdfCoordPairsOfHighlightedText({
         pdfPageRect,
         scale
@@ -342,8 +345,8 @@ export const PdfRedactorPage = (p: {
           ...coordPair,
           id: createId(),
           pageNumber,
-          pageHeight: pdfPageRect.height,
-          pageWidth: pdfPageRect.width
+          pageHeight,
+          pageWidth
         };
       });
 
