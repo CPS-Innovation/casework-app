@@ -6,6 +6,7 @@ import {
   CommunicationsTable,
   Layout,
   LoadingSpinner,
+  LoadingStatusAnnouncer,
   RenameDrawer,
   TableActions,
   TwoCol
@@ -175,9 +176,15 @@ export const CommunicationsPage = () => {
         />
 
         <TwoCol sidebar={showFilter ? <CommsFilters /> : undefined}>
-          {caseMaterialsLoading || isReadStatusUpdating ? (
+          <LoadingStatusAnnouncer
+            isLoading={caseMaterialsLoading || isReadStatusUpdating}
+            loadingMessage="Loading communications"
+          />
+
+          {(caseMaterialsLoading || isReadStatusUpdating) && (
             <LoadingSpinner textContent="Loading communications" />
-          ) : (
+          )}
+          {!(caseMaterialsLoading || isReadStatusUpdating) && (
             <>
               <TableActions
                 showFilter={showFilter}

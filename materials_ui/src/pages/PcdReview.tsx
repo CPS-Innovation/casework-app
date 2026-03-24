@@ -2,6 +2,7 @@ import {
   DefinitionList,
   Layout,
   LoadingSpinner,
+  LoadingStatusAnnouncer,
   NavList,
   NavListItem,
   SectionBreak,
@@ -121,11 +122,13 @@ export const PcdReviewPage = () => {
 
   return (
     <Layout title="Reviews">
-      {isLoadingData ? (
-        <LoadingSpinner />
-      ) : noReviewCompleted ? (
-        noReviewContent
-      ) : (
+      <LoadingStatusAnnouncer isLoading={isLoadingData} />
+
+      {isLoadingData && <LoadingSpinner />}
+      {!isLoadingData && (
+        noReviewCompleted ? (
+          noReviewContent
+        ) : (
         <div className="govuk-main-wrapper" style={{ whiteSpace: 'pre-wrap' }}>
           <TwoCol sidebar={renderSidebar()}>
             {data && initialReviewData && (
@@ -263,6 +266,7 @@ export const PcdReviewPage = () => {
             )}
           </TwoCol>
         </div>
+        )
       )}
     </Layout>
   );

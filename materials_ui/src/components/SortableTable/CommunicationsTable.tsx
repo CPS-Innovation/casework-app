@@ -17,6 +17,7 @@ import { DEFAULT_RESULTS_PER_PAGE } from '../../constants/query';
 import {
   DocumentPreview,
   LoadingSpinner,
+  LoadingStatusAnnouncer,
   Pagination,
   StatusTag
 } from '..';
@@ -132,12 +133,18 @@ export const CommunicationsTable = () => {
     setPage(0);
   }, [filters, setPage]);
 
-  if (caseMaterialsLoading) {
-    return <LoadingSpinner textContent="Loading materials..." />;
-  }
-
   return (
     <>
+      <LoadingStatusAnnouncer
+        isLoading={caseMaterialsLoading}
+        loadingMessage="Loading materials..."
+      />
+
+      {caseMaterialsLoading && (
+        <LoadingSpinner textContent="Loading materials..." />
+      )}
+      {!caseMaterialsLoading && (
+      <>
       <p className="govuk-body showing-materials-count">
         Showing{' '}
         <strong>
@@ -169,6 +176,8 @@ export const CommunicationsTable = () => {
           setPage={setPage}
         />
       </div>
+      </>
+      )}
     </>
   );
 };

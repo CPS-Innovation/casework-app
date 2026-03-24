@@ -5,6 +5,7 @@ import {
   CaseMaterialsTable,
   Layout,
   LoadingSpinner,
+  LoadingStatusAnnouncer,
   MaterialsFilters,
   RenameDrawer,
   TableActions,
@@ -173,9 +174,15 @@ export const MaterialsPage = () => {
         />
 
         <TwoCol sidebar={showFilter ? <MaterialsFilters /> : undefined}>
-          {caseMaterialsLoading || isReadStatusUpdating ? (
+          <LoadingStatusAnnouncer
+            isLoading={caseMaterialsLoading || isReadStatusUpdating}
+            loadingMessage="Loading materials"
+          />
+
+          {(caseMaterialsLoading || isReadStatusUpdating) && (
             <LoadingSpinner textContent="Loading materials" />
-          ) : (
+          )}
+          {!(caseMaterialsLoading || isReadStatusUpdating) && (
             <>
               <TableActions
                 showFilter={showFilter}

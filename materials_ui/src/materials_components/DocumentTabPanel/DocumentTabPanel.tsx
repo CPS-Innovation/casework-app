@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { getPdfFiles } from '../../caseWorkApp/components/utils/getData';
 import { LoadingSpinner } from '../../components/LoadingSpinner/LoadingSpinner';
+import { LoadingStatusAnnouncer } from '../../components/LoadingStatusAnnouncer/LoadingStatusAnnouncer';
 import { CaseworkPdfRedactorWrapper } from '../CaseworkPdfRedactorWrapper/CaseworkPdfRedactorWrapper';
 import { useAxiosInstance } from '../DocumentSelectAccordion/getters/getAxiosInstance';
 import { TDocument } from '../DocumentSelectAccordion/getters/getDocumentList';
@@ -86,17 +87,13 @@ export const DocumentTabPanel = ({
 
   return (
     <div>
+      <LoadingStatusAnnouncer
+        isLoading={status === 'loading'}
+        loadingMessage="Loading document..."
+      />
+
       {status === 'loading' && (
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            minHeight: '300px'
-          }}
-        >
-          <LoadingSpinner textContent="Loading document..." />
-        </div>
+        <LoadingSpinner textContent="Loading document..." />
       )}
 
       {status === 'error' && (

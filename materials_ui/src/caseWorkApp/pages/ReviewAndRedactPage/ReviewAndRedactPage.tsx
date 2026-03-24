@@ -4,6 +4,7 @@ import {
   DocumentKeywordSearch,
   Layout,
   LoadingSpinner,
+  LoadingStatusAnnouncer,
   RenameDrawer,
   TwoCol
 } from '../../../components';
@@ -194,6 +195,11 @@ export const ReviewAndRedactPage = () => {
         return true;
       }}
     >
+      <LoadingStatusAnnouncer
+        isLoading={documents === undefined}
+        loadingMessage="Loading documents"
+      />
+      
       {documents === undefined && (
         <LoadingSpinner textContent="Loading documents" />
       )}

@@ -7,6 +7,7 @@ import {
   DefinitionList,
   Layout,
   LoadingSpinner,
+  LoadingStatusAnnouncer,
   NavList,
   NavListItem,
   SectionBreak,
@@ -42,13 +43,17 @@ export const PcdRequestPage = () => {
   );
 
   const renderSidebar = () => {
-    if (isPcdListLoading) {
-      return <LoadingSpinner />;
-    }
     return (
       <>
-        <h2 className="govuk-visually-hidden">PCD Request List</h2>
-        <NavList items={navLinks || []} />
+        <LoadingStatusAnnouncer isLoading={isPcdListLoading} />
+
+        {isPcdListLoading && <LoadingSpinner />}
+        {!isPcdListLoading && (
+          <>
+            <h2 className="govuk-visually-hidden">PCD Request List</h2>
+            <NavList items={navLinks || []} />
+          </>
+        )}
       </>
     );
   };
@@ -83,19 +88,21 @@ export const PcdRequestPage = () => {
     <Layout title="PCD Request">
       {/* converting '\n' to actual line breaks with CSS*/}
       <div className="govuk-main-wrapper" style={{ whiteSpace: 'pre-wrap' }}>
-        {isPcdDetailsLoading || isPcdListLoading ? (
-          <div>
-            <LoadingSpinner />
-          </div>
-        ) : (
-          <>
-            {navLinks?.length === 0 && (
-              <p className="govuk-body">There are no PCD Requests to show.</p>
-            )}
+        <LoadingStatusAnnouncer
+          isLoading={isPcdDetailsLoading || isPcdListLoading}
+        />
+
+        {(isPcdDetailsLoading || isPcdListLoading) && <LoadingSpinner />}
+        {!(isPcdDetailsLoading || isPcdListLoading) && (
+          navLinks?.length === 0 ? (
+            <p className="govuk-body" tabIndex={-1} ref={(el) => el?.focus()}>
+              There are no PCD Requests to show.
+            </p>
+          ) : (
             <TwoCol sidebar={renderSidebar()}>
               {pcdDetailsData && (
                 <>
-                  <h1 className="govuk-heading-l">
+                  <h1 className="govuk-heading-l" tabIndex={-1} ref={(el) => el?.focus()}>
                     {isLatestPcd
                       ? 'Latest PCD Request'
                       : `${formatDate(pcdDetailsData?.decisionRequested)} PCD Request`}
@@ -398,7 +405,7 @@ export const PcdRequestPage = () => {
                 </>
               )}
             </TwoCol>
-          </>
+          )
         )}
       </div>
     </Layout>

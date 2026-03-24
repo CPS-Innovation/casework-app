@@ -3,7 +3,12 @@ import { useEffect, useMemo } from 'react';
 import { Controller, FieldErrors, useForm } from 'react-hook-form';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
-import { ErrorSummary, LoadingSpinner, Radios } from '../components';
+import {
+  ErrorSummary,
+  LoadingSpinner,
+  LoadingStatusAnnouncer,
+  Radios
+} from '../components';
 import DocumentPreview from '../components/DocumentPreview/DocumentPreview';
 import type { ErrorSummaryItem } from '../components/ErrorSummary/ErrorSummary';
 import {
@@ -395,11 +400,15 @@ export const ReclassificationPage = () => {
 
             {currentStep === 'summary' && (
               <>
-                {reclassifyLoading ? (
-                  <>
-                    <LoadingSpinner textContent="Please wait..." />
-                  </>
-                ) : (
+                <LoadingStatusAnnouncer
+                  isLoading={reclassifyLoading}
+                  loadingMessage="Please wait..."
+                />
+
+                {reclassifyLoading && (
+                  <LoadingSpinner textContent="Please wait..." />
+                )}
+                {!reclassifyLoading && (
                   <>
                     <h1 className="govuk-heading-l">Check your answers</h1>
                     <Summary

@@ -6,6 +6,7 @@ import {
   ErrorSummary,
   Layout,
   LoadingSpinner,
+  LoadingStatusAnnouncer,
   SectionBreak,
   StatusTag
 } from '../components';
@@ -103,9 +104,16 @@ export const CaseSearchPage = () => {
           </div>
         </div>
 
+        <LoadingStatusAnnouncer
+          isLoading={caseDetails.isLoading}
+          loadingMessage="Searching for a case..."
+        />
+
+        {caseDetails.isLoading && (
+          <LoadingSpinner textContent="Searching for a case..." />
+        )}
         {(() => {
-          if (caseDetails.isLoading)
-            return <LoadingSpinner textContent="Searching for a case..." />;
+          if (caseDetails.isLoading) return null;
 
           const caseDetailsData = caseDetails.data?.data;
           if (!hasSearched) return <></>;
