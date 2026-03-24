@@ -40,7 +40,7 @@ stages:
     jobs:  
 
       - deployment: Wait_For_Running_Builds
-        environment: "Materials_Staging"
+        environment: "Materials_Production"
         strategy:
           runOnce:
             deploy:
@@ -53,7 +53,7 @@ stages:
         condition: succeeded()
         dependsOn: Wait_For_Running_Builds
         displayName: Apply Main Terraform
-        environment: "Materials_Staging"
+        environment: "Materials_Production"
         workspace:
           clean: all
         strategy:
@@ -109,7 +109,7 @@ stages:
 
   - stage: Swap_Slots
     displayName: Swap Slots
-    dependsOn: Apply_UI_Staging
+    dependsOn: Apply_UI_Production
     condition: succeeded()
     jobs:
       - template: templates/job_swap-slots.yml
