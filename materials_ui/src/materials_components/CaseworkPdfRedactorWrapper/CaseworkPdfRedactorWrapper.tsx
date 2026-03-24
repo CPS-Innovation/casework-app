@@ -382,12 +382,12 @@ export const CaseworkPdfRedactorWrapper = (p: {
               redactions
             });
             setRedactions([]);
+            setRedactionSaveStatus('saved');
             setPendingModification(true);
             await documentCheckOutRequest.checkIn({
               documentId: p.documentId,
               versionId: p.versionId
             });
-            setRedactionSaveStatus('saved');
           } catch (error) {
             setRedactionSaveStatus(undefined);
             throw error;
