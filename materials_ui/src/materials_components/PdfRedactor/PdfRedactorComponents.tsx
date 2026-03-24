@@ -58,7 +58,7 @@ export const PositionPdfOverlayBox = (
   </div>
 );
 
-export const CloseIcon = () => (
+export const CloseIcon = (p: { color?: string }) => (
   <div
     style={{
       width: '20px',
@@ -67,7 +67,7 @@ export const CloseIcon = () => (
       alignItems: 'center',
       justifyContent: 'center',
       fontWeight: 'bold',
-      color: 'black'
+      color: p.color ?? 'black'
     }}
   >
     ×

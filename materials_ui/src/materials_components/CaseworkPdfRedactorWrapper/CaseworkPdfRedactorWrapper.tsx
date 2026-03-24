@@ -2,6 +2,7 @@ import { ComponentProps, useEffect, useState } from 'react';
 import { Button } from '../../caseWorkApp/components/button';
 import { useAxiosInstance } from '../DocumentSelectAccordion/getters/getAxiosInstance';
 import { TDocument } from '../DocumentSelectAccordion/getters/getDocumentList';
+import { GovUkBanner } from '../DocumentSelectAccordion/templates/GovUkBanner';
 import { PdfRedactorCenteredModal } from '../PdfRedactor/modals/PdfRedactorCenteredModal';
 import { PdfRedactorMiniModal } from '../PdfRedactor/modals/PdfRedactorMiniModal';
 import { DeletionReasonForm } from '../PdfRedactor/PdfDeletionReasonForm';
@@ -179,39 +180,17 @@ export const CaseworkPdfRedactorWrapper = (p: {
               onBackgroundClick={closeModal}
               onEscPress={closeModal}
             >
-              <div
-                className="govuk-notification-banner govuk-notification-banner banner-error"
-                role="alert"
-                aria-labelledby="govuk-notification-banner-title"
-                data-module="govuk-notification-banner"
-              >
-                <div
-                  className="govuk-notification-banner__header"
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'baseline'
-                  }}
-                >
-                  <h2
-                    className="govuk-notification-banner__title"
-                    id="govuk-notification-banner-title"
-                  >
-                    Error
-                  </h2>
-                  <Button autoFocus onClick={closeModal}>
-                    <CloseIcon />
+              <GovUkBanner
+                variant="error"
+                headerTitle="Error"
+                headerRight={
+                  <Button variant="red" autoFocus onClick={closeModal}>
+                    <CloseIcon color="white" />
                   </Button>
-                </div>
-                <div className="govuk-notification-banner__content">
-                  <h3 className="govuk-notification-banner__heading">
-                    Unable to redact
-                  </h3>
-                  <p className="govuk-body">
-                    {redactionDisabledModalProps.message}
-                  </p>
-                </div>
-              </div>
+                }
+                contentHeading="Unable to redact"
+                contentBody={redactionDisabledModalProps.message}
+              />
             </PdfRedactorCenteredModal>
           );
         })()}
