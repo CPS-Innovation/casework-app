@@ -62,9 +62,8 @@ export const DocumentViewportArea = ({
           >
             <Button
               variant="inverse"
-              dataTestId="btn-area-tool"
               id="btn-area-tool"
-              ariaLabel={
+              aria-label={
                 mode === 'areaRedact'
                   ? 'enable text redaction mode'
                   : 'enable area redaction mode'

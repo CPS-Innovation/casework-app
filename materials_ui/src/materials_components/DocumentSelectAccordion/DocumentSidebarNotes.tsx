@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { LoadingSpinner } from '../../components';
-import { TickCircleIcon } from '../PdfRedactor/icons/TickCircleIcon';
 import { DocumentSidebarWrapper } from './DocumentSidebarWrapper';
 import { useAxiosInstance } from './getters/getAxiosInstance';
 import {
@@ -8,6 +7,7 @@ import {
   useGetDocumentNotes
 } from './getters/getDocumentNotes';
 import { CloseIconButton } from './templates/CloseIconButton';
+import { GovUkBanner } from './templates/GovUkBanner';
 import { GovUkButton } from './templates/GovUkButton';
 import { GovUkLink } from './templates/GovUkLink';
 import { GovUkTextarea } from './templates/GovUkTextarea';
@@ -18,6 +18,7 @@ export const DocumentSidebarNotes = (p: {
   caseId: number;
   documentId: string;
   onBackButtonClick: () => void;
+  onNoteSavedSuccess: () => void;
 }) => {
   const [text, setText] = useState('');
   const [savedSuccessfully, setSavedSuccessfully] = useState(false);
@@ -44,19 +45,11 @@ export const DocumentSidebarNotes = (p: {
         <CloseIconButton onClick={() => p.onBackButtonClick()} />
       </div>
       {savedSuccessfully && (
-        <div
-          style={{
-            backgroundColor: '#0d6e4f',
-            color: 'white',
-            padding: '16px',
-            position: 'relative'
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <TickCircleIcon height={28} width={28} color="white" />
-            Document note successfully saved to CMS
-          </div>
-        </div>
+        <GovUkBanner
+          variant="success"
+          headerTitle="Success"
+          contentHeading="Document note successfully saved to CMS"
+        />
       )}
       <div style={{ padding: '10px' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
@@ -95,7 +88,9 @@ export const DocumentSidebarNotes = (p: {
                 setSavedSuccessfully(true);
                 await documentNotes.mutate();
 
-                p.onBackButtonClick();
+                setText('');
+
+                p.onNoteSavedSuccess();
               }}
             >
               Save and close
