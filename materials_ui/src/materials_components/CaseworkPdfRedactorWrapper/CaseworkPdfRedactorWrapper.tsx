@@ -389,8 +389,8 @@ export const CaseworkPdfRedactorWrapper = (p: {
               versionId: p.versionId
             });
           } catch (error) {
+            console.error('Failed to save redactions:', error);
             setRedactionSaveStatus(undefined);
-            throw error;
           }
         }}
         onShowRedactionLogModal={(redactions) => {
