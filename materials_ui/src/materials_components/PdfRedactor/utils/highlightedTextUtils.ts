@@ -1,4 +1,47 @@
-import { getPdfCoords, safeGetRangeAt, type TCoordPair } from './coordUtils';
+import {
+  getPdfCoords,
+  safeGetRangeAt,
+  TRect,
+  type TCoordPair
+} from './coordUtils';
+
+const mergeDomRects = (domRectList: DOMRect[]) => {
+  const mergedDomRects: TRect[] = [];
+
+  for (const rect of domRectList) {
+    const match = mergedDomRects.find(
+      (existing) =>
+        // Vertically overlapping (same line)
+        rect.top < existing.bottom &&
+        rect.bottom > existing.top &&
+        // Horizontally close enough to be on the same line segment
+        rect.left <= existing.right + 5 &&
+        rect.right >= existing.left - 5
+    );
+
+    if (match) {
+      // edit the existing one
+      match.left = Math.min(match.left, rect.left);
+      match.right = Math.max(match.right, rect.right);
+      match.top = Math.min(match.top, rect.top);
+      match.bottom = Math.max(match.bottom, rect.bottom);
+      match.width = match.right - match.left;
+      match.height = match.bottom - match.top;
+    } else {
+      const newRect: TRect = {
+        left: rect.left,
+        right: rect.right,
+        top: rect.top,
+        bottom: rect.bottom,
+        width: rect.width,
+        height: rect.height
+      };
+      mergedDomRects.push(newRect);
+    }
+  }
+
+  return mergedDomRects;
+};
 
 export const getPdfCoordPairsOfHighlightedText = (p: {
   pdfPageRect: DOMRect;
@@ -12,7 +55,8 @@ export const getPdfCoordPairsOfHighlightedText = (p: {
 
   const range = rangeResponse.data;
   const rects = range.getClientRects();
-  const coordPairs = [...rects].map((rect) => {
+  const mergedRects = mergeDomRects([...rects]);
+  const coordPairs = mergedRects.map((rect) => {
     if (rect.width < 3 || rect.height < 3) return;
 
     const coord1 = getPdfCoords({

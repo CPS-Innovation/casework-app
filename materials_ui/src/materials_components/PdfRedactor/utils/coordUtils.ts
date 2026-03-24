@@ -1,5 +1,13 @@
 export type TCoord = { x: number; y: number };
 export type TCoordPair = { x1: number; y1: number; x2: number; y2: number };
+export type TRect = {
+  left: number;
+  top: number;
+  right: number;
+  bottom: number;
+  width: number;
+  height: number;
+};
 export type TXywhPair = {
   xLeft: number;
   yBottom: number;
@@ -13,7 +21,7 @@ export type TRedaction = TCoordPair & {
   pageWidth: number;
 };
 
-export const convertCoordPairToXywh = (p: TCoordPair) => {
+export const convertCoordPairToXywh = (p: TCoordPair): TXywhPair => {
   const xLeft = Math.min(p.x1, p.x2);
   const xRight = Math.max(p.x1, p.x2);
   const yBottom = Math.min(p.y1, p.y2);
