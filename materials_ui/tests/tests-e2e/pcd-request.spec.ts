@@ -10,8 +10,8 @@ test.describe('PCD Request Page', () => {
     mockRoute(page, 'pcds/2167259/pcd-request-core', mockPcdCoreResponse());
     mockRoute(page, '/pcd-request', mockPcdRequestResponse());
     await page.goto('./pcd-request/145739', { waitUntil: 'domcontentloaded' });
-    await expect(page.getByText('Loading case')).toBeVisible();
-    await page.getByText('Loading case').waitFor({ state: 'detached' });
+    await expect(page.getByRole('heading', { name: 'Loading case' })).toBeVisible();
+    await page.getByRole('heading', { name: 'Loading case' }).waitFor({ state: 'detached' });
 
     await expect(
       page.getByRole('heading', { name: 'Police details' })
@@ -32,8 +32,8 @@ test.describe('PCD Request Page', () => {
     mockRoute(page, 'pcds/2167259/pcd-request-core', mockPcdCoreResponse());
     mockRoute(page, '/pcd-request', mockPcdRequestResponse());
     await page.goto('./pcd-request/145739', { waitUntil: 'domcontentloaded' });
-    await expect(page.getByText('Loading case')).toBeVisible();
-    await page.getByText('Loading case').waitFor({ state: 'hidden' });
+    await expect(page.getByRole('heading', { name: 'Loading case' })).toBeVisible();
+    await page.getByRole('heading', { name: 'Loading case' }).waitFor({ state: 'detached' });
     await expect(
       page.getByRole('heading', { name: 'Police details' })
     ).toBeVisible();
@@ -46,8 +46,8 @@ test.describe('PCD Request Page', () => {
   }) => {
     mockRoute(page, 'pcds/2167259/pcd-request-core', []);
     await page.goto('./pcd-request', { waitUntil: 'domcontentloaded' });
-    await expect(page.getByText('Loading case')).toBeVisible();
-    await page.getByText('Loading case').waitFor({ state: 'hidden' });
+    await expect(page.getByRole('heading', { name: 'Loading case' })).toBeVisible();
+    await page.getByRole('heading', { name: 'Loading case' }).waitFor({ state: 'detached' });
     await expect(
       page.getByText('There are no PCD Requests to show.')
     ).toBeVisible();

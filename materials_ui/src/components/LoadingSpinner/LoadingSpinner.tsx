@@ -31,7 +31,7 @@ export const LoadingSpinner = ({
         <div className="hods-loading-spinner" aria-hidden="true">
           <div className="hods-loading-spinner__spinner"></div>
           <div className="hods-loading-spinner__content">
-            <div className="govuk-heading-m">{textContent}</div>
+            <h1 className="govuk-heading-m">{textContent}</h1>
           </div>
         </div>
       )}
