@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { getPdfFiles } from '../../caseWorkApp/components/utils/getData';
 import { LoadingSpinner } from '../../components/LoadingSpinner/LoadingSpinner';
-import { LoadingStatusAnnouncer } from '../../components/LoadingStatusAnnouncer/LoadingStatusAnnouncer';
 import { CaseworkPdfRedactorWrapper } from '../CaseworkPdfRedactorWrapper/CaseworkPdfRedactorWrapper';
 import { useAxiosInstance } from '../DocumentSelectAccordion/getters/getAxiosInstance';
 import { TDocument } from '../DocumentSelectAccordion/getters/getDocumentList';
@@ -87,14 +86,10 @@ export const DocumentTabPanel = ({
 
   return (
     <div>
-      <LoadingStatusAnnouncer
+      <LoadingSpinner
         isLoading={status === 'loading'}
-        loadingMessage="Loading document..."
+        textContent="Loading document..."
       />
-
-      {status === 'loading' && (
-        <LoadingSpinner textContent="Loading document..." />
-      )}
 
       {status === 'error' && (
         <div className="govuk-error-message">Failed to load Document</div>

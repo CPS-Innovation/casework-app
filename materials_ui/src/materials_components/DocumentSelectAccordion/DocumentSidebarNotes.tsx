@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { LoadingSpinner, LoadingStatusAnnouncer } from '../../components';
+import { LoadingSpinner } from '../../components';
 import { DocumentSidebarWrapper } from './DocumentSidebarWrapper';
 import { useAxiosInstance } from './getters/getAxiosInstance';
 import {
@@ -106,11 +106,9 @@ export const DocumentSidebarNotes = (p: {
         </div>
         <br />
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <LoadingStatusAnnouncer
+          <LoadingSpinner
             isLoading={documentNotes.data === undefined}
           />
-
-          {documentNotes.data === undefined && <LoadingSpinner />}
           {documentNotes.data === null && <div>error</div>}
           {documentNotes.data && (
             <div

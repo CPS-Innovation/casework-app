@@ -2,7 +2,6 @@ import { useDocumentPreview } from '../../hooks/';
 import { CaseMaterialsType } from '../../schemas/caseMaterials';
 import { ErrorSummary } from '../ErrorSummary/ErrorSummary';
 import { LoadingSpinner } from '../LoadingSpinner/LoadingSpinner';
-import { LoadingStatusAnnouncer } from '../LoadingStatusAnnouncer/LoadingStatusAnnouncer';
 import { PdfViewer } from '../PdfViewer/PdfViewer';
 
 type Props = { row: CaseMaterialsType };
@@ -16,14 +15,10 @@ export default function DocumentPreview({ row }: Props) {
 
   return (
     <>
-      <LoadingStatusAnnouncer
+      <LoadingSpinner
         isLoading={caseDocumentLoading}
-        loadingMessage="Loading preview..."
+        textContent="Loading preview..."
       />
-
-      {caseDocumentLoading && (
-        <LoadingSpinner textContent="Loading preview..." />
-      )}
       {!caseDocumentLoading && (
         caseDocumentError ? (
           <ErrorSummary

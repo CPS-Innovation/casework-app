@@ -4,7 +4,6 @@ import {
   DocumentKeywordSearch,
   Layout,
   LoadingSpinner,
-  LoadingStatusAnnouncer,
   RenameDrawer,
   TwoCol
 } from '../../../components';
@@ -195,14 +194,10 @@ export const ReviewAndRedactPage = () => {
         return true;
       }}
     >
-      <LoadingStatusAnnouncer
+      <LoadingSpinner
         isLoading={documents === undefined}
-        loadingMessage="Loading documents"
+        textContent="Loading documents"
       />
-      
-      {documents === undefined && (
-        <LoadingSpinner textContent="Loading documents" />
-      )}
       {documents === null && <div>Error...</div>}
       {showBlockNavigationModal && (
         <UnsavedRedactionsModal

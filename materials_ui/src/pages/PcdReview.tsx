@@ -2,7 +2,6 @@ import {
   DefinitionList,
   Layout,
   LoadingSpinner,
-  LoadingStatusAnnouncer,
   NavList,
   NavListItem,
   SectionBreak,
@@ -122,9 +121,7 @@ export const PcdReviewPage = () => {
 
   return (
     <Layout title="Reviews">
-      <LoadingStatusAnnouncer isLoading={isLoadingData} />
-
-      {isLoadingData && <LoadingSpinner />}
+      <LoadingSpinner isLoading={isLoadingData} />
       {!isLoadingData && (
         noReviewCompleted ? (
           noReviewContent

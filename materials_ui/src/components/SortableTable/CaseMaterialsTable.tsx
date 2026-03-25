@@ -20,7 +20,6 @@ import { formatDate } from '../../utils/date';
 import {
   DocumentPreview,
   LoadingSpinner,
-  LoadingStatusAnnouncer,
   Pagination,
   StatusTag
 } from '..';
@@ -159,14 +158,10 @@ export const CaseMaterialsTable = () => {
 
   return (
     <>
-      <LoadingStatusAnnouncer
+      <LoadingSpinner
         isLoading={caseMaterialsLoading}
-        loadingMessage="Loading materials..."
+        textContent="Loading materials..."
       />
-
-      {caseMaterialsLoading && (
-        <LoadingSpinner textContent="Loading materials..." />
-      )}
       {!caseMaterialsLoading && (
       <>
       <p className="govuk-body showing-materials-count">

@@ -1,10 +1,5 @@
 import { Fragment, ReactNode } from 'react';
-import {
-  Checkbox,
-  DocumentActions,
-  LoadingSpinner,
-  LoadingStatusAnnouncer
-} from '..';
+import { Checkbox, DocumentActions, LoadingSpinner } from '..';
 import { FilterItem } from '../../context/FiltersContext/helpers/types';
 import { useAutoReclassify, useCaseMaterial, useFilters } from '../../hooks';
 import { CaseMaterialDataType, CaseMaterialsType } from '../../schemas';
@@ -86,14 +81,10 @@ const SortableTable = <T,>({
 
   return (
     <>
-      <LoadingStatusAnnouncer
+      <LoadingSpinner
         isLoading={isAutoReclassifyPending}
-        loadingMessage={`Reclassifying ${dataName}...`}
+        textContent={`Reclassifying ${dataName}...`}
       />
-
-      {isAutoReclassifyPending && (
-        <LoadingSpinner textContent={`Reclassifying ${dataName}...`} />
-      )}
       {!isAutoReclassifyPending && (
     <div className="table-container">
       <table className="govuk-table">

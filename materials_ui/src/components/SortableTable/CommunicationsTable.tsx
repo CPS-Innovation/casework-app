@@ -17,7 +17,6 @@ import { DEFAULT_RESULTS_PER_PAGE } from '../../constants/query';
 import {
   DocumentPreview,
   LoadingSpinner,
-  LoadingStatusAnnouncer,
   Pagination,
   StatusTag
 } from '..';
@@ -135,14 +134,10 @@ export const CommunicationsTable = () => {
 
   return (
     <>
-      <LoadingStatusAnnouncer
+      <LoadingSpinner
         isLoading={caseMaterialsLoading}
-        loadingMessage="Loading materials..."
+        textContent="Loading materials..."
       />
-
-      {caseMaterialsLoading && (
-        <LoadingSpinner textContent="Loading materials..." />
-      )}
       {!caseMaterialsLoading && (
       <>
       <p className="govuk-body showing-materials-count">

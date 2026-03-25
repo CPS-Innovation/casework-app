@@ -1,7 +1,7 @@
 import { PropsWithChildren, useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 
-import { Banner, CaseInfo, LoadingSpinner, LoadingStatusAnnouncer, Tabs } from '..';
+import { Banner, CaseInfo, LoadingSpinner, Tabs } from '..';
 import { useAppRoute, useBanner } from '../../hooks';
 import type { Tab } from '../Tabs/Tabs';
 
@@ -81,14 +81,10 @@ export const Layout = ({
 
         {!plain ? (
           <>
-            <LoadingStatusAnnouncer
+            <LoadingSpinner
               isLoading={caseInfoLoading || !caseInfo}
-              loadingMessage="Loading case"
+              textContent="Loading case"
             />
-
-            {(caseInfoLoading || !caseInfo) && (
-              <LoadingSpinner textContent="Loading case" />
-            )}
             {!caseInfoLoading && caseInfo && (
               <>
                 <CaseInfo caseInfo={caseInfo} />

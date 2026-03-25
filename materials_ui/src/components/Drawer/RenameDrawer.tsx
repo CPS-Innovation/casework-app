@@ -3,7 +3,6 @@ import { useRename } from '../../hooks';
 import { TDocument } from '../../materials_components/DocumentSelectAccordion/getters/getDocumentList';
 import { CaseMaterialsType } from '../../schemas';
 import { LoadingSpinner } from '../LoadingSpinner/LoadingSpinner';
-import { LoadingStatusAnnouncer } from '../LoadingStatusAnnouncer/LoadingStatusAnnouncer';
 import Drawer from './Drawer';
 
 type Props = {
@@ -75,14 +74,10 @@ export const RenameDrawer = ({ material, onCancel, onSuccess }: Props) => {
 
   return (
     <Drawer heading="Rename">
-      <LoadingStatusAnnouncer
+      <LoadingSpinner
         isLoading={isMutating}
-        loadingMessage="Renaming material..."
+        textContent="Renaming material..."
       />
-
-      {isMutating && (
-        <LoadingSpinner textContent="Renaming material..." />
-      )}
       {!isMutating && (
         <form onSubmit={handleSubmit}>
           <div

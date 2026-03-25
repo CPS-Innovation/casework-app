@@ -12,7 +12,6 @@ import {
 import {
   Banner,
   LoadingSpinner,
-  LoadingStatusAnnouncer,
   Modal,
   Pagination,
   SearchInput,
@@ -174,14 +173,10 @@ export const DocumentKeywordSearch = () => {
       />
 
       <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
-        <LoadingStatusAnnouncer
+        <LoadingSpinner
           isLoading={!trackerComplete}
-          loadingMessage="Loading search results"
+          textContent="Loading search results"
         />
-
-        {!trackerComplete && (
-          <LoadingSpinner textContent="Loading search results" />
-        )}
         {trackerComplete && (
           <TwoCol sidebar={<DocumentKeywordSearchFilters />}>
             {!trackerComplete && (

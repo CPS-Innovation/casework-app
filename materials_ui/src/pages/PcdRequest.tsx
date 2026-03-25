@@ -7,7 +7,6 @@ import {
   DefinitionList,
   Layout,
   LoadingSpinner,
-  LoadingStatusAnnouncer,
   NavList,
   NavListItem,
   SectionBreak,
@@ -45,9 +44,7 @@ export const PcdRequestPage = () => {
   const renderSidebar = () => {
     return (
       <>
-        <LoadingStatusAnnouncer isLoading={isPcdListLoading} />
-
-        {isPcdListLoading && <LoadingSpinner />}
+        <LoadingSpinner isLoading={isPcdListLoading} />
         {!isPcdListLoading && (
           <>
             <h2 className="govuk-visually-hidden">PCD Request List</h2>
@@ -88,11 +85,9 @@ export const PcdRequestPage = () => {
     <Layout title="PCD Request">
       {/* converting '\n' to actual line breaks with CSS*/}
       <div className="govuk-main-wrapper" style={{ whiteSpace: 'pre-wrap' }}>
-        <LoadingStatusAnnouncer
+        <LoadingSpinner
           isLoading={isPcdDetailsLoading || isPcdListLoading}
         />
-
-        {(isPcdDetailsLoading || isPcdListLoading) && <LoadingSpinner />}
         {!(isPcdDetailsLoading || isPcdListLoading) && (
           navLinks?.length === 0 ? (
             <p className="govuk-body" tabIndex={-1} ref={(el) => el?.focus()}>
