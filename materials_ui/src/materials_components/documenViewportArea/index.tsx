@@ -114,7 +114,6 @@ export const DocumentViewportArea = ({
               <DropdownListItem2
                 id={DROPDOWN_ACTIONS.VIEW_NEW_WINDOW}
                 borderBottom={false}
-                disabled
                 onClick={() => onViewInNewWindowButtonClick()}
               >
                 View in new window
