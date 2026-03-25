@@ -5,7 +5,7 @@ pr: none
 resources:
   pipelines:
     - pipeline: MaterialsBuild
-      source: Cps-Materials-UI-Production-Build
+      source: Cps-Materials-UI-Prod-Build   
       trigger:
         branches:
           include:
