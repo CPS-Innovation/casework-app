@@ -21,7 +21,6 @@ import {
   TRotation
 } from '../PdfRedactor/utils/rotationUtils';
 import { useWindowMouseListener } from '../PdfRedactor/utils/useWindowMouseListener';
-import { RedactionLogModal } from '../RedactionLog/RedactionLogModal';
 import { useDocumentCheckOutRequest } from './hooks/useDocumentCheckOutRequest';
 import {
   combineDeletionsWithDeletionDetails,
@@ -75,6 +74,12 @@ export const CaseworkPdfRedactorWrapper = (p: {
   document: null | undefined | TDocument;
   onRedactionsChange: (x: TRedaction[]) => void;
   initRedactions: TRedaction[];
+  onShowRedactionLogModal: (data: {
+    mode: 'list' | 'over-under';
+    redactions: TRedaction[];
+    selectedRedactionTypes: TRedactionType[];
+  }) => void;
+  onRedactionSaveStatusChange: (status: 'saving' | 'saved' | undefined) => void;
 }) => {
   const [isDocumentCheckedOut, setIsDocumentCheckedOut] = useState(false);
   const [selectedRedactionTypes, setSelectedRedactionTypes] = useState<
@@ -94,17 +99,6 @@ export const CaseworkPdfRedactorWrapper = (p: {
     []
   );
   const [deletionDetails, setDeletionDetails] = useState<TDeletionDetail[]>([]);
-
-  const [showRedactionLogModal, setShowRedactionLogModal] = useState(false);
-  const [redactionLogModalMode, setRedactionLogModalMode] = useState<
-    'list' | 'over-under'
-  >('list');
-  const [redactionLogModalRedactions, setRedactionLogModalRedactions] =
-    useState<TRedaction[]>([]);
-  const [redactionSaveStatus, setRedactionSaveStatus] = useState<
-    'saving' | 'saved'
-  >();
-  const [pendingModification, setPendingModification] = useState(false);
 
   const cleanupRedactionDetails = () => {
     const redactionIds = redactions.map((red) => red.id);
@@ -282,26 +276,6 @@ export const CaseworkPdfRedactorWrapper = (p: {
           );
         })()}
 
-      {showRedactionLogModal && (
-        <RedactionLogModal
-          urn={p.urn}
-          isOpen={showRedactionLogModal}
-          onClose={() => {
-            setShowRedactionLogModal(false);
-            setRedactionSaveStatus(undefined);
-            if (pendingModification) {
-              setPendingModification(false);
-              p.onModification();
-            }
-          }}
-          mode={redactionLogModalMode}
-          redactions={redactionLogModalRedactions}
-          selectedRedactionTypes={selectedRedactionTypes}
-          activeDocument={p.document}
-          redactionSaveStatus={redactionSaveStatus}
-        />
-      )}
-
       <PdfRedactor
         fileUrl={p.fileUrl}
         mode={p.mode}
@@ -346,7 +320,7 @@ export const CaseworkPdfRedactorWrapper = (p: {
         }}
         onRemoveRedactions={() => {}}
         onSaveRedactions={async () => {
-          setRedactionSaveStatus('saving');
+          p.onRedactionSaveStatusChange('saving');
           try {
             combineRedactionsWithRedactionDetails({
               redactions,
@@ -361,21 +335,23 @@ export const CaseworkPdfRedactorWrapper = (p: {
               redactions
             });
             setRedactions([]);
-            setRedactionSaveStatus('saved');
-            setPendingModification(true);
+            p.onRedactionSaveStatusChange('saved');
+            p.onModification();
             await documentCheckOutRequest.checkIn({
               documentId: p.documentId,
               versionId: p.versionId
             });
           } catch (error) {
             console.error('Failed to save redactions:', error);
-            setRedactionSaveStatus(undefined);
+            p.onRedactionSaveStatusChange(undefined);
           }
         }}
         onShowRedactionLogModal={(redactions) => {
-          setRedactionLogModalMode('list');
-          setRedactionLogModalRedactions(redactions);
-          setShowRedactionLogModal(true);
+          p.onShowRedactionLogModal({
+            mode: 'list',
+            redactions,
+            selectedRedactionTypes
+          });
         }}
         indexedRotation={indexedRotation}
         onRotationsChange={(newRotations) => setIndexedRotation(newRotations)}
