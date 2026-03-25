@@ -39,7 +39,9 @@ export const PdfViewer = ({ file, fileName }: Props) => {
         className="pdf-page-container"
         file={file}
         onLoadSuccess={onDocumentLoadSuccess}
-        loading={<LoadingSpinner textContent="Loading preview..." />}
+        loading={
+          <LoadingSpinner isLoading textContent="Loading preview..." />
+        }
         aria-label={
           isLoading
             ? `The document preview for ${fileName} is loading. Please wait.`

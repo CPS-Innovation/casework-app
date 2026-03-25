@@ -156,12 +156,14 @@ export const CaseMaterialsTable = () => {
     setPage(0);
   }, [filters, setPage]);
 
-  if (caseMaterialsLoading) {
-    return <LoadingSpinner textContent="Loading materials..." />;
-  }
-
   return (
     <>
+      <LoadingSpinner
+        isLoading={caseMaterialsLoading}
+        textContent="Loading materials..."
+      />
+      {!caseMaterialsLoading && (
+      <>
       <p className="govuk-body showing-materials-count">
         Showing{' '}
         <strong>
@@ -192,6 +194,8 @@ export const CaseMaterialsTable = () => {
           setPage={setPage}
         />
       </div>
+      </>
+      )}
     </>
   );
 };

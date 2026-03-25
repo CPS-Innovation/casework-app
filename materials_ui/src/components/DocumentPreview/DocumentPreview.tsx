@@ -13,20 +13,22 @@ export default function DocumentPreview({ row }: Props) {
     error: caseDocumentError
   } = useDocumentPreview({ materialId: row.materialId });
 
-  if (caseDocumentLoading) {
-    return <LoadingSpinner textContent="Loading preview..." />;
-  }
-
-  if (caseDocumentError) {
-    return (
-      <ErrorSummary
-        errorTitle="No preview available"
-        errorMessage="The material you are trying to preview is not currently available. You can view it in CMS."
+  return (
+    <>
+      <LoadingSpinner
+        isLoading={caseDocumentLoading}
+        textContent="Loading preview..."
       />
-    );
-  }
-
-  return caseDocumentData ? (
-    <PdfViewer file={caseDocumentData} fileName={row.subject} />
-  ) : null;
+      {!caseDocumentLoading && (
+        caseDocumentError ? (
+          <ErrorSummary
+            errorTitle="No preview available"
+            errorMessage="The material you are trying to preview is not currently available. You can view it in CMS."
+          />
+        ) : caseDocumentData ? (
+          <PdfViewer file={caseDocumentData} fileName={row.subject} />
+        ) : null
+      )}
+    </>
+  );
 }

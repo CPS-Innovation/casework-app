@@ -194,9 +194,10 @@ export const ReviewAndRedactPage = () => {
         return true;
       }}
     >
-      {documents === undefined && (
-        <LoadingSpinner textContent="Loading documents" />
-      )}
+      <LoadingSpinner
+        isLoading={documents === undefined}
+        textContent="Loading documents"
+      />
       {documents === null && <div>Error...</div>}
       {showBlockNavigationModal && (
         <UnsavedRedactionsModal

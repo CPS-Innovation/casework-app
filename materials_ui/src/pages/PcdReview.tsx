@@ -121,11 +121,11 @@ export const PcdReviewPage = () => {
 
   return (
     <Layout title="Reviews">
-      {isLoadingData ? (
-        <LoadingSpinner />
-      ) : noReviewCompleted ? (
-        noReviewContent
-      ) : (
+      <LoadingSpinner isLoading={isLoadingData} />
+      {!isLoadingData && (
+        noReviewCompleted ? (
+          noReviewContent
+        ) : (
         <div className="govuk-main-wrapper" style={{ whiteSpace: 'pre-wrap' }}>
           <TwoCol sidebar={renderSidebar()}>
             {data && initialReviewData && (
@@ -263,6 +263,7 @@ export const PcdReviewPage = () => {
             )}
           </TwoCol>
         </div>
+        )
       )}
     </Layout>
   );

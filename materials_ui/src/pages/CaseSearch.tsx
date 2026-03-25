@@ -103,9 +103,12 @@ export const CaseSearchPage = () => {
           </div>
         </div>
 
+        <LoadingSpinner
+          isLoading={caseDetails.isLoading}
+          textContent="Searching for a case..."
+        />
         {(() => {
-          if (caseDetails.isLoading)
-            return <LoadingSpinner textContent="Searching for a case..." />;
+          if (caseDetails.isLoading) return null;
 
           const caseDetailsData = caseDetails.data?.data;
           if (!hasSearched) return <></>;

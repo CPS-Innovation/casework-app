@@ -74,9 +74,11 @@ export const RenameDrawer = ({ material, onCancel, onSuccess }: Props) => {
 
   return (
     <Drawer heading="Rename">
-      {isMutating ? (
-        <LoadingSpinner textContent="Renaming material..." />
-      ) : (
+      <LoadingSpinner
+        isLoading={isMutating}
+        textContent="Renaming material..."
+      />
+      {!isMutating && (
         <form onSubmit={handleSubmit}>
           <div
             className={`${

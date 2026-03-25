@@ -173,9 +173,11 @@ export const MaterialsPage = () => {
         />
 
         <TwoCol sidebar={showFilter ? <MaterialsFilters /> : undefined}>
-          {caseMaterialsLoading || isReadStatusUpdating ? (
-            <LoadingSpinner textContent="Loading materials" />
-          ) : (
+          <LoadingSpinner
+            isLoading={caseMaterialsLoading || isReadStatusUpdating}
+            textContent="Loading materials"
+          />
+          {!(caseMaterialsLoading || isReadStatusUpdating) && (
             <>
               <TableActions
                 showFilter={showFilter}

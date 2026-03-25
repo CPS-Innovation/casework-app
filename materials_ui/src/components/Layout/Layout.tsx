@@ -81,7 +81,11 @@ export const Layout = ({
 
         {!plain ? (
           <>
-            {!caseInfoLoading && caseInfo ? (
+            <LoadingSpinner
+              isLoading={caseInfoLoading || !caseInfo}
+              textContent="Loading case"
+            />
+            {!caseInfoLoading && caseInfo && (
               <>
                 <CaseInfo caseInfo={caseInfo} />
                 <Tabs tabs={tabs} />
@@ -90,8 +94,6 @@ export const Layout = ({
                   {children}
                 </div>
               </>
-            ) : (
-              <LoadingSpinner textContent="Loading case" />
             )}
           </>
         ) : (

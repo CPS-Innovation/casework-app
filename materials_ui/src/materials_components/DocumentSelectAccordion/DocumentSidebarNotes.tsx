@@ -106,11 +106,9 @@ export const DocumentSidebarNotes = (p: {
         </div>
         <br />
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-          {documentNotes.data === undefined && (
-            <div>
-              <LoadingSpinner />
-            </div>
-          )}
+          <LoadingSpinner
+            isLoading={documentNotes.data === undefined}
+          />
           {documentNotes.data === null && <div>error</div>}
           {documentNotes.data && (
             <div

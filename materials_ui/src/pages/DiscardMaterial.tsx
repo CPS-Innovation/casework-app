@@ -75,11 +75,10 @@ export const DiscardMaterialPage = () => {
     }
   };
 
-  if (isDiscarding) {
-    return <LoadingSpinner />;
-  }
-
   return (
+    <>
+      <LoadingSpinner isLoading={isDiscarding} />
+      {!isDiscarding && (
     <Layout plain title="Discard Material">
       <Link
         to={returnTo}
@@ -130,5 +129,7 @@ export const DiscardMaterialPage = () => {
         </form>
       </div>
     </Layout>
+      )}
+    </>
   );
 };

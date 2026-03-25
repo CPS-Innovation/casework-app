@@ -395,11 +395,11 @@ export const ReclassificationPage = () => {
 
             {currentStep === 'summary' && (
               <>
-                {reclassifyLoading ? (
-                  <>
-                    <LoadingSpinner textContent="Please wait..." />
-                  </>
-                ) : (
+                <LoadingSpinner
+                  isLoading={reclassifyLoading}
+                  textContent="Please wait..."
+                />
+                {!reclassifyLoading && (
                   <>
                     <h1 className="govuk-heading-l">Check your answers</h1>
                     <Summary

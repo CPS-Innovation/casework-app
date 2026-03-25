@@ -86,18 +86,10 @@ export const DocumentTabPanel = ({
 
   return (
     <div>
-      {status === 'loading' && (
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            minHeight: '300px'
-          }}
-        >
-          <LoadingSpinner textContent="Loading document..." />
-        </div>
-      )}
+      <LoadingSpinner
+        isLoading={status === 'loading'}
+        textContent="Loading document..."
+      />
 
       {status === 'error' && (
         <div className="govuk-error-message">Failed to load Document</div>

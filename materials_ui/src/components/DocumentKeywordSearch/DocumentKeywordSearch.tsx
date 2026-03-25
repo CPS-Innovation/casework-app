@@ -173,9 +173,11 @@ export const DocumentKeywordSearch = () => {
       />
 
       <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
-        {!trackerComplete ? (
-          <LoadingSpinner textContent="Loading search results" />
-        ) : (
+        <LoadingSpinner
+          isLoading={!trackerComplete}
+          textContent="Loading search results"
+        />
+        {trackerComplete && (
           <TwoCol sidebar={<DocumentKeywordSearchFilters />}>
             {!trackerComplete && (
               <p>

@@ -79,11 +79,13 @@ const SortableTable = <T,>({
     }
   };
 
-  if (isAutoReclassifyPending) {
-    return <LoadingSpinner textContent={`Reclassifying ${dataName}...`} />;
-  }
-
   return (
+    <>
+      <LoadingSpinner
+        isLoading={isAutoReclassifyPending}
+        textContent={`Reclassifying ${dataName}...`}
+      />
+      {!isAutoReclassifyPending && (
     <div className="table-container">
       <table className="govuk-table">
         <caption className="govuk-visually-hidden">{caption}</caption>
@@ -223,6 +225,8 @@ const SortableTable = <T,>({
         </tbody>
       </table>
     </div>
+      )}
+    </>
   );
 };
 
