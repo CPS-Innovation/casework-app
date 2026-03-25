@@ -95,9 +95,6 @@ export const CaseSearchPage = () => {
                 >
                   Search
                 </button>
-                <a href="#" className="govuk-link">
-                  Cancel
-                </a>
               </div>
             </form>
           </div>
