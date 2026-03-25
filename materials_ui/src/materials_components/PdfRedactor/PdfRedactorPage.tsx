@@ -215,15 +215,17 @@ export const PdfRedactorDeletionOverlay = (p: {
             >
               <DeleteIcon color="white" />
             </span>
-            <div
-              style={{
-                textDecoration: pageDeleteButtonDisabled
-                  ? 'line-through'
-                  : 'none'
-              }}
-            >
-              Delete page {p.pageNumber} / {p.pagesAmount}
-            </div>
+            {!pageDeleteButtonDisabled && (
+              <div
+                style={{
+                  textDecoration: pageDeleteButtonDisabled
+                    ? 'line-through'
+                    : 'none'
+                }}
+              >
+                Delete page {p.pageNumber} / {p.pagesAmount}
+              </div>
+            )}
           </GovUkButton>
         </div>
       )}
