@@ -4,8 +4,8 @@ import { FilterItem } from '../../context/FiltersContext/helpers/types';
 import { useAutoReclassify, useCaseMaterial, useFilters } from '../../hooks';
 import { CaseMaterialDataType, CaseMaterialsType } from '../../schemas';
 import { useSelectedItemsStore } from '../../stores';
-import './SortableTable.scss';
 import { ColumnSortFn } from '../../utils/filtering';
+import './SortableTable.scss';
 
 export type Column<T> = {
   key: string;
@@ -167,7 +167,11 @@ const SortableTable = <T,>({
                       </td>
                     )}
                     {columns.map((col, colIndex) => (
-                      <td key={colIndex} className="govuk-table__cell">
+                      <td
+                        key={colIndex}
+                        className="govuk-table__cell"
+                        style={{ fontVariantLigatures: 'none' }}
+                      >
                         {/* @ts-expect-error generic type mismatch with CaseMaterialsType */}
                         {col.render ? col.render(row) : row[col.key]}
                       </td>
