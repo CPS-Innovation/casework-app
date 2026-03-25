@@ -1,16 +1,24 @@
+import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
 import { getPdfFiles } from '../../caseWorkApp/components/utils/getData';
+import { Banner } from '../../components';
 import { LoadingSpinner } from '../../components/LoadingSpinner/LoadingSpinner';
 import { CaseworkPdfRedactorWrapper } from '../CaseworkPdfRedactorWrapper/CaseworkPdfRedactorWrapper';
 import { useAxiosInstance } from '../DocumentSelectAccordion/getters/getAxiosInstance';
 import { TDocument } from '../DocumentSelectAccordion/getters/getDocumentList';
 import { DocumentViewportArea } from '../documenViewportArea';
+import { TRedactionType } from '../PdfRedactor/PdfRedactionTypeForm';
 import { TRedaction } from '../PdfRedactor/utils/coordUtils';
 import { TMode } from '../PdfRedactor/utils/modeUtils';
-import { Banner } from '../../components';
-import axios from 'axios';
+import { RedactionLogModal } from '../RedactionLog/RedactionLogModal';
 
 type LoadStatus = 'loading' | 'error' | 'success';
+
+type RedactionLogModalData = {
+  mode: 'list' | 'over-under';
+  redactions: TRedaction[];
+  selectedRedactionTypes: TRedactionType[];
+};
 
 export type DocumentTabPanelProps = {
   documentId: string;
@@ -48,6 +56,13 @@ export const DocumentTabPanel = ({
   const [statusCode, setStatusCode] = useState<number | null>(null);
   const blobUrlRef = useRef<string | null>(null);
 
+  const [showRedactionLogModal, setShowRedactionLogModal] = useState(false);
+  const [redactionSaveStatus, setRedactionSaveStatus] = useState<
+    'saving' | 'saved'
+  >();
+  const [redactionLogModalData, setRedactionLogModalData] =
+    useState<RedactionLogModalData>();
+
   useEffect(() => {
     const loadPdf = async () => {
       setStatus('loading');
@@ -70,7 +85,9 @@ export const DocumentTabPanel = ({
           setStatus('error');
         }
       } catch (e) {
-        setStatusCode(axios.isAxiosError(e) ? e.response?.status ?? null : null);
+        setStatusCode(
+          axios.isAxiosError(e) ? (e.response?.status ?? null) : null
+        );
         setStatus('error');
       }
     };
@@ -86,6 +103,22 @@ export const DocumentTabPanel = ({
 
   return (
     <div>
+      {showRedactionLogModal && redactionLogModalData && (
+        <RedactionLogModal
+          urn={urn}
+          isOpen={showRedactionLogModal}
+          onClose={() => {
+            setShowRedactionLogModal(false);
+            setRedactionSaveStatus(undefined);
+          }}
+          mode={redactionLogModalData.mode}
+          redactions={redactionLogModalData.redactions}
+          selectedRedactionTypes={redactionLogModalData.selectedRedactionTypes}
+          activeDocument={document}
+          redactionSaveStatus={redactionSaveStatus}
+        />
+      )}
+
       <LoadingSpinner
         isLoading={status === 'loading'}
         textContent="Loading document..."
@@ -98,9 +131,11 @@ export const DocumentTabPanel = ({
       {status === 'error' && statusCode === 403 && (
         <Banner
           type="error"
-          header='This document is password protected'
-          content={"Ask the agency who supplied it to remove the password and resend the document."}
-        />  
+          header="This document is password protected"
+          content={
+            'Ask the agency who supplied it to remove the password and resend the document.'
+          }
+        />
       )}
 
       {status === 'success' && pdfFileUrl && (
@@ -124,6 +159,11 @@ export const DocumentTabPanel = ({
             document={document}
             onRedactionsChange={onRedactionsChange}
             initRedactions={initRedactions ?? []}
+            onShowRedactionLogModal={(data) => {
+              setRedactionLogModalData(data);
+              setShowRedactionLogModal(true);
+            }}
+            onRedactionSaveStatusChange={setRedactionSaveStatus}
           />
         </>
       )}
