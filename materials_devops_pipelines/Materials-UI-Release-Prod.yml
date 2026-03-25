@@ -35,7 +35,7 @@ variables:
 stages:
 
 ## Apply Terraform ##                 
-  - stage: Apply_Terraform_Staging
+  - stage: Apply_Terraform_Production
     displayName: Apply Materials Terraform
     jobs:  
 
