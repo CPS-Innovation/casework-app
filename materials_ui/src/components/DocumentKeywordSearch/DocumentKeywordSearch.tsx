@@ -57,7 +57,7 @@ export const DocumentKeywordSearch = () => {
     searchResults ?? []
   );
 
-  const { filters } = useFilters('documents');
+  const { filters, resetFilters } = useFilters('documents');
 
   const toggleDocumentExpand = (docId: string) => {
     setExpandedDocuments((prev) => ({ ...prev, [docId]: !prev[docId] }));
@@ -172,7 +172,13 @@ export const DocumentKeywordSearch = () => {
         hideButton={false}
       />
 
-      <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
+      <Modal
+        open={modalOpen}
+        onClose={() => {
+          resetFilters();
+          setModalOpen(false);
+        }}
+      >
         <LoadingSpinner
           isLoading={!trackerComplete}
           textContent="Loading search results"
