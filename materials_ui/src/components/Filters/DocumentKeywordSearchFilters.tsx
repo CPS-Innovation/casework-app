@@ -8,7 +8,13 @@ import {
 import Checkbox from '../Checkbox/Checkbox';
 import { FilterForm } from './FilterForm';
 
-export const DocumentKeywordSearchFilters = () => {
+type DocumentKeywordSearchFiltersProps = {
+  onSearchSubmit?: (term: string) => void;
+};
+
+export const DocumentKeywordSearchFilters = ({
+  onSearchSubmit
+}: DocumentKeywordSearchFiltersProps) => {
   const {
     filters,
     resetFilters,
@@ -31,6 +37,9 @@ export const DocumentKeywordSearchFilters = () => {
 
   const handleFiltersSubmit = () => {
     saveFiltersToContext();
+    if (onSearchSubmit && shallowFilters?.search?.trim()) {
+      onSearchSubmit(shallowFilters.search.trim());
+    }
   };
 
   const handleSearchChange = (searchTerm: string) => {
@@ -70,7 +79,6 @@ export const DocumentKeywordSearchFilters = () => {
       searchLabel="Search materials"
       defaultSearchValue={filters?.search || ''}
     >
-
       <div className="govuk-form-group">
         <div className="govuk-form-group">
           <fieldset className="govuk-fieldset">

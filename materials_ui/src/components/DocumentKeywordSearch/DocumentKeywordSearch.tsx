@@ -22,7 +22,7 @@ import {
 import { categoriseDocument } from '../../materials_components/DocumentSelectAccordion/utils/categoriseDocument';
 import { SearchTermResultType } from '../../schemas/documents';
 import { formatDateLong } from '../../utils/date';
-import { defaultSearchFn, defaultSortFn } from '../../utils/filtering';
+import { defaultSortFn } from '../../utils/filtering';
 import { DocumentKeywordSearchFilters } from '../Filters/DocumentKeywordSearchFilters';
 
 import { DEFAULT_RESULTS_PER_PAGE } from '../../constants/query';
@@ -78,11 +78,6 @@ export const DocumentKeywordSearch = () => {
 
     const newStatus = selectedStatus.includes('New');
 
-    const searchFn = defaultSearchFn<SearchTermResultType>(
-      'documentTitle',
-      filters?.search
-    );
-
     const sortColumn =
       selectedSort === 'date'
         ? 'cmsFileCreatedDate'
@@ -106,7 +101,6 @@ export const DocumentKeywordSearch = () => {
           selectedCategories.includes(category)
         );
       })
-      .filter(searchFn)
       .map((item) => ({
         ...item,
         [sortColumn]: String(item[sortColumn] ?? '')
@@ -116,7 +110,6 @@ export const DocumentKeywordSearch = () => {
     combinedSearchResults,
     filters?.filters?.category,
     filters?.filters?.status,
-    filters?.search,
     selectedSort
   ]);
 
@@ -184,7 +177,13 @@ export const DocumentKeywordSearch = () => {
           textContent="Loading search results"
         />
         {trackerComplete && (
-          <TwoCol sidebar={<DocumentKeywordSearchFilters />}>
+          <TwoCol
+            sidebar={
+              <DocumentKeywordSearchFilters
+                onSearchSubmit={(term) => setSearchTerm(term)}
+              />
+            }
+          >
             {!trackerComplete && (
               <p>
                 Preparing search pipeline… <br />
