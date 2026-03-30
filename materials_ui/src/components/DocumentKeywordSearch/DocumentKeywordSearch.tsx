@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
+  useAppRoute,
   useDebounce,
   useDocuments,
   useDocumentSearch,
@@ -29,6 +31,7 @@ import { DEFAULT_RESULTS_PER_PAGE } from '../../constants/query';
 import './DocumentKeywordSearch.scss';
 
 export const DocumentKeywordSearch = () => {
+  const { getRoute } = useAppRoute();
   const [inputValue, setInputValue] = useState('');
   const [searchTerm, setSearchTerm] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -70,6 +73,11 @@ export const DocumentKeywordSearch = () => {
   const handleSearchSubmit = () => {
     setSearchTerm(debouncedTerm);
     setModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    resetFilters();
+    setModalOpen(false);
   };
 
   const filteredResults = useMemo(() => {
@@ -165,13 +173,7 @@ export const DocumentKeywordSearch = () => {
         hideButton={false}
       />
 
-      <Modal
-        open={modalOpen}
-        onClose={() => {
-          resetFilters();
-          setModalOpen(false);
-        }}
-      >
+      <Modal open={modalOpen} onClose={handleModalClose}>
         <LoadingSpinner
           isLoading={!trackerComplete}
           textContent="Loading search results"
@@ -257,12 +259,13 @@ export const DocumentKeywordSearch = () => {
                 return (
                   <div key={doc.documentId} style={{ marginBottom: 20 }}>
                     <h2 className="govuk-heading-m govuk-!-margin-bottom-1">
-                      <a
-                        href={`/materials?material=${doc.documentId}`}
-                        rel="noreferrer"
+                      <Link
+                        to={getRoute('REVIEW_REDACT')}
+                        state={{ materialId: doc.documentId }}
+                        onClick={handleModalClose}
                       >
                         {doc.documentTitle}
-                      </a>
+                      </Link>
                     </h2>
 
                     <p className="govuk-body-s">

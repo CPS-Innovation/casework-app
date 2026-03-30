@@ -90,10 +90,11 @@ export const ReviewAndRedactPage = () => {
   useEffect(() => {
     if (materialIdParam) {
       setActiveDocumentId(materialIdParam);
-      setOpenDocumentIds((openedDocumentIds) => [
-        ...openedDocumentIds,
-        `${materialIdParam}`
-      ]);
+      setOpenDocumentIds((openedDocumentIds) =>
+        openedDocumentIds.includes(`${materialIdParam}`)
+          ? openedDocumentIds
+          : [...openedDocumentIds, `${materialIdParam}`]
+      );
     }
   }, [materialIdParam]);
 
