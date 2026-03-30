@@ -31,10 +31,9 @@ const getCenteredWindowPosition = () => {
   return `width=${WINDOW_WIDTH},height=${WINDOW_HEIGHT},top=${top},left=${left},scrollbars=yes,resizable=yes`;
 };
 
-
 const renderLoadingPage = (win: Window) => {
   win.document.title = 'Loading material preview...';
-  
+
   const style = win.document.createElement('style');
   style.textContent = POPUP_STYLES;
   win.document.head.appendChild(style);
@@ -72,10 +71,16 @@ export const useOpenDocumentInNewWindow = () => {
     if (!caseInfo) return;
 
     let win: Window | null = null;
-    
+
     try {
       win = window.open('', '_blank', getCenteredWindowPosition());
-
+      await new Promise<void>((resolve) => {
+        if (win!.document.readyState === 'complete') {
+          resolve();
+        } else {
+          win!.addEventListener('load', () => resolve(), { once: true });
+        }
+      });
       if (!win) return;
 
       renderLoadingPage(win);
