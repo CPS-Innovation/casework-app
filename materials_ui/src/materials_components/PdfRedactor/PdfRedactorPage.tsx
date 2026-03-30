@@ -191,31 +191,31 @@ export const PdfRedactorDeletionOverlay = (p: {
     <>
       {!p.pageIsDelete && (
         <div style={{ position: 'absolute', top: 0, right: 0, zIndex: 500 }}>
-          <GovUkButton
-            variant="inverse"
-            onClick={() => p.onPageIsDeleteChange(true)}
-            style={{
-              display: 'flex',
-              whiteSpace: 'nowrap',
-              border: 0,
-              padding: 0,
-              paddingRight: '8px',
-              gap: '8px',
-              alignItems: 'center'
-            }}
-            disabled={pageDeleteButtonDisabled}
-          >
-            <span
+          {!pageDeleteButtonDisabled && (
+            <GovUkButton
+              variant="inverse"
+              onClick={() => p.onPageIsDeleteChange(true)}
               style={{
-                background: pageDeleteButtonDisabled ? 'gray' : '#1d70b8',
-                height: '25px',
-                width: '25px',
-                padding: '5px'
+                display: 'flex',
+                whiteSpace: 'nowrap',
+                border: 0,
+                padding: 0,
+                paddingRight: '8px',
+                gap: '8px',
+                alignItems: 'center'
               }}
+              disabled={pageDeleteButtonDisabled}
             >
-              <DeleteIcon color="white" />
-            </span>
-            {!pageDeleteButtonDisabled && (
+              <span
+                style={{
+                  background: pageDeleteButtonDisabled ? 'gray' : '#1d70b8',
+                  height: '25px',
+                  width: '25px',
+                  padding: '5px'
+                }}
+              >
+                <DeleteIcon color="white" />
+              </span>
               <div
                 style={{
                   textDecoration: pageDeleteButtonDisabled
@@ -225,8 +225,8 @@ export const PdfRedactorDeletionOverlay = (p: {
               >
                 Delete page {p.pageNumber} / {p.pagesAmount}
               </div>
-            )}
-          </GovUkButton>
+            </GovUkButton>
+          )}
         </div>
       )}
       {p.pageIsDelete && (
