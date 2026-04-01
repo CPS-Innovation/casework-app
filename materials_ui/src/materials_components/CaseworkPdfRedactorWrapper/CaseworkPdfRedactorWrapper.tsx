@@ -80,6 +80,7 @@ export const CaseworkPdfRedactorWrapper = (p: {
     selectedRedactionTypes: TRedactionType[];
   }) => void;
   onRedactionSaveStatusChange: (status: 'saving' | 'saved' | undefined) => void;
+  onNumOfPagesDocumentChange: (x: number) => void;
 }) => {
   const [isDocumentCheckedOut, setIsDocumentCheckedOut] = useState(false);
   const [selectedRedactionTypes, setSelectedRedactionTypes] = useState<
@@ -434,6 +435,7 @@ export const CaseworkPdfRedactorWrapper = (p: {
           });
         }}
         initRedactions={p.initRedactions}
+        onNumOfDocPagesChanged={p.onNumOfPagesDocumentChange}
       />
     </div>
   );
