@@ -1,18 +1,12 @@
+import { useState } from 'react';
 import { Button } from '../../caseWorkApp/components/button';
 import {
   DropdownButton2,
-  DropdownListItem2
+  DropdownListItem
 } from '../../caseWorkApp/components/dropDownButton/DropdownButton';
 import Tooltip from '../../caseWorkApp/components/tooltip';
 import { AreaIcon } from '../PdfRedactor/icons/AreaIcon';
 import { TMode } from '../PdfRedactor/utils/modeUtils';
-
-export type DropdownButtonItem = {
-  id: string;
-  label: string;
-  ariaLabel: string;
-  disabled: boolean;
-};
 
 const DROPDOWN_ACTIONS = {
   LOG_REDACTION: 'log-redaction',
@@ -27,6 +21,7 @@ type DocumentViewportAreaProps = {
   onModeChange: (mode: TMode) => void;
   onViewInNewWindowButtonClick: () => void;
   onRedactionLogClick: () => void;
+  numOfDocumentPages: number;
 };
 
 export const DocumentViewportArea = ({
@@ -34,8 +29,10 @@ export const DocumentViewportArea = ({
   mode,
   onModeChange,
   onViewInNewWindowButtonClick,
-  onRedactionLogClick
+  onRedactionLogClick,
+  numOfDocumentPages
 }: DocumentViewportAreaProps) => {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   return (
     <div
       style={{
@@ -80,44 +77,58 @@ export const DocumentViewportArea = ({
           <DropdownButton2
             ariaLabel="document actions dropdown"
             ButtonContent={<span>Document Actions</span>}
+            isOpen={isDropdownOpen}
+            setIsOpen={(x) => setIsDropdownOpen(x)}
           >
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <DropdownListItem2
+              <DropdownListItem
                 id={DROPDOWN_ACTIONS.LOG_REDACTION}
-                onClick={() => onRedactionLogClick()}
+                onClick={() => {
+                  onRedactionLogClick();
+                  setIsDropdownOpen(false);
+                }}
                 borderBottom
               >
                 Log an Under/Over redaction
-              </DropdownListItem2>
-              <DropdownListItem2
+              </DropdownListItem>
+              <DropdownListItem
                 id={DROPDOWN_ACTIONS.ROTATE}
                 borderBottom
-                onClick={() =>
-                  onModeChange(mode === 'rotation' ? 'textRedact' : 'rotation')
-                }
+                onClick={() => {
+                  onModeChange(mode === 'rotation' ? 'textRedact' : 'rotation');
+                  setIsDropdownOpen(false);
+                }}
               >
                 {mode === 'rotation'
                   ? 'Hide rotate document pages'
                   : 'Rotate document pages'}
-              </DropdownListItem2>
-              <DropdownListItem2
-                id={DROPDOWN_ACTIONS.DELETE}
-                borderBottom
-                onClick={() =>
-                  onModeChange(mode === 'deletion' ? 'textRedact' : 'deletion')
-                }
-              >
-                {mode === 'deletion'
-                  ? 'Hide delete page options'
-                  : 'Show delete page options'}
-              </DropdownListItem2>
-              <DropdownListItem2
+              </DropdownListItem>
+              {numOfDocumentPages > 1 && (
+                <DropdownListItem
+                  id={DROPDOWN_ACTIONS.DELETE}
+                  borderBottom
+                  onClick={() => {
+                    onModeChange(
+                      mode === 'deletion' ? 'textRedact' : 'deletion'
+                    );
+                    setIsDropdownOpen(false);
+                  }}
+                >
+                  {mode === 'deletion'
+                    ? 'Hide delete page options'
+                    : 'Show delete page options'}
+                </DropdownListItem>
+              )}
+              <DropdownListItem
                 id={DROPDOWN_ACTIONS.VIEW_NEW_WINDOW}
                 borderBottom={false}
-                onClick={() => onViewInNewWindowButtonClick()}
+                onClick={() => {
+                  onViewInNewWindowButtonClick();
+                  setIsDropdownOpen(false);
+                }}
               >
                 View in new window
-              </DropdownListItem2>
+              </DropdownListItem>
             </div>
           </DropdownButton2>
         </div>

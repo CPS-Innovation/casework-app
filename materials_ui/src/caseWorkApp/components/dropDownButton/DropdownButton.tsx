@@ -6,15 +6,27 @@ import { useGlobalDropdownClose } from '../../hooks/useGlobalDropdownClose';
 import { Button } from '../button';
 import classes from './DropdownButton.module.scss';
 
-export const DropdownListItem2 = (
-  initProps: React.ComponentPropsWithoutRef<typeof Button> & {
-    borderBottom: boolean;
-  }
+type TButtonProps = React.ComponentPropsWithoutRef<typeof Button>;
+
+export const DropdownListItem = (
+  initProps: TButtonProps & { borderBottom: boolean }
 ) => {
-  const { ...props } = initProps;
+  const { borderBottom, ...props } = initProps;
   return (
-    <div style={{ whiteSpace: 'nowrap', borderBottom: 'solid 2px black' }}>
-      <Button style={{ width: '100%', textAlign: 'right' }} {...props} />
+    <div
+      style={{
+        whiteSpace: 'nowrap',
+        borderBottom: borderBottom ? 'solid 2px black' : ''
+      }}
+    >
+      <Button
+        style={{
+          width: '100%',
+          textAlign: 'right',
+          boxShadow: borderBottom ? undefined : 'unset'
+        }}
+        {...props}
+      />
     </div>
   );
 };
@@ -22,19 +34,22 @@ export const DropdownButton2 = (p: {
   ButtonContent: React.ReactNode;
   children: React.ReactNode;
   ariaLabel: string;
+  isOpen: boolean;
+  setIsOpen: (x: boolean) => void;
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const isOpenRef = useRef(isOpen);
+  // ref required due to close dropdown callback
+  const isOpenRef = useRef(p.isOpen);
   useEffect(() => {
-    isOpenRef.current = isOpen;
-  }, [isOpen]);
+    isOpenRef.current = p.isOpen;
+  }, [p.isOpen]);
+
   const dropDownBtnRef = useRef<HTMLButtonElement>(null);
   const dropDownPanelRef = useRef<HTMLDivElement>(null);
 
   const closeDropdownOnEscapePress = useCallback((event: KeyboardEvent) => {
     if (event.code !== 'Escape' || isOpenRef.current === false) return;
 
-    setIsOpen(false);
+    p.setIsOpen(false);
     dropDownBtnRef.current?.focus();
   }, []);
 
@@ -51,7 +66,7 @@ export const DropdownButton2 = (p: {
 
     if (isClickInsideBtn || isClickInsidePanel) return;
 
-    setIsOpen(false);
+    p.setIsOpen(false);
     event.stopPropagation();
   }, []);
 
@@ -70,18 +85,18 @@ export const DropdownButton2 = (p: {
         aria-label={p.ariaLabel}
         ref={dropDownBtnRef}
         variant="inverse"
-        onClick={() => setIsOpen((prev) => !prev)}
+        onClick={() => p.setIsOpen(!p.isOpen)}
       >
         <div style={{ display: 'flex', gap: '4px' }}>
           <div>{p.ButtonContent}</div>
           <DownArrowIcon
             color="#1d70b8"
-            rotateDegrees={isOpen ? 180 : 0}
+            rotateDegrees={p.isOpen ? 180 : 0}
             scale={0.75}
           />
         </div>
       </Button>
-      {isOpen && (
+      {p.isOpen && (
         <div
           ref={dropDownPanelRef}
           style={{

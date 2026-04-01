@@ -100,6 +100,7 @@ export const DocumentTabPanel = ({
       }
     };
   }, [documentId, versionId, urn, caseId]);
+  const [numOfDocumentPages, setNumOfDocumentPages] = useState(0);
 
   return (
     <div>
@@ -146,6 +147,7 @@ export const DocumentTabPanel = ({
             onModeChange={onModeChange}
             onViewInNewWindowButtonClick={onViewInNewWindowClick}
             onRedactionLogClick={onRedactionLogClick}
+            numOfDocumentPages={numOfDocumentPages}
           />
           <CaseworkPdfRedactorWrapper
             fileUrl={pdfFileUrl}
@@ -164,6 +166,7 @@ export const DocumentTabPanel = ({
               setShowRedactionLogModal(true);
             }}
             onRedactionSaveStatusChange={setRedactionSaveStatus}
+            onNumOfPagesDocumentChange={(x) => setNumOfDocumentPages(x)}
           />
         </>
       )}

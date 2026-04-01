@@ -225,6 +225,7 @@ export const PdfRedactor = (p: {
   onDeletionRemove: (x: TDeletion) => void;
   initRedactions: TRedaction[];
   onShowRedactionLogModal?: (redactions: TRedaction[]) => void;
+  onNumOfDocPagesChanged: (x: number) => void;
 }) => {
   const { previousModeRef } = usePreviousModeRef(p.mode);
 
@@ -318,6 +319,8 @@ export const PdfRedactor = (p: {
     return () =>
       elm.removeEventListener('mouseup', redactHighlightedIfTextRedactionMode);
   }, []);
+
+  const pageDeleteButtonDisabled = (numPages ?? 0) - deletions.length <= 1;
 
   return (
     <div className={modeClassMap[p.mode]} ref={pdfRedactorWrapperElmRef}>
@@ -427,14 +430,13 @@ export const PdfRedactor = (p: {
             onLoadSuccess={async (pdf) => {
               p.onRedactionsChange(p.initRedactions ?? []);
               setNumPages(pdf.numPages);
+              p.onNumOfDocPagesChanged(pdf.numPages);
               await autoScale(pdf);
             }}
           >
             {[...Array(numPages)].map((_, j) => (
               <PdfRedactorPage
-                pageDeleteButtonDisabled={
-                  (numPages ?? 0) - deletions.length <= 1
-                }
+                pageDeleteButtonDisabled={pageDeleteButtonDisabled}
                 key={`pdf-redactor-page-${j}`}
                 pageNumber={j + 1}
                 pagesAmount={numPages!}
