@@ -19,6 +19,8 @@ export const QUERY_KEYS = {
   EXHIBIT_PRODUCERS: 'exhibitProducers',
   PCD_REVIEW_DECISION: 'pcdReviewDecision',
   PCD_REVIEW_INITIAL_REVIEW: 'pcdReviewInitialReview',
+  PCD_REVIEW_CORE: 'pcdReviewCore',
+  PCD_REVIEW_REVIEW_DETAILS: 'pcdReviewReviewDetails',
   PCD_REVIEW_CASE_HISTORY: 'pcdReviewHistory',
   CREATE_WITNESS: 'createWitness',
   CREATE_ACTION_PLAN: 'createActionPlan',

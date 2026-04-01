@@ -1,6 +1,22 @@
 import { z } from 'zod';
 
-export const NextEventLinkSchema = z.array(
+import { PcdReviewCoreType } from '../constants/enum';
+
+const PcdReviewCoreTypeSchema = z.union([
+  z.literal(PcdReviewCoreType.EarlyAdvice),
+  z.literal(PcdReviewCoreType.InitialReview),
+  z.literal(PcdReviewCoreType.PreChargeDecisionAnalysis)
+]);
+
+const CurrentEventSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  date: z.string(),
+  authorOrVenue: z.string(),
+  type: z.number()
+});
+
+const NextEventLinkSchema = z.array(
   z.object({
     id: z.number(),
     href: z.string(),
@@ -9,7 +25,7 @@ export const NextEventLinkSchema = z.array(
   })
 );
 
-export const MonitoringCodesSchema = z.array(
+const MonitoringCodesSchema = z.array(
   z.object({
     code: z.string(),
     description: z.string(),
@@ -19,7 +35,7 @@ export const MonitoringCodesSchema = z.array(
   })
 );
 
-export const DgAssessmentItemsSchema = z.array(
+const DgAssessmentItemsSchema = z.array(
   z.object({
     itemName: z.string(),
     title: z.string(),
@@ -28,28 +44,22 @@ export const DgAssessmentItemsSchema = z.array(
   })
 );
 
-export const DgDetailsSchema = z.object({
-  assessmentApplicable: z.string(),
+const DgDetailsSchema = z.object({
+  assessmentApplicable: z.boolean(),
   datePapersReceived: z.string(),
   dgAssessmentItems: DgAssessmentItemsSchema,
   policeResponse: z.string(),
   principalOffenceCategory: z.string(),
   stageAssessmentCompleted: z.string(),
-  submissionDgComplaint: z.string()
+  submissionDgCompliant: z.string()
 });
 
-export const PCDInitialReviewSchema = z.object({
+const PCDInitialReviewSchema = z.object({
   allocation: z.string(),
   caseId: z.number(),
   caseSummary: z.string(),
   consultationType: z.string(),
-  currentEvent: z.object({
-    authorOrVenue: z.string(),
-    date: z.string(),
-    id: z.number(),
-    name: z.string(),
-    type: z.number()
-  }),
+  currentEvent: CurrentEventSchema,
   dgDetails: DgDetailsSchema,
   dgSummary: z.string(),
   disclosureActionsAndIssues: z.string(),
@@ -69,30 +79,30 @@ export const PCDInitialReviewSchema = z.object({
   witnessOrVictimInformationAndActions: z.string()
 });
 
-export const DefendantDecisionsSchema = z.array(
-  z.object({
-    decision: z.number(),
-    decisionDescription: z.string(),
-    defendantName: z.string(),
-    id: z.number(),
-    keyFactor: z.string(),
-    natureOfDecision: z.string(),
-    pCDPrincipalOffenceCategory: z.string(),
-    proposedCharge: z.string(),
-    reason: z.string(),
-    returnBailDate: z.string(),
-    specifiedCharges: z.string(),
-    reasonCode: z.string(),
-    publicInterestCode: z.string()
-  })
-);
+const DefendantDecisionSchema = z.object({
+  decision: z.number(),
+  decisionDescription: z.string(),
+  defendantName: z.string(),
+  id: z.number(),
+  keyFactor: z.string(),
+  natureOfDecision: z.string(),
+  pcdPrincipalOffenceCategory: z.string(),
+  proposedCharge: z.string(),
+  publicInterestCode: z.string(),
+  reason: z.string(),
+  reasonCode: z.string(),
+  returnBailDate: z.string(),
+  specifiedCharges: z.string()
+});
 
-export const PCDHistoryActionPlanSchema = z.array(
+const DefendantDecisionsSchema = z.array(DefendantDecisionSchema);
+
+const PCDHistoryActionPlanSchema = z.array(
   z.object({
     actionDate: z.string(),
     actionPoint: z.string(),
     actionType: z.string(),
-    cpscovidUrgency: z.string(),
+    cpsCovidUrgency: z.string(),
     entryDate: z.string(),
     policeCovidUrgency: z.string(),
     status: z.string(),
@@ -100,19 +110,11 @@ export const PCDHistoryActionPlanSchema = z.array(
   })
 );
 
-const CurrentEventSchema = z.object({
-  id: z.number(),
-  name: z.string(),
-  date: z.string(),
-  authorOrVenue: z.string(),
-  type: z.number()
-});
-
-export const PCDReviewSchema = z.object({
+const PCDReviewSchema = z.object({
   actionPlan: z.boolean(),
   author: z.string(),
-  cPSCOVIDUrgency: z.string(),
   caseId: z.number(),
+  cpsCovidUrgency: z.string(),
   currentEvent: CurrentEventSchema,
   decisionMadeBy: z.string(),
   decisionMadeDateTime: z.string(),
@@ -130,8 +132,49 @@ export const PCDReviewSchema = z.object({
   urn: z.string()
 });
 
+const PCDReviewCoreSchema = z.array(
+  z.object({
+    date: z.string(),
+    id: z.number(),
+    type: PcdReviewCoreTypeSchema
+  })
+);
+
+const ChargeDetailSchema = z.object({
+  code: z.string(),
+  description: z.string()
+});
+
+const PreChargeDefendantDecisionSchema = DefendantDecisionSchema.extend({
+  chargeDetails: z.array(ChargeDetailSchema),
+});
+
+const LinkedCaseUrnSchema = z.object({
+  urn: z.string(),
+  asn: z.string(),
+  pncId: z.string(),
+  policeCC: z.string()
+});
+
+const PreChargeDecisionAnalysisOutcomeSchema =
+  PCDInitialReviewSchema.extend({
+    dppConsent: z.string(),
+    linkedCaseUrns: z.array(LinkedCaseUrnSchema)
+  });
+
+const PreChargeDecisionOutcomeDetailSchema = PCDReviewSchema.extend({
+  defendantDecisions: z.array(PreChargeDefendantDecisionSchema)
+});
+
+const PCDReviewDetailsSchema = z.object({
+  preChargeDecisionAnalysisOutcome: PreChargeDecisionAnalysisOutcomeSchema,
+  preChargeDecisionOutcome: PreChargeDecisionOutcomeDetailSchema
+});
+
 export type PCDInitialReviewResponseType = z.infer<
   typeof PCDInitialReviewSchema
 >;
 export type PCDReviewResponseType = z.infer<typeof PCDReviewSchema>;
 export type CaseHistoryResponseType = z.infer<typeof CurrentEventSchema>;
+export type PCDReviewCoreResponseType = z.infer<typeof PCDReviewCoreSchema>;
+export type PCDReviewDetailsResponseType = z.infer<typeof PCDReviewDetailsSchema>;
