@@ -8,8 +8,8 @@ vnet_name            = "vnet-innovation-production"
 vnet_rg              = "rg-networking"
 app_subnet_name      = "polaris-apps-subnet"
 ui_subnet_name       = "polaris-ui-subnet"
-as_web_pe_ip         = null # initially set to null, will be changed once IP auto assigned
-as_web_pe_ip_staging = null
+as_web_pe_ip         = "10.7.204.249"
+as_web_pe_ip_staging = "10.7.204.250"
 as_comp_pe_ip        = null
 
 private_dns_zones = {
