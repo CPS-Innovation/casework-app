@@ -38,11 +38,8 @@ export const DocumentKeywordSearch = () => {
   >({});
   const [selectedSort, setSelectedSort] = useState('date');
 
-  const {
-    isComplete: trackerComplete,
-    trackerData,
-    failedToConvert
-  } = useSearchTracker(searchTerm);
+  const { isComplete: trackerComplete, failedToConvert } =
+    useSearchTracker(searchTerm);
 
   const { searchResults, loading } = useDocumentSearch(
     searchTerm,
@@ -177,16 +174,9 @@ export const DocumentKeywordSearch = () => {
               />
             }
           >
-            {!trackerComplete && (
-              <p>
-                Preparing search pipeline… <br />
-                {trackerData?.status ?? 'Starting…'}
-              </p>
-            )}
+            {loading && <p>Searching…</p>}
 
-            {trackerComplete && loading && <p>Searching…</p>}
-
-            {!loading && trackerComplete && filteredResults && (
+            {!loading && filteredResults && (
               <div className="search-results-message">
                 <div>
                   <p className="govuk-body govuk-!-margin-bottom-0">
@@ -240,7 +230,6 @@ export const DocumentKeywordSearch = () => {
             )}
 
             {!loading &&
-              trackerComplete &&
               filteredResults &&
               filteredResults.slice(startIndex, endIndex + 1).map((doc) => {
                 const isExpanded = expandedDocuments[doc.documentId] ?? false;
@@ -312,10 +301,9 @@ export const DocumentKeywordSearch = () => {
               setPage={setPage}
             />
 
-            {!loading &&
-              trackerComplete &&
-              filteredResults?.length === 0 &&
-              searchTerm && <p className="govuk-body">No results.</p>}
+            {!loading && filteredResults?.length === 0 && searchTerm && (
+              <p className="govuk-body">No results.</p>
+            )}
           </TwoCol>
         )}
       </Modal>
