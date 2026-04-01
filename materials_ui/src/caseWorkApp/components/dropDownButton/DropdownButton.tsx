@@ -23,7 +23,7 @@ export const DropdownListItem = (
         style={{
           width: '100%',
           textAlign: 'right',
-          ...(borderBottom ? {} : { boxShadow: 'unset' })
+          boxShadow: borderBottom ? undefined : 'unset'
         }}
         {...props}
       />
