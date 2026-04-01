@@ -14,16 +14,16 @@ export const useSearchTracker = (trigger: unknown) => {
 
   const getTracker = () => request.get(`/urns/${urn}/cases/${caseId}/tracker`);
 
-  // Start pipeline when a new trigger comes in
+  // Start pipeline once per case when first search is triggered
   const { data: postData } = useSWR(
-    trigger ? ['tracker-init', urn, caseId, trigger] : null,
+    trigger ? ['tracker-init', urn, caseId] : null,
     postInit,
     { revalidateOnFocus: false }
   );
 
   // Poll until Completed
   const { data: trackerData, isLoading: trackerLoading } = useSWR(
-    postData ? ['tracker-status', urn, caseId, trigger] : null,
+    postData ? ['tracker-status', urn, caseId] : null,
     getTracker,
     {
       refreshInterval: (latest) =>

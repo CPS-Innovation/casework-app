@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   useAppRoute,
-  useDebounce,
   useDocuments,
   useDocumentSearch,
   useDocumentSearchResults,
@@ -32,7 +31,6 @@ import './DocumentKeywordSearch.scss';
 
 export const DocumentKeywordSearch = () => {
   const { getRoute } = useAppRoute();
-  const [inputValue, setInputValue] = useState('');
   const [searchTerm, setSearchTerm] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [expandedDocuments, setExpandedDocuments] = useState<
@@ -40,13 +38,8 @@ export const DocumentKeywordSearch = () => {
   >({});
   const [selectedSort, setSelectedSort] = useState('date');
 
-  const debouncedTerm = useDebounce(inputValue, 400);
-
-  const {
-    isComplete: trackerComplete,
-    trackerData,
-    failedToConvert
-  } = useSearchTracker(debouncedTerm);
+  const { isComplete: trackerComplete, failedToConvert } =
+    useSearchTracker(searchTerm);
 
   const { searchResults, loading } = useDocumentSearch(
     searchTerm,
@@ -66,12 +59,8 @@ export const DocumentKeywordSearch = () => {
     setExpandedDocuments((prev) => ({ ...prev, [docId]: !prev[docId] }));
   };
 
-  const handleInputChange = (value: string) => {
-    setInputValue(value);
-  };
-
-  const handleSearchSubmit = () => {
-    setSearchTerm(debouncedTerm);
+  const handleSearchSubmit = (term: string) => {
+    setSearchTerm(term);
     setModalOpen(true);
   };
 
@@ -167,7 +156,6 @@ export const DocumentKeywordSearch = () => {
       <SearchInput
         id="search-within-case"
         label="Search within a case"
-        onChange={handleInputChange}
         onSearch={handleSearchSubmit}
         placeholder="Enter search term"
         hideButton={false}
@@ -186,16 +174,9 @@ export const DocumentKeywordSearch = () => {
               />
             }
           >
-            {!trackerComplete && (
-              <p>
-                Preparing search pipeline… <br />
-                {trackerData?.status ?? 'Starting…'}
-              </p>
-            )}
+            {loading && <p>Searching…</p>}
 
-            {trackerComplete && loading && <p>Searching…</p>}
-
-            {!loading && trackerComplete && filteredResults && (
+            {!loading && filteredResults && (
               <div className="search-results-message">
                 <div>
                   <p className="govuk-body govuk-!-margin-bottom-0">
@@ -249,7 +230,6 @@ export const DocumentKeywordSearch = () => {
             )}
 
             {!loading &&
-              trackerComplete &&
               filteredResults &&
               filteredResults.slice(startIndex, endIndex + 1).map((doc) => {
                 const isExpanded = expandedDocuments[doc.documentId] ?? false;
@@ -321,10 +301,9 @@ export const DocumentKeywordSearch = () => {
               setPage={setPage}
             />
 
-            {!loading &&
-              trackerComplete &&
-              filteredResults?.length === 0 &&
-              searchTerm && <p className="govuk-body">No results.</p>}
+            {!loading && filteredResults?.length === 0 && searchTerm && (
+              <p className="govuk-body">No results.</p>
+            )}
           </TwoCol>
         )}
       </Modal>
