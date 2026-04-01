@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   useAppRoute,
-  useDebounce,
   useDocuments,
   useDocumentSearch,
   useDocumentSearchResults,
@@ -32,7 +31,6 @@ import './DocumentKeywordSearch.scss';
 
 export const DocumentKeywordSearch = () => {
   const { getRoute } = useAppRoute();
-  const [inputValue, setInputValue] = useState('');
   const [searchTerm, setSearchTerm] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [expandedDocuments, setExpandedDocuments] = useState<
@@ -40,13 +38,11 @@ export const DocumentKeywordSearch = () => {
   >({});
   const [selectedSort, setSelectedSort] = useState('date');
 
-  const debouncedTerm = useDebounce(inputValue, 400);
-
   const {
     isComplete: trackerComplete,
     trackerData,
     failedToConvert
-  } = useSearchTracker(debouncedTerm);
+  } = useSearchTracker(searchTerm);
 
   const { searchResults, loading } = useDocumentSearch(
     searchTerm,
@@ -66,12 +62,8 @@ export const DocumentKeywordSearch = () => {
     setExpandedDocuments((prev) => ({ ...prev, [docId]: !prev[docId] }));
   };
 
-  const handleInputChange = (value: string) => {
-    setInputValue(value);
-  };
-
-  const handleSearchSubmit = () => {
-    setSearchTerm(debouncedTerm);
+  const handleSearchSubmit = (term: string) => {
+    setSearchTerm(term);
     setModalOpen(true);
   };
 
@@ -167,7 +159,6 @@ export const DocumentKeywordSearch = () => {
       <SearchInput
         id="search-within-case"
         label="Search within a case"
-        onChange={handleInputChange}
         onSearch={handleSearchSubmit}
         placeholder="Enter search term"
         hideButton={false}
