@@ -6,15 +6,27 @@ import { useGlobalDropdownClose } from '../../hooks/useGlobalDropdownClose';
 import { Button } from '../button';
 import classes from './DropdownButton.module.scss';
 
+type TButtonProps = React.ComponentPropsWithoutRef<typeof Button>;
+
 export const DropdownListItem = (
-  initProps: React.ComponentPropsWithoutRef<typeof Button> & {
-    borderBottom: boolean;
-  }
+  initProps: TButtonProps & { borderBottom: boolean }
 ) => {
   const { borderBottom, ...props } = initProps;
   return (
-    <div style={{ whiteSpace: 'nowrap', borderBottom: borderBottom ? '' : '' }}>
-      <Button style={{ width: '100%', textAlign: 'right' }} {...props} />
+    <div
+      style={{
+        whiteSpace: 'nowrap',
+        borderBottom: borderBottom ? 'solid 2px black' : ''
+      }}
+    >
+      <Button
+        style={{
+          width: '100%',
+          textAlign: 'right',
+          ...(borderBottom ? {} : { boxShadow: 'unset' })
+        }}
+        {...props}
+      />
     </div>
   );
 };
