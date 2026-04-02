@@ -1,3 +1,4 @@
+import { TRedaction } from '../../PdfRedactor/utils/coordUtils';
 import { TDeletion } from '../../PdfRedactor/utils/deletionUtils';
 
 export type TRedactionDetail = { redactionId: string; randomId: string };
@@ -15,4 +16,20 @@ export const combineDeletionsWithDeletionDetails = (p: {
     })
     .filter((x) => !!x);
   return deletionsWithDetails;
+};
+
+export const combineRedactionsWithRedactionDetails = (p: {
+  redactions: TRedaction[];
+  redactionDetails: TRedactionDetail[];
+}) => {
+  const redactionsWithDetails = p.redactions
+    .map((x) => {
+      const thisDetails = p.redactionDetails.find(
+        (y) => y.redactionId === x.id
+      );
+      if (!thisDetails) return undefined;
+      return { ...x, ...thisDetails };
+    })
+    .filter((x) => !!x);
+  return redactionsWithDetails;
 };
