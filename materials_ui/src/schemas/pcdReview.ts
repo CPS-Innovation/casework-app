@@ -132,7 +132,7 @@ const PCDReviewSchema = z.object({
   urn: z.string()
 });
 
-const PCDReviewCoreSchema = z.array(
+export const PCDReviewCoreSchema = z.array(
   z.object({
     date: z.string(),
     id: z.number(),
@@ -166,7 +166,7 @@ const PreChargeDecisionOutcomeDetailSchema = PCDReviewSchema.extend({
   defendantDecisions: z.array(PreChargeDefendantDecisionSchema)
 });
 
-const PCDReviewDetailsSchema = z.object({
+export const PCDReviewDetailsSchema = z.object({
   preChargeDecisionAnalysisOutcome: PreChargeDecisionAnalysisOutcomeSchema,
   preChargeDecisionOutcome: PreChargeDecisionOutcomeDetailSchema
 });
