@@ -19,7 +19,6 @@ export const combineRedactionsWithRedactionDetails = (p: {
     .filter((x) => !!x);
   return redactionsWithDetails;
 };
-
 export const combineDeletionsWithDeletionDetails = (p: {
   deletions: TDeletion[];
   deletionDetails: TDeletionDetail[];
