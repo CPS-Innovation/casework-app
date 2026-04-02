@@ -4,10 +4,10 @@ resource "azurerm_linux_web_app" "as_comp_materials" {
   #checkov:skip=CKV_AZURE_213:Ensure that App Service configures health check
   #checkov:skip=CKV_AZURE_13:Ensure App Service Authentication is set on Azure App Service
   #checkov:skip=CKV_AZURE_17:Ensure the web app has 'Client Certificates (Incoming client certificates)' set
-  name                          = "as-${local.web_components_name}"
-  location                      = azurerm_resource_group.rg_materials.location
-  service_plan_id               = azurerm_service_plan.web_linux.id
-  resource_group_name           = azurerm_resource_group.rg_materials.name
+  name                = "as-${local.web_components_name}"
+  location            = azurerm_resource_group.rg_materials.location
+  service_plan_id     = azurerm_service_plan.web_linux.id
+  resource_group_name = azurerm_resource_group.rg_materials.name
   #virtual_network_subnet_id     = data.azurerm_subnet.materials_subnets[var.ui_subnet_name].id #TBC vnet integration is not required
   public_network_access_enabled = false
   https_only                    = true
@@ -28,15 +28,15 @@ resource "azurerm_linux_web_app" "as_comp_materials" {
   }
 
   app_settings = {
-    "APPINSIGHTS_INSTRUMENTATIONKEY"  = azurerm_application_insights.ai_materials.instrumentation_key
-    "HostType"                        = "Production"
+    "APPINSIGHTS_INSTRUMENTATIONKEY" = azurerm_application_insights.ai_materials.instrumentation_key
+    "HostType"                       = "Production"
   }
 
   sticky_settings {
     app_setting_names = ["HostType"]
   }
 
-/*
+  /*
   auth_settings_v2 {
     auth_enabled           = true
     require_authentication = true

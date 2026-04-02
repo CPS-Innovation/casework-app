@@ -1,0 +1,66 @@
+---
+name: '$(majorMinorVersion).$(Year:yy)$(DayOfYear).$(semanticVersion)'
+trigger: none
+pr: none
+
+resources:
+  pipelines:
+    - pipeline: Materials_TF_Build
+      source: Cps-Materials-Infra-TF-Prod-Build
+      trigger:
+        branches:
+          include:
+            - refs/heads/main
+        stages:
+          - Publish_Artifacts
+
+parameters:
+- name: TF_Apply
+  displayName: Apply TF change
+  type: boolean
+  default: false
+
+pool:
+  name: $(prod-build-agent)
+
+variables:
+  - name: majorMinorVersion
+    value: 1.0
+  - name: semanticVersion 
+    value: $[counter(variables['majorMinorVersion'], 1)]
+  - group: materials-kv-prod-terraform
+  - group: materials-global
+
+stages:
+                 
+  - stage: Apply_Prod
+    displayName: Deployment > Materials Production
+    jobs:      
+      - deployment: CI_Deploy_Materials_Terraform
+        workspace:
+          clean: all 
+        environment: "Materials_Production"   
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+              
+                - template: templates/task_get-credentials.yml
+                  parameters:
+                    azureSubscription: $(prod-azure-service-connection)
+
+                - template: templates/task_apply-terraform.yml
+                  parameters:
+                    targetBuild: "Materials_TF_Build"
+                    targetTerraformArtifact: $(targetTerraformArtifact)
+                    targetPlanName: "prod"
+                    terraformStorageAccount: $(prod-terraform-storage-account)
+                    terraformContainerName: $(materials-terraform-container-name)
+                    terraformStateKey: $(terraform-key)
+                    terraformStateResourceGroup: $(terraform-resource-group)
+                    armClientId: $(clientId)
+                    armClientSecret: $(clientSecret)
+                    armTenantId: $(tenantId)
+                    armSubscriptionId: $(subscriptionId)
+                    TF_Apply: ${{ parameters.TF_Apply }}
+                    terraformVersion: $(terraform-version)

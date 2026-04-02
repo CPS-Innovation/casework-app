@@ -1,12 +1,12 @@
 ## Global ##
 variable "project_name" {
   description = "The project name of this resource"
-  type    = string
+  type        = string
 }
 
 variable "environment" {
   description = "The environment of this resource"
-  type = string
+  type        = string
 }
 
 variable "location" {
@@ -30,7 +30,7 @@ variable "environment_tag" {
 }
 
 variable "terraform_service_principal_display_name" {
-  type = string
+  type        = string
   description = "Name of the service principal responsible for running Terraform"
 }
 
@@ -58,11 +58,6 @@ variable "ui_subnet_name" {
   type = string
 }
 
-variable "dns_server" {
-  type        = string
-  description = "The name of the DNS server"
-}
-
 variable "as_web_pe_ip" {
   type        = string
   description = "A static private IP address to use for the Materials UI private endpoint."
@@ -84,12 +79,12 @@ variable "as_comp_pe_ip" {
 ## UI ##
 variable "web_asp_materials" {
   type = object({
-    sku     = string
+    sku                    = string
     worker_count           = string
     zone_balancing_enabled = string
     autoscale_default      = string
     autoscale_minimum      = string
-    autoscale_maximum      = string 
+    autoscale_maximum      = string
   })
 }
 
