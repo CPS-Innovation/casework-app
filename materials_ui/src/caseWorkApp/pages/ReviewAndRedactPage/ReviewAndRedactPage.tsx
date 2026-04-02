@@ -25,6 +25,7 @@ import { getDocumentIdWithoutPrefix } from '../../../utils/string';
 import { Tabs } from '../../components/tabs';
 import { getLookups, useAxiosInstance } from '../../components/utils/getData';
 import { TLookupsResponse } from '../../types/redaction';
+import { CloseTabUnsavedRedactionsModal } from './CloseTabUnsavedRedactionsModal';
 import { UnsavedRedactionsModal } from './UnsavedRedactionsModal';
 
 export const ReviewAndRedactPage = () => {
@@ -58,6 +59,9 @@ export const ReviewAndRedactPage = () => {
     useState(false);
   const [attemptedNavigationHref, setAttemptedNavigationHref] =
     useState<string>();
+  const [pendingCloseDocumentId, setPendingCloseDocumentId] = useState<
+    string | undefined
+  >();
   const [documents, setDocuments] = useState<TDocument[] | null | undefined>();
 
   const [showRedactionLogModal, setShowRedactionLogModal] = useState(false);
@@ -157,7 +161,7 @@ export const ReviewAndRedactPage = () => {
     }
   }));
 
-  const handleCloseTab = (documentId: string | undefined) => {
+  const performCloseTab = (documentId: string | undefined) => {
     if (documentId && documentId === activeDocumentId) {
       const index = openDocumentIds.indexOf(documentId);
       const nextDocumentId =
@@ -165,6 +169,14 @@ export const ReviewAndRedactPage = () => {
       setActiveDocumentId(nextDocumentId);
     }
     setOpenDocumentIds((prev) => prev.filter((id) => id !== documentId));
+  };
+
+  const handleCloseTab = (documentId: string | undefined) => {
+    if (documentId && (redactionsIndexedOnDocId[documentId]?.length ?? 0) > 0) {
+      setPendingCloseDocumentId(documentId);
+      return;
+    }
+    performCloseTab(documentId);
   };
 
   const activeTabId = activeDocumentId || openDocumentIds[0] || '';
@@ -211,6 +223,15 @@ export const ReviewAndRedactPage = () => {
           onDocumentClick={(documentId) => {
             setActiveDocumentId(documentId);
             setShowBlockNavigationModal(false);
+          }}
+        />
+      )}
+      {pendingCloseDocumentId && (
+        <CloseTabUnsavedRedactionsModal
+          onReturnClick={() => setPendingCloseDocumentId(undefined)}
+          onIgnoreClick={() => {
+            performCloseTab(pendingCloseDocumentId);
+            setPendingCloseDocumentId(undefined);
           }}
         />
       )}
