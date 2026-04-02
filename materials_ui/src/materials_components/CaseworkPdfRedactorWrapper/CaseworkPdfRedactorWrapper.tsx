@@ -24,9 +24,7 @@ import { useWindowMouseListener } from '../PdfRedactor/utils/useWindowMouseListe
 import { useDocumentCheckOutRequest } from './hooks/useDocumentCheckOutRequest';
 import {
   combineDeletionsWithDeletionDetails,
-  combineRedactionsWithRedactionDetails,
-  TDeletionDetail,
-  TRedactionDetail
+  TDeletionDetail
 } from './utils/combineRedactionsDeletions';
 import { saveDeletions } from './utils/saveDeletionsUtils';
 import { saveRedactions } from './utils/saveRedactionsUtils';
@@ -96,17 +94,8 @@ export const CaseworkPdfRedactorWrapper = (p: {
   const [indexedRotation, setIndexedRotation] = useState<TIndexedRotation>({});
   const [indexedDeletion, setIndexedDeletion] = useState<TIndexedDeletion>({});
 
-  const [redactionDetails, setRedactionDetails] = useState<TRedactionDetail[]>(
-    []
-  );
   const [deletionDetails, setDeletionDetails] = useState<TDeletionDetail[]>([]);
 
-  const cleanupRedactionDetails = () => {
-    const redactionIds = redactions.map((red) => red.id);
-    setRedactionDetails((prev) =>
-      prev.filter((redDetail) => redactionIds.includes(redDetail.redactionId))
-    );
-  };
   const cleanupDeletionDetails = () => {
     const deletionIds = Object.values(indexedDeletion)
       .filter((del) => del.isDeleted)
@@ -116,7 +105,6 @@ export const CaseworkPdfRedactorWrapper = (p: {
     );
   };
 
-  useEffect(() => cleanupRedactionDetails(), [redactions]);
   useEffect(() => cleanupDeletionDetails(), [indexedDeletion]);
   useEffect(() => p.onRedactionsChange(redactions), [redactions]);
 
@@ -305,11 +293,6 @@ export const CaseworkPdfRedactorWrapper = (p: {
             setDocumentIsCheckedOutPopupProps({ message });
             return;
           }
-          const newRedactionDetails = add.map((x) => ({
-            redactionId: x.id,
-            randomId: `This redaction does ${crypto.randomUUID()}`
-          }));
-          setRedactionDetails((prev) => [...prev, ...newRedactionDetails]);
           setRedactionPopupProps(() => ({
             x: mousePos.current.x,
             y: mousePos.current.y,
@@ -323,10 +306,6 @@ export const CaseworkPdfRedactorWrapper = (p: {
         onSaveRedactions={async () => {
           p.onRedactionSaveStatusChange('saving');
           try {
-            combineRedactionsWithRedactionDetails({
-              redactions,
-              redactionDetails
-            });
             await saveRedactions({
               axiosInstance,
               urn: p.urn,
