@@ -15,15 +15,15 @@ export const useFilters = (
   filterSetName: FilterKeys,
   defaultState?: FilterItem
 ) => {
-  const [shallowFilters, setShallowFilters] = useState<FilterItem>(
-    getDefaultState(defaultState)
-  );
   const {
     createFilterContext,
     filters,
     resetFilterContext,
     updateFilterContext
   } = useContext(FilterContext);
+  const [shallowFilters, setShallowFilters] = useState<FilterItem>(
+    filters[filterSetName] ?? getDefaultState(defaultState)
+  );
 
   const setSort = (column: string | null) => {
     const newSortDirection =
