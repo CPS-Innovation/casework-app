@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import {
@@ -12,6 +12,7 @@ import {
 import { useCaseInfoStore } from '../hooks';
 import { useCaseDetails } from '../hooks/search/useCaseSearch';
 import { formatDateLong } from '../utils/date';
+import { FilterContext, FiltersContext } from '../context/FiltersContext';
 
 type IFormInput = { urn: string };
 
@@ -27,6 +28,7 @@ export const CaseSearchPage = () => {
   const { clearCaseInfo } = useCaseInfoStore();
   const [queryUrn, setQueryUrn] = useState('');
   const [hasSearched, setHasSearched] = useState(false);
+  const { resetAllFilters } = useContext<FiltersContext>(FilterContext);
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
     const urn = (data.urn?.trim() ?? '').slice(0, MAX_URN_LENGTH);
@@ -38,6 +40,7 @@ export const CaseSearchPage = () => {
 
   useEffect(() => {
     clearCaseInfo();
+    resetAllFilters();
   }, []);
 
   return (

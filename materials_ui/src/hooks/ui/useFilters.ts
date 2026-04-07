@@ -22,37 +22,38 @@ export const useFilters = (
     updateFilterContext
   } = useContext(FilterContext);
   const [shallowFilters, setShallowFilters] = useState<FilterItem>(
-    filters[filterSetName] ?? getDefaultState(defaultState)
+    () => filters[filterSetName] ?? getDefaultState(defaultState)
   );
 
   const setSort = (column: string | null) => {
-    const newSortDirection =
-      !shallowFilters?.sort?.direction ||
-      shallowFilters?.sort?.direction === 'descending'
-        ? 'ascending'
-        : 'descending';
+    setShallowFilters((prev) => {
+      const newSortDirection =
+        !prev.sort?.direction || prev.sort?.direction === 'descending'
+          ? 'ascending'
+          : 'descending';
 
-    const hasSortColumnChanged = shallowFilters?.sort?.column !== column;
+      const hasSortColumnChanged = prev.sort?.column !== column;
 
-    const newSortState = {
-      filters: (filters[filterSetName] as FilterItem).filters,
-      // if someone clicks on a new sort column, we want to change to ascending no matter what
-      sort: setSortState(
-        column,
-        hasSortColumnChanged ? 'ascending' : newSortDirection
-      )
-    };
+      const newSortState: FilterItem = {
+        filters: filters[filterSetName]?.filters ?? {},
+        // if someone clicks on a new sort column, we want to change to ascending no matter what
+        sort: setSortState(
+          column,
+          hasSortColumnChanged ? 'ascending' : newSortDirection
+        )
+      };
 
-    setShallowFilters(newSortState);
-    // we want to update context immediately for sorting
-    updateFilterContext(filterSetName, newSortState);
+      // we want to update context immediately for sorting
+      updateFilterContext(filterSetName, newSortState);
+      return newSortState;
+    });
   };
 
   const setFilter = (filterGroup: string, name: string, value: boolean) => {
-    setShallowFilters({
-      ...shallowFilters,
-      filters: setFilterState(shallowFilters.filters, filterGroup, name, value)
-    });
+    setShallowFilters((prev) => ({
+      ...prev,
+      filters: setFilterState(prev.filters, filterGroup, name, value)
+    }));
   };
 
   const setCheckboxFilter = (
@@ -60,19 +61,14 @@ export const useFilters = (
     name: string,
     checked: boolean
   ) => {
-    setShallowFilters({
-      ...shallowFilters,
-      filters: setFilterState(
-        shallowFilters.filters,
-        filterGroup,
-        name,
-        checked
-      )
-    });
+    setShallowFilters((prev) => ({
+      ...prev,
+      filters: setFilterState(prev.filters, filterGroup, name, checked)
+    }));
   };
 
   const setSearch = (query: string) => {
-    setShallowFilters({ ...shallowFilters, search: query });
+    setShallowFilters((prev) => ({ ...prev, search: query }));
   };
 
   const saveFiltersToContext = () => {
@@ -80,11 +76,11 @@ export const useFilters = (
   };
 
   const resetFilters = () => {
-    setShallowFilters({
-      ...shallowFilters,
+    setShallowFilters((prev) => ({
+      ...prev,
       filters: defaultState?.filters || {},
       search: ''
-    });
+    }));
     resetFilterContext(filterSetName);
   };
 

@@ -45,7 +45,8 @@ test.describe('PCD Request Page', () => {
     page
   }) => {
     mockRoute(page, 'pcds/2167259/pcd-request-core', []);
-    await page.goto('./pcd-request', { waitUntil: 'domcontentloaded' });
+    mockRoute(page, '/pcd-request', {});
+    await page.goto('./pcd-request/145739', { waitUntil: 'domcontentloaded' });
     await expect(page.getByRole('heading', { name: 'Loading case', includeHidden: true })).toBeVisible();
     await page.getByRole('heading', { name: 'Loading case', includeHidden: true }).waitFor({ state: 'detached' });
     await expect(
