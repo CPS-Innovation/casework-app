@@ -30,7 +30,7 @@ const getCenteredWindowPosition = () => {
 
   console.log({ left, top });
 
-  return `width=${WINDOW_WIDTH},height=${WINDOW_HEIGHT},top=${top},left=${left},scrollbars=yes,resizable=yes`;
+  return `top=${top},left=${left},scrollbars=yes,resizable=yes`;
 };
 
 const renderLoadingPage = (win: Window) => {
