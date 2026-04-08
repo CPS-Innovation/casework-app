@@ -17,6 +17,7 @@ export const GovUkBanner = (p: {
       className={`govuk-notification-banner govuk-notification-banner ${variantClass}`}
       role="alert"
       aria-labelledby="govuk-notification-banner-title"
+      aria-live="assertive"
       data-module="govuk-notification-banner"
       style={{ margin: 0 }}
     >

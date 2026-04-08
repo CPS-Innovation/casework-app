@@ -51,7 +51,7 @@ export const DocumentSidebarNotes = (p: {
         <GovUkBanner
           variant="success"
           headerTitle="Success"
-          contentHeading="Document note successfully saved to CMS"
+          contentBody="Document note successfully saved to CMS"
         />
       )}
       <div style={{ padding: '10px' }}>
@@ -72,7 +72,12 @@ export const DocumentSidebarNotes = (p: {
             maxLength={NOTES_CHAR_COUNT_MAX_LENGTH}
             rows={5}
           />
-          <span id="notes-char-count" role="status" aria-live="polite" aria-atomic="true">
+          <span
+            id="notes-char-count"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          >
             You have {remainingCharacters} characters remaining
           </span>
           <div
@@ -106,9 +111,7 @@ export const DocumentSidebarNotes = (p: {
         </div>
         <br />
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <LoadingSpinner
-            isLoading={documentNotes.data === undefined}
-          />
+          <LoadingSpinner isLoading={documentNotes.data === undefined} />
           {documentNotes.data === null && <div>error</div>}
           {documentNotes.data && (
             <div
