@@ -27,52 +27,58 @@ export type FiltersContext = {
     newFilterSet: FilterItem
   ) => void;
   resetFilterContext: (filterSet: FilterKeys) => void;
+  resetAllFilters: () => void;
 };
 
 export const FilterContext = createContext<FiltersContext>({
   filters: { materials: {}, communications: {}, documents: {} },
   createFilterContext: () => null,
   updateFilterContext: () => null,
-  resetFilterContext: () => null
+  resetFilterContext: () => null,
+  resetAllFilters: () => null,
 });
 
 export const FilterProvider = ({ children }: PropsWithChildren) => {
-  const [filters, setFilters] = useState<FiltersContextState>(
-    {} as FiltersContextState
-  );
+  const [filters, setFilters] = useState<FiltersContextState>({});
 
   const createFilterContext = (
     filterSet: string,
     defaultState?: FilterItem
   ) => {
-    setFilters({ ...filters, [filterSet]: getDefaultState(defaultState) });
+    setFilters((prev) => ({
+      ...prev,
+      [filterSet]: getDefaultState(defaultState)
+    }));
   };
 
   const updateFilterContext = (
     filterSet: FilterKeys,
     newFilterSet: FilterItem
   ) => {
-    setFilters({
-      ...filters,
+    setFilters((prev) => ({
+      ...prev,
       [filterSet]: {
-        filters: { ...newFilterSet.filters },
-        search: newFilterSet.search,
-        sort: newFilterSet.sort
+        filters: { ...(newFilterSet.filters ?? {}) },
+        search: newFilterSet.search ?? '',
+        sort: newFilterSet.sort ?? prev[filterSet]?.sort
       }
-    });
+    }));
   };
 
   const resetFilterContext = (filterSet: FilterKeys) => {
-    setFilters({
-      ...filters,
-      [filterSet]: { sort: filters[filterSet]?.sort, filters: {}, search: '' }
-    });
+    setFilters((prev) => ({
+      ...prev,
+      [filterSet]: { sort: prev[filterSet]?.sort, filters: {}, search: '' }
+    }));
   };
+
+  const resetAllFilters = () => setFilters({});
 
   return (
     <FilterContext.Provider
       value={{
         filters,
+        resetAllFilters,
         createFilterContext,
         resetFilterContext,
         updateFilterContext

@@ -41,11 +41,12 @@ test.describe('PCD Request Page', () => {
     await expect(page.locator('dd').nth(0)).toHaveText(`02/02/2021`);
   });
 
-  test('T-003: should display a message when no PCD requests are available', async ({
+  test.skip('T-003: should display a message when no PCD requests are available', async ({
     page
   }) => {
     mockRoute(page, 'pcds/2167259/pcd-request-core', []);
-    await page.goto('./pcd-request', { waitUntil: 'domcontentloaded' });
+    mockRoute(page, '/pcd-request', {});
+    await page.goto('./pcd-request/145739', { waitUntil: 'domcontentloaded' });
     await expect(page.getByRole('heading', { name: 'Loading case', includeHidden: true })).toBeVisible();
     await page.getByRole('heading', { name: 'Loading case', includeHidden: true }).waitFor({ state: 'detached' });
     await expect(

@@ -8,4 +8,4 @@ export type FilterItem = {
   sort?: { column: string | null; direction: SortBy | null };
 };
 
-export type FiltersContextState = Record<FilterKeys, FilterItem | undefined>;
+export type FiltersContextState = Partial<Record<FilterKeys, FilterItem>>;
