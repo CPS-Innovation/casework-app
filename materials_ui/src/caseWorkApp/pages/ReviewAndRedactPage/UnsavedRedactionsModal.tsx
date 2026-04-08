@@ -1,4 +1,5 @@
 import { TDocument } from '../../../materials_components/DocumentSelectAccordion/getters/getDocumentList';
+import { GovUkBanner } from '../../../materials_components/DocumentSelectAccordion/templates/GovUkBanner';
 import { TRedaction } from '../../../materials_components/PdfRedactor/utils/coordUtils';
 import { Button } from '../../components/button';
 import { Modal } from './Modal';
@@ -32,37 +33,42 @@ export const UnsavedRedactionsModal = ({
 
   return (
     <Modal onBackgroundClick={onIgnoreClick} onEscPress={onIgnoreClick}>
-      <div style={{ padding: '20px', background: 'white' }}>
-        <div>
-          You have {documentsWithRedactions.length} documents with unsaved
-          redactions
-        </div>
-        <br />
-        <div style={{ display: 'flex', gap: '4px', flexDirection: 'column' }}>
-          {documentsWithRedactions.map((doc) => (
-            <a
-              className="govuk-link"
-              key={doc.documentId}
-              onClick={() => onDocumentClick(doc.documentId)}
+      <GovUkBanner
+        variant="error"
+        headerTitle="Error"
+        contentHeading={`You have ${documentsWithRedactions.length} document${documentsWithRedactions.length === 1 ? '' : 's'} with unsaved
+        redactions`}
+        contentBody={
+          <>
+            <div
+              style={{ display: 'flex', gap: '4px', flexDirection: 'column' }}
             >
-              {doc.presentationTitle}
-            </a>
-          ))}
-        </div>
-        <br />
-        <div>
-          If you do not save the redactions the file will not be changed.
-        </div>
-        <br />
-        <div style={{ display: 'flex', gap: '16px' }}>
-          <Button variant="primary" onClick={onReturnClick}>
-            Return to case file
-          </Button>
-          <Button variant="inverse" onClick={onIgnoreClick}>
-            Ignore
-          </Button>
-        </div>
-      </div>
+              {documentsWithRedactions.map((doc) => (
+                <a
+                  className="govuk-link"
+                  key={doc.documentId}
+                  onClick={() => onDocumentClick(doc.documentId)}
+                >
+                  {doc.presentationTitle}
+                </a>
+              ))}
+            </div>
+            <br />
+            <div>
+              If you do not save the redactions the file will not be changed.
+            </div>
+            <br />
+            <div style={{ display: 'flex', gap: '16px' }}>
+              <Button variant="primary" onClick={onReturnClick}>
+                Return to case file
+              </Button>
+              <Button variant="inverse" onClick={onIgnoreClick}>
+                Ignore
+              </Button>
+            </div>
+          </>
+        }
+      />
     </Modal>
   );
 };
