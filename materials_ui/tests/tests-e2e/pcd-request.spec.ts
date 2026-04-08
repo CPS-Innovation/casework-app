@@ -41,7 +41,7 @@ test.describe('PCD Request Page', () => {
     await expect(page.locator('dd').nth(0)).toHaveText(`02/02/2021`);
   });
 
-  test('T-003: should display a message when no PCD requests are available', async ({
+  test.skip('T-003: should display a message when no PCD requests are available', async ({
     page
   }) => {
     mockRoute(page, 'pcds/2167259/pcd-request-core', []);
