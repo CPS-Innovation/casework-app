@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   DocumentKeywordSearch,
@@ -9,6 +9,7 @@ import {
 } from '../../../components';
 import { useCaseInfoStore } from '../../../hooks';
 import { useOpenDocumentInNewWindow } from '../../../hooks/ui/useOpenDocumentInNewWindow';
+import { checkInDocumentFromAxiosInstance } from '../../../materials_components/CaseworkPdfRedactorWrapper/hooks/useDocumentCheckOutRequest';
 import { DocumentSidebar } from '../../../materials_components/DocumentSelectAccordion/DocumentSidebar';
 import { TDocument } from '../../../materials_components/DocumentSelectAccordion/getters/getDocumentList';
 import {
@@ -50,6 +51,7 @@ export const ReviewAndRedactPage = () => {
 
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
   const [openDocumentIds, setOpenDocumentIds] = useState<string[]>([]);
+
   const [activeDocumentId, setActiveDocumentId] = useState('');
   const [mode, setMode] = useState<TMode>('textRedact');
 
@@ -63,6 +65,25 @@ export const ReviewAndRedactPage = () => {
     string | undefined
   >();
   const [documents, setDocuments] = useState<TDocument[] | null | undefined>();
+  const documentsRef = useRef<TDocument[] | null | undefined>(undefined);
+  useEffect(() => {
+    documentsRef.current = documents;
+  }, [documents]);
+
+  useEffect(() => {
+    window.addEventListener('beforeunload', () => {
+      documentsRef.current?.forEach((document) => {
+        if (document && caseId && urn)
+          checkInDocumentFromAxiosInstance({
+            axiosInstance,
+            caseId,
+            urn,
+            documentId: document.documentId,
+            versionId: document.versionId
+          });
+      });
+    });
+  }, []);
 
   const [showRedactionLogModal, setShowRedactionLogModal] = useState(false);
   const [lookups, setLookups] = useState<TLookupsResponse>();
@@ -162,6 +183,16 @@ export const ReviewAndRedactPage = () => {
   }));
 
   const performCloseTab = (documentId: string | undefined) => {
+    const document = documents?.find((x) => x.documentId === documentId);
+    if (document && caseId && urn) {
+      checkInDocumentFromAxiosInstance({
+        axiosInstance,
+        caseId,
+        urn,
+        documentId: document.documentId,
+        versionId: document.versionId
+      });
+    }
     if (documentId && documentId === activeDocumentId) {
       const index = openDocumentIds.indexOf(documentId);
       const nextDocumentId =
