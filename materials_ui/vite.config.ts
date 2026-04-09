@@ -106,7 +106,7 @@ export default defineConfig(({ mode }) => {
           .trim()
       }
     },
-    esbuild: { drop: mode === 'production' ? ['console', 'debugger'] : [] },
+    esbuild: { drop: mode === 'production' ? ['debugger'] : [] },
     build: {
       outDir: 'build/materials-ui',
       target: 'esnext',
@@ -157,9 +157,7 @@ export default defineConfig(({ mode }) => {
     test: {
       globals: true,
       environment: 'jsdom',
-      outputFile: {
-        junit: "./unit-test-results.xml",
-      },
+      outputFile: { junit: './unit-test-results.xml' },
       setupFiles: './src/setupTests.ts',
       silent: true,
       exclude: ['e2e', 'node_modules']
