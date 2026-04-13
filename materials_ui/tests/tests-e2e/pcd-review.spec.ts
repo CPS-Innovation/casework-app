@@ -10,23 +10,27 @@ test.describe('PCD Review', () => {
   }) => {
     await mockRoute(
       page,
-      '/cases/2167259/history',
+      'cases/2167259/history',
       mockPcdReviewHistoryDataResponse()
     );
     await mockRoute(
       page,
-      '/cases/2167259/history/4380514/initial-review',
+      'cases/2167259/history/4380514/initial-review',
       mockPcdReviewInitialDataResponse()
     );
     await mockRoute(
       page,
-      '/cases/2167259/history/4380522/pre-charge-decision',
+      'cases/2167259/history/4380522/pre-charge-decision',
       mockPcdReviewReviewDataResponse()
     );
 
     await page.goto('./pcd-review', { waitUntil: 'domcontentloaded' });
-    await expect(page.getByRole('heading', { name: 'Loading case', includeHidden: true })).toBeVisible();
-    await page.getByRole('heading', { name: 'Loading case', includeHidden: true }).waitFor({ state: 'detached' });
+    await expect(
+      page.getByRole('heading', { name: 'Loading case', includeHidden: true })
+    ).toBeVisible();
+    await page
+      .getByRole('heading', { name: 'Loading case', includeHidden: true })
+      .waitFor({ state: 'detached' });
 
     // Main headings
     await expect(
@@ -66,13 +70,17 @@ test.describe('PCD Review', () => {
   test('T-002: should show error message when server returns 401', async ({
     page
   }) => {
-    mockServerError(page, '/cases/2167259/history');
-    mockServerError(page, '/cases/2167259/history/initial-review');
-    mockServerError(page, '/cases/2167259/history/2167259/pre-charge-decision');
+    mockServerError(page, 'cases/2167259/history');
+    mockServerError(page, 'cases/2167259/history/initial-review');
+    mockServerError(page, 'cases/2167259/history/2167259/pre-charge-decision');
 
     await page.goto('./pcd-review', { waitUntil: 'domcontentloaded' });
-    await expect(page.getByRole('heading', { name: 'Loading case', includeHidden: true })).toBeVisible();
-    await page.getByRole('heading', { name: 'Loading case', includeHidden: true }).waitFor({ state: 'detached' });
+    await expect(
+      page.getByRole('heading', { name: 'Loading case', includeHidden: true })
+    ).toBeVisible();
+    await page
+      .getByRole('heading', { name: 'Loading case', includeHidden: true })
+      .waitFor({ state: 'detached' });
     await expect(
       page.getByRole('heading', { name: 'Authentication Error' })
     ).toBeVisible();
@@ -81,12 +89,16 @@ test.describe('PCD Review', () => {
   test('T-003: Review has not been completed message shown if no data is returned', async ({
     page
   }) => {
-    await mockRoute(page, '/cases/2167259/history', []);
-    await mockRoute(page, '/cases/2167259/history/initial-review', {});
+    await mockRoute(page, 'cases/2167259/history', []);
+    await mockRoute(page, 'cases/2167259/history/initial-review', {});
 
     await page.goto('./pcd-review', { waitUntil: 'domcontentloaded' });
-    await expect(page.getByRole('heading', { name: 'Loading case', includeHidden: true })).toBeVisible();
-    await page.getByRole('heading', { name: 'Loading case', includeHidden: true }).waitFor({ state: 'detached' });
+    await expect(
+      page.getByRole('heading', { name: 'Loading case', includeHidden: true })
+    ).toBeVisible();
+    await page
+      .getByRole('heading', { name: 'Loading case', includeHidden: true })
+      .waitFor({ state: 'detached' });
     await expect(
       page.getByText('A Review has not yet been completed for this case.')
     ).toBeVisible();
