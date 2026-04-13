@@ -22,6 +22,7 @@ import {
 import { createId } from './utils/generalUtils';
 import { getPdfCoordPairsOfHighlightedText } from './utils/highlightedTextUtils';
 import type { TMode } from './utils/modeUtils';
+import type { TSearchHighlight } from './utils/searchHighlightUtils';
 import { useTriggerListener, type TTriggerData } from './utils/useTriggger';
 
 export const PdfRedactorRotationOverlay = (p: {
@@ -311,8 +312,14 @@ export const PdfRedactorPage = (p: {
   pageIsDelete: boolean;
   onPageIsDeleteChange: (x: boolean) => void;
   pageDeleteButtonDisabled: boolean;
+  searchHighlights?: TSearchHighlight[];
+  focusedSearchHighlightId?: string;
 }) => {
   const { pageNumber, scale, redactions } = p;
+  const [pageDimensions, setPageDimensions] = useState<{
+    width: number;
+    height: number;
+  } | null>(null);
 
   const [firstCorner, setFirstCorner] = useState<TCoord | null>(null);
   const [mousePos, setMousePos] = useState<{ x: number; y: number } | null>(
@@ -363,6 +370,23 @@ export const PdfRedactorPage = (p: {
 
   const pdfPageWrapperElmRef = useRef<HTMLDivElement | null>(null);
   const requestAnimationFrameRef = useRef<number | null>(null);
+
+  // handles scrolling to focused search term
+  useEffect(() => {
+    if (!pageDimensions || !p.focusedSearchHighlightId) return;
+    const focusedIsOnThisPage = p.searchHighlights?.some(
+      (hl) => hl.id === p.focusedSearchHighlightId
+    );
+    if (!focusedIsOnThisPage) return;
+    const elm = pdfPageWrapperElmRef.current?.querySelector(
+      `[data-search-highlight-id="${p.focusedSearchHighlightId}"]`
+    );
+    elm?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+      inline: 'center'
+    });
+  }, [p.focusedSearchHighlightId, pageDimensions, p.searchHighlights]);
   useEffect(() => {
     return () => {
       if (requestAnimationFrameRef.current)
@@ -406,6 +430,17 @@ export const PdfRedactorPage = (p: {
           >
             <Page
               pageNumber={p.pageNumber}
+              onRenderSuccess={() => {
+                const canvas = pdfPageWrapperElmRef.current?.querySelector(
+                  '.react-pdf__Page__canvas'
+                );
+                if (!canvas) return;
+                const rect = canvas.getBoundingClientRect();
+                setPageDimensions({
+                  width: rect.width / p.scale,
+                  height: rect.height / p.scale
+                });
+              }}
               onMouseDown={() => {
                 if (p.mode !== 'areaRedact') return;
                 const pdfPageWrapperElm = pdfPageWrapperElmRef.current;
@@ -507,6 +542,45 @@ export const PdfRedactorPage = (p: {
                 />
               );
             })}
+
+            {pageDimensions &&
+              p.searchHighlights?.map((hl) => {
+                // convert from api units to redactor units
+                const widthScale = pageDimensions.width / hl.pageWidth;
+                const heightScale = pageDimensions.height / hl.pageHeight;
+                const xLeft = hl.xLeft * widthScale;
+                const width = (hl.xRight - hl.xLeft) * widthScale;
+                const height = (hl.yBottom - hl.yTop) * heightScale;
+                const yBottom =
+                  pageDimensions.height - hl.yBottom * heightScale;
+                const isFocused = hl.id === p.focusedSearchHighlightId;
+                return (
+                  <PositionPdfOverlayBox
+                    key={hl.id}
+                    xLeft={xLeft}
+                    yBottom={yBottom}
+                    width={width}
+                    height={height}
+                    scale={p.scale}
+                  >
+                    <div
+                      data-search-highlight-id={hl.id}
+                      style={{
+                        height: '100%',
+                        width: '100%',
+                        background: isFocused
+                          ? 'rgba(255, 221, 0, 0.4)'
+                          : 'rgba(255, 0, 0, 0.3)',
+                        border: isFocused
+                          ? '3px dashed rgba(255, 221, 0, 0.4)'
+                          : '3px dashed #ff4141',
+                        boxSizing: 'border-box',
+                        pointerEvents: 'none'
+                      }}
+                    />
+                  </PositionPdfOverlayBox>
+                );
+              })}
           </div>
         </span>
       </span>
