@@ -65,6 +65,8 @@ export const SearchTermResultSchema = z.object({
       text: z.string(),
       pageIndex: z.number(),
       lineIndex: z.number(),
+      pageHeight: z.number(),
+      pageWidth: z.number(),
       words: z.array(
         z.object({
           boundingBox: z.array(z.number()).nullable(),

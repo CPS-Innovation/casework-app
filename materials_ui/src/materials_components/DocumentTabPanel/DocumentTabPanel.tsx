@@ -10,7 +10,14 @@ import { DocumentViewportArea } from '../documenViewportArea';
 import { TRedactionType } from '../PdfRedactor/PdfRedactionTypeForm';
 import { TRedaction } from '../PdfRedactor/utils/coordUtils';
 import { TMode } from '../PdfRedactor/utils/modeUtils';
+import type { TSearchHighlight } from '../PdfRedactor/utils/searchHighlightUtils';
 import { RedactionLogModal } from '../RedactionLog/RedactionLogModal';
+
+export type DocSearchContext = {
+  searchTerm: string;
+  highlights: TSearchHighlight[];
+  focusedIndex: number;
+};
 
 type LoadStatus = 'loading' | 'error' | 'success';
 
@@ -33,6 +40,9 @@ export type DocumentTabPanelProps = {
   onViewInNewWindowClick: () => void;
   initRedactions?: TRedaction[];
   onRedactionLogClick: () => void;
+  searchContext?: DocSearchContext;
+  onFocusedSearchIndexChange?: (index: number) => void;
+  onBackToSearchResults?: () => void;
 };
 
 export const DocumentTabPanel = ({
@@ -47,7 +57,10 @@ export const DocumentTabPanel = ({
   onModification,
   initRedactions,
   onViewInNewWindowClick,
-  onRedactionLogClick
+  onRedactionLogClick,
+  searchContext,
+  onFocusedSearchIndexChange,
+  onBackToSearchResults
 }: DocumentTabPanelProps) => {
   const axiosInstance = useAxiosInstance();
 
@@ -148,6 +161,27 @@ export const DocumentTabPanel = ({
             onViewInNewWindowButtonClick={onViewInNewWindowClick}
             onRedactionLogClick={onRedactionLogClick}
             numOfDocumentPages={numOfDocumentPages}
+            searchMode={
+              searchContext
+                ? {
+                    searchTerm: searchContext.searchTerm,
+                    totalMatches: searchContext.highlights.length,
+                    focusedIndex: searchContext.focusedIndex,
+                    onPrev: () =>
+                      onFocusedSearchIndexChange?.(
+                        Math.max(0, searchContext.focusedIndex - 1)
+                      ),
+                    onNext: () =>
+                      onFocusedSearchIndexChange?.(
+                        Math.min(
+                          searchContext.highlights.length - 1,
+                          searchContext.focusedIndex + 1
+                        )
+                      ),
+                    onBackToSearchResults: () => onBackToSearchResults?.()
+                  }
+                : undefined
+            }
           />
           <CaseworkPdfRedactorWrapper
             fileUrl={pdfFileUrl}
@@ -167,6 +201,8 @@ export const DocumentTabPanel = ({
             }}
             onRedactionSaveStatusChange={setRedactionSaveStatus}
             onNumOfPagesDocumentChange={(x) => setNumOfDocumentPages(x)}
+            searchHighlights={searchContext?.highlights}
+            focusedSearchIndex={searchContext?.focusedIndex}
           />
         </>
       )}

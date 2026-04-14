@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   useAppRoute,
@@ -29,10 +29,17 @@ import { DocumentKeywordSearchFilters } from '../Filters/DocumentKeywordSearchFi
 import { DEFAULT_RESULTS_PER_PAGE } from '../../constants/query';
 import './DocumentKeywordSearch.scss';
 
-export const DocumentKeywordSearch = () => {
+type DocumentKeywordSearchProps = {
+  modalOpen: boolean;
+  setModalOpen: (open: boolean) => void;
+};
+
+export const DocumentKeywordSearch = ({
+  modalOpen,
+  setModalOpen
+}: DocumentKeywordSearchProps) => {
   const { getRoute } = useAppRoute();
   const [searchTerm, setSearchTerm] = useState<string | null>(null);
-  const [modalOpen, setModalOpen] = useState(false);
   const [expandedDocuments, setExpandedDocuments] = useState<
     Record<string, boolean>
   >({});
@@ -61,13 +68,15 @@ export const DocumentKeywordSearch = () => {
 
   const handleSearchSubmit = (term: string) => {
     setSearchTerm(term);
+    setExpandedDocuments({});
     setModalOpen(true);
   };
 
-  const handleModalClose = () => {
-    resetFilters();
-    setModalOpen(false);
-  };
+  const handleModalClose = () => setModalOpen(false);
+
+  useEffect(() => {
+    if (!modalOpen) resetFilters();
+  }, [modalOpen]);
 
   const filteredResults = useMemo(() => {
     const selectedCategories = filters?.filters?.category ?? [];
@@ -241,7 +250,11 @@ export const DocumentKeywordSearch = () => {
                     <h2 className="govuk-heading-m govuk-!-margin-bottom-1">
                       <Link
                         to={getRoute('REVIEW_REDACT')}
-                        state={{ materialId: doc.documentId }}
+                        state={{
+                          materialId: doc.documentId,
+                          searchTerm,
+                          searchMatches: doc.matches
+                        }}
                         onClick={handleModalClose}
                       >
                         {doc.documentTitle}
