@@ -18,7 +18,7 @@ import {
   useCaseMaterials,
   useTableActions
 } from '../hooks';
-import { useOpenDocumentInNewWindow } from '../hooks/ui/useOpenDocumentInNewWindow';
+import { useOpenDocumentInNewTab } from '../hooks/ui/useOpenDocumentInNewWindow';
 import { CaseMaterialsType } from '../schemas';
 import { useMaterialTags, useSelectedItemsStore } from '../stores';
 
@@ -36,7 +36,7 @@ export const CommunicationsPage = () => {
   const { items: selectedItems, clear: clearSelectedItems } =
     useSelectedItemsStore();
 
-  const { openPreview } = useOpenDocumentInNewWindow();
+  const { openPreview } = useOpenDocumentInNewTab();
 
   const {
     handleEditClick,

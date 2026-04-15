@@ -8,7 +8,7 @@ import {
   TwoCol
 } from '../../../components';
 import { useCaseInfoStore } from '../../../hooks';
-import { useOpenDocumentInNewWindow } from '../../../hooks/ui/useOpenDocumentInNewWindow';
+import { useOpenDocumentInNewTab } from '../../../hooks/ui/useOpenDocumentInNewWindow';
 import { checkInDocumentFromAxiosInstance } from '../../../materials_components/CaseworkPdfRedactorWrapper/hooks/useDocumentCheckOutRequest';
 import { DocumentSidebar } from '../../../materials_components/DocumentSelectAccordion/DocumentSidebar';
 import { TDocument } from '../../../materials_components/DocumentSelectAccordion/getters/getDocumentList';
@@ -75,7 +75,7 @@ export const ReviewAndRedactPage = () => {
 
   const [searchModalOpen, setSearchModalOpen] = useState(false);
 
-  const { openPreview } = useOpenDocumentInNewWindow();
+  const { openPreview } = useOpenDocumentInNewTab();
 
   const [showBlockNavigationModal, setShowBlockNavigationModal] =
     useState(false);

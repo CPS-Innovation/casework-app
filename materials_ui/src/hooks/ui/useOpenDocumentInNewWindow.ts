@@ -109,3 +109,48 @@ export const useOpenDocumentInNewWindow = () => {
 
   return { openPreview };
 };
+
+export const useOpenDocumentInNewTab = () => {
+  const request = useAxiosInstance();
+  const { caseInfo } = useCaseInfoStore();
+
+  const openPreview = async (materialId: number) => {
+    if (!caseInfo) return;
+
+    let win: Window | null = null;
+
+    try {
+      win = window.open('', '_blank');
+      await new Promise<void>((resolve) => {
+        if (win!.document.readyState === 'complete') {
+          resolve();
+        } else {
+          win!.addEventListener('load', () => resolve(), { once: true });
+        }
+      });
+      if (!win) return;
+
+      renderLoadingPage(win);
+
+      const response = await request.get(
+        `/urns/${caseInfo.urn}/cases/${caseInfo.id}/materials/${materialId}/preview`,
+        { responseType: 'blob' }
+      );
+
+      const pdfUrl = URL.createObjectURL(response.data);
+
+      win.location.href = pdfUrl;
+
+      win.addEventListener('load', () => {
+        URL.revokeObjectURL(pdfUrl);
+      });
+    } catch (error) {
+      if (win && !win.closed) {
+        renderErrorPage(win);
+      }
+      console.error('Error opening document preview:', error);
+    }
+  };
+
+  return { openPreview };
+};

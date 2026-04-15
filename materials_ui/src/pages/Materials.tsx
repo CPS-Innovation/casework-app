@@ -22,7 +22,7 @@ import { useMaterialTags, useSelectedItemsStore } from '../stores';
 
 import { useNavigate } from 'react-router-dom';
 import { URL } from '../constants/url';
-import { useOpenDocumentInNewWindow } from '../hooks/ui/useOpenDocumentInNewWindow';
+import { useOpenDocumentInNewTab } from '../hooks/ui/useOpenDocumentInNewWindow';
 import { CaseMaterialsType } from '../schemas';
 
 export const MaterialsPage = () => {
@@ -40,7 +40,7 @@ export const MaterialsPage = () => {
   const { items: selectedItems, clear: clearSelectedItems } =
     useSelectedItemsStore();
   const { setTags } = useMaterialTags();
-  const { openPreview } = useOpenDocumentInNewWindow();
+  const { openPreview } = useOpenDocumentInNewTab();
 
   const {
     handleReclassifyClick,
