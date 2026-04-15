@@ -70,6 +70,8 @@ export const useDocumentSearchResults = (
           text: match.text,
           pageIndex: match.pageIndex,
           lineIndex: match.lineIndex,
+          pageHeight: match.pageHeight,
+          pageWidth: match.pageWidth,
           words: match.words
         })),
         resultsPerDocumentCount

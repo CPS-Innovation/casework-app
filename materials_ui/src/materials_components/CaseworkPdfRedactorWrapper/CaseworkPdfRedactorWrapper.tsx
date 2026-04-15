@@ -20,6 +20,7 @@ import {
   TIndexedRotation,
   TRotation
 } from '../PdfRedactor/utils/rotationUtils';
+import type { TSearchHighlight } from '../PdfRedactor/utils/searchHighlightUtils';
 import { useWindowMouseListener } from '../PdfRedactor/utils/useWindowMouseListener';
 import { useDocumentCheckOutRequest } from './hooks/useDocumentCheckOutRequest';
 import {
@@ -79,6 +80,8 @@ export const CaseworkPdfRedactorWrapper = (p: {
   }) => void;
   onRedactionSaveStatusChange: (status: 'saving' | 'saved' | undefined) => void;
   onNumOfPagesDocumentChange: (x: number) => void;
+  searchHighlights?: TSearchHighlight[];
+  focusedSearchIndex?: number;
 }) => {
   const [isDocumentCheckedOut, setIsDocumentCheckedOut] = useState(false);
   const [selectedRedactionTypes, setSelectedRedactionTypes] = useState<
@@ -415,6 +418,8 @@ export const CaseworkPdfRedactorWrapper = (p: {
         }}
         initRedactions={p.initRedactions}
         onNumOfDocPagesChanged={p.onNumOfPagesDocumentChange}
+        searchHighlights={p.searchHighlights}
+        focusedSearchIndex={p.focusedSearchIndex}
       />
     </div>
   );

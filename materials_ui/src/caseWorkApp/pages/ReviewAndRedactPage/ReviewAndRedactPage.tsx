@@ -17,11 +17,16 @@ import {
   safeGetOpenDocumentTabsFromLocalStorage,
   safeSetOpenDocumentTabsFromLocalStorage
 } from '../../../materials_components/DocumentSelectAccordion/utils/OpenDocumentTabsLocalStorageUtils';
-import { DocumentTabPanel } from '../../../materials_components/DocumentTabPanel/DocumentTabPanel';
+import {
+  DocSearchContext,
+  DocumentTabPanel
+} from '../../../materials_components/DocumentTabPanel/DocumentTabPanel';
 import { TRedaction } from '../../../materials_components/PdfRedactor/utils/coordUtils';
 import { TMode } from '../../../materials_components/PdfRedactor/utils/modeUtils';
+import { convertMatchesToSearchHighlights } from '../../../materials_components/PdfRedactor/utils/searchHighlightUtils';
 import { useTrigger } from '../../../materials_components/PdfRedactor/utils/useTriggger';
 import { RedactionLogModal } from '../../../materials_components/RedactionLog/RedactionLogModal';
+import type { SearchTermResultType } from '../../../schemas/documents';
 import { getDocumentIdWithoutPrefix } from '../../../utils/string';
 import { Tabs } from '../../components/tabs';
 import { getLookups, useAxiosInstance } from '../../components/utils/getData';
@@ -31,8 +36,17 @@ import { UnsavedRedactionsModal } from './UnsavedRedactionsModal';
 
 export const ReviewAndRedactPage = () => {
   const { state: locationState } = useLocation();
-  const { docType: docTypeParam, materialId: materialIdParam } =
-    (locationState || {}) as { docType?: string; materialId?: string };
+  const {
+    docType: docTypeParam,
+    materialId: materialIdParam,
+    searchTerm: searchTermParam,
+    searchMatches: searchMatchesParam
+  } = (locationState || {}) as {
+    docType?: string;
+    materialId?: string;
+    searchTerm?: string;
+    searchMatches?: SearchTermResultType['matches'];
+  };
 
   const navigate = useNavigate();
 
@@ -47,6 +61,10 @@ export const ReviewAndRedactPage = () => {
     [k: string]: TRedaction[];
   }>({});
 
+  const [searchContextByDocId, setSearchContextByDocId] = useState<
+    Record<string, DocSearchContext>
+  >({});
+
   const reloadSidebarTrigger = useTrigger();
 
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
@@ -54,6 +72,8 @@ export const ReviewAndRedactPage = () => {
 
   const [activeDocumentId, setActiveDocumentId] = useState('');
   const [mode, setMode] = useState<TMode>('textRedact');
+
+  const [searchModalOpen, setSearchModalOpen] = useState(false);
 
   const { openPreview } = useOpenDocumentInNewWindow();
 
@@ -120,8 +140,30 @@ export const ReviewAndRedactPage = () => {
           ? openedDocumentIds
           : [...openedDocumentIds, `${materialIdParam}`]
       );
+
+      if (searchTermParam && searchMatchesParam) {
+        const highlights = convertMatchesToSearchHighlights(searchMatchesParam);
+        setSearchContextByDocId((prev) => ({
+          ...prev,
+          [materialIdParam]: {
+            searchTerm: searchTermParam,
+            highlights,
+            focusedIndex: 0
+          }
+        }));
+      }
+
+      window.history.replaceState({}, '');
     }
-  }, [materialIdParam]);
+  }, [materialIdParam, searchTermParam, searchMatchesParam]);
+
+  const setFocusedSearchIndex = (docId: string, index: number) => {
+    setSearchContextByDocId((prev) => {
+      const ctx = prev[docId];
+      if (!ctx) return prev;
+      return { ...prev, [docId]: { ...ctx, focusedIndex: index } };
+    });
+  };
 
   useEffect(() => {
     if (docTypeParam && documents && documents.length > 0) {
@@ -177,6 +219,11 @@ export const ReviewAndRedactPage = () => {
             openPreview(Number(getDocumentIdWithoutPrefix(doc.documentId)));
           }}
           onRedactionLogClick={() => setShowRedactionLogModal(true)}
+          searchContext={searchContextByDocId[doc.documentId]}
+          onFocusedSearchIndexChange={(index) =>
+            setFocusedSearchIndex(doc.documentId, index)
+          }
+          onBackToSearchResults={() => setSearchModalOpen(true)}
         />
       )
     }
@@ -294,7 +341,12 @@ export const ReviewAndRedactPage = () => {
           sidebar={
             isSidebarVisible && caseId && urn ? (
               <>
-                {documents && <DocumentKeywordSearch />}
+                {documents && (
+                  <DocumentKeywordSearch
+                    modalOpen={searchModalOpen}
+                    setModalOpen={setSearchModalOpen}
+                  />
+                )}
                 <DocumentSidebar
                   urn={urn}
                   caseId={caseId}

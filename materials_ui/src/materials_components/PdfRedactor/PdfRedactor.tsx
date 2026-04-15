@@ -14,6 +14,7 @@ import { TDeletion, TIndexedDeletion } from './utils/deletionUtils';
 import { type TMode } from './utils/modeUtils';
 import styles from './utils/PdfRedactor.module.css';
 import { TIndexedRotation, TRotation } from './utils/rotationUtils';
+import type { TSearchHighlight } from './utils/searchHighlightUtils';
 import { useTrigger } from './utils/useTriggger';
 import '/node_modules/react-pdf/dist/cjs/Page/AnnotationLayer.css';
 import '/node_modules/react-pdf/dist/cjs/Page/TextLayer.css';
@@ -226,6 +227,8 @@ export const PdfRedactor = (p: {
   initRedactions: TRedaction[];
   onShowRedactionLogModal?: (redactions: TRedaction[]) => void;
   onNumOfDocPagesChanged: (x: number) => void;
+  searchHighlights?: TSearchHighlight[];
+  focusedSearchIndex?: number;
 }) => {
   const { previousModeRef } = usePreviousModeRef(p.mode);
 
@@ -250,6 +253,21 @@ export const PdfRedactor = (p: {
   const indexedRedactions = useMemo(() => {
     return indexRedactionsOnPageNumber(p.redactions);
   }, [p.redactions]);
+
+  const indexedSearchHighlights = useMemo(() => {
+    const map: { [pageNumber: number]: TSearchHighlight[] } = {};
+    (p.searchHighlights ?? []).forEach((highlight) => {
+      if (!map[highlight.pageNumber]) map[highlight.pageNumber] = [];
+      map[highlight.pageNumber]!.push(highlight);
+    });
+    return map;
+  }, [p.searchHighlights]);
+
+  const focusedHighlight =
+    p.searchHighlights && p.focusedSearchIndex !== undefined
+      ? p.searchHighlights[p.focusedSearchIndex]
+      : undefined;
+  const focusedHighlightId = focusedHighlight?.id;
 
   const rotations = useMemo(() => {
     return Object.values(p.indexedRotation);
@@ -472,6 +490,8 @@ export const PdfRedactor = (p: {
                     }
                   });
                 }}
+                searchHighlights={indexedSearchHighlights[j + 1] ?? []}
+                focusedSearchHighlightId={focusedHighlightId}
                 pageIsDelete={!!p.indexedDeletion[j + 1]?.isDeleted}
                 onPageIsDeleteChange={(isDeleted) => {
                   const deletion = {
