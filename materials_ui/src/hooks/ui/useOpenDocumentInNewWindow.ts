@@ -83,6 +83,24 @@ const renderPdfUrlInIframe = (p: { win: Window; pdfUrl: string }) => {
   p.win.document.body.appendChild(iframe);
 };
 
+const openReadyTab = async () => {
+  try {
+    const win = window.open('', '_blank') as Window | null;
+    if (!win) return null;
+
+    await new Promise<void>((resolve) => {
+      if (win!.document.readyState === 'complete') {
+        resolve();
+      } else {
+        win!.addEventListener('load', () => resolve(), { once: true });
+      }
+    });
+    return win;
+  } catch {
+    return null;
+  }
+};
+
 export const useOpenDocumentInNewWindow = () => {
   const request = useAxiosInstance();
   const { caseInfo } = useCaseInfoStore();
@@ -134,24 +152,6 @@ export const useOpenDocumentInNewTab = () => {
 
   const openPreview = async (materialId: number) => {
     if (!caseInfo) return;
-
-    const openReadyTab = async () => {
-      try {
-        const win = window.open('', '_blank') as Window | null;
-        if (!win) return null;
-
-        await new Promise<void>((resolve) => {
-          if (win!.document.readyState === 'complete') {
-            resolve();
-          } else {
-            win!.addEventListener('load', () => resolve(), { once: true });
-          }
-        });
-        return win;
-      } catch {
-        return null;
-      }
-    };
 
     const win = await openReadyTab();
     if (!win) return;
