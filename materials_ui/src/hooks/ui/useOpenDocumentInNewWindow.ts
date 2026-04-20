@@ -116,18 +116,10 @@ export const useOpenDocumentInNewTab = () => {
 
   const openPreview = async (materialId: number) => {
     if (!caseInfo) return;
-
     let win: Window | null = null;
 
     try {
       win = window.open('', '_blank');
-      await new Promise<void>((resolve) => {
-        if (win!.document.readyState === 'complete') {
-          resolve();
-        } else {
-          win!.addEventListener('load', () => resolve(), { once: true });
-        }
-      });
       if (!win) return;
 
       renderLoadingPage(win);
@@ -139,9 +131,25 @@ export const useOpenDocumentInNewTab = () => {
 
       const pdfUrl = URL.createObjectURL(response.data);
 
-      win.location.href = pdfUrl;
+      win.document.documentElement.style.cssText =
+        'margin:0;padding:0;height:100%;overflow:hidden;';
+      win.document.body.style.cssText =
+        'margin:0;padding:0;height:100%;overflow:hidden;';
 
-      win.addEventListener('load', () => {
+      const titleElement = win.document.createElement('title');
+      titleElement.textContent = 'Document Preview';
+      win.document.head.appendChild(titleElement);
+
+      // Clear loading  content
+      win.document.body.innerHTML = '';
+
+      const iframe = win.document.createElement('iframe');
+      iframe.src = pdfUrl;
+      iframe.style.cssText =
+        'display:block;width:100%;height:100%;border:none;';
+      win.document.body.appendChild(iframe);
+
+      win.addEventListener('beforeunload', () => {
         URL.revokeObjectURL(pdfUrl);
       });
     } catch (error) {
