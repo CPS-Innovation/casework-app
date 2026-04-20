@@ -116,12 +116,29 @@ export const useOpenDocumentInNewTab = () => {
 
   const openPreview = async (materialId: number) => {
     if (!caseInfo) return;
-    let win: Window | null = null;
+
+    const openReadyTab = async () => {
+      try {
+        const win = window.open('', '_blank') as Window | null;
+        if (!win) return null;
+
+        await new Promise<void>((resolve) => {
+          if (win!.document.readyState === 'complete') {
+            resolve();
+          } else {
+            win!.addEventListener('load', () => resolve(), { once: true });
+          }
+        });
+        return win;
+      } catch {
+        return null;
+      }
+    };
+
+    const win = await openReadyTab();
+    if (!win) return;
 
     try {
-      win = window.open('', '_blank');
-      if (!win) return;
-
       renderLoadingPage(win);
 
       const response = await request.get(
