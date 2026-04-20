@@ -64,6 +64,24 @@ const renderErrorPage = (win: Window) => {
       </div>
     </main>`;
 };
+const renderPdfUrlInIframe = (p: { win: Window; pdfUrl: string }) => {
+  p.win.document.documentElement.style.cssText =
+    'margin:0;padding:0;height:100%;overflow:hidden;';
+  p.win.document.body.style.cssText =
+    'margin:0;padding:0;height:100%;overflow:hidden;';
+
+  const titleElement = p.win.document.createElement('title');
+  titleElement.textContent = 'Document Preview';
+  p.win.document.head.appendChild(titleElement);
+
+  // Clear loading  content
+  p.win.document.body.innerHTML = '';
+
+  const iframe = p.win.document.createElement('iframe');
+  iframe.src = p.pdfUrl;
+  iframe.style.cssText = 'display:block;width:100%;height:100%;border:none;';
+  p.win.document.body.appendChild(iframe);
+};
 
 export const useOpenDocumentInNewWindow = () => {
   const request = useAxiosInstance();
@@ -148,23 +166,7 @@ export const useOpenDocumentInNewTab = () => {
 
       const pdfUrl = URL.createObjectURL(response.data);
 
-      win.document.documentElement.style.cssText =
-        'margin:0;padding:0;height:100%;overflow:hidden;';
-      win.document.body.style.cssText =
-        'margin:0;padding:0;height:100%;overflow:hidden;';
-
-      const titleElement = win.document.createElement('title');
-      titleElement.textContent = 'Document Preview';
-      win.document.head.appendChild(titleElement);
-
-      // Clear loading  content
-      win.document.body.innerHTML = '';
-
-      const iframe = win.document.createElement('iframe');
-      iframe.src = pdfUrl;
-      iframe.style.cssText =
-        'display:block;width:100%;height:100%;border:none;';
-      win.document.body.appendChild(iframe);
+      renderPdfUrlInIframe({ win, pdfUrl });
 
       win.addEventListener('beforeunload', () => {
         URL.revokeObjectURL(pdfUrl);
