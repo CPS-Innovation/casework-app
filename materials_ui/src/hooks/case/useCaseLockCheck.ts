@@ -17,7 +17,7 @@ export const useCaseLockCheck = (): UseCaseLockStatus => {
 
   const getCaseLockStatus = async () => {
     const response = await request.get<CaseLockStatusResponseType>(
-      `/urns/${caseInfo?.urn}/cases/${caseInfo?.id}/case-lock-info`,
+      `/cases/${caseInfo?.id}/case-lock-info`,
     );
 
     return response.data;
