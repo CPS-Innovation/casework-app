@@ -26,8 +26,6 @@ export const Summary = ({ data, onChange, onSave }: Props) => {
   const { getDefendantById, formatDefendantName } = useCaseDefendants();
   const { getExhibitProducerById } = useExhibitProducers();
 
-  console.log(data);
-
   const handleChangeClick = (step: FormStep) => {
     if (onChange) {
       onChange(step);
